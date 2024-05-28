@@ -1,6 +1,6 @@
 /* Navigationbar.css */
 
-/* Default styles for the navbar */
+
 .navbar {
     background-color: #343a40;
     color: white;
@@ -13,10 +13,6 @@
       bottom: 0;
       width: 100%;
       z-index: 1000;
-    }
-  
-    .navbar .navbar-collapse {
-      justify-content: space-around;
     }
   
     .navbar .nav-link {
