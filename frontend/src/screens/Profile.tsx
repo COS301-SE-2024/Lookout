@@ -4,6 +4,7 @@ import postsGrid from '../components/postsGrid';
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
 
+  ////////////Temp Posts for the grid//////////////////
   const posts = [
     "Post 1",
     "Post 2",
@@ -13,6 +14,7 @@ const Profile = () => {
     "Post 6",
 	"Post 7",
   ];
+  ////////////////////////////////////////////////////
   return (
     <div className="flex flex-col items-center">
       {/* Profile Picture and Username */}
@@ -46,7 +48,7 @@ const Profile = () => {
       </div>
 
       {/* Content */}
-      <div className="mt-8">
+      <div className="mt-8 w-full">
         {activeTab === "posts" ? (
           <div>
             <h2>Posts</h2>
