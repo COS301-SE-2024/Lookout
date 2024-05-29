@@ -1,4 +1,5 @@
 import React from 'react';
+import { FcGoogle } from "react-icons/fc";
 
 const SignUpScreen = () => {
   return (
@@ -11,7 +12,7 @@ const SignUpScreen = () => {
         </div>
         <div className="flex justify-center mb-4">
           <button className="w-full py-2 text-black bg-white-500 rounded-full hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300">
-            <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="Google" className="w-8 h-8 mr-2" />
+		    <FcGoogle size={20} style={{marginRight: 10}} />
             Sign Up with Google
           </button>
         </div>
