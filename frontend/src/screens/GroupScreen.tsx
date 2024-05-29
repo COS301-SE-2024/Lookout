@@ -1,10 +1,9 @@
 const GroupScreen = () => {
+	return (
+		<>
+			<h1>Group Screen</h1>
+		</>
+	);
+};
 
-    return (
-      <>
-      <h1>Group Screen</h1>
-      </>
-    )
-  }
-  
-  export default GroupScreen
+export default GroupScreen;
