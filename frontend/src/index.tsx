@@ -1,37 +1,51 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import "./assets/styles/index.css";
+import App from "./App";
+import reportWebVitals from "./webvitals/reportWebVitals";
 import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider
-} from 'react-router-dom'
-//import 'bootstrap/dist/css/bootstrap.min.css';
-import './assets/styles/bootstrap.custom.css';
-import './assets/styles/index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import HomeScreen from './screens/HomeScreen';
-import MapScreen from './screens/MapScreen';
-import GroupScreen from './screens/GroupScreen';
+	Route,
+	RouterProvider,
+	createBrowserRouter,
+	createRoutesFromElements
+} from "react-router-dom";
+import HomeScreen from "./screens/HomeScreen";
+import MapScreen from "./screens/MapScreen";
+import GroupScreen from "./screens/GroupScreen";
+import LoginScreen from "./screens/LoginScreen";
+import SignUpScreen from "./screens/SignUpScreen";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path='/' element= {<App/>}>
-      <Route index={true} path='/' element= {<HomeScreen/>} />
-      <Route path='/maps' element= {<MapScreen/>} />
-      <Route path='/groups' element= {<GroupScreen/>} />
-    </Route>
-  )
-);
+function Main() {
+	useEffect(() => {
+		const currentTheme = localStorage.getItem("data-theme");
+		if (currentTheme) {
+			document.documentElement.setAttribute("data-theme", currentTheme);
+		} else {
+			localStorage.setItem("data-theme", "default");
+			document.documentElement.setAttribute("data-theme", "default");
+		}
+	}, []);
+
+	const router = createBrowserRouter(
+		createRoutesFromElements(
+			<Route path="/" element={<App />}>
+				<Route index={true} path="/" element={<HomeScreen />} />
+				<Route path="/maps" element={<MapScreen />} />
+				<Route path="/groups" element={<GroupScreen />} />
+				<Route path="/login" element={<LoginScreen />} />
+				<Route path="/signup" element={<SignUpScreen />} />
+			</Route>
+		)
+	);
+
+	return (
+		<React.StrictMode>
+			<RouterProvider router={router} />
+		</React.StrictMode>
+	);
+}
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+	document.getElementById("root") as HTMLElement
 );
-root.render(
-  <React.StrictMode>
-    <RouterProvider router={router}/>
-  </React.StrictMode>
-);
-
-reportWebVitals();
+root.render(<Main />);
