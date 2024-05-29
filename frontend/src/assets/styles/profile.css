@@ -9,9 +9,15 @@
     text-decoration: none;
   }
   
-  /* Style for the underline when selected */
-  .button.active {
-    text-decoration: underline;
-    text-decoration-color: #6A994E; /* Green color */
-  }
+/* Style for the underline when selected */
+.button.active {
+  text-decoration: underline;
+  text-decoration-color: #6A994E; /* Green color */
+}
+
+.grid-container {
+  border: 1px solid black;
+}
+
+
   
