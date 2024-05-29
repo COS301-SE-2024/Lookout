@@ -14,6 +14,7 @@ import MapScreen from "./screens/MapScreen";
 import GroupScreen from "./screens/GroupScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
+import Profile from "./screens/Profile";
 
 function Main() {
 	useEffect(() => {
@@ -34,6 +35,7 @@ function Main() {
 				<Route path="/groups" element={<GroupScreen />} />
 				<Route path="/login" element={<LoginScreen />} />
 				<Route path="/signup" element={<SignUpScreen />} />
+				<Route path="/profile" element={<Profile />} />
 			</Route>
 		)
 	);
