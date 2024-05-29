@@ -15,7 +15,7 @@ const PostsGrid = ({ posts }: { posts: string[] }) => {
     rows.push(
       <Row key={i}>
         {posts.slice(i * 3, i * 3 + 3).map((post, index) => (
-          <Col key={index} xs={4} md={3} className="grid-container">
+          <Col key={index} xs={4} md={4} className="grid-container">
             {post}
           </Col>
         ))}

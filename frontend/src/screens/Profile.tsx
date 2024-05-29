@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import postsGrid from '../components/postsGrid';
+import groupsList from '../components/GroupsList';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
@@ -15,6 +16,16 @@ const Profile = () => {
 	"Post 7",
   ];
   ////////////////////////////////////////////////////
+  const groups = [
+    "Group 1",
+    "Group 2",
+    "Group 3",
+    "Group 4",
+    "Group 5",
+    "Group 6",
+	"Group 7",
+]
+////////////////////////////////////////////////////
   return (
     <div className="flex flex-col items-center">
       {/* Profile Picture and Username */}
@@ -58,7 +69,7 @@ const Profile = () => {
         ) : (
           <div>
             <h2>Groups</h2>
-            {/* Your groups content */}
+            {groupsList({groups})}
           </div>
         )}
       </div>
