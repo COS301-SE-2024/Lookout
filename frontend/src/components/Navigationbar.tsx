@@ -48,8 +48,10 @@ const Navigationbar = () => {
 						</Link>
 					</li>
 					<li>
-						<Link to="/maps" className="text-white">
-							<FaMap className="ml-4" /> Maps
+
+						<Link to="/explore" className="text-white">
+							<FaMap className="mr-1" /> Explore
+
 						</Link>
 					</li>
 					<li>

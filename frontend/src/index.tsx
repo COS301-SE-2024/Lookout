@@ -9,12 +9,16 @@ import {
 	createBrowserRouter,
 	createRoutesFromElements
 } from "react-router-dom";
+
 import HomeScreen from "./screens/HomeScreen";
-import MapScreen from "./screens/MapScreen";
+import ExploreScreen from "./screens/ExploreScreen";
 import GroupScreen from "./screens/GroupScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
+import GroupDetail from './components/GroupDetail';
+import PinDetail from './components/PinDetail';
 import Profile from "./screens/Profile";
+
 
 function Main() {
 	useEffect(() => {
@@ -31,10 +35,12 @@ function Main() {
 		createRoutesFromElements(
 			<Route path="/" element={<App />}>
 				<Route index={true} path="/" element={<HomeScreen />} />
-				<Route path="/maps" element={<MapScreen />} />
+				<Route path="/explore" element={<ExploreScreen />} />
 				<Route path="/groups" element={<GroupScreen />} />
 				<Route path="/login" element={<LoginScreen />} />
 				<Route path="/signup" element={<SignUpScreen />} />
+				<Route path="/group/:id" element={<GroupDetail />} />
+				<Route path="/pin/:id" element={<PinDetail />} />
 				<Route path="/profile" element={<Profile />} />
 			</Route>
 		)
