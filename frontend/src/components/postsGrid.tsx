@@ -16,6 +16,7 @@ const PostsGrid = ({ posts }: { posts: string[] }) => {
       <Row key={i}>
         {posts.slice(i * 3, i * 3 + 3).map((post, index) => (
           <Col key={index} xs={4} md={4} className="grid-container">
+            <img src="https://via.placeholder.com/150" alt="group" className="group-image" />
             {post}
           </Col>
         ))}
@@ -29,5 +30,6 @@ const PostsGrid = ({ posts }: { posts: string[] }) => {
     </Container>
   );
 };
+
 
 export default PostsGrid;
