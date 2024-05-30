@@ -169,7 +169,6 @@ Systems to be implemented:
 
 ## Traceability Matrix
 
-# Traceability Matrix
 
 | R    | User Administration | Photo Capture and Geo-tagging | Map and Visualization | Group Management | PWA Functionality |
 |------|---------------------|------------------------------|-----------------------|------------------|-------------------|
