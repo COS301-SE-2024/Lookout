@@ -1,35 +1,40 @@
-import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../assets/styles/profile.css';
+import React from "react";
+interface PostsGridProps {
+	posts: string[];
+}
 
-const PostsGrid = ({ posts }: { posts: string[] }) => {
-  const rows = [];
+const PostsGrid: React.FC<PostsGridProps> = ({ posts }) => {
+	const rows: React.ReactNode[] = [];
 
-  // Determine how many full rows we have
-  const numRows = Math.ceil(posts.length / 3);
+	const numRows = Math.ceil(posts.length / 3);
 
-  for (let i = 0; i < numRows; i++) {
-    rows.push(
-      <Row key={i}>
-        {posts.slice(i * 3, i * 3 + 3).map((post, index) => (
-          <Col key={index} xs={4} md={4} className="grid-container">
-            <img src="https://via.placeholder.com/150" alt="group" className="group-image" />
-            {post}
-          </Col>
-        ))}
-      </Row>
-    );
-  }
+	for (let i = 0; i < numRows; i++) {
+		rows.push(
+			<div className="flex mb-4" key={i}>
+				{posts.slice(i * 3, i * 3 + 3).map((post, index) => (
+					<div key={index} className="w-1/3 p-2">
+						<div className="grid-container">
+							<img
+								src="https://via.placeholder.com/150"
+								alt="group"
+								className="group-image w-full h-auto"
+							/>
+							<div className="mt-2">{post}</div>
+						</div>
+					</div>
+				))}
+			</div>
+		);
+	}
 
-  return (
-    <Container fluid style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {rows}
-    </Container>
-  );
+	return (
+		<div
+			className="container mx-auto overflow-y-auto"
+			style={{ maxHeight: "400px" }}
+		>
+			{rows}
+		</div>
+	);
 };
-
 
 export default PostsGrid;
