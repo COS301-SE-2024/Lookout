@@ -17,6 +17,8 @@ import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import GroupDetail from './components/GroupDetail';
 import PinDetail from './components/PinDetail';
+import Profile from "./screens/Profile";
+
 
 function Main() {
 	useEffect(() => {
@@ -39,6 +41,7 @@ function Main() {
 				<Route path="/signup" element={<SignUpScreen />} />
 				<Route path="/group/:id" element={<GroupDetail />} />
 				<Route path="/pin/:id" element={<PinDetail />} />
+				<Route path="/profile" element={<Profile />} />
 			</Route>
 		)
 	);
