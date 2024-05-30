@@ -4,6 +4,7 @@ import groupsList from '../components/GroupsList';
 import { FaCog } from "react-icons/fa";
 import SettingsModal from '../components/SettingsModal';
 
+
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
   const [showSettings, setShowSettings] = useState(false);
@@ -20,14 +21,10 @@ const Profile = () => {
   ];
   ////////////////////////////////////////////////////
   const groups = [
-    "Group 1",
-    "Group 2",
-    "Group 3",
-    "Group 4",
-    "Group 5",
-    "Group 6",
-	"Group 7",
-]
+	{ owner: 'Owner 1', name: 'Group 1', description: 'This is Group 1' },
+	{ owner: 'Owner 2', name: 'Group 2', description: 'This is Group 2' },
+	{ owner: 'Owner 3', name: 'Group 3', description: 'This is Group 3' },
+  ];
 ////////////////////////////////////////////////////
   return (
     <div className="flex flex-col items-center">

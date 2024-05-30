@@ -1,24 +1,30 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaChevronRight } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/profile.css';
 
-const GroupsList = ({ groups }: { groups: string[] }) => {
+const GroupsList = ({ groups }: { groups: { owner: string, name: string, description: string }[] }) => {
   return (
-    <Container fluid style={{ maxHeight: '400px', overflowY: 'auto' }}>
+    <div className="container">
       {groups.map((group, index) => (
-        <Row key={index} className="group-row">
-          <Col className="group-container" onClick={() => alert(`Clicked on ${group}`)}>
-            <img src="https://via.placeholder.com/150" alt="group" className="group-image" />
-            <span className="group-name">{group}</span>
-            <FaArrowRight className="arrow-icon" />
-          </Col>
-        </Row>
+        <div
+          key={index}
+          className="d-flex align-items-center justify-content-between mb-4 p-2 border border-secondary rounded group-item"
+          onClick={() => alert(`Clicked on ${group.name}`)}
+        >
+          <div>
+            <h3>{group.name}</h3>
+            <p>{group.description}</p>
+          </div>
+          <button
+            className="btn d-flex align-items-center"
+            style={{ backgroundColor: 'transparent', border: 'none' }}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
       ))}
-    </Container>
+    </div>
   );
 };
 
