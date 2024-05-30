@@ -85,47 +85,65 @@ The frontend will send requests to the backend for data and functionality. The b
 - Biweekly meetings with our lecturer mentor will take place.
 
 ## Class Diagram
+![Class Diagram](https://github.com/COS301-SE-2024/Lookout/blob/docs/diagrams/ClassDiagram.drawio%20(1).png)
 
 The main element of this class diagram is the user component, designed to deliver a highly efficient and user-friendly experience. The user would have the option to save posts to the local storage of their device and upload it at a later stage, or they can save their posts straight to the database if they have an active internet connection. Posts are made up of a photo, a caption (a short description of the animal in the photo) as well as the location where the photo was taken. The user can have multiple posts. They can belong to multiple groups and groups can have multiple users. The user as well as every group has a map component which displays the location of all the animals in the posts. This creates an easy interface to view the location of the animals.
 
 ## The Lookout Project Will
 
-### Provide a Progressive Web App (PWA):
+### 1. Provide a Progressive Web App (PWA):
 
-1. Ensure compatibility with major mobile operating systems (iOS, Android).
-2. Provide clear instructions for installation.
-3. Optimize performance for mobile devices.
-4. Make the PWA accessible offline:
-   1. Implement local storage for caching posts.
-   2. Queue and synchronize data uploads when the device reconnects to the internet.
-   3. Provide feedback to users about offline status and pending uploads.
+1.1 Ensure compatibility with major mobile operating systems (iOS, Android).
 
-### Enable Gmail Sign-in:
+1.2 Provide clear instructions for installation.
 
-1. Implement OAuth authentication with Google.
-2. Ensure secure transmission and storage of user credentials.
+1.3 Optimize performance for mobile devices.
 
-### Enable Users to Post Photos:
+1.4 Make the PWA accessible offline:
 
-1. Integrate native camera functionality for capturing photos.
-2. Use device's location service to fetch and display current location.
-3. Provide an option to add captions or descriptions to the photos.
+   1.4.1 Implement local storage for caching posts.
+   
+   1.4.2 Queue and synchronize data uploads when the device reconnects to the internet.
+   
+   1.4.3 Provide feedback to users about offline status and pending uploads.
 
-### Provide Users with a Map of Points of Interest:
+### 2. Enable Gmail Sign-in:
 
-1. Aggregate and visualize data on a map.
-2. Implement filters for different categories (i.e., animal sightings, camping locations, security concerns).
-3. Provide options for zooming and panning in the map.
+2.1 Implement OAuth authentication with Google.
 
-### Provide User Groups:
+2.2 Ensure secure transmission and storage of user credentials.
 
-1. Implement functionality for creating new groups.
-2. Enable search functionality to find existing groups.
-3. Allow users to request to join groups.
-4. Provide group management features for administrators.
-5. Enable users to see consolidated maps of all points of interest in the group
-   1. Aggregate and display data from all group members on a single map.
-   2. Ensure privacy controls so that only authorized group members can view group data.
+### 3. Enable Users to Post Photos:
+
+3.1 Integrate native camera functionality for capturing photos.
+
+3.2 Use device's location service to fetch and display current location.
+
+3.3 Provide an option to add captions or descriptions to the photos.
+
+### 4. Provide Users with a Map of Points of Interest:
+
+4.1 Aggregate and visualize data on a map.
+
+4.2 Implement filters for different categories (i.e., animal sightings, camping locations, security concerns).
+
+4.3 Provide options for zooming and panning in the map.
+
+### 5. Provide User Groups:
+
+5.1 Implement functionality for creating new groups.
+
+5.2 Enable search functionality to find existing groups.
+
+5.3 Allow users to request to join groups.
+
+5.4 Provide group management features for administrators.
+
+5.5 Enable users to see consolidated maps of all points of interest in the group
+
+  5.5.1 Aggregate and display data from all group members on a single map.
+   
+  5.5.2 Ensure privacy controls so that only authorized group members can view group data.
 
 ## Subsystems
 
@@ -138,32 +156,41 @@ Systems to be implemented:
 
 ## Use Case Diagrams
 
-Needs to be detailed
+![Group Management Use Case Diagram](https://github.com/COS301-SE-2024/Lookout/blob/docs/diagrams/GroupManagement.drawio%20(2).png)
+
+![Map and Visualization Subsystem](https://github.com/COS301-SE-2024/Lookout/blob/docs/diagrams/MapAndVisualizationSubsystem.drawio.png)
+
+![PWA Functionality Subsystem](https://github.com/COS301-SE-2024/Lookout/blob/docs/diagrams/PWAFunctionality.drawio.png)
+
+![Photo Capture and Geo-tagging subsystem](https://github.com/COS301-SE-2024/Lookout/blob/docs/diagrams/PhotoCapture.drawio.png)
+
+![User Administration Subsystem](https://github.com/COS301-SE-2024/Lookout/blob/docs/diagrams/User_administration.drawio.png)
+
 
 ## Traceability Matrix
 
-| R | User Administration | Photo Capture and Geo-tagging | Map and Visualization | Group Management | PWA Functionality |
-|---|---------------------|-------------------------------|----------------
+# Traceability Matrix
 
--------|------------------|-------------------|
-| 1.1 |  |  |  |  | X |
-| 1.2 |  |  |  |  | X |
-| 1.3 |  |  |  |  | X |
-| 1.4.1 |  |  |  |  | X |
-| 1.4.2 |  |  |  |  | X |
-| 1.4.3 |  |  |  |  | X |
-| 2.1 | X |  |  |  |  |
-| 2.2 | X |  |  |  |  |
-| 3.1 |  | X |  |  |  |
-| 3.2 |  | X |  |  |  |
-| 3.3 |  | X |  |  |  |
-| 4.1 |  |  | X |  |  |
-| 4.2 |  |  | X |  |  |
-| 4.3 |  |  | X |  |  |
-| 5.1 |  |  |  | X |  |
-| 5.2 |  |  |  | X |  |
-| 5.3 |  |  |  | X |  |
-| 5.4 |  |  |  | X |  |
-| 5.5.1 |  |  |  | X |  |
-| 5.5.2 |  |  |  | X |  |
-```
+| R    | User Administration | Photo Capture and Geo-tagging | Map and Visualization | Group Management | PWA Functionality |
+|------|---------------------|------------------------------|-----------------------|------------------|-------------------|
+| 1.1  |                     |                              |                       |                  | X                 |
+| 1.2  |                     |                              |                       |                  | X                 |
+| 1.3  |                     |                              |                       |                  | X                 |
+| 1.4.1|                     |                              |                       |                  | X                 |
+| 1.4.2|                     |                              |                       |                  | X                 |
+| 1.4.3|                     |                              |                       |                  | X                 |
+| 2.1  | X                   |                              |                       |                  |                   |
+| 2.2  | X                   |                              |                       |                  |                   |
+| 3.1  |                     | X                            |                       |                  |                   |
+| 3.2  |                     | X                            |                       |                  |                   |
+| 3.3  |                     | X                            |                       |                  |                   |
+| 4.1  |                     |                              | X                     |                  |                   |
+| 4.2  |                     |                              | X                     |                  |                   |
+| 4.3  |                     |                              | X                     |                  |                   |
+| 5.1  |                     |                              |                       | X                |                   |
+| 5.2  |                     |                              |                       | X                |                   |
+| 5.3  |                     |                              |                       | X                |                   |
+| 5.4  |                     |                              |                       | X                |                   |
+| 5.5.1|                     |                              |                       | X                |                   |
+| 5.5.2|                     |                              |                       | X                |                   |
+
