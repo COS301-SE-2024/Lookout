@@ -1,40 +1,31 @@
-import React from "react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+
 interface PostsGridProps {
-	posts: string[];
+  posts: { id: number; imageUrl: string; description: string }[];
 }
 
 const PostsGrid: React.FC<PostsGridProps> = ({ posts }) => {
-	const rows: React.ReactNode[] = [];
-
-	const numRows = Math.ceil(posts.length / 3);
-
-	for (let i = 0; i < numRows; i++) {
-		rows.push(
-			<div className="flex mb-4" key={i}>
-				{posts.slice(i * 3, i * 3 + 3).map((post, index) => (
-					<div key={index} className="w-1/3 p-2">
-						<div className="grid-container">
-							<img
-								src="https://via.placeholder.com/150"
-								alt="group"
-								className="group-image w-full h-auto"
-							/>
-							<div className="mt-2">{post}</div>
-						</div>
-					</div>
-				))}
-			</div>
-		);
-	}
-
-	return (
-		<div
-			className="container mx-auto overflow-y-auto"
-			style={{ maxHeight: "400px" }}
-		>
-			{rows}
-		</div>
-	);
+  return (
+    <div className="container mx-auto p-4">
+      {/* <h2 className="text-xl font-bold mb-4">Posts</h2> */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        {posts.map(post => (
+          <div key={post.id} className="w-full overflow-hidden rounded-md">
+            <Link to={`/post/${post.id}`}>
+              <img
+                src={post.imageUrl}
+                alt={`Post ${post.id}`}
+                className="w-full h-full object-cover"
+                style={{ height: '150px' }}
+              />
+              <div className="mt-2 text-center">{post.description}</div>
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default PostsGrid;
