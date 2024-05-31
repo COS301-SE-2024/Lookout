@@ -1,30 +1,16 @@
 /* Navigationbar.css */
 
 
-.navbar {
-    background-color: #343a40;
-    color: white;
-  }
+
   
   /* Media query for mobile devices */
   @media (max-width: 767px) {
-    .navbar {
+    nav {
       position: fixed;
       bottom: 0;
       width: 100%;
       z-index: 1000;
     }
   
-    .navbar .nav-link {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  
-    .navbar .navbar-toggler {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
   }
   

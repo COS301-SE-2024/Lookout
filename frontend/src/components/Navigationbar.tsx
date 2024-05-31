@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaHouse, FaMap, FaUsers, FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+//import '../assets/styles/nav.css'
 
 const Navigationbar = () => {
 	const [theme, setTheme] = useState("default");
@@ -38,8 +39,8 @@ const Navigationbar = () => {
 	}, [theme]);
 
 	return (
-		<header className="text-white">
-			<nav className="container mx-auto py-4">
+		<header className="text-white bg-navBkg">
+			<nav className="container mx-auto py-4 bg-navBkg">
 				<ul className="flex justify-center space-x-4">
 					<li>
 						<Link to="/" className="text-white">
