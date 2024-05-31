@@ -1,37 +1,49 @@
-import React from "react";
-import { FaChevronRight } from "react-icons/fa";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaChevronRight } from 'react-icons/fa';
 
 const GroupsList = ({
-	groups
+  groups
 }: {
-	groups: { owner: string; name: string; description: string }[];
+  groups: { id: number; name: string; owner: string; imageUrl: string; description: string }[];
 }) => {
-	return (
-		<div className="container mx-auto">
-			{groups.map((group, index) => (
-				<div
-					key={index}
-					className="flex items-center justify-between mb-4 p-2 border border-gray-300 rounded-lg group-item cursor-pointer hover:bg-gray-100"
-					onClick={() => alert(`Clicked on ${group.name}`)}
-				>
-					<div>
-						<h3 className="text-lg font-medium text-gray-800">
-							{group.name}
-						</h3>
-						<p className="text-sm text-gray-600">
-							{group.description}
-						</p>
-					</div>
-					<button
-						className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-						onClick={() => alert(`Clicked on ${group.name}`)}
-					>
-						<FaChevronRight className="text-gray-600" />
-					</button>
-				</div>
-			))}
-		</div>
-	);
+  const navigate = useNavigate();
+
+  const handleArrowClick = (id: number) => {
+    navigate(`/group/${id}`);
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      {/* <h2 className="text-xl font-bold mb-4">Your Groups</h2> */}
+      <div className="space-y-4">
+        {groups.map(group => (
+          <div
+            key={group.id}
+            className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-100"
+            onClick={() => handleArrowClick(group.id)}
+          >
+            <img
+              src={group.imageUrl}
+              alt={`${group.name} logo`}
+              className="w-12 h-12 rounded-full mr-4"
+            />
+            <div className="flex-1">
+              <div className="text-lg font-semibold">{group.name}</div>
+              <div className="text-gray-500">{group.owner}</div>
+              <p className="text-sm text-gray-600 mt-1">{group.description}</p>
+            </div>
+            <button
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onClick={(e) => { e.stopPropagation(); handleArrowClick(group.id); }}
+            >
+              <FaChevronRight className="text-gray-600" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default GroupsList;
