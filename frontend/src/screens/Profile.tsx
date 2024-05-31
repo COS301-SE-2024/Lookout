@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import postsGrid from '../components/postsGrid';
-import groupsList from '../components/GroupsList';
+import PostsGrid from '../components/postsGrid';
+import GroupsList from '../components/GroupsList';
 import { FaCog } from "react-icons/fa";
 import SettingsModal from '../components/SettingsModal';
-
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
@@ -11,21 +10,23 @@ const Profile = () => {
 
   ////////////Temp Posts for the grid//////////////////
   const posts = [
-    "Post 1",
-    "Post 2",
-    "Post 3",
-    "Post 4",
-    "Post 5",
-    "Post 6",
-	"Post 7",
+    { id: 1, imageUrl: 'https://i.pinimg.com/originals/2e/c0/77/2ec0773a1fcd847a5bd258ea4bba668e.jpg', description: 'The Setting Sun' },
+    { id: 2, imageUrl: 'https://i.pinimg.com/originals/bf/d9/ad/bfd9ad5453ee46784f071cafb68c02b4.jpg', description: 'Zebra Family' },
+    { id: 3, imageUrl: 'https://i.pinimg.com/originals/d7/45/a0/d745a0938efa00a33aef6f73135fe3ee.jpg', description: 'Curious Cheetah' },
+    { id: 4, imageUrl: 'https://i.pinimg.com/originals/12/9d/5f/129d5f467b48f214224e155d4fa153b8.jpg', description: 'Beautiful Clouds' },
+    { id: 5, imageUrl: 'https://i.pinimg.com/originals/37/b4/63/37b463a42a437b19e5b8a7117fca473c.jpg', description: 'Tall Giraffes' },
+    // { id: 6, imageUrl: '', description: 'Post 6' },
+    // { id: 7, imageUrl: '', description: 'Post 7' },
   ];
   ////////////////////////////////////////////////////
   const groups = [
-	{ owner: 'Owner 1', name: 'Group 1', description: 'This is Group 1' },
-	{ owner: 'Owner 2', name: 'Group 2', description: 'This is Group 2' },
-	{ owner: 'Owner 3', name: 'Group 3', description: 'This is Group 3' },
+    { id: 1, name: 'Hidden Gems', owner: 'Evelyn Smith', imageUrl: 'https://i.pinimg.com/originals/80/4c/82/804c82e561475688f6c115e3df2d8288.jpg', description: 'Explore the hidden gems of the wilderness.' },
+    { id: 2, name: 'For the Love of Trees', owner: 'Alex Anderson', imageUrl: 'https://i.pinimg.com/originals/4d/d7/c0/4dd7c0f68fd9d0d51f13cba3a8f24163.jpg', description: 'A group for tree lovers and conservationists.' },
+    { id: 3, name: 'Sunset Moments', owner: 'Harper Garcia', imageUrl: 'https://i.pinimg.com/originals/51/c2/d2/51c2d29f95977f38e9be0d20a599d42c.jpg', description: 'Capture and share beautiful sunset moments.' },
+    { id: 4, name: 'Elephant Fanatics', owner: 'Ava Jackson', imageUrl: 'https://i.pinimg.com/originals/62/5b/0e/625b0e73e60198e123ba03a6ae1bc574.jpg', description: 'Dedicated to the protection and admiration of elephants.' },
+    { id: 5, name: 'Stripe Savvy Syndicate ', owner: 'Anthony Harris', imageUrl: 'https://i.pinimg.com/originals/cb/e7/d3/cbe7d319fa566e5d19d25921d2ec7ca5.jpg', description: 'A group for those passionate about striped animals.' },
   ];
-////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////
   return (
     <div className="flex flex-col items-center">
       {/* Profile Picture and Username */}
@@ -71,14 +72,11 @@ const Profile = () => {
       <div className="mt-8 w-full">
         {activeTab === "posts" ? (
           <div>
-            <h2>Posts</h2>
-			
-            {postsGrid({ posts })}
+            <PostsGrid posts={posts} />
           </div>
         ) : (
           <div>
-            <h2>Groups</h2>
-            {groupsList({groups})}
+            <GroupsList groups={groups} />
           </div>
         )}
       </div>
