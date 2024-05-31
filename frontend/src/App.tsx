@@ -9,12 +9,12 @@ const App = () => {
 			<nav className="bg-navBkg">
 				<Navigationbar />
 			</nav>
-			<main className="bg-bkg text-content py-3">
+			<main className="bg-bkg text-content">
 				<div className="container mx-auto">
 					<Outlet />
 				</div>
 			</main>
-			<footer className="bg-gray-200 p-4">
+			<footer className="bg-gray-200">
 				<Footer />
 			</footer>
 		</>
