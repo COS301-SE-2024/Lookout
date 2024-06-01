@@ -2,8 +2,27 @@ import { useEffect, useState } from "react";
 import { FaHouse, FaMap, FaUsers, FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 //import '../assets/styles/nav.css'
+import { FaSignInAlt } from "react-icons/fa";
 
 const Navigationbar = () => {
+	const [isAuthed, setIsAuthed] = useState(
+		localStorage.getItem("authToken") !== ""
+	);
+
+	useEffect(() => {
+		const handleStorageChange = (event: StorageEvent) => {
+			if (event.key === "authToken") {
+				setIsAuthed(localStorage.getItem("authToken") !== "");
+			}
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+		};
+	}, []);
+
 	const [theme, setTheme] = useState("default");
 	useEffect(() => {
 		const localStoreTheme = localStorage.getItem("data-theme") || "default";
@@ -77,6 +96,7 @@ const Navigationbar = () => {
 				</select>
 			</nav>
 		</header>
+
 	);
 };
 
