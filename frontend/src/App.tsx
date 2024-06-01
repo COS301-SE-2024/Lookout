@@ -1,22 +1,18 @@
 import Navigationbar from "./components/Navigationbar";
 import Footer from "./components/Footer";
 import { Outlet } from "react-router-dom";
-import { useEffect } from "react";
+import './assets/styles/nav.css'
 
 const App = () => {
 	return (
 		<>
-			<nav className="bg-navBkg">
-				<Navigationbar />
-			</nav>
-			<main className="bg-bkg text-content">
-				<div className="container mx-auto">
+			<Navigationbar />
+			<main className="bg-bkg text-content py-1">
+				<div className="container mx-0">
 					<Outlet />
 				</div>
 			</main>
-			<footer className="bg-gray-200">
-				<Footer />
-			</footer>
+			<Footer />
 		</>
 	);
 };
