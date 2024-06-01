@@ -31,10 +31,24 @@ class JwtService {
     }
 
     private fun getSignInKey(): SecretKey {
-        var secretKey = dotenv["JWT_SECRET_KEY"]
-        val keyBytes = Base64.getUrlDecoder().decode(secretKey)
+        val jwtToken = dotenv["JWT_SECRET_KEY"] ?: throw IllegalStateException("JWT_SECRET_KEY is null")
+
+        // Split the JWT token into its three parts: header, payload, and signature
+        val parts = jwtToken.split('.')
+        if (parts.size != 3) {
+            throw IllegalArgumentException("Invalid JWT token: $jwtToken")
+        }
+
+        // Extract the payload part (second part) which contains the secret key
+        val payload = parts[1]
+
+        // Decode the payload to get the secret key
+        val keyBytes = Base64.getUrlDecoder().decode(payload)
+
+        // Return the secret key
         return SecretKeySpec(keyBytes, "HmacSHA256")
     }
+
 
     private fun extractAllClaims(token: String): Claims {
         return Jwts.parserBuilder()

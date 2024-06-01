@@ -1,6 +1,7 @@
 package com.lookout.Lookout.controller
 
 import com.google.gson.Gson
+import com.lookout.Lookout.constants.ResponseConstant
 import com.lookout.Lookout.dto.AuthenticationResponse
 import com.lookout.Lookout.dto.UserLoginRequest
 import com.lookout.Lookout.entity.User
@@ -24,5 +25,21 @@ class AuthenticationController(private val authService: AuthenticationService) {
             println(request.passcode)
         }
         return ResponseEntity.ok(authService.authenticate(request!!))
+    }
+
+    @PostMapping("/register")
+    fun register(@RequestBody request: User): ResponseEntity<AuthenticationResponse> {
+        if (authService.addNewUser(request).message == ResponseConstant.USER_ALREADY_EXIST) {
+            return ResponseEntity.badRequest().body(authService.addNewUser(request))
+        }
+        if (authService.addNewUser(request).message == ResponseConstant.REQUIRED_PARAMETERS_NOT_SET) {
+            return ResponseEntity.badRequest().body(authService.addNewUser(request))
+        }
+        return ResponseEntity.ok(authService.addNewUser(request))
+    }
+
+    @PostMapping("logout")
+    fun logout(@RequestBody request: User): ResponseEntity<AuthenticationResponse> {
+        return ResponseEntity.ok(authService.logout(request))
     }
 }

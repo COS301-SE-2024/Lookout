@@ -72,6 +72,17 @@ class AuthenticationService(private val userRepository: UserRepository,
         return AuthenticationResponse(jwt, "User login was successful")
     }
 
+    fun logout(request: User): AuthenticationResponse {
+        val userOptional = request.email?.let { userRepository.findByEmail(it) }
+        val user = userOptional?.orElseThrow { IllegalArgumentException("User not found") }
+        if (user == null) {
+            return AuthenticationResponse(null, "User not found")
+        }
+        revokeAllTokenByUser(user)
+        return AuthenticationResponse(null, "Logout Successful!")
+    }
+
+
     private fun revokeAllTokenByUser(user: User) {
         val validTokens = user.id.let { tokenRepository.findAllTokensByUser(it) }
         if (validTokens.isEmpty()) {
