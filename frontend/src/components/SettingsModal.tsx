@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaChevronRight, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import ToggleButton from "./ToggleButton";
 
 interface SettingsModalProps {
 	onClose: () => void;
@@ -11,7 +12,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 		modalContainer:
 			"fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
 		modalContent:
-			"bg-white rounded-lg p-8 relative w-11/12 md:w-96 h-full md:h-auto overflow-y-auto", // Adjust width and height for mobile and larger screens
+			"bg-bkg rounded-lg p-8 relative w-11/12 md:w-96 h-full md:h-auto overflow-y-auto", // Adjust width and height for mobile and larger screens
 		closeButton: "absolute top-2 left-2 cursor-pointer",
 		closeIcon: "text-gray-500 hover:text-gray-700",
 		settingsTitle: "text-xl font-semibold mb-4 ml-8",
@@ -24,12 +25,25 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 		"Notifications",
 		"Profile Visibility",
 		"Account Management",
-		"Theme"
+		"Dark Theme"
 	];
 
 	const handleLogout = () => {
 		localStorage.setItem("authToken", "");
 		window.location.reload();
+	};
+
+	const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+	useEffect(() => {
+		document.documentElement.setAttribute(
+			"data-theme",
+			isDarkTheme ? "dark" : "light"
+		);
+	}, [isDarkTheme]);
+
+	const handleToggle = (isToggled: boolean) => {
+		setIsDarkTheme(isToggled);
 	};
 
 	return (
@@ -47,21 +61,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 						>
 							<div className="flex items-center">
 								{setting}
-								{setting === "Theme" && (
+								{setting === "Dark Theme" && (
 									<label className="ml-48 flex items-center">
-										<span className="relative">
-											<input
-												type="checkbox"
-												className="sr-only"
-												defaultChecked={true}
-											/>
-											<span className="block w-10 h-6 bg-gray-400 rounded-full shadow-inner"></span>
-											<span className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition"></span>
-										</span>
+										<ToggleButton onToggle={handleToggle} />
 									</label>
 								)}
 							</div>
-							{setting !== "Theme" && (
+							{setting !== "Dark Theme" && (
 								<FaChevronRight
 									className="text-gray-400"
 									size={18}
