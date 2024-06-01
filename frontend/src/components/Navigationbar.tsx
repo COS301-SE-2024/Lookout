@@ -23,41 +23,8 @@ const Navigationbar = () => {
 		};
 	}, []);
 
-	const [theme, setTheme] = useState("default");
-	useEffect(() => {
-		const localStoreTheme = localStorage.getItem("data-theme") || "default";
-		setTheme(localStoreTheme);
-	}, []);
-
-	const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const newTheme = event.target.value;
-		localStorage.setItem("data-theme", newTheme);
-		setTheme(newTheme);
-		document.documentElement.setAttribute("data-theme", newTheme);
-	};
-
-	useEffect(() => {
-		const handleStorageChange = (event: StorageEvent) => {
-			if (event.key === "data-theme") {
-				const newTheme =
-					localStorage.getItem("data-theme") || "default";
-				setTheme(newTheme);
-				document.documentElement.setAttribute("data-theme", newTheme);
-			}
-		};
-
-		window.addEventListener("storage", handleStorageChange);
-
-		return () => {
-			window.removeEventListener("storage", handleStorageChange);
-		};
-	}, []);
-
-	useEffect(() => {
-		document.documentElement.setAttribute("data-theme", theme);
-	}, [theme]);
-
 	return (
+
 		<header className="text-white bg-navBkg">
 			<nav className="container mx-auto py-4 bg-navBkg">
 				<ul className="flex justify-center space-x-4">
