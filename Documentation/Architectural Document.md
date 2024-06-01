@@ -77,4 +77,4 @@ MVC was chosen for its responsive design due to the dedicated View component and
 - The application should be designed to handle increased loads without sacrificing availability, utilising scalable cloud resources to accommodate growing user demand.
 
 ## Architecture Diagram
-![Arc Doc](./diagrams/Architecture Diagram.png)
+![Arc Doc](./diagrams/ArchitectureDiagram.png)
