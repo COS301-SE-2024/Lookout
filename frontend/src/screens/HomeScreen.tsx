@@ -32,7 +32,7 @@ const locations: Poi[] = [
 
 const HomeScreen = () => (
 	
- <APIProvider apiKey={'AIzaSyAZ8zvB0pQDZ77jJl87Kio6gVGVG3JMrRw'} onLoad={() => console.log('Maps API has loaded.')}>
+ <APIProvider apiKey={process.env.GOOGLE_MAPS_API_KEY || ''} onLoad={() => console.log('Maps API has loaded.')}>
 	<div className="map-container">
 	<Map
 		defaultZoom={13}

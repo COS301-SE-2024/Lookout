@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Configuration
 class EvnConfig {
     @Bean
     fun dotenv(): Dotenv {
-        return Dotenv.load()
+        return Dotenv.configure()
+            .directory("..\\Lookout\\backend\\Lookout")
+            .filename(".env")
+            .load()
     }
 }

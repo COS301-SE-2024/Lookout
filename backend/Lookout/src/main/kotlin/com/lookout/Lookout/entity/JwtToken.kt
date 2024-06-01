@@ -18,7 +18,7 @@ class JwtToken {
     var loggedOut: Boolean = false
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userid")
     var user: User? = null
 
     constructor()

@@ -11,27 +11,32 @@ import org.springframework.security.core.userdetails.UserDetails
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
+    @Column(name = "userid")
     var id: Long = 0,
 
     @Column(name = "username")
-var firstName: String? = null,
+    var userName: String? = null,
 
-@Column(name = "email")
-var email: String? = null,
+    @Column(name = "email")
+    var email: String? = null,
 
-@Column(name = "password")
-var passcode: String? = null,
+    @Column(name = "password")
+    var passcode: String? = null,
 
+    @Enumerated(value = EnumType.STRING)
+    var role: UserRoles? = null
 
 ) : UserDetails {
+    override fun getAuthorities(): List<SimpleGrantedAuthority> {
+       return listOf(SimpleGrantedAuthority(role?.name))
+    }
 
     override fun getPassword(): String? {
         return passcode
     }
 
     override fun getUsername(): String? {
-        return firstName
+        return email
     }
 
     override fun isAccountNonExpired(): Boolean {

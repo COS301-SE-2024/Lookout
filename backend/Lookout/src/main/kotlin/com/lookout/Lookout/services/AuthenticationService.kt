@@ -27,14 +27,12 @@ class AuthenticationService(private val userRepository: UserRepository,
 
         // Check if the parameters are all set
         if (request.email.isNullOrBlank() || request.role?.name.isNullOrBlank() ||
-            request.firstName.isNullOrBlank() ||
-            request.lastName.isNullOrBlank()) {
+            request.username.isNullOrBlank()) {
             return AuthenticationResponse(null, ResponseConstant.REQUIRED_PARAMETERS_NOT_SET)
         }
 
         val user = User(
-            firstName = request.firstName,
-            lastName = request.lastName,
+            userName = request.username,
             email = request.email,
             passcode = passwordEncoder.encode(request.passcode),
             role = request.role
