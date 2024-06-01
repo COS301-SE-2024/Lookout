@@ -5,18 +5,20 @@ import java.util.*
 import java.time.Instant
 
 @Entity
-@Table(name = "posts", schema = "lookout")
+@Table(name = "posts")
 data class Posts(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     val id: Int? = null,
 
-    @Column(name = "userid", nullable = false)
-    val userId: UUID,
+    @ManyToOne
+    @JoinColumn(name = "userid", nullable = false)
+    var user: User? = null,
 
-    @Column(name = "groupid", nullable = false)
-    val groupId: UUID,
+    @ManyToOne
+    @JoinColumn(name = "groupid", nullable = false)
+    val group: Groups? = null,
 
     @Column(name = "categoryid", nullable = false)
     val categoryId: Int,

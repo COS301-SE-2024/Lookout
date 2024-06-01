@@ -4,16 +4,18 @@ import jakarta.persistence.*
 import java.util.*
 
 @Entity
-@Table(name = "groupMembers", schema = "lookout")
+@Table(name = "groupMembers")
 data class GroupMembers (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Int? = null,
+    var id: Long = 0,
 
-    @Column(name = "groupid", nullable = false)
-    val groupId: UUID,
+    @ManyToOne
+    @JoinColumn(name = "groupid", nullable = false)
+    val group: Groups? = null,
 
-    @Column(name = "userid", nullable = false)
-    val userId: UUID
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    var user: User? = null,
 )

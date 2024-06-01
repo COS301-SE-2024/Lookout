@@ -1,4 +1,0 @@
-DB_USER=master
-DB_PASS=88$SEGFAULt
-JWT_SECRET_KEY=abc1234
-DB_URL=jdbc:postgresql://lookoutdb.ctm6ckw0gprb.af-south-1.rds.amazonaws.com:5432/lookout

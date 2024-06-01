@@ -5,12 +5,12 @@ import java.util.*
 import java.time.Instant
 
 @Entity
-@Table(name = "groups", schema = "lookout")
+@Table(name = "groups")
 data class Groups(
     @Id
     @GeneratedValue
     @Column(name = "groupid", nullable = false)
-    val groupId: UUID? = null,
+    var id: Long = 0,
 
     @Column(name = "name", nullable = false)
     val name: String,
@@ -21,8 +21,9 @@ data class Groups(
     @Column(name = "private", nullable = false)
     val isPrivate: Boolean = false,
 
-    @Column(name = "admin")
-    val adminId: UUID? = null,
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    var user: User? = null,
 
     @Column(name = "picture")
     val picture: String? = "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
