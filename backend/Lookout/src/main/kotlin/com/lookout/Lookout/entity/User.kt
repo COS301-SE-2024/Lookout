@@ -36,7 +36,7 @@ data class User(
     }
 
     override fun getUsername(): String? {
-        return email
+        return userName
     }
 
     override fun isAccountNonExpired(): Boolean {

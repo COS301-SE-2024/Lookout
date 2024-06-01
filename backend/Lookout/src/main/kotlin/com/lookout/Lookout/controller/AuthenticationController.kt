@@ -29,12 +29,6 @@ class AuthenticationController(private val authService: AuthenticationService) {
 
     @PostMapping("/register")
     fun register(@RequestBody request: User): ResponseEntity<AuthenticationResponse> {
-        if (authService.addNewUser(request).message == ResponseConstant.USER_ALREADY_EXIST) {
-            return ResponseEntity.badRequest().body(authService.addNewUser(request))
-        }
-        if (authService.addNewUser(request).message == ResponseConstant.REQUIRED_PARAMETERS_NOT_SET) {
-            return ResponseEntity.badRequest().body(authService.addNewUser(request))
-        }
         return ResponseEntity.ok(authService.addNewUser(request))
     }
 
