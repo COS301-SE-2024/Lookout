@@ -14,7 +14,7 @@ const ExploreScreen = () => {
             className={`pb-2 border-b-2 ${activeTab === 'your pins' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`} 
             onClick={() => setActiveTab('your pins')}
           >
-            Your Pins
+            Find Pins
           </button>
         </li>
         <li>
@@ -22,7 +22,7 @@ const ExploreScreen = () => {
             className={`pb-2 border-b-2 ${activeTab === 'your groups' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`} 
             onClick={() => setActiveTab('your groups')}
           >
-            Your Groups
+            Find Groups
           </button>
         </li>
       </ul>
