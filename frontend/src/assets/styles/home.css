@@ -1,11 +1,11 @@
 .map-container {
-    width: 134vh;
-    height: 79vh; 
+    width: 100%;
+    height: 600px; 
 }
 
 @media (max-width: 767px) {
     .map-container {
-        width: 45vh;
-        height: 83vh; 
+        width: 100%;
+        height: 780px; 
     }
 }

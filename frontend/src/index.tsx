@@ -7,9 +7,7 @@ import {
 	RouterProvider,
 	createBrowserRouter,
 	createRoutesFromElements,
-	Navigate
 } from "react-router-dom";
-
 import HomeScreen from "./screens/HomeScreen";
 import ExploreScreen from "./screens/ExploreScreen";
 import GroupScreen from "./screens/GroupScreen";

@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.5.3",
     "@testing-library/jest-dom": "^5.17.0",
@@ -22,6 +23,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "lint": "eslint .",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
