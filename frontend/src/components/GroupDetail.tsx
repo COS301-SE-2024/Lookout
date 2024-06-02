@@ -1,8 +1,8 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; //useParams,
 
 const GroupDetail = () => {
-  const { id } = useParams();
+  //const { id } = useParams();
   const navigate = useNavigate();
 
   // Replace this with a real data fetching logic

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; //useParams, 
 
 const PinDetail = () => {
-  const { id } = useParams();
+  //const { id } = useParams();
   const navigate = useNavigate();
   const [theme, setTheme] = useState("default");
 
@@ -11,12 +11,12 @@ const PinDetail = () => {
     setTheme(localStoreTheme);
   }, []);
 
-  const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newTheme = event.target.value;
-    localStorage.setItem("data-theme", newTheme);
-    setTheme(newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-  };
+  // const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const newTheme = event.target.value;
+  //   localStorage.setItem("data-theme", newTheme);
+  //   setTheme(newTheme);
+  //   document.documentElement.setAttribute("data-theme", newTheme);
+  // };
   
 
   useEffect(() => {
