@@ -6,15 +6,42 @@ function Login() {
 	const [token, setToken] = useState<string | null>(null);
 	const navigate = useNavigate();
 
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+
 	useEffect(() => {
 		if (token !== "" && token !== null) {
 			navigate("/");
+			window.location.reload();
 		}
 	}, [token, navigate]);
 
-	const handleSubmit = () => {
-		localStorage.setItem("authToken", "mock");
-		setToken(localStorage.getItem("authToken"));
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+		const response = await fetch('/api/auth/login', {
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+			email,
+			passcode: password,
+			}),
+		});
+
+		if (!response.ok) {
+			throw new Error('Login failed!');
+		}
+
+		const data = await response.json();
+		localStorage.setItem('authToken', data.token);
+		localStorage.setItem('userEmail', email);
+		setToken(data.token);
+		
+		} catch (error) {
+		console.error('Error:', error);
+		}
 	};
 
 	return (
@@ -52,6 +79,8 @@ function Login() {
 							className="w-full px-3 py-2 mt-1 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-full focus:outline-none focus:ring-blue-500 focus:border-blue-500"
 							id="inputEmail"
 							placeholder="Enter email"
+							value={email}
+              				onChange={(e) => setEmail(e.target.value)}
 							required
 						/>
 					</div>
@@ -67,6 +96,8 @@ function Login() {
 							className="w-full px-3 py-2 mt-1 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-full focus:outline-none focus:ring-blue-500 focus:border-blue-500"
 							id="inputPassword"
 							placeholder="Password"
+							value={password}
+              				onChange={(e) => setPassword(e.target.value)}
 							required
 						/>
 					</div>

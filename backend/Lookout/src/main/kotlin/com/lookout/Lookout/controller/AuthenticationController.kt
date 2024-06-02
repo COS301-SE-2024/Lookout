@@ -18,16 +18,16 @@ class AuthenticationController(private val authService: AuthenticationService) {
 
     @PostMapping("login")
     fun login(
-        @RequestBody request: User?
+        @RequestBody request: User
     ): ResponseEntity<AuthenticationResponse> {
         if (request != null) {
             println(request.email)
             println(request.passcode)
         }
-        return ResponseEntity.ok(authService.authenticate(request!!))
+        return ResponseEntity.ok(authService.authenticate(request))
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     fun register(@RequestBody request: User): ResponseEntity<AuthenticationResponse> {
         return ResponseEntity.ok(authService.addNewUser(request))
     }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaHouse, FaMap, FaUsers, FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 //import '../assets/styles/nav.css'
-import { FaSignInAlt } from "react-icons/fa";
+//import { FaSignInAlt } from "react-icons/fa";
 
 const Navigationbar = () => {
 	const [isAuthed, setIsAuthed] = useState(

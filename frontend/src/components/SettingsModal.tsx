@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FaChevronRight, FaTimes } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import ToggleButton from "./ToggleButton";
+import { getEmailFromLocalStorage } from '../utils/auth';
 
 interface SettingsModalProps {
 	onClose: () => void;
@@ -28,9 +29,30 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 		"Dark Theme"
 	];
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
 		localStorage.setItem("authToken", "");
-		window.location.reload();
+		const email = getEmailFromLocalStorage();
+		try {
+			const response = await fetch('/api/auth/logout', {
+			  method: 'POST',
+			  headers: {
+				'Content-Type': 'application/json',
+			  },
+			  body: JSON.stringify({
+				email,
+			  }),
+			});
+	  
+			if (!response.ok) {
+			  throw new Error('Logout failed!');
+			}
+	  
+			localStorage.setItem("authToken", "");
+			localStorage.removeItem("userEmail");
+			window.location.reload();
+		  } catch (error) {
+			console.error('Error:', error);
+		  }
 	};
 
 	const [isDarkTheme, setIsDarkTheme] = useState(false);

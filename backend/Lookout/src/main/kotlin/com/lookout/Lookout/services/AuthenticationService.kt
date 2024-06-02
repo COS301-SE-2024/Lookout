@@ -26,8 +26,7 @@ class AuthenticationService(private val userRepository: UserRepository,
         }
 
         // Check if the parameters are all set
-        if (request.email.isNullOrBlank() || request.role?.name.isNullOrBlank() ||
-            request.username.isNullOrBlank()) {
+        if (request.email.isNullOrBlank()) {
             return AuthenticationResponse(null, ResponseConstant.REQUIRED_PARAMETERS_NOT_SET)
         }
 
@@ -52,12 +51,12 @@ class AuthenticationService(private val userRepository: UserRepository,
     fun authenticate(request: User): AuthenticationResponse {
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
-                request.username,
+                request.email,
                 request.password
             )
         )
 
-        val user = request.username.let { request.username?.let { it1 -> userRepository.findByEmail(it1).orElseThrow() } }
+        val user = request.email.let { request.email?.let { it1 -> userRepository.findByEmail(it1).orElseThrow() } }
         val jwt = user?.let { jwtService.generateToken(it) }
 
         if (user != null) {
