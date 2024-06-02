@@ -1,14 +1,8 @@
 import { SetStateAction, useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
 const mockGroups = [
-    { id: 1, name: 'Hidden Gems', owner: 'Evelyn Smith', imageUrl: 'https://i.pinimg.com/originals/80/4c/82/804c82e561475688f6c115e3df2d8288.jpg', description: 'Explore the hidden gems of the wilderness.' },
-    { id: 2, name: 'For the Love of Trees', owner: 'Alex Anderson', imageUrl: 'https://i.pinimg.com/originals/4d/d7/c0/4dd7c0f68fd9d0d51f13cba3a8f24163.jpg', description: 'A group for tree lovers and conservationists.' },
-    { id: 3, name: 'Sunset Moments', owner: 'Harper Garcia', imageUrl: 'https://i.pinimg.com/originals/51/c2/d2/51c2d29f95977f38e9be0d20a599d42c.jpg', description: 'Capture and share beautiful sunset moments.' },
-    { id: 4, name: 'Elephant Fanatics', owner: 'Ava Jackson', imageUrl: 'https://i.pinimg.com/originals/62/5b/0e/625b0e73e60198e123ba03a6ae1bc574.jpg', description: 'Dedicated to the protection and admiration of elephants.' },
-    { id: 5, name: 'Stripe Savvy Syndicate', owner: 'Anthony Harris', imageUrl: 'https://i.pinimg.com/originals/cb/e7/d3/cbe7d319fa566e5d19d25921d2ec7ca5.jpg', description: 'A group for those passionate about striped animals.' },
     { id: 6, name: 'Mountain Climbers', owner: 'Liam Johnson', description: 'A group for mountain climbing enthusiasts.', imageUrl: 'https://source.unsplash.com/1600x900/?mountain' },
     { id: 7, name: 'Ocean Explorers', owner: 'Emma Brown', description: 'Discover the secrets of the ocean.', imageUrl: 'https://source.unsplash.com/1600x900/?ocean' },
     { id: 8, name: 'Bird Watchers', owner: 'Sophia Davis', description: 'A community for bird watching lovers.', imageUrl: 'https://source.unsplash.com/1600x900/?bird' },
@@ -26,15 +20,19 @@ const mockGroups = [
     { id: 20, name: 'Gardeners United', owner: 'James White', description: 'A group for gardening enthusiasts to share their gardening experiences.', imageUrl: 'https://source.unsplash.com/1600x900/?gardening' },
 ];
 
-
-
 const SearchGroups = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredGroups, setFilteredGroups] = useState(mockGroups);
+    const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
     const navigate = useNavigate();
 
-    const handleArrowClick = (id: number) => {
-        navigate(`/group/${id}`);
+    const handleJoinClick = (e: React.MouseEvent, id: number) => {
+        e.stopPropagation();
+        if (joinedGroups.includes(id)) {
+            setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
+        } else {
+            setJoinedGroups([...joinedGroups, id]);
+        }
     };
 
     useEffect(() => {
@@ -77,7 +75,7 @@ const SearchGroups = () => {
                                 <div
                                     key={group.id}
                                     className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-100"
-                                    onClick={() => handleArrowClick(group.id)}
+                                    onClick={() => navigate(`/group/${group.id}`)}
                                 >
                                     <img
                                         src={group.imageUrl}
@@ -90,10 +88,12 @@ const SearchGroups = () => {
                                         <p className="text-sm text-gray-600 mt-1">{group.description}</p>
                                     </div>
                                     <button
-                                        className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                                        onClick={(e) => { e.stopPropagation(); handleArrowClick(group.id); }}
+                                        className={`flex items-center justify-center w-20 h-10 rounded-full ${
+                                            joinedGroups.includes(group.id) ? 'bg-green-200 text-black border border-red 2px' : 'bg-blue-500 text-white hover:bg-blue-600'
+                                        } focus:outline-none focus:ring-2 focus:ring-gray-400`}
+                                        onClick={(e) => handleJoinClick(e, group.id)}
                                     >
-                                        <FaChevronRight className="text-gray-600" />
+                                        {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
                                     </button>
                                 </div>
                             </li>
