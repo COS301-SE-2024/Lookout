@@ -170,9 +170,11 @@ const locations: Poi[] = [
     }
 ];
 
+const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
 const HomeScreen = () => (
 	
- <APIProvider apiKey={'AIzaSyAZ8zvB0pQDZ77jJl87Kio6gVGVG3JMrRw'} onLoad={() => console.log('Maps API has loaded.')}>
+ <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
 	<div className="map-container">
 	<Map
 		defaultZoom={5}
