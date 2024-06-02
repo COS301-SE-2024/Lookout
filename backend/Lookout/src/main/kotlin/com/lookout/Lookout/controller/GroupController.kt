@@ -1,0 +1,54 @@
+package com.lookout.Lookout.controller
+
+import com.lookout.Lookout.entity.Groups
+import com.lookout.Lookout.service.GroupService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import java.util.*
+
+@RestController
+@RequestMapping("/api/groups")
+class GroupController(private val groupService: GroupService) {
+
+    @GetMapping
+    fun getAllGroups(): List<Groups> = groupService.findAll()
+
+    @GetMapping("/{id}")
+    fun getGroupById(@PathVariable id: Long): ResponseEntity<Groups> {
+        val group = groupService.findById(id)
+        return if (group != null) {
+            ResponseEntity.ok(group)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @PostMapping
+    fun createGroup(@RequestBody group: Groups): ResponseEntity<Groups> {
+        val savedGroup = groupService.save(group)
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedGroup)
+    }
+
+    @PutMapping("/{id}")
+    fun updateGroup(@PathVariable id: Long, @RequestBody group: Groups): ResponseEntity<Groups> {
+        val updatedGroup = groupService.findById(id)?.let {
+            groupService.save(group.copy(id = it.id))
+        }
+        return if (updatedGroup != null) {
+            ResponseEntity.ok(updatedGroup)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteGroup(@PathVariable id: Long): ResponseEntity<Void> {
+        return if (groupService.findById(id) != null) {
+            groupService.deleteById(id)
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+}

@@ -1,0 +1,20 @@
+import Navigationbar from "./components/Navigationbar";
+import Footer from "./components/Footer";
+import { Outlet } from "react-router-dom";
+import './assets/styles/nav.css'
+
+const App = () => {
+	return (
+		<>
+			<Navigationbar />
+			<main className="bg-bkg text-content py-1">
+				<div className="container mx-0">
+					<Outlet />
+				</div>
+			</main>
+			<Footer />
+		</>
+	);
+};
+
+export default App;

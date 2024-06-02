@@ -1,0 +1,16 @@
+/* Navigationbar.css */
+
+
+
+  
+  /* Media query for mobile devices */
+  @media (max-width: 767px) {
+    nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+  
+  }
+  

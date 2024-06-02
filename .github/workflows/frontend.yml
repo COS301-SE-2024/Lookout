@@ -1,0 +1,49 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+  pull_request:
+    branches:
+      - main
+      - dev
+      
+
+jobs:
+
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v2
+
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check Out Code
+      uses: actions/checkout@v2
+
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: frontend
+      
+    - name: Compile Project
+      run: npm run build --if-present
+      working-directory: frontend
+
+
+    - name: Check TypeScript Compilation
+      run: npx tsc --noEmit
+      working-directory: frontend
+      continue-on-error: true
