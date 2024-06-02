@@ -28,7 +28,7 @@ jobs:
     - name: Check Out Code
       uses: actions/checkout@v2
     - name: Install dependencies
-      run: npm npm install
+      run: npm install
       working-directory: frontend
     - name: Lint the project
       run: npm run lint
