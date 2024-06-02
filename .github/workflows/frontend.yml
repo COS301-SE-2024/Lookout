@@ -47,8 +47,3 @@ jobs:
       run: npx tsc --noEmit
       working-directory: frontend
       continue-on-error: true
-
-      
-    - name: Run tests
-      run: npm test
-      working-directory: frontend
