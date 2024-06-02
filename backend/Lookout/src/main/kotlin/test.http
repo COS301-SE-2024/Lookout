@@ -1,0 +1,36 @@
+### Get all groups
+GET http://localhost:8080/api/groups
+Accept: application/json
+
+###
+
+### Get a group by ID
+GET http://localhost:8080/api/groups/1
+Accept: application/json
+
+###
+
+### Create a new group
+POST http://localhost:8080/api/groups
+Content-Type: application/json
+
+{
+  "name": "New Group",
+  "description": "This is a new group"
+}
+
+###
+
+### Update a group
+PUT http://localhost:8080/api/groups/1
+Content-Type: application/json
+
+{
+  "name": "Updated Group",
+  "description": "This group has been updated"
+}
+
+###
+
+### Delete a group
+DELETE http://localhost:8080/api/groups/1
