@@ -31,7 +31,7 @@ const ExploreGroups: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/groups')
+    fetch('/api/groups')
       .then(response => response.json())
       .then(data => setGroups(data))
       .catch(error => console.error('Error fetching groups:', error));

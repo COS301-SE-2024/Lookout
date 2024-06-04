@@ -15,7 +15,7 @@ POST http://localhost:8080/api/groups
 Content-Type: application/json
 
 {
-  "name": "New Group",
+  "name": "My Test Group",
   "description": "This is a new group"
 }
 
