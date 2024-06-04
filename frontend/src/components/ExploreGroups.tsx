@@ -37,8 +37,8 @@ const ExploreGroups: React.FC = () => {
       .catch(error => console.error('Error fetching groups:', error));
   }, []);
 
-  const handleArrowClick = (id: number) => {
-    navigate(`/group/${id}`);
+  const handleArrowClick = (group: Group) => {
+    navigate(`/group/${group.id}`, { state: { group } });
   };
 
   return (
@@ -52,7 +52,7 @@ const ExploreGroups: React.FC = () => {
               <div className="text-lg font-semibold">{group.name}</div>
               <div className="text-gray-500">{group.user ? group.user.userName : 'No owner'}</div>
             </div>
-            <button onClick={() => handleArrowClick(group.id)}>
+            <button onClick={() => handleArrowClick(group)}>
               <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
               </svg>
