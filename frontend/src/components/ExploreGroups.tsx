@@ -43,7 +43,6 @@ const ExploreGroups: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Your Groups</h2>
       <div className="space-y-4">
         {groups.map(group => (
           <div
