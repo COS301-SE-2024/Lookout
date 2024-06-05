@@ -1,11 +1,13 @@
 package com.lookout.Lookout.service
 
+import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import java.util.*
 
 
 @Service
@@ -22,5 +24,9 @@ class UserService: UserDetailsService {
 
     fun deleteUser(email: String) {
         userRepository.deleteByEmail(email)
+    }
+
+    fun findById(id: Long): Optional<User> {
+        return userRepository.findById(id)
     }
 }

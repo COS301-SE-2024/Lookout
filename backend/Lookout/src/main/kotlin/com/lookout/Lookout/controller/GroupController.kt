@@ -26,8 +26,12 @@ class GroupController(private val groupService: GroupService) {
 
     @PostMapping
     fun createGroup(@RequestBody group: Groups): ResponseEntity<Groups> {
-        val savedGroup = groupService.save(group)
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedGroup)
+        try {
+            val savedGroup = groupService.save(group)
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedGroup)
+        } catch (e: IllegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+        }
     }
 
     @PutMapping("/{id}")
