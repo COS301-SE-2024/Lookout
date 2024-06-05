@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaChevronRight, FaTimes } from "react-icons/fa";
 //import { useNavigate } from "react-router-dom";
 import ToggleButton from "./ThemeToggleButton";
@@ -55,7 +55,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 		}
 	};
 
-	const [isDarkTheme, setIsDarkTheme] = useState(
+	const [isDarkTheme] = useState(
 		localStorage.getItem("data-theme") === "dark"
 	);
 
