@@ -9,8 +9,8 @@ const GroupsList = ({
 }) => {
   const navigate = useNavigate();
 
-  const handleArrowClick = (id: number) => {
-    navigate(`/group/${id}`);
+  const handleGroupClick = (group: { id: number; name: string; owner: string; picture: string; description: string }) => {
+    navigate(`/group/${group.id}`, { state: { group } });
   };
 
   return (
@@ -21,7 +21,7 @@ const GroupsList = ({
           <div
             key={group.id}
             className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-100"
-            onClick={() => handleArrowClick(group.id)}
+            onClick={() => handleGroupClick(group)}
           >
             <img
               src={group.picture}
@@ -33,12 +33,9 @@ const GroupsList = ({
               <div className="text-gray-500">{group.owner}</div>
               <p className="text-sm text-gray-600 mt-1">{group.description}</p>
             </div>
-            <button
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              onClick={(e) => { e.stopPropagation(); handleArrowClick(group.id); }}
-            >
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
               <FaChevronRight className="text-gray-600" />
-            </button>
+            </div>
           </div>
         ))}
       </div>
