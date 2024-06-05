@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaToggleOn, FaToggleOff, FaPlus } from "react-icons/fa";
 
 interface CreateGroupsProps {
-  onCreateGroup: (newGroup: Omit<Group, 'id'>) => void;
+  onCreateGroup: (newGroup: Group) => void;
 }
 
 interface Group {
@@ -19,7 +19,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
   const [isToggled, setIsToggled] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [picture, setpicture] = useState("");
+  const [picture, setPicture] = useState("");
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -27,20 +27,38 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
     setIsToggled(!isToggled);
   };
 
-  const handleCreateClick = () => {
+  const handleCreateClick = async () => {
     const newGroup: Omit<Group, 'id'> = {
       name: title,
-      owner: "Aliyah", // Provide default value if needed
+      owner: "Temp", //get from localstorage
       picture: picture,
       description: description,
-      isPrivate: isToggled, // Include isPrivate property
-      createdAt: new Date().toISOString(), // Include createdAt property
+      isPrivate: isToggled,
+      createdAt: new Date().toISOString(),
     };
-    onCreateGroup(newGroup);
-    setTitle("");
-    setDescription("");
-    setpicture("");
-    setIsToggled(false);
+
+    try {
+      const response = await fetch('/api/groups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newGroup),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const createdGroup = await response.json();
+      onCreateGroup(createdGroup);
+      setTitle("");
+      setDescription("");
+      setPicture("");
+      setIsToggled(false);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    }
   };
 
   const handleAddPhotoClick = () => {
@@ -53,7 +71,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
     const file = event.target.files?.[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
-      setpicture(fileUrl);
+      setPicture(fileUrl);
     }
   };
 
@@ -148,3 +166,8 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
 };
 
 export default CreateGroups;
+
+
+
+// owner?
+// image?

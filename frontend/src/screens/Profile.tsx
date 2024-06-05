@@ -116,7 +116,7 @@ const Profile = () => {
           </div>
         ) : (
           <div>
-            <GroupsList groups={groups} />
+            <GroupsList />
           </div>
         )}
       </div>

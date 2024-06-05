@@ -1,23 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaChevronRight } from 'react-icons/fa';
 
-const GroupsList = ({
-  groups
-}: {
-  groups: { id: number; name: string; owner: string; picture: string; description: string }[];
-}) => {
-  const navigate = useNavigate();
+interface Group {
+  id: number;
+  name: string;
+  owner: string;
+  picture: string;
+  description: string;
+  isPrivate: boolean;
+  createdAt: string;
+}
 
-  const handleGroupClick = (group: { id: number; name: string; owner: string; picture: string; description: string }) => {
+const GroupsList: React.FC = () => {
+  const navigate = useNavigate();
+  const [groups, setGroups] = useState<Group[]>([]);
+
+  useEffect(() => {
+    fetch('/api/groups/user/1', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setGroups(data))
+      .catch((error) => console.error('Error fetching groups:', error));
+  }, []);
+
+  const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });
   };
 
   return (
     <div className="container mx-auto p-4">
-      {/* <h2 className="text-xl font-bold mb-4">Your Groups</h2> */}
       <div className="space-y-4">
-        {groups.map(group => (
+        {groups.map((group) => (
           <div
             key={group.id}
             className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-100"

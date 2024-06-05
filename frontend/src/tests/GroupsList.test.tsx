@@ -32,7 +32,7 @@ describe('GroupsList', () => {
   };
 
   test('renders group items', () => {
-    renderWithRouter(<GroupsList groups={groups} />);
+    renderWithRouter(<GroupsList />);
 
     expect(screen.getByText('Group One')).toBeInTheDocument();
     expect(screen.getByText('Owner One')).toBeInTheDocument();
@@ -44,7 +44,7 @@ describe('GroupsList', () => {
   });
 
   test('navigates to group page on item click', () => {
-    const { history } = renderWithRouter(<GroupsList groups={groups} />);
+    const { history } = renderWithRouter(<GroupsList />);
 
     const groupItem = screen.getByText('Group One').closest('div');
     if (groupItem) {
@@ -55,7 +55,7 @@ describe('GroupsList', () => {
   });
 
   test('navigates to group page on arrow button click', () => {
-    const { history } = renderWithRouter(<GroupsList groups={groups} />);
+    const { history } = renderWithRouter(<GroupsList />);
 
     const arrowButton = screen.getAllByRole('button')[0];
     fireEvent.click(arrowButton);

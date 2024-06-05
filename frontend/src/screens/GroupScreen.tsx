@@ -76,7 +76,7 @@ const GroupScreen = () => {
 			</ul>
 
 			<div className="tab-content">
-				{activeTab === "your-groups" && <GroupsList groups={groups} />}
+				{activeTab === "your-groups" && <GroupsList />}
 				{activeTab === "search" && <SearchGroups />}
 				{activeTab === "create" && <CreateGroups onCreateGroup={handleAddGroup} />}
 			</div>
