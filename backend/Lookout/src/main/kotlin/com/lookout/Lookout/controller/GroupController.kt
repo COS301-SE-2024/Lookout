@@ -5,14 +5,23 @@ import com.lookout.Lookout.service.GroupService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 
 @RestController
 @RequestMapping("/api/groups")
 class GroupController(private val groupService: GroupService) {
 
     @GetMapping
-    fun getAllGroups(): List<Groups> = groupService.findAll()
+    fun getAllGroups(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<Groups>> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        val groups = groupService.findAll(pageable)
+        return ResponseEntity.ok(groups)
+    }
 
     @GetMapping("/{id}")
     fun getGroupById(@PathVariable id: Long): ResponseEntity<Groups> {

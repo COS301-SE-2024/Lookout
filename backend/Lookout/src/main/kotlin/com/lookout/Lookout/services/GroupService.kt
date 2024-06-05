@@ -2,13 +2,14 @@ package com.lookout.Lookout.service
 
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.repository.GroupRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class GroupService(private val groupRepository: GroupRepository, private val userService: UserService) {
 
-    fun findAll(): List<Groups> = groupRepository.findAll()
+    fun findAll(pageable: Pageable): Page<Groups> = groupRepository.findAll(pageable)
 
     fun findById(groupId: Long): Groups? = groupRepository.findById(groupId).orElse(null)
 

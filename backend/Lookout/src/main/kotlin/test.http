@@ -54,4 +54,20 @@ DELETE http://localhost:8080/api/groups/1
 ### Get a group by user id
 GET http://localhost:8080/api/groups/user/1
 Accept: application/json
+###
 
+###Get all groups with pagination
+GET http://localhost:8080/api/groups?page=0&size=10
+Accept: application/json
+
+###
+###Get all groups with a different page
+GET http://localhost:8080/api/groups?page=1&size=10
+Accept: application/json
+###
+
+###Get all groups with a different page size
+GET http://localhost:8080/api/groups?page=0&size=5
+Accept: application/json
+
+###
