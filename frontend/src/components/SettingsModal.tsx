@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaChevronRight, FaTimes } from "react-icons/fa";
 //import { useNavigate } from "react-router-dom";
-import ToggleButton from "./ToggleButton";
-import { getEmailFromLocalStorage } from '../utils/auth';
+import ToggleButton from "./ThemeToggleButton";
+import { getEmailFromLocalStorage } from "../utils/auth";
 
 interface SettingsModalProps {
 	onClose: () => void;
@@ -33,39 +33,38 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 		localStorage.setItem("authToken", "");
 		const email = getEmailFromLocalStorage();
 		try {
-			const response = await fetch('/api/auth/logout', {
-			  method: 'POST',
-			  headers: {
-				'Content-Type': 'application/json',
-			  },
-			  body: JSON.stringify({
-				email,
-			  }),
+			const response = await fetch("/api/auth/logout", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					email
+				})
 			});
-	  
+
 			if (!response.ok) {
-			  throw new Error('Logout failed!');
+				throw new Error("Logout failed!");
 			}
-	  
+
 			localStorage.setItem("authToken", "");
 			localStorage.removeItem("userEmail");
 			window.location.reload();
-		  } catch (error) {
-			console.error('Error:', error);
-		  }
+		} catch (error) {
+			console.error("Error:", error);
+		}
 	};
 
-	const [isDarkTheme, setIsDarkTheme] = useState(false);
-
-	useEffect(() => {
-		document.documentElement.setAttribute(
-			"data-theme",
-			isDarkTheme ? "dark" : "light"
-		);
-	}, [isDarkTheme]);
+	const [isDarkTheme] = useState(
+		localStorage.getItem("data-theme") === "dark"
+	);
 
 	const handleToggle = (isToggled: boolean) => {
-		setIsDarkTheme(isToggled);
+		document.documentElement.setAttribute(
+			"data-theme",
+			isToggled ? "dark" : "light"
+		);
+		localStorage.setItem("data-theme", isToggled ? "dark" : "light");
 	};
 
 	return (
@@ -85,7 +84,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 								{setting}
 								{setting === "Dark Theme" && (
 									<label className="ml-48 flex items-center">
-										<ToggleButton onToggle={handleToggle} />
+										<ToggleButton
+											onToggle={handleToggle}
+											initialState={isDarkTheme}
+										/>
 									</label>
 								)}
 							</div>
