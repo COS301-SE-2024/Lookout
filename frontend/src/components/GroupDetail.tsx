@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface User {
@@ -31,6 +31,16 @@ const GroupDetail: React.FC = () => {
   const location = useLocation();
   const { group } = location.state as { group: Group };
 
+  // Joined groups state and function to toggle joining
+  const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
+  const handleJoinClick = (id: number) => {
+    if (joinedGroups.includes(id)) {
+      setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
+    } else {
+      setJoinedGroups([...joinedGroups, id]);
+    }
+  };
+
   const images = [
     'https://i.pinimg.com/originals/e7/87/20/e78720fc202723aee3a01954cd20b6c7.jpg',
     'https://i.pinimg.com/originals/12/9d/5f/129d5f467b48f214224e155d4fa153b8.jpg',
@@ -61,6 +71,17 @@ const GroupDetail: React.FC = () => {
         <img src={group.picture} alt={`${group.name} logo`} className="w-32 h-32 rounded-full mx-auto mb-4" />
         <h2 className="text-xl font-semibold">Created by: {group.user ? group.user.userName : 'No owner'}</h2>
         <p className="text-gray-600 mt-4">{group.description}</p>
+      </div>
+      <br />
+      <div className="text-center mt-4">
+        <button
+          className={`px-4 py-2 rounded-full ${
+            joinedGroups.includes(group.id) ? 'bg-green-200 text-black border border-red-2' : 'bg-blue-500 text-white hover:bg-blue-600'
+          } focus:outline-none focus:ring-2 focus:ring-gray-400`}
+          onClick={() => handleJoinClick(group.id)}
+        >
+          {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
+        </button>
       </div>
       <br />
       <h2 className="text-xl font-bold mb-4">Pins in this group</h2>

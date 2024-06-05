@@ -29,6 +29,7 @@ interface Group {
 const ExploreGroups: React.FC = () => {
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
+  const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 
   useEffect(() => {
     fetch('/api/groups')
@@ -41,23 +42,38 @@ const ExploreGroups: React.FC = () => {
     navigate(`/group/${group.id}`, { state: { group } });
   };
 
+  const handleJoinClick = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    if (joinedGroups.includes(id)) {
+      setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
+    } else {
+      setJoinedGroups([...joinedGroups, id]);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="space-y-4">
         {groups.map(group => (
           <div
             key={group.id}
-            className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer"
+            className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
             onClick={() => handleGroupClick(group)}
           >
             <img src={group.picture} alt={`${group.name} logo`} className="w-12 h-12 rounded-full mr-4" />
             <div className="flex-1">
               <div className="text-lg font-semibold">{group.name}</div>
               <div className="text-gray-500">{group.user ? group.user.userName : 'No owner'}</div>
+              <p className="text-sm text-gray-600 mt-1">{group.description}</p>
             </div>
-            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-            </svg>
+            <button
+              className={`flex items-center justify-center w-20 h-10 rounded-full ${
+                joinedGroups.includes(group.id) ? 'bg-green-200 text-black border border-red-2' : 'bg-blue-500 text-white hover:bg-blue-600'
+              } focus:outline-none focus:ring-2 focus:ring-gray-400`}
+              onClick={(e) => handleJoinClick(e, group.id)}
+            >
+              {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
+            </button>
           </div>
         ))}
       </div>
