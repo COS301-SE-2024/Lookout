@@ -15,4 +15,6 @@ class GroupService(private val groupRepository: GroupRepository) {
     fun save(group: Groups): Groups = groupRepository.save(group)
 
     fun deleteById(groupId: Long) = groupRepository.deleteById(groupId)
+
+    fun findGroupsByUserId(userid: Long): List<Groups> = groupRepository.findGroupsByUserId(userid)
 }

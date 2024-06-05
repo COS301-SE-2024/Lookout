@@ -5,7 +5,7 @@ import { FaChevronRight } from 'react-icons/fa';
 const GroupsList = ({
   groups
 }: {
-  groups: { id: number; name: string; owner: string; imageUrl: string; description: string }[];
+  groups: { id: number; name: string; owner: string; picture: string; description: string }[];
 }) => {
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ const GroupsList = ({
             onClick={() => handleArrowClick(group.id)}
           >
             <img
-              src={group.imageUrl}
+              src={group.picture}
               alt={`${group.name} logo`}
               className="w-12 h-12 rounded-full mr-4"
             />

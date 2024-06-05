@@ -11,14 +11,14 @@ describe('GroupsList', () => {
       id: 1,
       name: 'Group One',
       owner: 'Owner One',
-      imageUrl: 'http://example.com/group1.jpg',
+      picture: 'http://example.com/group1.jpg',
       description: 'This is Group One',
     },
     {
       id: 2,
       name: 'Group Two',
       owner: 'Owner Two',
-      imageUrl: 'http://example.com/group2.jpg',
+      picture: 'http://example.com/group2.jpg',
       description: 'This is Group Two',
     },
   ];

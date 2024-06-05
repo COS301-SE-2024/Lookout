@@ -51,4 +51,14 @@ class GroupController(private val groupService: GroupService) {
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("/user/{userid}")
+    fun getGroupsByUserId(@PathVariable userid: Long): ResponseEntity<List<Groups>> {
+        val groups = groupService.findGroupsByUserId(userid)
+        return if (groups.isNotEmpty()) {
+            ResponseEntity.ok(groups)
+        } else {
+            ResponseEntity.noContent().build()
+        }
+    }
 }

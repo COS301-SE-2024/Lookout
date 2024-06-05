@@ -9,7 +9,7 @@ interface Group {
   id: number;
   name: string;
   owner: string;
-  imageUrl: string;
+  picture: string;
   description: string;
   isPrivate: boolean;
   createdAt: string;
@@ -19,7 +19,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
   const [isToggled, setIsToggled] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [picture, setpicture] = useState("");
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -31,7 +31,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
     const newGroup: Omit<Group, 'id'> = {
       name: title,
       owner: "Aliyah", // Provide default value if needed
-      imageUrl: imageUrl,
+      picture: picture,
       description: description,
       isPrivate: isToggled, // Include isPrivate property
       createdAt: new Date().toISOString(), // Include createdAt property
@@ -39,7 +39,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
     onCreateGroup(newGroup);
     setTitle("");
     setDescription("");
-    setImageUrl("");
+    setpicture("");
     setIsToggled(false);
   };
 
@@ -53,7 +53,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
     const file = event.target.files?.[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
-      setImageUrl(fileUrl);
+      setpicture(fileUrl);
     }
   };
 
@@ -79,8 +79,8 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
           ref={fileInputRef}
           onChange={handleFileChange}
         />
-        {imageUrl && (
-          <img src={imageUrl} alt="Selected" className="w-32 h-32 mt-2 mx-auto" />
+        {picture && (
+          <img src={picture} alt="Selected" className="w-32 h-32 mt-2 mx-auto" />
         )}
       </div>
 
