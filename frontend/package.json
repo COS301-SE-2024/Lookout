@@ -8,7 +8,12 @@
 			"localhost",
 			".localhost"
 		],
-		"proxy": "http://localhost:8080"
+		"proxy": {
+			"/api": {
+			  "target": "http://localhost:8080",
+			  "changeOrigin": true
+			}
+		}
 	},
 	"dependencies": {
 		"@googlemaps/markerclusterer": "^2.5.3",

@@ -33,15 +33,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 		localStorage.setItem("authToken", "");
 		const email = getEmailFromLocalStorage();
 		try {
-			const response = await fetch("/api/auth/logout", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					email
-				})
-			});
+			const response = await fetch(
+				"http://localhost:8080/api/auth/logout",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						email
+					})
+				}
+			);
 
 			if (!response.ok) {
 				throw new Error("Logout failed!");
