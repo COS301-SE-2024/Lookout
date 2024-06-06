@@ -1,5 +1,7 @@
 package com.lookout.Lookout.controller
 
+import com.lookout.Lookout.entity.AddOrRemoveMemberFromGroup
+import com.lookout.Lookout.entity.GroupMembers
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.service.GroupService
 import org.springframework.http.HttpStatus
@@ -72,6 +74,22 @@ class GroupController(private val groupService: GroupService) {
             ResponseEntity.ok(groups)
         } else {
             ResponseEntity.noContent().build()
+        }
+    }
+
+    @PostMapping("/AddMemberToGroup")
+    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+        return try {
+            val groupId = request.groupId
+            val userId = request.userId
+            if (groupId != null && userId != null) {
+                groupService.addMember(groupId, userId)
+                ResponseEntity.noContent().build()
+            } else {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            }
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
 }

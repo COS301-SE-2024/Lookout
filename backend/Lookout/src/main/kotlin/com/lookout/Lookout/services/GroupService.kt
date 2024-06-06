@@ -5,6 +5,7 @@ import com.lookout.Lookout.repository.GroupRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class GroupService(private val groupRepository: GroupRepository, private val userService: UserService) {
@@ -26,4 +27,12 @@ class GroupService(private val groupRepository: GroupRepository, private val use
     fun deleteById(groupId: Long) = groupRepository.deleteById(groupId)
 
     fun findGroupsByUserId(userid: Long): List<Groups> = groupRepository.findGroupsByUserId(userid)
+
+
+    @Transactional
+    fun addMember(groupId: Long, userId: Long) {
+        val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
+        val user = userService.findById(userId).orElseThrow { IllegalArgumentException("User not found with id: $userId") }
+        groupRepository.addMemberToGroup(group.id, user.id)
+    }
 }
