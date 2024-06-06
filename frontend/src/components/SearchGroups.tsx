@@ -27,6 +27,13 @@ interface Group {
     createdAt: string;
 }
 
+interface GroupResponse {
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    content: Group[];
+}
+
 const SearchGroups = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [groups, setGroups] = useState<Group[]>([]);
@@ -47,9 +54,10 @@ const SearchGroups = () => {
         // Fetch groups from API
         fetch('/api/groups')
             .then(response => response.json())
-            .then((data: Group[]) => {
-                setGroups(data);
-                setFilteredGroups(data);
+            .then((data: GroupResponse) => {
+                console.log('Fetched groups:', data.content);
+                setGroups(data.content);
+                setFilteredGroups(data.content);
             })
             .catch(error => console.error('Error fetching groups:', error));
     }, []);
@@ -64,9 +72,6 @@ const SearchGroups = () => {
             )
         );
     }, [searchQuery, groups]);
-    
-    
-    
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
