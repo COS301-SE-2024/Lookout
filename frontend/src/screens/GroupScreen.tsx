@@ -29,8 +29,8 @@ const GroupScreen = () => {
 	}, []);
 	
 
-	const handleAddGroup = (newGroup: Omit<Group, 'id'>) => {
-		setGroups(prevGroups => [...prevGroups, { ...newGroup, id: prevGroups.length + 1 }]);
+	const handleAddGroup = (newGroup: Group) => {
+		setGroups(prevGroups => [...prevGroups, newGroup]);
 	};
 
 	return (

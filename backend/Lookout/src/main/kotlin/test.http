@@ -15,11 +15,11 @@ POST http://localhost:8080/api/groups
 Content-Type: application/json
 
 {
-  "name": "Fixing Endpoint",
+  "name": "Squid Squad",
   "description": "This is a group for people interested in sharks",
   "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
   "user": {
-    "id": 1
+    "id": 2
   }
 }
 ###

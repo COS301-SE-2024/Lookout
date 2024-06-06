@@ -28,13 +28,12 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
   };
 
   const handleCreateClick = async () => {
-    const newGroup: Omit<Group, 'id'> = {
+    const newGroup = {
       name: title,
-      owner: "Temp", //get from localstorage
-      picture: picture,
       description: description,
+      picture: picture || "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
       isPrivate: isToggled,
-      createdAt: new Date().toISOString(),
+      user: { id: 1 } // Replace with the actual user ID
     };
 
     try {
@@ -166,8 +165,3 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
 };
 
 export default CreateGroups;
-
-
-
-// owner?
-// image?
