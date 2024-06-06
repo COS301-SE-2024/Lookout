@@ -92,4 +92,20 @@ class GroupController(private val groupService: GroupService) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
+
+    @PostMapping("/RemoveMemberToGroup")
+    fun RemoveMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+        return try {
+            val groupId = request.groupId
+            val userId = request.userId
+            if (groupId != null && userId != null) {
+                groupService.removeMember(groupId, userId)
+                ResponseEntity.noContent().build()
+            } else {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            }
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+        }
+    }
 }

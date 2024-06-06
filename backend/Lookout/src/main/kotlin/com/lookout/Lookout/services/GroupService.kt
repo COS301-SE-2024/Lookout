@@ -35,4 +35,11 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         val user = userService.findById(userId).orElseThrow { IllegalArgumentException("User not found with id: $userId") }
         groupRepository.addMemberToGroup(group.id, user.id)
     }
+
+    @Transactional
+    fun removeMember(groupId: Long, userId: Long) {
+        val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
+        val user = userService.findById(userId).orElseThrow { IllegalArgumentException("User not found with id: $userId") }
+        groupRepository.removeMemberFromGroup(group.id, user.id)
+    }
 }

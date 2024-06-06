@@ -21,4 +21,8 @@ interface GroupRepository : JpaRepository<Groups, Long> {
     @Modifying
     @Query("INSERT INTO Group_Members (groupid, userid) VALUES (:groupId, :userId)", nativeQuery = true)
     fun addMemberToGroup(@Param("groupId") groupId: Long, @Param("userId") userId: Long)
+
+    @Modifying
+    @Query("DELETE FROM Group_Members WHERE groupid = :groupId AND userid = :userId", nativeQuery = true)
+    fun removeMemberFromGroup(@Param("groupId") groupId: Long, @Param("userId") userId: Long)
 }
