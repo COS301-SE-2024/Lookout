@@ -12,7 +12,7 @@ import {
 import '../assets/styles/home.css'
 
 
-interface Pin {
+interface Pins {
   id: number;
   title: string;
 }
@@ -20,13 +20,7 @@ interface Pin {
 interface Group {
   id: number;
   name: string;
-  pins: Pin[];
-}
-
-interface YourComponentProps {
-  isMenuModalOpen: boolean;
-  closeMenuModal: () => void;
-  groups: Group[];
+  pins: Pins[];
 }
 
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
@@ -232,7 +226,6 @@ const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const HomeScreen = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false); 
-  const [selectedGroup, setSelectedGroup] = useState(null);
   const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -274,13 +267,6 @@ const HomeScreen = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  
-
-  const handleGroupSelection = (groupId: React.SetStateAction<null>) => {
-    setSelectedGroup(groupId);
-  };
-
 
   return (
     <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
@@ -360,7 +346,7 @@ const HomeScreen = () => {
               <div className="mt-2">
                 <button
                   className="w-full text-left p-2 bg-gray-200 rounded mb-2"
-                  onClick={() => setSelectedGroup(null)} // Set selected group to null to display all pins
+          
                 >
                   All Pins
                 </button>
