@@ -1,5 +1,4 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-
 import { IoMenu } from "react-icons/io5";
 import {
     APIProvider,
@@ -233,6 +232,9 @@ const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const HomeScreen = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false); 
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -250,8 +252,7 @@ const HomeScreen = () => {
     setIsMenuModalOpen(false);
   };
 
-  const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
-
+  
 
   const toggleGroup = (groupId: number) => {
     setExpandedGroups((prevExpandedGroups) => ({
@@ -260,7 +261,6 @@ const HomeScreen = () => {
     }));
   };
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -275,9 +275,8 @@ const HomeScreen = () => {
     }
   };
 
-  const [selectedGroup, setSelectedGroup] = useState(null);
+  
 
-  // Function to handle click event and update selectedGroup state
   const handleGroupSelection = (groupId: React.SetStateAction<null>) => {
     setSelectedGroup(groupId);
   };
@@ -353,49 +352,49 @@ const HomeScreen = () => {
 
       {/* Menu modal */}
       {isMenuModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="relative bg-white p-4 rounded-lg" style={{ width: "80%", maxHeight: "80vh", overflowY: "auto" }}>
-      <button className="absolute top-0 left-0 mt-1 ml-1 p-2" onClick={closeMenuModal}>X</button>
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold">Pins Displaying</h2>
-        <div className="mt-2">
-          <button
-            className="w-full text-left p-2 bg-gray-200 rounded mb-2"
-            onClick={() => setSelectedGroup(null)} // Set selected group to null to display all pins
-          >
-            All Pins
-          </button>
-          {groups.map((group) => (
-            <div key={group.id}>
-              <button
-                className="w-full text-left p-2 bg-gray-200 rounded mb-2"
-                onClick={() => toggleGroup(group.id)}
-              >
-                {group.name}
-              </button>
-              {expandedGroups[group.id] && (
-                <div className="pl-4 mt-2">
-                  {group.pins.map((pin) => (
-                    <div key={pin.id} className="p-2 bg-gray-100 rounded mb-2">
-                      {pin.title}
-                    </div>
-                  ))}
-                </div>
-              )}
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative bg-white p-4 rounded-lg" style={{ width: "80%", maxHeight: "80vh", overflowY: "auto" }}>
+            <button className="absolute top-0 left-0 mt-1 ml-1 p-2" onClick={closeMenuModal}>X</button>
+            <div className="mt-4">
+              <h2 className="text-lg font-semibold">Pins Displaying</h2>
+              <div className="mt-2">
+                <button
+                  className="w-full text-left p-2 bg-gray-200 rounded mb-2"
+                  onClick={() => setSelectedGroup(null)} // Set selected group to null to display all pins
+                >
+                  All Pins
+                </button>
+                {groups.map((group) => (
+                  <div key={group.id}>
+                    <button
+                      className="w-full text-left p-2 bg-gray-200 rounded mb-2"
+                      onClick={() => toggleGroup(group.id)}
+                    >
+                      {group.name}
+                    </button>
+                    {expandedGroups[group.id] && (
+                      <div className="pl-4 mt-2">
+                        {group.pins.map((pin) => (
+                          <div key={pin.id} className="p-2 bg-gray-100 rounded mb-2">
+                            {pin.title}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-center mt-4">
+                <button className="py-2 px-4 bg-gray-500 text-white rounded-full hover:bg-gray-800" onClick={closeMenuModal}>Save</button>
+              </div> 
             </div>
-          ))}
+          </div>
         </div>
-        <div className="flex justify-center mt-4">
-          <button className="py-2 px-4 bg-gray-500 text-white rounded-full hover:bg-gray-800" onClick={closeMenuModal}>Save</button>
-        </div> 
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
-    </APIProvider>
-  );
-};
+      </APIProvider>
+    );
+  };
 
 
 const PoiMarkers = (props: { pois: Poi[] }) => {
