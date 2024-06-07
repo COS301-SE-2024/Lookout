@@ -285,13 +285,13 @@ const HomeScreen = () => {
   return (
     <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
       <div className="map-container">
-          {/* <Map
+          <Map
               defaultZoom={5}
               defaultCenter={ { lat: -28, lng: 23 } }
               mapId='dde51c47799889c4'
           >
               <PoiMarkers pois={locations} />
-          </Map> */}
+          </Map>
       </div>
       <div className="fixed top-8 left-4 z-10">
         <IoMenu size={32} onClick={openMenuModal} /> 
