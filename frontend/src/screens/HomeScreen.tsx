@@ -12,19 +12,7 @@ import {
 import '../assets/styles/home.css'
 
 
-interface Pins {
-  id: number;
-  title: string;
-}
-
-interface Group {
-  id: number;
-  name: string;
-  pins: Pins[];
-}
-
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
-
 
 const groups = [
   {
