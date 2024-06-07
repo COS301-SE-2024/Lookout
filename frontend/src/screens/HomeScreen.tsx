@@ -1,4 +1,6 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
+
+import { IoMenu } from "react-icons/io5";
 import {
     APIProvider,
     Map,
@@ -10,7 +12,63 @@ import {
   import type {Marker} from '@googlemaps/markerclusterer';
 import '../assets/styles/home.css'
 
+
+interface Pin {
+  id: number;
+  title: string;
+}
+
+interface Group {
+  id: number;
+  name: string;
+  pins: Pin[];
+}
+
+interface YourComponentProps {
+  isMenuModalOpen: boolean;
+  closeMenuModal: () => void;
+  groups: Group[];
+}
+
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
+
+
+const groups = [
+  {
+    id: 1,
+    name: 'Group 1',
+    pins: [
+      { id: 1, title: 'Pin 1' },
+      { id: 2, title: 'Pin 2' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Group 2',
+    pins: [
+      { id: 3, title: 'Pin 3' },
+      { id: 4, title: 'Pin 4' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Group 3',
+    pins: [
+      { id: 5, title: 'Pin 5' },
+      { id: 6, title: 'Pin 6' },
+      { id: 7, title: 'Pin 7' },
+      { id: 8, title: 'Pin 8' },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Group 4',
+    pins: [
+      { id: 9, title: 'Pin 9' },
+    ],
+  }
+];
+
 const locations: Poi[] = [
 	{
         key: 'krugerNationalPark',
@@ -172,20 +230,173 @@ const locations: Poi[] = [
 
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-const HomeScreen = () => (
-	
- <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
-	<div className="map-container">
-	<Map
-		defaultZoom={5}
-		defaultCenter={ { lat: -28, lng: 23 } }
-		mapId='dde51c47799889c4'
-		>
-		<PoiMarkers pois={locations} />
-	</Map>
-	</div>
- </APIProvider>
-);
+const HomeScreen = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false); 
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openMenuModal = () => { 
+    setIsMenuModalOpen(true);
+  };
+
+  const closeMenuModal = () => { 
+    setIsMenuModalOpen(false);
+  };
+
+  const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
+
+
+  const toggleGroup = (groupId: number) => {
+    setExpandedGroups((prevExpandedGroups) => ({
+      ...prevExpandedGroups,
+      [groupId]: !prevExpandedGroups[groupId],
+    }));
+  };
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setSelectedImage(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const [selectedGroup, setSelectedGroup] = useState(null);
+
+  // Function to handle click event and update selectedGroup state
+  const handleGroupSelection = (groupId: React.SetStateAction<null>) => {
+    setSelectedGroup(groupId);
+  };
+
+
+  return (
+    <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
+      <div className="map-container">
+          {/* <Map
+              defaultZoom={5}
+              defaultCenter={ { lat: -28, lng: 23 } }
+              mapId='dde51c47799889c4'
+          >
+              <PoiMarkers pois={locations} />
+          </Map> */}
+      </div>
+      <div className="fixed top-8 left-4 z-10">
+        <IoMenu size={32} onClick={openMenuModal} /> 
+      </div>
+      <button className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-800 sm:bottom-24 md:bottom-20" onClick={openModal}>
+        +
+      </button>
+
+      {/* Add pin modal */}
+      {isModalOpen && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="relative bg-white p-4 rounded-lg">
+        <button className="absolute top-0 left-0 mt-1 ml-1 p-2" onClick={closeModal}>X</button>
+        <form>
+          {/* Image upload square */}
+          <div className="flex justify-center mb-4">
+            <label htmlFor="photo-upload" className="relative cursor-pointer">
+              <div className="w-32 h-32 border-2 border-dashed border-gray-400 flex items-center justify-center rounded-md">
+                {selectedImage ? (
+                  <img src={selectedImage} alt="Selected" className="object-cover w-full h-full rounded-md" />
+                ) : (
+                  <span className="text-gray-500">Add Photo</span>
+                )}
+              </div>
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/*"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                onChange={handleImageUpload}
+              />
+            </label>
+          </div>
+            {/* Input fields */}
+            <div className="mt-4">
+              <label htmlFor="title" className="block mb-1">Title</label>
+              <input id="title" type="text" className="w-full border rounded px-3 py-2" />
+            </div>
+            <div className="mt-4">
+              <label htmlFor="description" className="block mb-1">Description</label>
+              <textarea id="description" className="w-full border rounded px-3 py-2"></textarea>
+            </div>
+            <div className="mt-4">
+              <label htmlFor="group" className="block mb-1">Group</label>
+              <select id="group" className="w-full border rounded px-3 py-2">
+                <option value="group1">Group 1</option>
+                <option value="group2">Group 2</option>
+                <option value="group3">Group 3</option>
+              </select>
+            </div>
+            <div className="flex justify-center mt-4">
+                <button className="py-2 px-4 bg-gray-500 text-white rounded-full hover:bg-gray-800" onClick={closeMenuModal}>Add Pin</button>
+            </div>          
+            </form>
+        </div>
+      </div>
+      )}
+
+      {/* Menu modal */}
+      {isMenuModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="relative bg-white p-4 rounded-lg" style={{ width: "80%", maxHeight: "80vh", overflowY: "auto" }}>
+      <button className="absolute top-0 left-0 mt-1 ml-1 p-2" onClick={closeMenuModal}>X</button>
+      <div className="mt-4">
+        <h2 className="text-lg font-semibold">Pins Displaying</h2>
+        <div className="mt-2">
+          <button
+            className="w-full text-left p-2 bg-gray-200 rounded mb-2"
+            onClick={() => setSelectedGroup(null)} // Set selected group to null to display all pins
+          >
+            All Pins
+          </button>
+          {groups.map((group) => (
+            <div key={group.id}>
+              <button
+                className="w-full text-left p-2 bg-gray-200 rounded mb-2"
+                onClick={() => toggleGroup(group.id)}
+              >
+                {group.name}
+              </button>
+              {expandedGroups[group.id] && (
+                <div className="pl-4 mt-2">
+                  {group.pins.map((pin) => (
+                    <div key={pin.id} className="p-2 bg-gray-100 rounded mb-2">
+                      {pin.title}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center mt-4">
+          <button className="py-2 px-4 bg-gray-500 text-white rounded-full hover:bg-gray-800" onClick={closeMenuModal}>Save</button>
+        </div> 
+      </div>
+    </div>
+  </div>
+)}
+
+    </APIProvider>
+  );
+};
+
 
 const PoiMarkers = (props: { pois: Poi[] }) => {
 	const map = useMap();
@@ -267,7 +478,7 @@ const PoiMarkers = (props: { pois: Poi[] }) => {
 		  </AdvancedMarker>
 		))}
 	  </>
-	);
+	 );
   };
 
 
