@@ -10,7 +10,7 @@ data class Posts(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Int? = null,
+    val id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "userid", nullable = false)

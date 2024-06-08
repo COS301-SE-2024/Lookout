@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 @Repository
-interface PostRepository : JpaRepository<Posts, Int>{
+interface PostRepository : JpaRepository<Posts, Long>{
     fun findByUser_Id(userId: Long, pageable: Pageable): Page<Posts>
     fun findByGroup_Id(groupId: Long, pageable: Pageable): Page<Posts>
 }

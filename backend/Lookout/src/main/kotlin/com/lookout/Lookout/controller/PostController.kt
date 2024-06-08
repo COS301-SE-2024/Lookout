@@ -30,6 +30,18 @@ class PostController(private val postService: PostsService) {
         }
     }
 
+    // Delete a post
+    @DeleteMapping("/{id}")
+    fun deletePost(@PathVariable id: Long): ResponseEntity<Posts> {
+        val post = postService.findById(id)
+        return if (post != null) {
+            postService.delete(post)
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     // Get all posts
     @GetMapping
     fun getAllPosts(

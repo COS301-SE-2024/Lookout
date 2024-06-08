@@ -95,8 +95,12 @@ Content-Type: application/json
   "longitude": "123.123",
   "caption": "This is a test post"
 }
-
 ###
+
+### Delete a post
+DELETE /api/posts/3 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
 
 ###
 ### Get posts by user ID

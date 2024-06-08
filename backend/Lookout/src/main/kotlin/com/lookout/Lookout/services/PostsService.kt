@@ -47,6 +47,14 @@ class PostsService(
         return postRepository.save(post)
     }
 
+    fun findById(id: Long): Posts? {
+        return postRepository.findById(id).orElse(null)
+    }
+
+    fun delete(post: Posts) {
+        postRepository.delete(post)
+    }
+
 
     fun findAll(pageable: Pageable): Page<Posts> {
         return postRepository.findAll(pageable)
