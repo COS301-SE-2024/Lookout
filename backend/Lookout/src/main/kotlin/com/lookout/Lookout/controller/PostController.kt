@@ -1,10 +1,11 @@
 package com.lookout.Lookout.controller
 
 
+import com.lookout.Lookout.entity.CreatePost
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.entity.Posts
-import com.lookout.Lookout.service.PostService
+import com.lookout.Lookout.service.PostsService
 //import com.lookout.Lookout.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,31 +16,19 @@ import org.springframework.data.domain.Pageable
 
 @RestController
 @RequestMapping("/api/posts")
-class PostController(private val postService: PostService) {
+class PostController(private val postService: PostsService) {
 
 
     // Create a post
     @PostMapping ("/CreatePost")
-    fun createPost(@RequestBody post: Posts): ResponseEntity<Groups> {
+    fun createPost(@RequestBody post: CreatePost): ResponseEntity<Posts> {
         try {
-            val savedPost = postService.save(post)
+            val savedPost = postService.createPost(post)
             return ResponseEntity.status(HttpStatus.CREATED).body(savedPost)
         } catch (e: IllegalArgumentException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
-
-    // Delete a post
-    @DeleteMapping("/{id}")
-    fun deletePost(@PathVariable id: Long): ResponseEntity<Void> {
-        return if (postService.findById(id) != null) {
-            postService.deleteById(id)
-            ResponseEntity.noContent().build()
-        } else {
-            ResponseEntity.notFound().build()
-        }
-    }
-
 
     // Get all posts
     @GetMapping
