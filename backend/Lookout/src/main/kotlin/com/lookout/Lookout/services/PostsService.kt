@@ -51,4 +51,12 @@ class PostsService(
     fun findAll(pageable: Pageable): Page<Posts> {
         return postRepository.findAll(pageable)
     }
+
+    fun findByUserId(userId: Long, pageable: Pageable): Page<Posts>{
+        return postRepository.findByUser_Id(userId, pageable)
+    }
+
+    fun findByGroupId(groupId: Long, pageable: Pageable): Page<Posts>{
+        return postRepository.findByGroup_Id(groupId, pageable)
+    }
 }
