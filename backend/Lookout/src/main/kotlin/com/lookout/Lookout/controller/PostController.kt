@@ -41,10 +41,29 @@ class PostController(private val postService: PostsService) {
         return ResponseEntity.ok(posts)
     }
 
-    // Get post by User Id
-    // Get post by Group Id
-    // Update a post
+    // Get posts by User ID
+    @GetMapping("/user/{userId}")
+    fun getPostsByUserId(
+        @PathVariable userId: Long,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<Posts>> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        val posts = postService.findByUserId(userId, pageable)
+        return ResponseEntity.ok(posts)
+    }
 
+    // Get posts by Group ID
+    @GetMapping("/group/{groupId}")
+    fun getPostsByGroupId(
+        @PathVariable groupId: Long,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<Posts>> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        val posts = postService.findByGroupId(groupId, pageable)
+        return ResponseEntity.ok(posts)
+    }
 
 
 

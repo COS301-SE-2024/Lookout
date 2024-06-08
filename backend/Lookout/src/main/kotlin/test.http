@@ -98,6 +98,15 @@ Content-Type: application/json
 
 ###
 
+###
+### Get posts by user ID
+GET http://localhost:8080/api/posts/user/52?page=0&size=10
+Accept: application/json
+###
 
+### Get posts by group ID
+GET http://localhost:8080/api/posts/group/2?page=0&size=10
+Accept: application/json
+###
 
 
