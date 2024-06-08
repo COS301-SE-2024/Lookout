@@ -15,9 +15,25 @@ POST http://localhost:8080/api/groups
 Content-Type: application/json
 
 {
-  "name": "New Group",
-  "description": "This is a new group"
+  "name": "Squid Squad",
+  "description": "This is a group for people interested in sharks",
+  "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
+  "user": {
+    "id": 2
+  }
 }
+###
+#POST http://localhost:8080/api/groups
+#Content-Type: application/json
+#
+#{
+#  "name": "Fixing Endpoint",
+#  "description": "This is a group for people interested in sharks",
+#  "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
+#  "user": {
+#    "id": 1
+#  }
+#}
 
 ###
 
@@ -34,3 +50,24 @@ Content-Type: application/json
 
 ### Delete a group
 DELETE http://localhost:8080/api/groups/1
+
+### Get a group by user id
+GET http://localhost:8080/api/groups/user/1
+Accept: application/json
+###
+
+###Get all groups with pagination
+GET http://localhost:8080/api/groups?page=0&size=10
+Accept: application/json
+
+###
+###Get all groups with a different page
+GET http://localhost:8080/api/groups?page=1&size=10
+Accept: application/json
+###
+
+###Get all groups with a different page size
+GET http://localhost:8080/api/groups?page=0&size=5
+Accept: application/json
+
+###

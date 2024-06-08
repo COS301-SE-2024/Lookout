@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { FaToggleOn, FaToggleOff, FaPlus } from "react-icons/fa";
 
 interface CreateGroupsProps {
-  onCreateGroup: (newGroup: Omit<Group, 'id'>) => void;
+  onCreateGroup: (newGroup: Group) => void;
 }
 
 interface Group {
   id: number;
   name: string;
   owner: string;
-  imageUrl: string;
+  picture: string;
   description: string;
   isPrivate: boolean;
   createdAt: string;
@@ -19,30 +19,59 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
   const [isToggled, setIsToggled] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [picture, setPicture] = useState("");
+
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const toggleSwitch = () => {
     setIsToggled(!isToggled);
   };
 
-  const handleClick = () => {
-    console.log("Square clicked!");
+  const handleCreateClick = async () => {
+    const newGroup = {
+      name: title,
+      description: description,
+      picture: picture || "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
+      isPrivate: isToggled,
+      user: { id: 1 } // Replace with the actual user ID
+    };
+
+    try {
+      const response = await fetch('/api/groups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newGroup),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const createdGroup = await response.json();
+      onCreateGroup(createdGroup);
+      setTitle("");
+      setDescription("");
+      setPicture("");
+      setIsToggled(false);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    }
   };
 
-  const handleCreateClick = () => {
-    const newGroup: Omit<Group, 'id'> = {
-      name: title,
-      owner: "Aliyah", // Provide default value if needed
-      imageUrl: imageUrl,
-      description: description,
-      isPrivate: isToggled, // Include isPrivate property
-      createdAt: new Date().toISOString(), // Include createdAt property
-    };
-    onCreateGroup(newGroup);
-    setTitle("");
-    setDescription("");
-    setImageUrl("");
-    setIsToggled(false);
+  const handleAddPhotoClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      setPicture(fileUrl);
+    }
   };
 
   return (
@@ -52,7 +81,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
       <div className="flex justify-center mb-3">
         <button
           className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-          onClick={handleClick}
+          onClick={handleAddPhotoClick}
         >
           <FaPlus />
         </button>
@@ -61,12 +90,15 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
       <div className="text-center mb-3">
         <span className="text-lg">Add a photo</span>
         <input
-          type="text"
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter image URL"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
+          type="file"
+          accept="image/jpeg, image/png"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={handleFileChange}
         />
+        {picture && (
+          <img src={picture} alt="Selected" className="w-32 h-32 mt-2 mx-auto" />
+        )}
       </div>
 
       <form>
