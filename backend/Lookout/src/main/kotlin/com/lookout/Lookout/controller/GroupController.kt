@@ -93,8 +93,8 @@ class GroupController(private val groupService: GroupService) {
         }
     }
 
-    @PostMapping("/RemoveMemberToGroup")
-    fun RemoveMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+    @PostMapping("/RemoveMemberFromGroup")
+    fun RemoveMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
         return try {
             val groupId = request.groupId
             val userId = request.userId
