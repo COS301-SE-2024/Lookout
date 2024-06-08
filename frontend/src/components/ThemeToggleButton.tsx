@@ -1,18 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../assets/styles/ToggleButton.css";
 
 interface ToggleButtonProps {
 	onToggle?: (isToggled: boolean) => void;
+	initialState?: boolean;
 }
 
-const ToggleButton: React.FC<ToggleButtonProps> = ({ onToggle }) => {
-	const [isToggled, setIsToggled] = useState(false);
+const ToggleButton: React.FC<ToggleButtonProps> = ({
+	onToggle,
+	initialState = false
+}) => {
+	const [isToggled, setIsToggled] = useState<boolean>(initialState);
+
+	useEffect(() => {
+		if (onToggle) {
+			onToggle(isToggled);
+		}
+	}, [isToggled, onToggle]);
 
 	const handleToggle = () => {
-		const newToggledState = !isToggled;
-		setIsToggled(newToggledState);
+		setIsToggled(!isToggled);
 		if (onToggle) {
-			onToggle(newToggledState);
+			onToggle(!isToggled);
 		}
 	};
 
