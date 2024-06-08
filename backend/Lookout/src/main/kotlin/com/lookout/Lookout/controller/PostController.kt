@@ -1,35 +1,45 @@
 package com.lookout.Lookout.controller
 
+
+import com.lookout.Lookout.entity.Groups
+import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.entity.Posts
-import com.lookout.Lookout.service.PostsService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
+import com.lookout.Lookout.service.PostService
+//import com.lookout.Lookout.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 
 @RestController
 @RequestMapping("/api/posts")
-class PostController(private val postService: PostsService) {
+class PostController(private val postService: PostService) {
+
 
     // Create a post
-    @PostMapping
-    fun createPost(@RequestBody post: Posts): ResponseEntity<Posts> {
-        return try {
+    @PostMapping ("/CreatePost")
+    fun createPost(@RequestBody post: Posts): ResponseEntity<Groups> {
+        try {
             val savedPost = postService.save(post)
-            ResponseEntity.status(HttpStatus.CREATED).body(savedPost)
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedPost)
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
 
     // Delete a post
     @DeleteMapping("/{id}")
-    fun deletePost(@PathVariable id: Int): ResponseEntity<Void> {
-        postService.deleteById(id)
-        return ResponseEntity.noContent().build()
+    fun deletePost(@PathVariable id: Long): ResponseEntity<Void> {
+        return if (postService.findById(id) != null) {
+            postService.deleteById(id)
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
+
 
     // Get all posts
     @GetMapping
@@ -42,5 +52,11 @@ class PostController(private val postService: PostsService) {
         return ResponseEntity.ok(posts)
     }
 
-    // Add additional endpoints as needed
+    // Get post by User Id
+    // Get post by Group Id
+    // Update a post
+
+
+
+
 }
