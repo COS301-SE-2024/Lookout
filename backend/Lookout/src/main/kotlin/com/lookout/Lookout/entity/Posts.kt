@@ -17,7 +17,7 @@ data class Posts(
     var user: User? = null,
 
     @ManyToOne
-    @JoinColumn(name = "groupid", nullable = false)
+    @JoinColumn(name = "groupid")
     val group: Groups? = null,
 
     @Column(name = "categoryid", nullable = false)

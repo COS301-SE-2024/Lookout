@@ -1,36 +1,35 @@
 package com.lookout.Lookout.controller
 
-
-import com.lookout.Lookout.entity.Groups
-import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.entity.Posts
-import com.lookout.Lookout.service.PostService
-//import com.lookout.Lookout.service.UserService
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import com.lookout.Lookout.service.PostsService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/posts")
-class PostController(private val postService: PostService) {
-
+class PostController(private val postService: PostsService) {
 
     // Create a post
     @PostMapping
-    fun createPost(@RequestBody post: Posts): ResponseEntity<Groups> {
-        try {
+    fun createPost(@RequestBody post: Posts): ResponseEntity<Posts> {
+        return try {
             val savedPost = postService.save(post)
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedPost)
+            ResponseEntity.status(HttpStatus.CREATED).body(savedPost)
         } catch (e: IllegalArgumentException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
 
     // Delete a post
-
+    @DeleteMapping("/{id}")
+    fun deletePost(@PathVariable id: Int): ResponseEntity<Void> {
+        postService.deleteById(id)
+        return ResponseEntity.noContent().build()
+    }
 
     // Get all posts
     @GetMapping
@@ -43,11 +42,5 @@ class PostController(private val postService: PostService) {
         return ResponseEntity.ok(posts)
     }
 
-    // Get post by User Id
-    // Get post by Group Id
-    // Update a post
-
-
-
-
+    // Add additional endpoints as needed
 }
