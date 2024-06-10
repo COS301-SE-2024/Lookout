@@ -77,6 +77,20 @@ class PostController(private val postService: PostsService) {
         return ResponseEntity.ok(posts)
     }
 
+    // Get posts by Category ID
+    @GetMapping("/category/{categoryId}")
+    fun getPostsByCategoryId(
+        @PathVariable categoryId: Long,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<Posts>> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        val posts = postService.findByCategoryId(categoryId, pageable)
+        return ResponseEntity.ok(posts)
+    }
+
+    // Update a post
+
 
 
 }

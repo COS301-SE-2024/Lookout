@@ -20,8 +20,9 @@ data class Posts(
     @JoinColumn(name = "groupid")
     val group: Groups? = null,
 
-    @Column(name = "categoryid", nullable = false)
-    val categoryId: Int,
+    @ManyToOne
+    @JoinColumn(name = "categoryid")
+    val category: Categories? = null,
 
     @Column(name = "picture", nullable = false)
     val picture: String,

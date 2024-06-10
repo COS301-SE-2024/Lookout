@@ -89,7 +89,7 @@ Content-Type: application/json
 {
   "userid": 52,
   "groupid": 2,
-  "categoryid": 1,
+  "categoryid": 3,
   "picture": "https://toppng.com/uploads/preview/safari-animals-png-cute-safari-animals-11562876426jornlea5ue.png",
   "latitude": "123.123",
   "longitude": "123.123",
@@ -112,5 +112,12 @@ Accept: application/json
 GET http://localhost:8080/api/posts/group/2?page=0&size=10
 Accept: application/json
 ###
+
+### Get posts by category ID
+GET http://localhost:8080/api/posts/category/3?page=0&size=10
+Accept: application/json
+###
+
+
 
 

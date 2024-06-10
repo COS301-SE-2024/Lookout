@@ -1,5 +1,6 @@
 package com.lookout.Lookout.service
 
+import com.lookout.Lookout.entity.Categories
 import com.lookout.Lookout.entity.CreatePost
 import com.lookout.Lookout.entity.Posts
 import com.lookout.Lookout.repository.CategoryRepository
@@ -30,14 +31,14 @@ class PostsService(
         if (group == null) {
             throw IllegalArgumentException("Group not found")
         }
-        val categoryId = categoryRepository.findById(createPost.categoryid)
-        if (!categoryId.isPresent) {
+        val category = categoryRepository.findById(createPost.categoryid).orElse(null)
+        if (category == null) {
             throw IllegalArgumentException("Category not found")
         }
         val post = Posts(
             user = user,
             group = group,
-            categoryId = createPost.categoryid,
+            category = category,
             picture = createPost.picture,
             latitude = createPost.latitude,
             longitude = createPost.longitude,
@@ -66,5 +67,9 @@ class PostsService(
 
     fun findByGroupId(groupId: Long, pageable: Pageable): Page<Posts>{
         return postRepository.findByGroup_Id(groupId, pageable)
+    }
+
+    fun findByCategoryId(categoryId: Long, pageable: Pageable): Page<Posts>{
+        return postRepository.findByCategory_Id(categoryId, pageable)
     }
 }
