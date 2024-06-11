@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import com.lookout.Lookout.entity.UpdateGroup
 
 @RestController
 @RequestMapping("/api/groups")
@@ -109,5 +110,14 @@ class GroupController(private val groupService: GroupService) {
         }
     }
 
+    @PostMapping("/update")
+    fun updateGroup(@RequestBody updateGroup: UpdateGroup): ResponseEntity<Groups> {
+        val updatedGroup = groupService.updateGroup(updateGroup)
+        return if (updatedGroup != null) {
+            ResponseEntity.ok(updatedGroup)
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+        }
+    }
     
 }
