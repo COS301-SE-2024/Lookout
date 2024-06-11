@@ -34,7 +34,7 @@ data class Posts(
     val longitude: Double,
 
     @Column(name = "caption")
-    val caption: String? = null,
+    var caption: String? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: Instant? = Instant.now()

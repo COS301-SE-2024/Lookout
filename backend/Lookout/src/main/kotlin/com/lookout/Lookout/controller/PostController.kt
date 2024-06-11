@@ -2,6 +2,7 @@ package com.lookout.Lookout.controller
 
 
 import com.lookout.Lookout.entity.CreatePost
+import com.lookout.Lookout.entity.UpdatePost
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.entity.Posts
@@ -90,7 +91,15 @@ class PostController(private val postService: PostsService) {
     }
 
     // Update a post
-
+    @PostMapping("/UpdatePost")
+    fun updatePost(@RequestBody post: UpdatePost): ResponseEntity<Posts>{
+        val updatedPost = postService.updatePost(post)
+        return if (updatedPost != null) {
+            ResponseEntity.ok(updatedPost)
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+        }
+    }
 
 
 }

@@ -2,6 +2,7 @@ package com.lookout.Lookout.service
 
 import com.lookout.Lookout.entity.Categories
 import com.lookout.Lookout.entity.CreatePost
+import com.lookout.Lookout.entity.UpdatePost
 import com.lookout.Lookout.entity.Posts
 import com.lookout.Lookout.repository.CategoryRepository
 import com.lookout.Lookout.repository.GroupRepository
@@ -71,5 +72,17 @@ class PostsService(
 
     fun findByCategoryId(categoryId: Long, pageable: Pageable): Page<Posts>{
         return postRepository.findByCategory_Id(categoryId, pageable)
+    }
+
+    fun updatePost(updatePost: UpdatePost): Posts? {
+        val postOptional: Optional<Posts> = postRepository.findById(updatePost.id)
+        if (postOptional.isPresent) {
+            val post = postOptional.get()
+
+            updatePost.caption.let { post.caption = it }
+
+            return postRepository.save(post)
+        }
+        return null
     }
 }
