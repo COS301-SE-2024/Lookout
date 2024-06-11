@@ -118,6 +118,21 @@ GET http://localhost:8080/api/posts/category/3?page=0&size=10
 Accept: application/json
 ###
 
+### Update a post
+POST /api/posts/UpdatePost HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
 
+{
+  "id": 4,
+  "userId": 52,
+  "groupId": 2,
+  "categoryId": 3,
+  "picture": "https://newpicturelink.com/updated.png",
+  "latitude": 124.124,
+  "longitude": 124.124,
+  "caption": "This is an updated test post 2"
+}
+###
 
 
