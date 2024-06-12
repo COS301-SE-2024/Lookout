@@ -15,7 +15,7 @@ type Group = {
 
 const GroupScreen = () => {
 	const [activeTab, setActiveTab] = useState("your-groups");
-	const [groups, setGroups] = useState<Group[]>([]);
+	const [,setGroups] = useState<Group[]>([]);
 	useEffect(() => {
 		fetch('/api/groups/user/1', {
 			method: 'GET',

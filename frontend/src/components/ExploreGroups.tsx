@@ -35,9 +35,9 @@ const ExploreGroups: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 10; // Number of groups per page
 
-  useEffect(() => {
-    fetchGroups();
-  }, []);
+  // useEffect(() => {
+  //   fetchGroups();
+  // }, []);
 
   const fetchGroups = () => {
     fetch(`/api/groups?page=${page}&size=${pageSize}`)
