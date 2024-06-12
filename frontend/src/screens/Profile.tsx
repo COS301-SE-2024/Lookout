@@ -54,7 +54,7 @@ const Profile = () => {
     // { id: 7, imageUrl: '', description: 'Post 7' },
   ];
   ////////////////////////////////////////////////////
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [ ,setGroups] = useState<Group[]>([]);
   useEffect(() => {
     fetch("/api/groups/user/1", {
       method: "GET",
