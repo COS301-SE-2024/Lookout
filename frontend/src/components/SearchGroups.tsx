@@ -34,7 +34,7 @@ interface GroupResponse {
     content: Group[];
 }
 
-const SearchGroups = () => {
+const SearchGroups: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [groups, setGroups] = useState<Group[]>([]);
     const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
@@ -102,7 +102,7 @@ const SearchGroups = () => {
                             <li key={group.id} className="mb-2">
                                 <div
                                     className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-100"
-                                    onClick={() => navigate(`/group/${group.id}`)}
+                                    onClick={() => navigate(`/group/${group.id}`, { state: { group } })}
                                 >
                                     <img
                                         src={group.picture}
