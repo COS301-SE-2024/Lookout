@@ -10,13 +10,6 @@ const PinDetail = () => {
     const localStoreTheme = localStorage.getItem("data-theme") || "default";
     setTheme(localStoreTheme);
   }, []);
-
-  // const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const newTheme = event.target.value;
-  //   localStorage.setItem("data-theme", newTheme);
-  //   setTheme(newTheme);
-  //   document.documentElement.setAttribute("data-theme", newTheme);
-  // };
   
 
   useEffect(() => {
