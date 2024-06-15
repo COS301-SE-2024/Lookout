@@ -22,7 +22,6 @@ class PostsService(
     private val categoryRepository: CategoryRepository
 ) {
 
-
     fun createPost(createPost: CreatePost): Posts {
         val user = userRepository.findById(createPost.userid).orElse(null)
         if (user == null) {

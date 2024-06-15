@@ -27,8 +27,8 @@ describe('PostsGrid', () => {
 //     return render(<MemoryRouter>{ui}</MemoryRouter>);
 //   };
 
-//   test('renders posts', () => {
-//     renderWithRouter(<PostsGrid posts={posts} />);
+  // test('renders posts', () => {
+    // renderWithRouter(<PostsGrid posts={posts} />);
 
 //     posts.forEach(post => {
 //       // expect(screen.getByAltText(`Post ${post.id}`)).toBeInTheDocument();

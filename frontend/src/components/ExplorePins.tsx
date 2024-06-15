@@ -1,24 +1,105 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const ExplorePins = () => {
-  const pins = [
-    { id: 1, imageUrl: 'https://i.pinimg.com/originals/2e/c0/77/2ec0773a1fcd847a5bd258ea4bba668e.jpg' },
-    { id: 2, imageUrl: 'https://i.pinimg.com/originals/37/b4/63/37b463a42a437b19e5b8a7117fca473c.jpg' },
-    { id: 3, imageUrl: 'https://i.pinimg.com/originals/d7/45/a0/d745a0938efa00a33aef6f73135fe3ee.jpg' },
-    { id: 4, imageUrl: 'https://i.pinimg.com/originals/af/b6/9b/afb69b39eccdf0900aea9827c4d72e97.jpg' },
-    { id: 5, imageUrl: 'https://i.pinimg.com/originals/bf/d9/ad/bfd9ad5453ee46784f071cafb68c02b4.jpg' },
-    { id: 6, imageUrl: 'https://i.pinimg.com/originals/12/9d/5f/129d5f467b48f214224e155d4fa153b8.jpg' },
-  ];
+interface User {
+  id: number;
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
+}
+
+interface Group {
+  id: number;
+  name: string;
+  description: string;
+  isPrivate: boolean;
+  user: User | null;
+  picture: string;
+  createdAt: string;
+}
+
+interface Post {
+  id: number;
+  user: User;
+  group: Group;
+  category: { id: number; description: string };
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
+  createdAt: string;
+}
+
+const ExplorePins: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('/api/posts?page=0&size=10');
+        const data = await response.json();
+        setPosts(data.content); // Extract 'content' array from the response
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  const handlePostClick = (post: Post) => {
+    navigate(`/post/${post.id}`, { state: { post } });
+  }
+
+  if (posts.length === 0) {
+    return (
+      <div className="text-center">
+        <img
+          src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
+          alt="No posts"
+          className="w-68 h-64 mx-auto mb-4"
+        />
+        <p className="text-gray-600">There are no posts yet. Be the first to post!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {pins.map(pin => (
-          <div key={pin.id} className="w-full overflow-hidden rounded-md">
-            <Link to={`/pin/${pin.id}`}>
-              <img src={pin.imageUrl} alt={`Pin ${pin.id}`} className="w-full h-full object-cover" style={{height: '150px'}} />
-            </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {posts.map(post => (
+          <div
+            key={post.id}
+            className="p-4 border rounded-lg shadow-sm cursor-pointer"
+            onClick={() => handlePostClick(post)}
+          >
+            {post.picture && (
+              <img
+                src={post.picture}
+                alt={post.caption}
+                className="w-full h-auto mb-2 rounded"
+                style={{ maxHeight: '200px', objectFit: 'cover' }}
+              />
+            )}
+            <h3 className="text-lg font-semibold mb-2">{post.caption}</h3>
+            <p className="text-gray-700">{post.category.description}</p>
+            <p className="text-gray-500 text-sm mt-2">Posted on: {new Date(post.createdAt).toLocaleDateString()}</p>
           </div>
         ))}
       </div>

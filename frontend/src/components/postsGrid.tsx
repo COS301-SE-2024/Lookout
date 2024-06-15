@@ -3,14 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface Post {
-    id: number;
-    userid: number;
-    groupid: number;
-    categoryid: number;
-    picture: string;
-    latitude: number;
-    longitude: number;
-    caption: string;
+  id: number;
+  userid: number;
+  groupid: number;
+  categoryid: number;
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
 }
 
 const PostsGrid: React.FC = () => {
