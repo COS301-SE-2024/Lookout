@@ -19,6 +19,16 @@ import org.springframework.data.domain.Pageable
 @RequestMapping("/api/posts")
 class PostController(private val postService: PostsService) {
 
+    // Get a post by ID
+    @GetMapping("/{id}")
+    fun getPostById(@PathVariable id: Long): ResponseEntity<Posts> {
+        val post = postService.findById(id)
+        return if (post != null) {
+            ResponseEntity.ok(post)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 
     // Create a post
     @PostMapping ("/CreatePost")

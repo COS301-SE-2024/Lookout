@@ -102,6 +102,11 @@ GET http://localhost:8080/api/posts/user/52
 Accept: application/json
 ###
 
+###
+### Get a post by ID
+GET http://localhost:8080/api/posts/4
+Accept: application/json
+
 ### Delete a post
 DELETE /api/posts/3 HTTP/1.1
 Host: localhost:8080
@@ -150,7 +155,7 @@ Content-Type: application/json
   "picture": "https://newpicturelink.com/updated.png"
 }
 
-
+###
 ### Update a group
 POST http://localhost:8080/api/groups/update
 Content-Type: application/json
