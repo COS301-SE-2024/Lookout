@@ -54,6 +54,16 @@ class PostController(private val postService: PostsService) {
         return ResponseEntity.ok(posts)
     }
 
+    // Get posts by Post ID
+    @GetMapping("/post/{id}")
+    fun getPostById(
+        return if (post != null) {
+            return ResponseEntity.ok(posts)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     // Get posts by User ID
     @GetMapping("/user/{userId}")
     fun getPostsByUserId(
