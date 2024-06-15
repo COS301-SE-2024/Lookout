@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
   id: number;
@@ -63,6 +63,10 @@ const ExplorePins: React.FC = () => {
     return <p>Loading...</p>;
   }
 
+  const handlePostClick = (post: Post) => {
+    navigate(`/post/${post.id}`, { state: { post } });
+  }
+
   if (posts.length === 0) {
     return (
       <div className="text-center">
@@ -83,7 +87,7 @@ const ExplorePins: React.FC = () => {
           <div
             key={post.id}
             className="p-4 border rounded-lg shadow-sm cursor-pointer"
-            onClick={() => navigate(`/pin/${post.id}`)}
+            onClick={() => handlePostClick(post)}
           >
             {post.picture && (
               <img

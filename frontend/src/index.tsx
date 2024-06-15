@@ -52,7 +52,7 @@ function Main() {
 					element={<ProtectedRoute element={GroupDetail} />}
 				/>
 				<Route
-					path="/pin/:id"
+					path="/post/:id"
 					element={<ProtectedRoute element={PinDetail} />}
 				/>
 				<Route

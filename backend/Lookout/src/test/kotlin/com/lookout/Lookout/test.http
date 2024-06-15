@@ -107,6 +107,8 @@ Accept: application/json
 GET http://localhost:8080/api/posts/4
 Accept: application/json
 
+###
+
 ### Delete a post
 DELETE /api/posts/3 HTTP/1.1
 Host: localhost:8080
