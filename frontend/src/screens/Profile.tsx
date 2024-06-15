@@ -1,13 +1,31 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import PostsGrid from "../components/postsGrid";
 import GroupsList from "../components/GroupsList";
 import { FaCog } from "react-icons/fa";
 import SettingsModal from "../components/SettingsModal";
+import { useLocation } from 'react-router-dom';
+import Modal from '../components/Modal';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
   const [showSettings, setShowSettings] = useState(false);
- 
+  const location = useLocation();
+  const { state } = location;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (state?.message) {
+      setMessage(state.message);
+      setModalOpen(true);
+    }
+  }, [state]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setMessage('');
+  };
+
   return (
     <div className="flex flex-col items-center">
       {/* Profile Picture and Username */}
@@ -62,6 +80,7 @@ const Profile = () => {
         )}
       </div>
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+      <Modal isOpen={modalOpen} onClose={closeModal} message={message} />
     </div>
   );
 };

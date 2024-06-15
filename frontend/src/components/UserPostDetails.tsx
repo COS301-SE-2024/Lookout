@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
 interface Post {
   id: number;
   user: {
@@ -49,13 +48,12 @@ interface Post {
 
 const UserPostDetails = () => {
   const { id } = useParams<{ id: string }>();
-  console.log(id)
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
-  const [editableCaption, setEditableCaption] = useState<string>(''); // State for editable caption
-  const [isEditing, setIsEditing] = useState(false); // State to manage edit mode
-  const [isLoading, setIsLoading] = useState(false); // State to manage loading state
-  const [error, setError] = useState<string | null>(null); // State for error handling
+  const [editableCaption, setEditableCaption] = useState<string>(''); 
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/posts/${id}`, {
@@ -66,20 +64,43 @@ const UserPostDetails = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         setPost(data);
-        setEditableCaption(data.caption); // Set initial editable caption
+        setEditableCaption(data.caption); 
       })
       .catch(error => console.error('Error fetching post:', error));
   }, [id]);
 
+  const handleDeleteClick = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/posts/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete post');
+      }
+
+      console.log("Post deleted successfully, navigating to profile");
+      setIsLoading(false);
+      navigate('/profile', { state: { message: 'Post was successfully deleted' } });
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleEditClick = () => {
-    setIsEditing(true); // Enable edit mode
+    setIsEditing(true);
   };
 
   const handleCancelEdit = () => {
-    setIsEditing(false); // Disable edit mode and reset editable caption
-    setEditableCaption(post ? post.caption : ''); // Reset editable caption to original value
+    setIsEditing(false);
+    setEditableCaption(post ? post.caption : ''); 
   };
 
   const handleSaveEdit = async () => {
@@ -98,7 +119,7 @@ const UserPostDetails = () => {
           picture: post?.picture,
           latitude: post?.latitude,
           longitude: post?.longitude,
-          caption: editableCaption, // Send updated caption
+          caption: editableCaption,
         }),
       });
 
@@ -107,10 +128,10 @@ const UserPostDetails = () => {
       }
 
       const updatedPost = await response.json();
-      setPost(updatedPost); // Update post with new data from server
-      setIsEditing(false); // Disable edit mode
+      setPost(updatedPost); 
+      setIsEditing(false); 
       setIsLoading(false);
-    } catch (error:any) {
+    } catch (error: any) {
       setError(error.message);
       setIsLoading(false);
     }
@@ -123,7 +144,7 @@ const UserPostDetails = () => {
   return (
     <div className="container mx-auto p-4 relative">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/profile')}
         className="absolute top-4 left-4 text-blue-500 hover:text-blue-700"
       >
         <svg
@@ -141,18 +162,16 @@ const UserPostDetails = () => {
         <p className="text-2xl font-bold mb-2">{post.category.description}</p>
       </div>
   
-        
       <div className="flex justify-center items-center">
         <img src={post.picture} alt={`${post.caption} logo`} className="w-full rounded-lg mb-4" />
       </div>
 
       <div className="text-center mb-4">
-      <p className="text-gray-700">{post.category.description}</p>
-      <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
-      <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
-      <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
+        <p className="text-gray-700">{post.category.description}</p>
+        <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
+        <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
       </div>
-     
 
       {!isEditing ? (
         <div className="flex justify-center items-center text-center">
@@ -187,6 +206,15 @@ const UserPostDetails = () => {
           </div>
         </div>
       )}
+      <br/>
+      <div className="flex justify-center items-center text-center">
+        <button
+          onClick={handleDeleteClick}
+          className="mr-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+        >
+          Delete
+        </button>
+      </div>
 
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
