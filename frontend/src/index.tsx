@@ -61,7 +61,7 @@ function Main() {
 					element={<ProtectedRoute element={Profile} />}
 				/>
 				<Route
-					path="/post/:id"
+					path="/user_post/:id"
 					element={<ProtectedRoute element={UserPostDetails} />}
 				/>
 			</Route>

@@ -3,18 +3,53 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 interface Post {
   id: number;
-  userid: number;
-  groupid: number;
-  categoryid: number;
+  user: {
+    id: number;
+    userName: string;
+    email: string;
+    passcode: string;
+    role: string;
+    username: string;
+    authorities: { authority: string }[];
+    isCredentialsNonExpired: boolean;
+    isAccountNonExpired: boolean;
+    isAccountNonLocked: boolean;
+    password: string;
+    isEnabled: boolean;
+  };
+  group: {
+    id: number;
+    name: string;
+    description: string;
+    isPrivate: boolean;
+    user: {
+      id: number;
+      userName: string;
+      email: string;
+      passcode: string;
+      role: string;
+      username: string;
+      authorities: { authority: string }[];
+      isCredentialsNonExpired: boolean;
+      isAccountNonExpired: boolean;
+      isAccountNonLocked: boolean;
+      password: string;
+      isEnabled: boolean;
+    };
+    picture: string;
+    createdAt: string;
+  };
+  category: { id: number; description: string };
   picture: string;
   latitude: number;
   longitude: number;
   caption: string;
-  category: { id: number; description: string };
+  createdAt: string;
 }
 
 const UserPostDetails = () => {
   const { id } = useParams<{ id: string }>();
+  console.log(id)
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [editableCaption, setEditableCaption] = useState<string>(''); // State for editable caption
@@ -23,7 +58,7 @@ const UserPostDetails = () => {
   const [error, setError] = useState<string | null>(null); // State for error handling
 
   useEffect(() => {
-    fetch(`/api/posts/post/${id}`, {
+    fetch(`/api/posts/${id}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -31,6 +66,7 @@ const UserPostDetails = () => {
     })
       .then(response => response.json())
       .then(data => {
+        console.log(data);
         setPost(data);
         setEditableCaption(data.caption); // Set initial editable caption
       })
@@ -56,9 +92,9 @@ const UserPostDetails = () => {
         },
         body: JSON.stringify({
           id: post?.id,
-          userId: post?.userid,
-          groupId: post?.groupid,
-          categoryId: post?.categoryid,
+          userId: post?.user.id,
+          groupId: post?.group.id,
+          categoryId: post?.category.id,
           picture: post?.picture,
           latitude: post?.latitude,
           longitude: post?.longitude,
@@ -104,10 +140,19 @@ const UserPostDetails = () => {
       <div className="flex justify-center items-center">
         <p className="text-2xl font-bold mb-2">{post.category.description}</p>
       </div>
-
+  
+        
       <div className="flex justify-center items-center">
         <img src={post.picture} alt={`${post.caption} logo`} className="w-full rounded-lg mb-4" />
       </div>
+
+      <div className="text-center mb-4">
+      <p className="text-gray-700">{post.category.description}</p>
+      <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
+      <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
+      <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
+      </div>
+     
 
       {!isEditing ? (
         <div className="flex justify-center items-center text-center">
