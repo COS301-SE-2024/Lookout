@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -35,9 +35,9 @@ const ExploreGroups: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 10; // Number of groups per page
 
-  // useEffect(() => {
-  //   fetchGroups();
-  // }, []);
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
   const fetchGroups = () => {
     fetch(`/api/groups?page=${page}&size=${pageSize}`)
@@ -48,7 +48,7 @@ const ExploreGroups: React.FC = () => {
           const newGroups = data.content.filter((newGroup: Group) => !prevGroups.some(group => group.id === newGroup.id));
           return [...prevGroups, ...newGroups];
         });
-        setHasMore(data.content.length > 0);
+        setHasMore(data.content.length === pageSize);
         setPage(prevPage => prevPage + 1);
       })
       .catch(error => console.error('Error fetching groups:', error));
@@ -79,7 +79,7 @@ const ExploreGroups: React.FC = () => {
         <div className="space-y-4">
           {groups.map(group => (
             <div
-              key={group.id}
+              key={group.id} // Ensure key is unique
               className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
               onClick={() => handleGroupClick(group)}
             >
