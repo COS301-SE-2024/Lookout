@@ -82,6 +82,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
         <button
           className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
           onClick={handleAddPhotoClick}
+          data-testid="add-photo-button"
         >
           <FaPlus />
         </button>
@@ -94,6 +95,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
           accept="image/jpeg, image/png"
           style={{ display: "none" }}
           ref={fileInputRef}
+          data-testid="file-input"
           onChange={handleFileChange}
         />
         {picture && (
@@ -143,9 +145,9 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
             </label>
             <div onClick={toggleSwitch} className="cursor-pointer">
               {isToggled ? (
-                <FaToggleOn className="text-2xl text-green-500" />
+                <FaToggleOn className="text-2xl text-green-500" data-testid="toggle-on" />
               ) : (
-                <FaToggleOff className="text-2xl text-gray-500" />
+                <FaToggleOff className="text-2xl text-gray-500" data-testid="toggle-off" />
               )}
             </div>
           </div>
