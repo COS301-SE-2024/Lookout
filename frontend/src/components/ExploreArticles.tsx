@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface Article {
   title: string;
   author: string;
   description: string;
-  url: string; // Add the URL field
+  url: string;
   urlToImage: string;
 }
 
@@ -15,11 +15,7 @@ const ExploreArticles: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 10; // Number of articles per page
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
-
-  const fetchArticles = () => {
+  const fetchArticles = useCallback(() => {
     const apiKey = '0fa07371da9f49f6a5c7a982c087527b';
     const apiUrl = `https://newsapi.org/v2/everything?q=wildlife&pageSize=${pageSize}&page=${page}&apiKey=${apiKey}`;
 
@@ -32,11 +28,15 @@ const ExploreArticles: React.FC = () => {
             return [...prevArticles, ...newArticles];
           });
           setHasMore(data.articles.length > 0);
-          setPage(page + 1);
+          setPage(prevPage => prevPage + 1); // Use function form to ensure correct state update
         }
       })
       .catch(error => console.error('Error fetching articles:', error));
-  };
+  }, [page, pageSize]);
+
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]); // Include fetchArticles in the dependency array
 
   return (
     <div className="container mx-auto p-4">
