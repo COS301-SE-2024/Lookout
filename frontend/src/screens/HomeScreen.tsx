@@ -1,5 +1,5 @@
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
 import '../assets/styles/home.css';
@@ -119,9 +119,9 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
     setIsMenuModalOpen(false);
   };
 
-  const closeSuccessModal = () => {
-    setIsSuccessModalOpen(false);
-  };
+  // const closeSuccessModal = () => {
+  //   setIsSuccessModalOpen(false);
+  // };
 
   useEffect(() => {
     fetch('/api/groups/user/1', {
