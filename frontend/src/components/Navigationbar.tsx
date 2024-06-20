@@ -11,7 +11,7 @@ const Navigationbar = () => {
 	);
 
 	useEffect(() => {
-		console.log("isAuthed", isAuthed);
+		//console.log("isAuthed", isAuthed);
 	}, [isAuthed]);
 
 	useEffect(() => {
