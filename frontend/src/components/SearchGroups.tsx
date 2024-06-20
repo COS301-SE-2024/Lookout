@@ -55,7 +55,7 @@ const SearchGroups: React.FC = () => {
         fetch('/api/groups')
             .then(response => response.json())
             .then((data: GroupResponse) => {
-                console.log('Fetched groups:', data.content);
+                //console.log('Fetched groups:', data.content);
                 setGroups(data.content);
                 setFilteredGroups(data.content);
             })

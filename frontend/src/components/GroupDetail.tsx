@@ -58,7 +58,7 @@ const GroupDetail: React.FC = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data); // Log the data to check the response format
+        // console.log(data); // Log the data to check the response format
         setPosts(data.content); // Extract 'content' array from the response
       })
       .catch((error) => console.error('Error fetching posts:', error));

@@ -84,7 +84,7 @@ const UserPostDetails = () => {
         throw new Error('Failed to delete post');
       }
 
-      console.log("Post deleted successfully, navigating to profile");
+     // console.log("Post deleted successfully, navigating to profile");
       setIsLoading(false);
       navigate('/profile', { state: { message: 'Post was successfully deleted' } });
     } catch (error: any) {

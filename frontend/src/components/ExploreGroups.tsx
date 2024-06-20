@@ -39,7 +39,7 @@ const ExploreGroups: React.FC = () => {
     fetch(`/api/groups?page=${page}&size=${pageSize}`)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched groups:', data);
+        // console.log('Fetched groups:', data);
         const fetchedGroups = data.content;
 
         // Filter out groups that are already present in the state
@@ -63,7 +63,7 @@ const ExploreGroups: React.FC = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched user\'s groups:', data);
+        // console.log('Fetched user\'s groups:', data);
         const joinedGroupIds = data.map((group: Group) => group.id);
         setJoinedGroups(joinedGroupIds);
       })

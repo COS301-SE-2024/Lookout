@@ -71,7 +71,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
       }
 
       const createdPost = await response.json();
-      console.log('Post created successfully:', createdPost);
+      //console.log('Post created successfully:', createdPost);
       setCaption("");
       setPicture("");
       setSelectedGroup(null);
@@ -132,7 +132,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data); // Log the data to check the response format
+        //console.log(data); // Log the data to check the response format
         setGroups(data);
       })
       .catch((error) => console.error('Error fetching groups:', error));
