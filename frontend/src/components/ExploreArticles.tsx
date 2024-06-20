@@ -16,7 +16,7 @@ const ExploreArticles: React.FC = () => {
   const pageSize = 10; // Number of articles per page
 
   const fetchArticles = useCallback(() => {
-    const apiKey = '0fa07371da9f49f6a5c7a982c087527b';
+    const apiKey = process.env.REACT_APP_API_KEY;
     const apiUrl = `https://newsapi.org/v2/everything?q=wildlife&pageSize=${pageSize}&page=${page}&apiKey=${apiKey}`;
 
     fetch(apiUrl)
