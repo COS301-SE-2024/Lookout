@@ -140,16 +140,23 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
 
         <div className="mb-3">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-700">
+            <label htmlFor="visibilityToggle" className="text-sm font-medium text-gray-700">
               Visibility - set your group to private:
             </label>
-            <div onClick={toggleSwitch} className="cursor-pointer">
+            <button
+              id="visibilityToggle"
+              aria-checked={isToggled}
+              role="switch"
+              onClick={toggleSwitch}
+              className="cursor-pointer"
+              data-testid="visibility-toggle"
+            >
               {isToggled ? (
-                <FaToggleOn className="text-2xl text-green-500" data-testid="toggle-on" />
+                <FaToggleOn className="text-2xl text-green-500" />
               ) : (
-                <FaToggleOff className="text-2xl text-gray-500" data-testid="toggle-off" />
+                <FaToggleOff className="text-2xl text-gray-500" />
               )}
-            </div>
+            </button>
           </div>
         </div>
       </form>

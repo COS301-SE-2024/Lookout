@@ -37,8 +37,14 @@ describe('ExploreGroups', () => {
     // Use waitFor to wait for the groups to be fetched and displayed
     await waitFor(() => {
       expect(screen.getByText('Hidden Gems')).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText('Evelyn Smith')).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText('For the Love of Trees')).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText('Alex Anderson')).toBeInTheDocument();
     });
   });
@@ -46,17 +52,12 @@ describe('ExploreGroups', () => {
   test('navigates to group page on group click', async () => {
     const { history } = renderWithRouter(<ExploreGroups />);
     
-    // Use findByText with an increased timeout if necessary
-    const hiddenGems = await screen.findByText('Hidden Gems', {}, { timeout: 10000 }); // Adjust timeout as needed
-    
-    // Ensure the parent element exists before clicking
-    if (hiddenGems.closest('div') !== null) {
-      fireEvent.click(hiddenGems.closest('div') as HTMLElement);
-      await waitFor(() => {
-        expect(history.location.pathname).toBe('/group/1');
-      });
-    } else {
-      throw new Error('Parent element not found');
-    }
+    const hiddenGems = await screen.findByText('Hidden Gems', {}, { timeout: 10000 });
+  
+    fireEvent.click(hiddenGems);
+
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/group/1');
+    });
   });
 });

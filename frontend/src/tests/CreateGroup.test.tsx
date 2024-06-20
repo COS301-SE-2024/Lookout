@@ -4,10 +4,8 @@ import CreateGroups from './../components/CreateGroups';
 // Mocking the onCreateGroup function and fetch call
 const mockOnCreateGroup = jest.fn();
 
-
 const mockCreateObjectURL = jest.fn();
 (global as any).URL.createObjectURL = mockCreateObjectURL;
-
 
 beforeEach(() => {
   global.fetch = jest.fn(() =>
@@ -34,7 +32,7 @@ describe('CreateGroups', () => {
     render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
     const createElements = screen.getAllByText('Create');
     expect(createElements.length).toBeGreaterThan(0);
-  });  
+  });
 
   test('handles form input', () => {
     render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
@@ -52,16 +50,13 @@ describe('CreateGroups', () => {
   test('handles toggle switch', () => {
     render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
 
-    const toggleSwitch = screen.getByText('Visibility - set your group to private:').nextElementSibling;
-    expect(toggleSwitch).toBeInTheDocument();
+    // Use Testing Library queries to interact with elements
+    const toggleSwitch = screen.getByRole('switch', { name: /visibility - set your group to private:/i });
+    fireEvent.click(toggleSwitch);
+    expect(toggleSwitch).toBeChecked();
 
-    if (toggleSwitch) {
-      fireEvent.click(toggleSwitch);
-      expect(screen.getByTestId('toggle-on')).toBeInTheDocument();
-
-      fireEvent.click(toggleSwitch);
-      expect(screen.getByTestId('toggle-off')).toBeInTheDocument();
-    }
+    fireEvent.click(toggleSwitch);
+    expect(toggleSwitch).not.toBeChecked();
   });
 
   test('submits form and calls API', async () => {

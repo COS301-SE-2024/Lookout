@@ -1,10 +1,9 @@
 /* eslint-disable testing-library/no-node-access */
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import SearchGroups from './../components/SearchGroups';
-import { JSX } from 'react/jsx-runtime';
 
 // Mocking the API response with some test data
 const mockGroups = [
@@ -69,16 +68,16 @@ describe('SearchGroups', () => {
     renderWithRouter(<SearchGroups />);
     expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
 
-    await waitFor(() => expect(screen.getByText('Mountain Climbers')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText('Ocean Explorers')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText('Bird Watchers')).toBeInTheDocument());
+    await screen.findByText('Mountain Climbers');
+    await screen.findByText('Ocean Explorers');
+    await screen.findByText('Bird Watchers');
   });
 
   test('filters groups based on search query', async () => {
     renderWithRouter(<SearchGroups />);
     fireEvent.change(screen.getByPlaceholderText('Search...'), { target: { value: 'Mountain' } });
 
-    await waitFor(() => expect(screen.getByText('Mountain Climbers')).toBeInTheDocument());
+    await screen.findByText('Mountain Climbers');
     expect(screen.queryByText('Ocean Explorers')).not.toBeInTheDocument();
     expect(screen.queryByText('Bird Watchers')).not.toBeInTheDocument();
   });
@@ -87,7 +86,7 @@ describe('SearchGroups', () => {
     renderWithRouter(<SearchGroups />);
     fireEvent.change(screen.getByPlaceholderText('Search...'), { target: { value: 'NonExistentGroup' } });
 
-    await waitFor(() => expect(screen.getByText('No groups found.')).toBeInTheDocument());
+    await screen.findByText('No groups found.');
   });
 
 });

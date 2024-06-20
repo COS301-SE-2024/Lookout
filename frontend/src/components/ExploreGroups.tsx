@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -35,11 +35,7 @@ const ExploreGroups: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 10; // Number of groups per page
 
-  useEffect(() => {
-    fetchGroups();
-  }, []);
-
-  const fetchGroups = () => {
+  const fetchGroups = useCallback(() => {
     fetch(`/api/groups?page=${page}&size=${pageSize}`)
       .then(response => response.json())
       .then(data => {
@@ -52,7 +48,11 @@ const ExploreGroups: React.FC = () => {
         setPage(prevPage => prevPage + 1);
       })
       .catch(error => console.error('Error fetching groups:', error));
-  };
+  }, [page, pageSize]);
+
+  useEffect(() => {
+    fetchGroups();
+  }, [fetchGroups]);
 
   const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });
