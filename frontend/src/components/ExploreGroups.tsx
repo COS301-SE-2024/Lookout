@@ -100,7 +100,7 @@ const ExploreGroups: React.FC = () => {
         <div className="space-y-4">
           {groups.map(group => (
             <div
-              key={group.id}
+              key={group.id} // Ensure key is unique
               className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
               onClick={() => handleGroupClick(group)}
             >
