@@ -35,7 +35,6 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   const navigate = useNavigate();
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-  const cameraInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const handleAddPinClick = async () => {
     if (selectedGroup === null) {
@@ -65,6 +64,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
         },
         body: JSON.stringify(newPost),
       });
+      
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -72,13 +72,18 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
 
       const createdPost = await response.json();
       console.log('Post created successfully:', createdPost);
-      onCreatePost(createdPost);
       setCaption("");
       setPicture("");
       setSelectedGroup(null);
       setSelectedCategory(null);
-      setIsModalOpen(false); // Close modal after successful pin addition
+      closeModal();
+
+      onCreatePost(createdPost);
+      
       setIsSuccessModalOpen(true); // Open success modal
+      // setIsModalOpen(false); // Close modal after successful pin addition
+      // setIsSuccessModalOpen(true); // Open success modal
+      
     } catch (error) {
       console.error('Error creating post:', error);
     }
@@ -87,12 +92,6 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   const handleAddPhotoClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
-    }
-  };
-
-  const handleAddCameraClick = () => {
-    if (cameraInputRef.current) {
-      cameraInputRef.current.click();
     }
   };
 
@@ -178,12 +177,6 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
               >
                 <FaPlus />
               </button>
-              <button
-                className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg ml-3"
-                onClick={handleAddCameraClick}
-              >
-                <FaPlus />
-              </button>
             </div>
 
             <div className="text-center mb-3">
@@ -194,14 +187,6 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
                 style={{ display: "none" }}
                 ref={fileInputRef}
                 onChange={handleFileChange}
-              />
-              <input
-                type="file"
-                accept="image/jpeg, image/png"
-                style={{ display: "none" }}
-                ref={cameraInputRef}
-                onChange={handleFileChange}
-                capture="environment"
               />
               {picture && (
                 <img src={picture} alt="Selected" className="w-32 h-32 mt-2 mx-auto" />
