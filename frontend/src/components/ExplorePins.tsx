@@ -42,6 +42,7 @@ const ExplorePins: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const givenUserId = 52;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -80,10 +81,13 @@ const ExplorePins: React.FC = () => {
     );
   }
 
+  // Filter posts based on the condition (user.id !== givenUserId)
+  const filteredPosts = posts.filter(post => post.user.id !== givenUserId);
+
   return (
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts.map(post => (
+        {filteredPosts.map(post => (
           <div
             key={post.id}
             className="p-4 border rounded-lg shadow-sm cursor-pointer"
