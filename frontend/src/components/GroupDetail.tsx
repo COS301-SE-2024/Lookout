@@ -50,7 +50,7 @@ const GroupDetail: React.FC = () => {
 
   // Fetch posts when component mounts
   useEffect(() => {
-    fetch(`/api/posts/group/${group.id}?page=0&size=10`, {
+    fetch(`/api/posts/group/${group.id}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
