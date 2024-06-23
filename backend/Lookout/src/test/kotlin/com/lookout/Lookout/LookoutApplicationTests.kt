@@ -137,6 +137,350 @@ class LookoutApplicationTests {
             .andExpect(status().isNoContent)
     }
 
+    @Test
+    fun `create a post test`() {
+        val postJson = """
+        {
+          "userid": 52,
+          "groupid": 2,
+          "categoryid": 3,
+          "picture": "https://toppng.com/uploads/preview/safari-animals-png-cute-safari-animals-11562876426jornlea5ue.png",
+          "latitude": 123.123,
+          "longitude": 123.123,
+          "caption": "This is a test post"
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/posts/CreatePost")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().isCreated)
+    }
+
+    @Test
+    fun `get all posts by user id test`() {
+        mockMvc.perform(get("/api/posts/user/52"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `get post by id test`() {
+        mockMvc.perform(get("/api/posts/19"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `get posts by user id with pagination test`() {
+        mockMvc.perform(get("/api/posts/user/52?page=0&size=10"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `get posts by group id test`() {
+        mockMvc.perform(get("/api/posts/group/2?page=0&size=10"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `get posts by category id test`() {
+        mockMvc.perform(get("/api/posts/category/3?page=0&size=10"))
+            .andExpect(status().isOk)
+    }
+
+
+
+
+    @Test
+    fun `get all posts`() {
+        mockMvc.perform(get("/api/posts?page=0&size=10"))
+            .andExpect(status().isOk)
+    }
+
+//    @Test
+//    fun `delete post test`() {
+//        mockMvc.perform(delete("/api/posts/16"))
+//            .andExpect(status().isNoContent)
+//    }
+
+//    @Test
+//    fun `Update post with data`() {
+//        val postJson = """
+//        {
+//          "id": 19, // Assuming this ID doesn't exist in your test data
+//          "userId": 1,
+//          "groupId": 2,
+//          "categoryId": 3,
+//          "picture": "https://newpicturelink.com/updated.png",
+//          "latitude": 124.124,
+//          "longitude": 124.124,
+//          "caption": "This is an updated test post 2"
+//        }
+//    """.trimIndent()
+//
+//        mockMvc.perform(
+//            post("/api/posts/UpdatePost")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(postJson)
+//        )
+//            .andExpect(status().isOk)
+//    }
+
+//    @Test
+//    fun `Update a group with data`() {
+//        val groupJson = """
+//        {
+//          "name": "Unit Test Updated Group",
+//          "description": "This group has been updated"
+//        }
+//    """.trimIndent()
+//
+//        mockMvc.perform(
+//            put("/api/groups/2")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(groupJson)
+//        )
+//            .andExpect(status().isOk)
+//    }
+
+
+
+
+
+    ///////////////Test with invalid data////////////////
+
+    @Test
+    fun `delete invalid group test`() {
+        mockMvc.perform(delete("/api/groups/-4"))
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `add invalid member to group test`() {
+        val memberJson = """
+        {
+          "groupId": -2,
+          "userId": -52
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/groups/AddMemberToGroup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(memberJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `update post test`() {
+        val postJson = """
+        {
+          "id": -56, // Assuming this ID doesn't exist in your test data
+          "userId": -52,
+          "groupId": 2,
+          "categoryId": 3,
+          "picture": "https://newpicturelink.com/updated.png",
+          "latitude": 124.124,
+          "longitude": 124.124,
+          "caption": "This is an updated test post 2"
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/posts/UpdatePost")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `remove invalid member from group test`() {
+        val memberJson = """
+        {
+          "groupId": -2,
+          "userId": 52
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/groups/RemoveMemberFromGroup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(memberJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `Create a group with invalid data   `() {
+        val groupJson = """
+            {
+              "name": "Invalid Group Test",
+              "description": "This is a group with invalid data types",
+              "picture": "https://invalid-picture-link.com",
+              "user": {
+                "id": "invalidUserId" // Invalid data type for id
+              }
+            }
+        """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/groups")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(groupJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `Update a group with invalid data   `() {
+        val groupJson = """
+            {
+              "name": "Unit Test Updated Group",
+              "description": "This group has been updated"
+            }
+        """.trimIndent()
+
+        mockMvc.perform(
+            put("/api/groups/-9")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(groupJson)
+        )
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `Create a post with invalid data   `() {
+        val postJson = """
+        {
+          "userid": 52,
+          "groupid": 2,
+          "categoryid": 3,
+          "picture": "https://toppng.com/uploads/preview/safari-animals-png-cute-safari-animals-11562876426jornlea5ue.png",
+          "latitude": "invalidLatitude",
+          "longitude": 123.123,
+          "caption": "This is a test post"
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/posts/CreatePost")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `delete invalid post test`() {
+        mockMvc.perform(delete("/api/posts/4"))
+            .andExpect(status().isNotFound)
+    }
+
+
+    @Test
+    fun `create group with invalid data`() {
+        val groupJson = """
+            {
+              "name": "Invalid Group Test",
+              "description": "This is a group with invalid data types",
+              "picture": "https://invalid-picture-link.com",
+              "user": {
+                "id": "invalidUserId" // Invalid data type for id
+              }
+            }
+        """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/groups")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(groupJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `update group with invalid data`() {
+        val groupJson = """
+            {
+              "name": "Updated Group",
+              "description": "This group update has invalid data types",
+              "picture": "https://updated-invalid-picture-link.com",
+              "user": {
+                "id": -1 // Invalid value for id
+              }
+            }
+        """.trimIndent()
+
+        mockMvc.perform(
+            put("/api/groups/852")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(groupJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `create post with invalid data`() {
+        val postJson = """
+            {
+              "userid": -1, // Invalid data type for userId
+              "groupid": "invalidGroupId", // Invalid data type for groupId
+              "categoryid": "invalidCategoryId", // Invalid data type for categoryId
+              "picture": "https://invalid-picture-link.com",
+              "latitude": "invalidLatitude", // Invalid data type for latitude
+              "longitude": "invalidLongitude", // Invalid data type for longitude
+              "caption": "This is an invalid test post"
+            }
+        """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/posts/CreatePost")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `update post with invalid data`() {
+        val postJson = """
+            {
+              "id": "invalidPostId", // Invalid data type for id
+              "userId": "invalidUserId", // Invalid data type for userId
+              "groupId": "invalidGroupId", // Invalid data type for groupId
+              "categoryId": "invalidCategoryId", // Invalid data type for categoryId
+            }
+        """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/posts/UpdatePost")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+
+    @Test
+    fun `get post by invalid id test`() {
+        mockMvc.perform(get("/api/posts/-4"))
+            .andExpect(status().isNotFound)
+    }
+
+
+    @Test
+    fun `get group by invalid id test`() {
+        mockMvc.perform(get("/api/groups/-4"))
+            .andExpect(status().isNotFound)
+    }
+
+
+
+
+
 
     companion object {
         @JvmStatic

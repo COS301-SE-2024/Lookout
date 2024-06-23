@@ -104,7 +104,7 @@ Accept: application/json
 
 ###
 ### Get a post by ID
-GET http://localhost:8080/api/posts/4
+GET http://localhost:8080/api/posts/16
 Accept: application/json
 
 ###
