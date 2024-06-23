@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaTimes } from "react-icons/fa";
+
+
+
+import images from '../assets/styles/images/images'; // Adjust the path as necessary
+
 
 interface HelpCentreModalProps {
 	onClose: () => void;
@@ -15,24 +20,11 @@ const HelpCentreModal: React.FC<HelpCentreModalProps> = ({ onClose }) => {
 		closeIcon: "text-gray-500 hover:text-gray-700",
 		helpTitle: "text-xl font-semibold mb-4 text-center",
 		sectionTitle: "text-lg font-semibold mt-4 mb-2",
-		logoutButton: "bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full",
-		searchBar: "w-full py-2 px-4 border rounded-lg mt-4",
-		faqTitle: "text-lg font-semibold mt-4 mb-2"
+		contactInfo: "mt-4",
+		linkList: "mt-2",
+		forumImage: "w-full h-auto rounded-lg mb-2",
+		forumDescription: "text-sm mt-1"
 	};
-
-	const [searchQuery, setSearchQuery] = useState('');
-	const [faqItems, setFaqItems] = useState([
-		{ question: "To be determined what goes here", answer: "..." },
-		
-	]);
-
-	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(e.target.value);
-	};
-
-	const filteredFaqItems = faqItems.filter(item =>
-		item.question.toLowerCase().includes(searchQuery.toLowerCase())
-	);
 
 	return (
 		<div className={modalStyles.modalContainer}>
@@ -41,20 +33,32 @@ const HelpCentreModal: React.FC<HelpCentreModalProps> = ({ onClose }) => {
 					<FaTimes className={modalStyles.closeIcon} size={24} />
 				</div>
 				<h2 className={modalStyles.helpTitle}>Help Centre</h2>
-				<input
-					type="text"
-					className={modalStyles.searchBar}
-					placeholder="Search for a question..."
-					value={searchQuery}
-					onChange={handleSearchChange}
-				/>
-				<ul>
-					{filteredFaqItems.map((item, index) => (
-						<li key={index} className="py-2 border-t border-b mb-4">
-							<h1 className="text-xl font-semibold">{item.question}</h1>
-							<p>{item.answer}</p>
-						</li>
-					))}
+
+				<div className={modalStyles.sectionTitle}>Contact Information:</div>
+				<div className={modalStyles.contactInfo}>
+					<p>Email: support@lookoutapp.com</p>
+					<p>Phone: +27 (079) 456-7890</p>
+				</div>
+
+
+
+				<div className={modalStyles.sectionTitle}>External Safari and Nature Forums:</div>
+				<ul className={modalStyles.linkList}>
+					<li>
+						<img src={images.safari} alt="Lookout Community Forum" className={modalStyles.forumImage} />
+						<a href="https://safaritalk.net" target="_blank" rel="noopener noreferrer">SafariTalk</a>
+						<p className={modalStyles.forumDescription}>Dedicated to African safaris, wildlife conservation, and safari travel.</p>
+					</li>
+					<li>
+						<img src={images.gardener} alt="Lookout Community Forum" className={modalStyles.forumImage} />
+						<a href="https://wildlifegardeners.org" target="_blank" rel="noopener noreferrer">Wildlife Gardeners</a>
+						<p className={modalStyles.forumDescription}>Community for wildlife gardening, habitat creation, and environmental stewardship.</p>
+					</li>
+					<li>
+						<img src={images.activist} alt="Lookout Community Forum" className={modalStyles.forumImage} />
+						<a href="https://wildlifewarriors.org" target="_blank" rel="noopener noreferrer">Wildlife Warriors</a>
+						<p className={modalStyles.forumDescription}>Global network for wildlife conservationists and advocates.</p>
+					</li>
 				</ul>
 			</div>
 		</div>
