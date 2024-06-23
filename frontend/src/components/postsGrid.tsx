@@ -41,7 +41,7 @@ const PostsGrid: React.FC = () => {
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {posts.map(post => (
           <div key={post.id} className="w-full overflow-hidden rounded-md" onClick={() => handlePostsClick(post)}>
-            <Link to={`/user_post/${post.id}`}>
+            <Link to={`/post/${post.id}`}>
               <img
                 src={post.picture}
                 alt={`Post ${post.id}`}
