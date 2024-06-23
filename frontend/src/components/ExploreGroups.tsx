@@ -50,7 +50,7 @@ const ExploreGroups: React.FC = () => {
 
   useEffect(() => {
     fetchGroups();
-  }, []); 
+  }, [fetchGroups]); 
 
   const fetchJoinedGroups = useCallback(() => {
     fetch('/api/groups/user/1', {
