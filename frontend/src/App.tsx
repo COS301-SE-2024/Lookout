@@ -1,5 +1,4 @@
 import Navigationbar from "./components/Navigationbar";
-import Footer from "./components/Footer";
 import { Outlet } from "react-router-dom";
 import './assets/styles/nav.css'
 
@@ -12,7 +11,6 @@ const App = () => {
 					<Outlet />
 				</div>
 			</main>
-			<Footer />
 		</>
 	);
 };

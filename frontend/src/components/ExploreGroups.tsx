@@ -1,40 +1,127 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-const ExploreGroups = () => {
+interface User {
+  id: number;
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
+}
+
+interface Group {
+  id: number;
+  name: string;
+  description: string;
+  isPrivate: boolean;
+  user: User | null;
+  picture: string;
+  createdAt: string;
+}
+
+const ExploreGroups: React.FC = () => {
   const navigate = useNavigate();
-  
-  const groups = [
-    { id: 1, name: 'Hidden Gems', owner: 'Evelyn Smith', imageUrl: 'https://i.pinimg.com/originals/80/4c/82/804c82e561475688f6c115e3df2d8288.jpg' },
-    { id: 2, name: 'For the Love of Trees', owner: 'Alex Anderson', imageUrl: 'https://i.pinimg.com/originals/4d/d7/c0/4dd7c0f68fd9d0d51f13cba3a8f24163.jpg' },
-    { id: 3, name: 'Sunset Moments', owner: 'Harper Garcia', imageUrl: 'https://i.pinimg.com/originals/51/c2/d2/51c2d29f95977f38e9be0d20a599d42c.jpg' },
-    { id: 4, name: 'Elephant Fanatics', owner: 'Ava Jackson', imageUrl: 'https://i.pinimg.com/originals/62/5b/0e/625b0e73e60198e123ba03a6ae1bc574.jpg' },
-    { id: 5, name: 'Stripe Savvy Syndicate ', owner: 'Anthony Harris', imageUrl: 'https://i.pinimg.com/originals/cb/e7/d3/cbe7d319fa566e5d19d25921d2ec7ca5.jpg' },
-  ];
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const pageSize = 10; // Number of groups per page
 
-  const handleArrowClick = (id: number) => {
-    navigate(`/group/${id}`);
+  const fetchGroups = useCallback(() => {
+    fetch(`/api/groups?page=${page}&size=${pageSize}`)
+      .then(response => response.json())
+      .then(data => {
+        // console.log('Fetched groups:', data);
+        const fetchedGroups = data.content;
+
+        // Filter out groups that are already present in the state
+        const newGroups = fetchedGroups.filter((newGroup: { id: number }) =>
+          !groups.some(existingGroup => existingGroup.id === newGroup.id)
+        );
+
+        setGroups(prevGroups => [...prevGroups, ...newGroups]);
+        setHasMore(newGroups.length > 0); // Update hasMore based on new data
+        setPage(prevPage => prevPage + 1); // Increment page for next fetch
+      })
+      .catch(error => console.error('Error fetching groups:', error));
+  }, [page, pageSize, groups]);
+
+  const fetchJoinedGroups = useCallback(() => {
+    fetch('/api/groups/user/1', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        // console.log('Fetched user\'s groups:', data);
+        const joinedGroupIds = data.map((group: Group) => group.id);
+        setJoinedGroups(joinedGroupIds);
+      })
+      .catch(error => console.error('Error fetching user\'s groups:', error));
+  }, []);
+
+  useEffect(() => {
+    fetchGroups();
+    fetchJoinedGroups();
+  }, [fetchGroups, fetchJoinedGroups]);
+
+  const handleGroupClick = (group: Group) => {
+    navigate(`/group/${group.id}`, { state: { group } });
+  };
+
+  const handleJoinClick = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    if (joinedGroups.includes(id)) {
+      setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
+    } else {
+      setJoinedGroups([...joinedGroups, id]);
+    }
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Your Groups</h2>
-      <div className="space-y-4">
-        {groups.map(group => (
-          <div key={group.id} className="flex items-center p-4 border rounded-lg shadow-sm">
-            <img src={group.imageUrl} alt={`${group.name} logo`} className="w-12 h-12 rounded-full mr-4" />
-            <div className="flex-1">
-              <div className="text-lg font-semibold">{group.name}</div>
-              <div className="text-gray-500">{group.owner}</div>
+      <InfiniteScroll
+        dataLength={groups.length}
+        next={fetchGroups}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={<p style={{ textAlign: 'center' }}>No more groups to show</p>}
+      >
+        <div className="space-y-4">
+          {groups.map(group => (
+            <div
+              key={group.id} // Ensure key is unique
+              className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
+              onClick={() => handleGroupClick(group)}
+            >
+              <img src={group.picture} alt={`${group.name} logo`} className="w-12 h-12 rounded-full mr-4" />
+              <div className="flex-1">
+                <div className="text-lg font-semibold">{group.name}</div>
+                <div className="text-gray-500">{group.user ? group.user.userName : 'No owner'}</div>
+                <p className="text-sm text-gray-600 mt-1">{group.description}</p>
+              </div>
+              <button
+                className={`flex items-center justify-center w-20 h-10 rounded-full ${
+                  joinedGroups.includes(group.id) ? 'bg-green-200 text-black border border-red-2' : 'bg-blue-500 text-white hover:bg-blue-600'
+                } focus:outline-none focus:ring-2 focus:ring-gray-400`}
+                onClick={(e) => handleJoinClick(e, group.id)}
+              >
+                {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
+              </button>
             </div>
-            <button onClick={() => handleArrowClick(group.id)}>
-              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </button>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </InfiniteScroll>
     </div>
   );
 };

@@ -10,18 +10,19 @@ data class Posts(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Int? = null,
+    val id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "userid", nullable = false)
     var user: User? = null,
 
     @ManyToOne
-    @JoinColumn(name = "groupid", nullable = false)
+    @JoinColumn(name = "groupid")
     val group: Groups? = null,
 
-    @Column(name = "categoryid", nullable = false)
-    val categoryId: Int,
+    @ManyToOne
+    @JoinColumn(name = "categoryid")
+    val category: Categories? = null,
 
     @Column(name = "picture", nullable = false)
     val picture: String,
@@ -33,7 +34,7 @@ data class Posts(
     val longitude: Double,
 
     @Column(name = "caption")
-    val caption: String? = null,
+    var caption: String? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: Instant? = Instant.now()
