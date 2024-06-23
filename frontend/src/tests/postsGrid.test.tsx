@@ -67,7 +67,7 @@ describe('PostsGrid', () => {
   test('renders posts', async () => {
     renderWithRouter(<PostsGrid />);
 
-    // Wait for the posts to be loaded and displayed
+
     await waitFor(() => {
       mockPosts.forEach(post => {
         expect(screen.getByAltText(`Post ${post.id}`)).toBeInTheDocument();
@@ -79,7 +79,7 @@ describe('PostsGrid', () => {
   test('each post links to the correct URL', async () => {
     const { history } = renderWithRouter(<PostsGrid />);
 
-    // Wait for the posts to be loaded and displayed
+
     await waitFor(() => {
       mockPosts.forEach(post => {
         const linkElement = screen.getByAltText(`Post ${post.id}`).closest('a');
@@ -87,7 +87,7 @@ describe('PostsGrid', () => {
       });
     });
 
-    // Simulate click and verify navigation
+
     const firstPostLink = screen.getByAltText('Post 1').closest('a') as HTMLAnchorElement;
     fireEvent.click(firstPostLink);
     expect(history.location.pathname).toBe('/user_post/1');
