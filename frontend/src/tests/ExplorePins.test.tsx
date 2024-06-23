@@ -132,35 +132,39 @@ describe('ExplorePins', () => {
 
   test('renders posts', async () => {
     renderWithRouter(<ExplorePins />);
-
+  
+    // Filter out the posts that do not meet the condition
+    const postsToTest = mockPosts.filter(post => post.user.id !== 52);
+  
     // Wait for the posts to be loaded and displayed
     await waitFor(() => {
-      mockPosts.forEach(post => {
-        if (post.user.id !== 52) {
-          expect(screen.getByAltText(post.caption)).toBeInTheDocument();
-          expect(screen.getByText(post.caption)).toBeInTheDocument();
-          expect(screen.getByText(post.category.description)).toBeInTheDocument();
-        }
+      postsToTest.forEach(post => {
+        expect(screen.getByAltText(post.caption)).toBeInTheDocument();
+        expect(screen.getByText(post.caption)).toBeInTheDocument();
+        expect(screen.getByText(post.category.description)).toBeInTheDocument();
       });
     });
   });
-
+  
   test('each post links to the correct URL', async () => {
     const { history } = renderWithRouter(<ExplorePins />);
 
+    const postsToTest = mockPosts.filter(post => post.user.id !== 52);
+  
+    // Ensure there is at least one post to test
+    expect(postsToTest.length).toBeGreaterThan(0);
+  
     // Wait for the posts to be loaded and displayed
     await waitFor(() => {
-      mockPosts.forEach(post => {
-        if (post.user.id !== 52) {
-          const linkElement = screen.getByAltText(post.caption).closest('div');
-          expect(linkElement).toHaveAttribute('class', 'p-4 border rounded-lg shadow-sm cursor-pointer');
-        }
+      postsToTest.forEach(post => {
+        const linkElement = screen.getByAltText(post.caption).closest('div');
+        expect(linkElement).toHaveAttribute('class', 'p-4 border rounded-lg shadow-sm cursor-pointer');
       });
     });
-
-    // Simulate click and verify navigation
-    const firstPostLink = screen.getByAltText('Caption for post 1').closest('div') as HTMLDivElement;
+  
+    // Now that we've asserted the array has items, we can safely access the first item
+    const firstPostLink = screen.getByAltText(postsToTest[0].caption).closest('div') as HTMLDivElement;
     fireEvent.click(firstPostLink);
-    expect(history.location.pathname).toBe('/post/1');
+    expect(history.location.pathname).toBe(`/post/${postsToTest[0].id}`);
   });
 });
