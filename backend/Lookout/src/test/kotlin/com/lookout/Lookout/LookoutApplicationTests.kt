@@ -17,9 +17,18 @@ import org.springframework.jdbc.core.JdbcTemplate
 )
 class LookoutApplicationTests {
 
+    @Autowired
+    private lateinit var jdbcTemplate: JdbcTemplate
+
     @Test
 	fun contextLoads() {
 	}
+
+    @Test
+    fun `database connection test`() {
+        val result = jdbcTemplate.queryForObject("SELECT 1", Int::class.java)
+        assert(result == 1)
+    }
 
     companion object {
         @JvmStatic
