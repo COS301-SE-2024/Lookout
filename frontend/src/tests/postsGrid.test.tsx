@@ -90,6 +90,6 @@ describe('PostsGrid', () => {
     // Simulate click and verify navigation
     const firstPostLink = screen.getByAltText('Post 1').closest('a') as HTMLAnchorElement;
     fireEvent.click(firstPostLink);
-    expect(history.location.pathname).toBe('/post/1');
+    expect(history.location.pathname).toBe('/user_post/1');
   });
 });

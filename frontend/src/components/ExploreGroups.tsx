@@ -36,23 +36,21 @@ const ExploreGroups: React.FC = () => {
   const pageSize = 10; // Number of groups per page
 
   const fetchGroups = useCallback(() => {
-    fetch(`/api/groups?page=${page}&size=${pageSize}`)
+    fetch(`/api/groups`)
       .then(response => response.json())
       .then(data => {
-        // console.log('Fetched groups:', data);
-        const fetchedGroups = data.content;
-
-        // Filter out groups that are already present in the state
-        const newGroups = fetchedGroups.filter((newGroup: { id: number }) =>
-          !groups.some(existingGroup => existingGroup.id === newGroup.id)
-        );
-
-        setGroups(prevGroups => [...prevGroups, ...newGroups]);
-        setHasMore(newGroups.length > 0); // Update hasMore based on new data
-        setPage(prevPage => prevPage + 1); // Increment page for next fetch
+        console.log('Fetched groups:', data);
+        setGroups(data.content); // Set all groups retrieved from the server
+        setHasMore(false); // No more data to fetch, since we're fetching all at once
       })
       .catch(error => console.error('Error fetching groups:', error));
-  }, [page, pageSize, groups]);
+  }, []);
+  
+  
+
+  useEffect(() => {
+    fetchGroups();
+  }, []); // Fetch groups when the page changes
 
   const fetchJoinedGroups = useCallback(() => {
     fetch('/api/groups/user/1', {
@@ -63,17 +61,16 @@ const ExploreGroups: React.FC = () => {
     })
       .then(response => response.json())
       .then(data => {
-        // console.log('Fetched user\'s groups:', data);
         const joinedGroupIds = data.map((group: Group) => group.id);
+        console.log('Fetched user\'s groups:', data);
         setJoinedGroups(joinedGroupIds);
       })
       .catch(error => console.error('Error fetching user\'s groups:', error));
   }, []);
 
   useEffect(() => {
-    fetchGroups();
     fetchJoinedGroups();
-  }, [fetchGroups, fetchJoinedGroups]);
+  }, [fetchJoinedGroups]);
 
   const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });
@@ -88,42 +85,39 @@ const ExploreGroups: React.FC = () => {
     }
   };
 
+  const fetchMoreData = () => {
+    setPage(prevPage => prevPage + 1);
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <InfiniteScroll
-        dataLength={groups.length}
-        next={fetchGroups}
-        hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        endMessage={<p style={{ textAlign: 'center' }}>No more groups to show</p>}
-      >
-        <div className="space-y-4">
-          {groups.map(group => (
-            <div
-              key={group.id} // Ensure key is unique
-              className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
-              onClick={() => handleGroupClick(group)}
-            >
-              <img src={group.picture} alt={`${group.name} logo`} className="w-12 h-12 rounded-full mr-4" />
-              <div className="flex-1">
-                <div className="text-lg font-semibold">{group.name}</div>
-                <div className="text-gray-500">{group.user ? group.user.userName : 'No owner'}</div>
-                <p className="text-sm text-gray-600 mt-1">{group.description}</p>
-              </div>
-              <button
-                className={`flex items-center justify-center w-20 h-10 rounded-full ${
-                  joinedGroups.includes(group.id) ? 'bg-green-200 text-black border border-red-2' : 'bg-blue-500 text-white hover:bg-blue-600'
-                } focus:outline-none focus:ring-2 focus:ring-gray-400`}
-                onClick={(e) => handleJoinClick(e, group.id)}
-              >
-                {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
-              </button>
+      <div className="space-y-4">
+        {groups.map(group => (
+          <div
+            key={group.id} // Ensure key is unique
+            className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
+            onClick={() => handleGroupClick(group)}
+          >
+            <img src={group.picture} alt={`${group.name} logo`} className="w-12 h-12 rounded-full mr-4" />
+            <div className="flex-1">
+              <div className="text-lg font-semibold">{group.name}</div>
+              <div className="text-gray-500">{group.user ? group.user.userName : 'No owner'}</div>
+              <p className="text-sm text-gray-600 mt-1">{group.description}</p>
             </div>
-          ))}
-        </div>
-      </InfiniteScroll>
+            <button
+              className={`flex items-center justify-center w-20 h-10 rounded-full ${
+                joinedGroups.includes(group.id) ? 'bg-green-200 text-black border border-red-2' : 'bg-blue-500 text-white hover:bg-blue-600'
+              } focus:outline-none focus:ring-2 focus:ring-gray-400`}
+              onClick={(e) => handleJoinClick(e, group.id)}
+            >
+              {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
+  
 };
 
 export default ExploreGroups;
