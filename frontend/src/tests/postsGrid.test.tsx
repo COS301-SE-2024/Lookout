@@ -1,8 +1,8 @@
 /* eslint-disable testing-library/no-node-access */
-import React from 'react';
-import { render} from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import PostsGrid from './../components/postsGrid';
+// import React from 'react';
+// import { render} from '@testing-library/react';
+// import { MemoryRouter } from 'react-router-dom';
+// import PostsGrid from './../components/postsGrid';
 
 describe('PostsGrid', () => {
   // const posts = [
