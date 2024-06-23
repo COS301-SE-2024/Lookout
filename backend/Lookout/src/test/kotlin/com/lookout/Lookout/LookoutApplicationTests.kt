@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
+import kotlin.random.Random
 
 @SpringBootTest(
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -198,6 +198,66 @@ class LookoutApplicationTests {
             .andExpect(status().isOk)
     }
 
+    @Test
+    fun `post register user`(){
+
+        val postJson = """
+        {
+        "email": "Test12@email.com",
+        "username": "Test_User12",
+        "passcode": "Test@12345",
+        "role": "ADMIN"
+    } 
+        
+    """.trimIndent()
+
+        val updatedJson = addRandomValuesToJson(postJson)
+            mockMvc.perform(
+                post("/api/auth/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(updatedJson )
+            )
+                .andExpect(status().isOk)
+        }
+
+    @Test
+    fun `post login user`(){
+        val postJson = """
+        {
+        "email": "Test12@email.com",
+        "passcode": "Test@12345"
+    } 
+        
+    """.trimIndent()
+
+
+        mockMvc.perform(
+            post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `post logout user`(){
+        val postJson = """
+        {
+        "email": "Test12@email.com"
+    } 
+        
+    """.trimIndent()
+
+
+        mockMvc.perform(
+            post("/api/auth/logout")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().isOk)
+    }
+
+
 //    @Test
 //    fun `delete post test`() {
 //        mockMvc.perform(delete("/api/posts/16"))
@@ -249,6 +309,25 @@ class LookoutApplicationTests {
 
 
     ///////////////Test with invalid data////////////////
+
+
+    @Test
+    fun `post invalid login user`(){
+        val postJson = """
+        {
+        "email": "Test12@email.com",
+        "passcode": "Test@31212345"
+    } 
+        
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postJson)
+        )
+            .andExpect(status().is4xxClientError)
+    }
 
     @Test
     fun `delete invalid group test`() {
@@ -494,6 +573,25 @@ class LookoutApplicationTests {
             dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
         }
     }
+fun addRandomValuesToJson(json: String): String {
+    val randomSuffix = Random.nextInt(1000, 9999)
 
+    val updatedEmail = json.replace("\"email\": \"(.*?)\"".toRegex()) {
+        val email = it.groupValues[1]
+        "\"email\": \"${email + randomSuffix}\""
+    }
+
+    val updatedUsername = updatedEmail.replace("\"username\": \"(.*?)\"".toRegex()) {
+        val username = it.groupValues[1]
+        "\"username\": \"${username + randomSuffix}\""
+    }
+
+    val updatedPasscode = updatedUsername.replace("\"passcode\": \"(.*?)\"".toRegex()) {
+        val passcode = it.groupValues[1]
+        "\"passcode\": \"${passcode + randomSuffix}\""
+    }
+
+    return updatedPasscode
+}
 
 }
