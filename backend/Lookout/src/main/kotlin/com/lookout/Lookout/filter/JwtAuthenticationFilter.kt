@@ -27,17 +27,26 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authHeader = request.getHeader("Authorization")
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response)
-            return
+        var token: String? = null
+        var username: String? = null
+
+        if (request.cookies != null) {
+            for (cookie in request.cookies) {
+                if (cookie.name.equals("jwt")) {
+                    token = cookie.value
+                }
+            }
         }
 
-        val token = authHeader.substring(7)
-        val username = jwtService.extractUserEmail(token)
+        if(token == null){
+            filterChain.doFilter(request, response)
+            return;
+        }
 
-        if (username != null && SecurityContextHolder.getContext().authentication == null) {
+        username = jwtService.extractUserEmail(token)
+
+        if (username != null) {
             try {
                 val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
 
@@ -49,6 +58,7 @@ class JwtAuthenticationFilter(
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
 
                     SecurityContextHolder.getContext().authentication = authToken
+
                 }
             } catch (e: UsernameNotFoundException) {
                 logger.error("User not found: $username")
