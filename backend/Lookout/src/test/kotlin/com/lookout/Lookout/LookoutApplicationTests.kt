@@ -9,8 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
@@ -80,6 +79,64 @@ class LookoutApplicationTests {
         )
             .andExpect(status().isCreated)
     }
+
+    @Test
+    fun `update group test`() {
+        val groupJson = """
+        {
+          "name": "Unit Test Updated Group",
+          "description": "This group has been updated"
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            put("/api/groups/852")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(groupJson)
+        )
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `Get a group by user id`() {
+        mockMvc.perform(get("/api/groups/user/1"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `add member to group test`() {
+        val memberJson = """
+        {
+          "groupId": 2,
+          "userId": 52
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/groups/AddMemberToGroup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(memberJson)
+        )
+            .andExpect(status().isNoContent)
+    }
+
+    @Test
+    fun `remove member from group test`() {
+        val memberJson = """
+        {
+          "groupId": 2,
+          "userId": 52
+        }
+    """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/groups/RemoveMemberFromGroup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(memberJson)
+        )
+            .andExpect(status().isNoContent)
+    }
+
 
     companion object {
         @JvmStatic
