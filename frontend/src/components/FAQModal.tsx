@@ -21,7 +21,7 @@ const FAQModal: React.FC<FAQModalProps> = ({ onClose }) => {
 	};
 
 	const [searchQuery, setSearchQuery] = useState('');
-	const [faqItems, setFaqItems] = useState([
+	const [faqItems] = useState([
 		{ question: "What is Lookout?", answer: "Lookout is a modern Progressive Web Application designed for nature enthusiasts, conservationists, and hikers to interact and share information about their outdoor experiences. It focuses on proof of sightings and social interaction." },
 		{ question: "How can I download Lookout?", answer: "Lookout can be downloaded as a Progressive Web Application (PWA) directly to your mobile device, providing easy access and usage on the go." },
 		{ question: "What are the main features of Lookout?", answer: "Lookout offers geo-tagging of activities and points of interest, an intuitive user interface, offline accessibility, group creation and management, geographical heat maps, Gmail-based sign-in, and security concern reporting." },

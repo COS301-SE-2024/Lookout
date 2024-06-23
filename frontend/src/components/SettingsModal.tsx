@@ -95,7 +95,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 									{setting}
 									{setting === "Dark Theme" && (
 										<label className="ml-48 flex items-center">
-											<ToggleButton onToggle={handleToggle} />
+											<ToggleButton onToggle={handleToggle} initialState={isDarkTheme}/>
 										</label>
 									)}
 								</div>

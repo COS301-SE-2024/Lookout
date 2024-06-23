@@ -28,7 +28,7 @@ const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
-  const [faqItems, setFaqItems] = useState<FaqItem[]>([
+  const [tutorialItems] = useState<FaqItem[]>([
     { question: "How to Signup?", image: images.signup , answer: "Click “Sign Up with Google” if you have a Google account. \n If not, enter your email address in the Email address field. \nEnter your desired password.\nConfirm your password. \n Click Sign Up to finalize your account creation." },
     { question: "How to Login?", image: images.login, answer: "Click “Sign in with Google” if you have a Google account registered with Lookout.\nEnter your registered email address.\nEnter your password.\nIf you don't have an account, click “Sign Up” to register.\nClick “Submit” to log in and go to the home page.." },
     { question: "How to create a Pin?", image: images.createAPin, answer: "Click the add photo box to upload an image.\nEnter a title for the pin.\nEnter a description for the pin.\nSelect the group to add the pin to.\nClick Add Pin. If all fields are filled, you can view the pin on the map, within the group, and on your profile page."},
@@ -51,7 +51,7 @@ const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
     setSelectedQuestion(question === selectedQuestion ? null : question);
   };
 
-  const filteredFaqItems = faqItems.filter(item =>
+  const filteredTutorialItems = tutorialItems.filter(item =>
     item.question.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -70,7 +70,7 @@ const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
           onChange={handleSearchChange}
         />
         <ul>
-          {filteredFaqItems.map((item, index) => (
+          {filteredTutorialItems.map((item, index) => (
             <li key={index} className={modalStyles.questionItem} onClick={() => handleQuestionClick(item.question)}>
               <h1 className={modalStyles.questionTitle}>{item.question}</h1>
               {selectedQuestion === item.question && (
