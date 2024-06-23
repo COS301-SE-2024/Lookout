@@ -13,10 +13,15 @@ import {
 import '../assets/styles/home.css'
 import HomePins from '../components/HomePins';
 import { FaPlus } from "react-icons/fa";
+import Legend from '../components/Legend';
 
 
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
 type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string }
+const legendItems = [
+  { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' },
+  { name: 'Personal Pins', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
+];
 
 const filtergroups = [
   {
@@ -334,8 +339,8 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
               <PoiMarkers pois={locations} />
               <HomePins pin={pins} />
           </Map>
-        {/* Your map component or placeholder */}
-
+          <Legend items={legendItems} />
+       
       </div>
       <div className="fixed top-8 left-4 z-10">
         <IoMenu size={32} onClick={openMenuModal} />

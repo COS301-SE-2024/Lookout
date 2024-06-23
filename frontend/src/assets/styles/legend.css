@@ -1,0 +1,30 @@
+/* src/components/Legend.css */
+
+.legend {
+    background: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    position: absolute;
+    top: 10px; /* Adjusted to be at the top */
+    right: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+  }
+  
+  .legend h3 {
+    margin: 0 0 10px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .legend-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+  
