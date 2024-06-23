@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
@@ -56,6 +58,27 @@ class LookoutApplicationTests {
     fun `Get all groups with pagination`() {
         mockMvc.perform(get("/api/groups?page=0&size=10"))
             .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `create group test`() {
+        val groupJson = """
+            {
+              "name": "Unit Test",
+              "description": "This is a group for people interested in sharks",
+              "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
+              "user": {
+                "id": 2
+              }
+            }
+        """.trimIndent()
+
+        mockMvc.perform(
+            post("/api/groups")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(groupJson)
+        )
+            .andExpect(status().isCreated)
     }
 
     companion object {
