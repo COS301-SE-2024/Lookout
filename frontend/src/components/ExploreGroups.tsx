@@ -31,17 +31,17 @@ const ExploreGroups: React.FC = () => {
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const pageSize = 10; // Number of groups per page
+  // const [page, setPage] = useState(0);
+  // const [hasMore, setHasMore] = useState(true);
+  // const pageSize = 10; // Number of groups per page
 
   const fetchGroups = useCallback(() => {
     fetch(`/api/groups`)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched groups:', data);
+        console.log('Fetched groups:', data.content);
         setGroups(data.content); // Set all groups retrieved from the server
-        setHasMore(false); // No more data to fetch, since we're fetching all at once
+        // setHasMore(false); // No more data to fetch, since we're fetching all at once
       })
       .catch(error => console.error('Error fetching groups:', error));
   }, []);
@@ -50,7 +50,7 @@ const ExploreGroups: React.FC = () => {
 
   useEffect(() => {
     fetchGroups();
-  }, []); // Fetch groups when the page changes
+  }, []); 
 
   const fetchJoinedGroups = useCallback(() => {
     fetch('/api/groups/user/1', {
@@ -85,9 +85,9 @@ const ExploreGroups: React.FC = () => {
     }
   };
 
-  const fetchMoreData = () => {
-    setPage(prevPage => prevPage + 1);
-  };
+  // const fetchMoreData = () => {
+  //   setPage(prevPage => prevPage + 1);
+  // };
 
   return (
     <div className="container mx-auto p-4">
