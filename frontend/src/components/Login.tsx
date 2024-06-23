@@ -51,8 +51,8 @@ function Login() {
 					<h1 className="text-2xl font-bold">Login</h1>
 				</div>
 				<div className="flex justify-center mb-2">
-					<div className="w-32 h-32 bg-blue-500 flex items-center justify-center">
-						<h1 className="text-center text-white">Logo</h1>
+					<div className="w-56 h-56 flex items-center justify-center">
+					<img src="/logo.png" alt="Logo" />
 					</div>
 				</div>
 				<div className="flex justify-center mb-2">

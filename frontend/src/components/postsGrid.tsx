@@ -33,7 +33,7 @@ const PostsGrid: React.FC = () => {
   }, []);
 
   const handlePostsClick = (post: Post) => {
-    navigate(`/post/${post.id}`, { state: { post } });
+    navigate(`/user_post/${post.id}`, { state: { post } });
   };
 
   return (

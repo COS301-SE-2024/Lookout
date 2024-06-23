@@ -159,7 +159,7 @@ const UserPostDetails = () => {
       </button>
 
       <div className="flex justify-center items-center">
-        <p className="text-2xl font-bold mb-2">{post.category.description}</p>
+        <p className="text-2xl font-bold mb-2">{post.caption}</p>
       </div>
   
       <div className="flex justify-center items-center">

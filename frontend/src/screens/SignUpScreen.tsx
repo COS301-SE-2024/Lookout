@@ -54,11 +54,11 @@ const SignUpScreen = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="flex justify-center mb-4">
-          <div className="w-32 h-32 bg-blue-500 flex items-center justify-center">
-            <h1 className="text-center text-white">Logo</h1>
+          <div className="w-56 h-56 flex items-center justify-center">
+          <img src="/logo.png" alt="Logo" />
           </div>
         </div>
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center">
           <button className="w-full py-2 text-black bg-white-500 rounded-full hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300">
 		    <FcGoogle size={20} style={{marginRight: 10}} />
             Sign Up with Google
