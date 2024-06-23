@@ -16,6 +16,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import GroupDetail from "./components/GroupDetail";
 import PinDetail from "./components/PinDetail";
 import Profile from "./screens/Profile";
+import UserPostDetails from "./components/UserPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Main() {
@@ -52,12 +53,16 @@ function Main() {
 					element={<ProtectedRoute element={GroupDetail} />}
 				/>
 				<Route
-					path="/pin/:id"
+					path="/post/:id"
 					element={<ProtectedRoute element={PinDetail} />}
 				/>
 				<Route
 					path="/profile"
 					element={<ProtectedRoute element={Profile} />}
+				/>
+				<Route
+					path="/user_post/:id"
+					element={<ProtectedRoute element={UserPostDetails} />}
 				/>
 			</Route>
 		)

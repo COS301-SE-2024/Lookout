@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -35,24 +35,45 @@ const ExploreGroups: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const pageSize = 10; // Number of groups per page
 
-  // useEffect(() => {
-  //   fetchGroups();
-  // }, []);
-
-  const fetchGroups = () => {
+  const fetchGroups = useCallback(() => {
     fetch(`/api/groups?page=${page}&size=${pageSize}`)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched groups:', data);
-        setGroups(prevGroups => {
-          const newGroups = data.content.filter((newGroup: Group) => !prevGroups.some(group => group.id === newGroup.id));
-          return [...prevGroups, ...newGroups];
-        });
-        setHasMore(data.content.length > 0);
-        setPage(prevPage => prevPage + 1);
+        // console.log('Fetched groups:', data);
+        const fetchedGroups = data.content;
+
+        // Filter out groups that are already present in the state
+        const newGroups = fetchedGroups.filter((newGroup: { id: number }) =>
+          !groups.some(existingGroup => existingGroup.id === newGroup.id)
+        );
+
+        setGroups(prevGroups => [...prevGroups, ...newGroups]);
+        setHasMore(newGroups.length > 0); // Update hasMore based on new data
+        setPage(prevPage => prevPage + 1); // Increment page for next fetch
       })
       .catch(error => console.error('Error fetching groups:', error));
-  };
+  }, [page, pageSize, groups]);
+
+  const fetchJoinedGroups = useCallback(() => {
+    fetch('/api/groups/user/1', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        // console.log('Fetched user\'s groups:', data);
+        const joinedGroupIds = data.map((group: Group) => group.id);
+        setJoinedGroups(joinedGroupIds);
+      })
+      .catch(error => console.error('Error fetching user\'s groups:', error));
+  }, []);
+
+  useEffect(() => {
+    fetchGroups();
+    fetchJoinedGroups();
+  }, [fetchGroups, fetchJoinedGroups]);
 
   const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });
@@ -79,7 +100,7 @@ const ExploreGroups: React.FC = () => {
         <div className="space-y-4">
           {groups.map(group => (
             <div
-              key={group.id}
+              key={group.id} // Ensure key is unique
               className="flex items-center p-4 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
               onClick={() => handleGroupClick(group)}
             >

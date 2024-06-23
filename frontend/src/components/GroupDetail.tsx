@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface User {
@@ -26,13 +26,45 @@ interface Group {
   createdAt: string;
 }
 
+interface Post {
+  id: number;
+  user: User;
+  group: Group;
+  category: { id: number; description: string };
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
+  createdAt: string;
+}
+
 const GroupDetail: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { group } = location.state as { group: Group };
 
-  // Joined groups state and function to toggle joining
+  // State for posts
+  const [posts, setPosts] = useState<Post[]>([]);
+  // State for joined groups
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
+
+  // Fetch posts when component mounts
+  useEffect(() => {
+    fetch(`/api/posts/group/${group.id}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data); // Log the data to check the response format
+        setPosts(data.content); // Extract 'content' array from the response
+      })
+      .catch((error) => console.error('Error fetching posts:', error));
+  }, [group.id]);
+
+  // Handle join button click
   const handleJoinClick = (id: number) => {
     if (joinedGroups.includes(id)) {
       setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
@@ -40,15 +72,6 @@ const GroupDetail: React.FC = () => {
       setJoinedGroups([...joinedGroups, id]);
     }
   };
-
-  const images = [
-    'https://i.pinimg.com/originals/e7/87/20/e78720fc202723aee3a01954cd20b6c7.jpg',
-    'https://i.pinimg.com/originals/12/9d/5f/129d5f467b48f214224e155d4fa153b8.jpg',
-    'https://i.pinimg.com/originals/af/b6/9b/afb69b39eccdf0900aea9827c4d72e97.jpg',
-    'https://i.pinimg.com/originals/d7/45/a0/d745a0938efa00a33aef6f73135fe3ee.jpg',
-    'https://i.pinimg.com/originals/37/b4/63/37b463a42a437b19e5b8a7117fca473c.jpg',
-    'https://i.pinimg.com/originals/45/8d/a8/458da8fe602fe96f5c2fc0904e5bf3ce.jpg',
-  ];
 
   return (
     <div className="container mx-auto p-4 relative">
@@ -72,7 +95,6 @@ const GroupDetail: React.FC = () => {
         <h2 className="text-xl font-semibold">Created by: {group.user ? group.user.userName : 'No owner'}</h2>
         <p className="text-gray-600 mt-4">{group.description}</p>
       </div>
-      <br />
       <div className="text-center mt-4">
         <button
           className={`px-4 py-2 rounded-full ${
@@ -83,15 +105,28 @@ const GroupDetail: React.FC = () => {
           {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
         </button>
       </div>
-      <br />
-      <h2 className="text-xl font-bold mb-4">Pins in this group</h2>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {images.map((image, index) => (
-          <div key={index} className="w-full overflow-hidden rounded-md">
-            <img src={image} alt={`Pin ${index + 1}`} className="w-full h-full object-cover" style={{ height: '150px' }} />
-          </div>
-        ))}
-      </div>
+      <h2 className="text-xl font-bold mt-8 mb-4">Posts in this group</h2>
+      {posts.length === 0 ? (
+        <div className="text-center">
+          <img
+            src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
+            alt="No posts"
+            className="w-68 h-64 mx-auto mb-4"
+          />
+          <p className="text-gray-600">There are no posts in this group yet. Be the first to post!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {posts.map((post) => (
+            <div key={post.id} className="p-4 border rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold mb-2">{post.caption}</h3>
+              {post.picture && <img src={post.picture} alt={post.caption} className="w-full h-auto mb-2 rounded" />}
+              <p className="text-gray-700">{post.category.description}</p>
+              <p className="text-gray-500 text-sm mt-2">Posted on: {new Date(post.createdAt).toLocaleDateString()}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

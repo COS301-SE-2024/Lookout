@@ -1,72 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useState,useEffect } from "react";
 import PostsGrid from "../components/postsGrid";
 import GroupsList from "../components/GroupsList";
 import { FaCog } from "react-icons/fa";
 import SettingsModal from "../components/SettingsModal";
-
-type Group = {
-  id: number;
-  name: string;
-  owner: string;
-  picture: string;
-  description: string;
-  isPrivate: boolean;
-  createdAt: string;
-};
+import { useLocation } from 'react-router-dom';
+import Modal from '../components/Modal';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
   const [showSettings, setShowSettings] = useState(false);
+  const location = useLocation();
+  const { state } = location;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
-  ////////////Temp Posts for the grid//////////////////
-  const posts = [
-    {
-      id: 1,
-      imageUrl:
-        "https://i.pinimg.com/originals/2e/c0/77/2ec0773a1fcd847a5bd258ea4bba668e.jpg",
-      description: "The Setting Sun",
-    },
-    {
-      id: 2,
-      imageUrl:
-        "https://i.pinimg.com/originals/bf/d9/ad/bfd9ad5453ee46784f071cafb68c02b4.jpg",
-      description: "Zebra Family",
-    },
-    {
-      id: 3,
-      imageUrl:
-        "https://i.pinimg.com/originals/d7/45/a0/d745a0938efa00a33aef6f73135fe3ee.jpg",
-      description: "Curious Cheetah",
-    },
-    {
-      id: 4,
-      imageUrl:
-        "https://i.pinimg.com/originals/12/9d/5f/129d5f467b48f214224e155d4fa153b8.jpg",
-      description: "Beautiful Clouds",
-    },
-    {
-      id: 5,
-      imageUrl:
-        "https://i.pinimg.com/originals/37/b4/63/37b463a42a437b19e5b8a7117fca473c.jpg",
-      description: "Tall Giraffes",
-    },
-    // { id: 6, imageUrl: '', description: 'Post 6' },
-    // { id: 7, imageUrl: '', description: 'Post 7' },
-  ];
-  ////////////////////////////////////////////////////
-  const [ ,setGroups] = useState<Group[]>([]);
   useEffect(() => {
-    fetch("/api/groups/user/1", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setGroups(data))
-      .catch((error) => console.error("Error:", error));
-  }, []);
-  ////////////////////////////////////////////////////
+    if (state?.message) {
+      setMessage(state.message);
+      setModalOpen(true);
+    }
+  }, [state]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setMessage('');
+  };
+
   return (
     <div className="flex flex-col items-center">
       {/* Profile Picture and Username */}
@@ -112,8 +71,8 @@ const Profile = () => {
       <div className="mt-8 w-full">
         {activeTab === "posts" ? (
           <div>
-            <PostsGrid posts={posts} />
-          </div>
+          <PostsGrid />
+        </div>
         ) : (
           <div>
             <GroupsList />
@@ -121,6 +80,7 @@ const Profile = () => {
         )}
       </div>
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+      <Modal isOpen={modalOpen} onClose={closeModal} message={message} />
     </div>
   );
 };
