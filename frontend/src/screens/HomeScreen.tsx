@@ -18,7 +18,7 @@ import { FaPlus } from "react-icons/fa";
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
 type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string }
 
-const groups = [
+const filtergroups = [
   {
     id: 1,
     name: 'Group 1',
@@ -141,7 +141,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
 
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false); 
   const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  //const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
@@ -482,7 +482,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
                 >
                   All Pins
                 </button>
-                {/* {groups.map((group) => (
+                {filtergroups.map((group) => (
                   <div key={group.id}>
                     <button
                       className={`w-full text-left p-2 rounded mb-2 ${selectedGroup === group.id ? 'bg-gray-400' : 'bg-gray-200'}`}
@@ -500,7 +500,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
                       </div>
                     )}
                   </div>
-                ))} */}
+                ))}
               </div>
               <div className="flex justify-center mt-4">
                 <button className="py-2 px-4 bg-gray-500 text-white rounded-full hover:bg-gray-800" onClick={closeMenuModal}>Save</button>
