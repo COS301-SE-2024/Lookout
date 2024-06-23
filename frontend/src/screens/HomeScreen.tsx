@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
 import {
@@ -149,7 +149,6 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [caption, setCaption] = useState("");
   const [picture, setPicture] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const navigate = useNavigate();
 
