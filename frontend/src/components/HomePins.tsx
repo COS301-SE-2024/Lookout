@@ -73,7 +73,7 @@ const HomePins = (props: { pin: myPin[]}) => {
 		infoWindow.open(map, clickedMarker);
 	  }
 	}
-  }, [markers, infoWindow, map]);
+  }, [markers, infoWindow, map, props.pin]);
 	  
 	  
   
