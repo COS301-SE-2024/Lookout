@@ -90,7 +90,7 @@ class LookoutApplicationTests {
     """.trimIndent()
 
         mockMvc.perform(
-            put("/api/groups/852")
+            put("/api/groups/6")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(groupJson)
         )
