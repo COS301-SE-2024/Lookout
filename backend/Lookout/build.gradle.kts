@@ -35,7 +35,9 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("com.google.code.gson:gson:2.8.8")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	implementation("io.github.cdimascio:java-dotenv:5.2.2")
+	implementation("io.github.cdimascio:dotenv-kotlin:6.2.2")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
 tasks.withType<KotlinCompile> {

@@ -24,11 +24,11 @@ Content-Type: application/json
 ###
 
 ### Update a group
-PUT http://localhost:8080/api/groups/1
+PUT http://localhost:8080/api/groups/852
 Content-Type: application/json
 
 {
-  "name": "Updated Group",
+  "name": "Unit Test Updated Group",
   "description": "This group has been updated"
 }
 ###
@@ -104,7 +104,7 @@ Accept: application/json
 
 ###
 ### Get a post by ID
-GET http://localhost:8080/api/posts/4
+GET http://localhost:8080/api/posts/16
 Accept: application/json
 
 ###
@@ -151,24 +151,4 @@ Content-Type: application/json
   "caption": "This is an updated test post 2"
 }
 ###
-### Update a group
-POST http://localhost:8080/api/groups/update
-Content-Type: application/json
-
-{
-  "id": 2,
-  "name": "Lion Lovers",
-  "description": "This group has been updated",
-  "picture": "https://newpicturelink.com/updated.png"
-}
-
-###
-### Update a group
-POST http://localhost:8080/api/groups/update
-Content-Type: application/json
-
-{
-  "id": 2,
-  "picture": "https://cdn.pixabay.com/photo/2023/06/29/10/33/lion-8096155_640.png"
-}
 
