@@ -342,7 +342,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
           <Legend items={legendItems} />
        
       </div>
-      <div className="fixed top-8 left-4 z-10">
+      <div className="fixed top-12 left-4 z-10" id="menu">
         <IoMenu size={32} onClick={openMenuModal} />
       </div>
       <button

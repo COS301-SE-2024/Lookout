@@ -49,7 +49,7 @@ const ExplorePins: React.FC = () => {
       try {
         const response = await fetch('/api/posts?page=0&size=10');
         const data = await response.json();
-        setPosts(data.content); // Extract 'content' array from the response
+        setPosts(data.content); 
         setLoading(false);
       } catch (error) {
         console.error('Error fetching posts:', error);
