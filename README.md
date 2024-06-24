@@ -12,12 +12,28 @@ Lookout is a user-friendly, modern Progressive Web Application that revolutionis
 #### Presentation 
 [Presentation Slides](https://www.canva.com/design/DAGGzNdxJIM/EdyIRDxjNjx15nTT-CLuow/edit?utm_content=DAGGzNdxJIM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
+### Demo 2 
+#### Video
+[Click here to watch the video](https://drive.google.com/file/d/1UrBTJifCXV-yHAbEj_j_dNm9QJ34MU4S/view?usp=drive_link)
+#### Presentation 
+[Presentation Slides](https://www.canva.com/design/DAGIkcyZiA8/0lWGAHsODoysywsREWIeZA/edit?utm_content=DAGIkcyZiA8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## Documentation
 ### System Requirements Specification
-[Document](https://docs.google.com/document/d/1UkgVnXPqOBKVRTjN9Nch-aDsNfT3HQdWaNIfMvupLF8/edit?usp=sharing)
+[Document](https://docs.google.com/document/d/18haskjELA2bzefASJk7IEvZR6goTpgTfiPH5qLLa_ls/edit?usp=sharing)
 
-### Architechture Document
-[Document](https://docs.google.com/document/d/1yThlBho5OBcT462gsKlZ7XvjR97yGXgOPfE-pt5Nojc/edit?usp=sharing)
+### Architecture Document
+[Document](https://docs.google.com/document/d/1s9pJ168u8FVE9-WaPOOPQ1seRvuABpZilsn0Z44Fyqc/edit?usp=sharing)
+
+### User Manual
+[Document](https://docs.google.com/document/d/15tU9uLudmxxAuSv-f_iWeVuAI6r1ibI_m0u-JJTK1SQ/edit?usp=sharing)
+
+### Coding Standards
+[Document](https://docs.google.com/document/d/1M9lGyXP_OVmsBh-BcqxIA-yNJkj3M7etz4SdxX4ahCY/edit?usp=sharing)
+
+### Documentation Contribution
+[Document](https://docs.google.com/document/d/1JVdpuazwB2ZHZjVN5NB9GEG5sAj7hhj8l5hSQ986gXQ/edit?usp=sharing)
+
 
 ## Project Board
 [Click here to go to the project board](https://github.com/orgs/COS301-SE-2024/projects/81)
