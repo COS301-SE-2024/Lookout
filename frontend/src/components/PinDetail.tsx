@@ -1,56 +1,110 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; //useParams, 
+import { useNavigate, useParams } from 'react-router-dom';
 
-const PinDetail = () => {
-  //const { id } = useParams();
+interface Post {
+  id: number;
+  user: {
+    id: number;
+    userName: string;
+    email: string;
+    passcode: string;
+    role: string;
+    username: string;
+    authorities: { authority: string }[];
+    isCredentialsNonExpired: boolean;
+    isAccountNonExpired: boolean;
+    isAccountNonLocked: boolean;
+    password: string;
+    isEnabled: boolean;
+  };
+  group: {
+    id: number;
+    name: string;
+    description: string;
+    isPrivate: boolean;
+    user: {
+      id: number;
+      userName: string;
+      email: string;
+      passcode: string;
+      role: string;
+      username: string;
+      authorities: { authority: string }[];
+      isCredentialsNonExpired: boolean;
+      isAccountNonExpired: boolean;
+      isAccountNonLocked: boolean;
+      password: string;
+      isEnabled: boolean;
+    };
+    picture: string;
+    createdAt: string;
+  };
+  category: { id: number; description: string };
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
+  createdAt: string;
+}
+
+const PinDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [theme, setTheme] = useState("default");
+  const [theme, setTheme] = useState('default');
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const localStoreTheme = localStorage.getItem("data-theme") || "default";
+    const localStoreTheme = localStorage.getItem('data-theme') || 'default';
     setTheme(localStoreTheme);
   }, []);
 
-  // const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const newTheme = event.target.value;
-  //   localStorage.setItem("data-theme", newTheme);
-  //   setTheme(newTheme);
-  //   document.documentElement.setAttribute("data-theme", newTheme);
-  // };
-  
-
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "data-theme") {
-        const newTheme =
-          localStorage.getItem("data-theme") || "default";
+      if (event.key === 'data-theme') {
+        const newTheme = localStorage.getItem('data-theme') || 'default';
         setTheme(newTheme);
-        document.documentElement.setAttribute("data-theme", newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
       }
     };
 
-    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
-
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const pin = {
-    id: 1,
-    title: 'The Setting Sun ',
-    owner: 'Owner',
-    description: 'An elephant mother and her cub share a tender moment under the setting sun, a heartwarming scene of maternal love and protection on the African plains.',
-    imageUrl: 'https://i.pinimg.com/originals/2e/c0/77/2ec0773a1fcd847a5bd258ea4bba668e.jpg',
-  };
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`/api/posts/${id}`);
+        const data = await response.json();
+        setPost(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [id]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!post) {
+    return <p>Post not found.</p>;
+  }
 
   return (
-    <div className="container mx-auto p-4 relative">
+    <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
       <button
         onClick={() => navigate(-1)}
         className="absolute top-4 left-4 text-blue-500 hover:text-blue-700"
@@ -65,27 +119,26 @@ const PinDetail = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
-    
-      <div className="flex justify-center items-center">
-        <p className="text-2xl font-bold mb-2">{pin.title}</p>
-        {/* <p className="text-gray-600">{pin.owner}</p> */}
-      </div>
 
-        <div className="flex justify-center items-center  ">
-          <img src={pin.imageUrl} alt={`${pin.title} logo`} className="w-full rounded-lg mb-4" />
+      <div className="text-center mb-4">
+        <h1 className="text-2xl font-bold mb-2">{post.caption}</h1>
+        <img src={post.picture} alt={post.caption} className="w-full rounded-lg mb-4" />
+        <p className="text-gray-700">{post.category.description}</p>
+        <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
+        <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
+        <div className="mt-4">
+          <p>View it on the map below</p>
         </div>
-
-      <div className="flex justify-center items-center text-center">
-      {pin.description}
       </div>
-      <div className="flex justify-center items-center mt-4">
-        View it on the map below
-    </div>
-      <div className="h-20 bg-green-900"></div>
-      <div className="flex justify-center items-center">
-      <button className={`border border-${theme} text-${theme} hover:bg-${theme} hover:text-green font-bold py-2 px-4 rounded mt-4 transition-colors duration-50`} style={{ borderWidth: "4px" }}>
-        Join this group
-      </button>
+      <div className="h-20 bg-green-900 mb-4"></div>
+      <div className="flex justify-center">
+        <button
+          className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
+          onClick={() => navigate(`/group/${post.group.id}`, { state: { group: post.group } })}
+        >
+          View Group
+        </button>
       </div>
     </div>
   );

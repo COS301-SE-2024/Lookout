@@ -10,7 +10,7 @@ class EvnConfig {
     @Bean
     fun dotenv(): Dotenv {
         return Dotenv.configure()
-            .directory("..\\backend\\Lookout")
+            .directory("../backend/Lookout")
             .filename(".env")
             .load()
     }

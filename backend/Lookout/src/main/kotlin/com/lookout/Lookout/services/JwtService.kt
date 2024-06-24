@@ -23,7 +23,7 @@ class JwtService {
             .builder()
             .setSubject(user.email)
             .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + 60*60*100))
+            .setExpiration(Date(System.currentTimeMillis() + 60*60*1000))
             .signWith(getSignInKey())
             .compact()
 

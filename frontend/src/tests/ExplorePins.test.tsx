@@ -1,46 +1,170 @@
 /* eslint-disable testing-library/no-node-access */
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
 import ExplorePins from './../components/ExplorePins';
+import { JSX } from 'react/jsx-runtime';
+
+// Mock data
+const mockPosts = [
+  {
+    id: 1,
+    user: {
+      id: 1,
+      userName: 'JohnDoe',
+      email: 'john@example.com',
+      passcode: '1234',
+      role: 'user',
+      isEnabled: true,
+      password: 'password',
+      username: 'john',
+      authorities: [{ authority: 'ROLE_USER' }],
+      isAccountNonLocked: true,
+      isCredentialsNonExpired: true,
+      isAccountNonExpired: true,
+    },
+    group: {
+      id: 1,
+      name: 'Group One',
+      description: 'Description for group one',
+      isPrivate: false,
+      user: null,
+      picture: 'http://example.com/group1.jpg',
+      createdAt: '2021-01-01T00:00:00.000Z',
+    },
+    category: { id: 1, description: 'Category One' },
+    picture: 'http://example.com/post1.jpg',
+    latitude: 0,
+    longitude: 0,
+    caption: 'Caption for post 1',
+    createdAt: '2021-01-01T00:00:00.000Z',
+  },
+  {
+    id: 2,
+    user: {
+      id: 52,
+      userName: 'JaneDoe',
+      email: 'jane@example.com',
+      passcode: '5678',
+      role: 'user',
+      isEnabled: true,
+      password: 'password',
+      username: 'jane',
+      authorities: [{ authority: 'ROLE_USER' }],
+      isAccountNonLocked: true,
+      isCredentialsNonExpired: true,
+      isAccountNonExpired: true,
+    },
+    group: {
+      id: 2,
+      name: 'Group Two',
+      description: 'Description for group two',
+      isPrivate: false,
+      user: null,
+      picture: 'http://example.com/group2.jpg',
+      createdAt: '2021-02-01T00:00:00.000Z',
+    },
+    category: { id: 2, description: 'Category Two' },
+    picture: 'http://example.com/post2.jpg',
+    latitude: 0,
+    longitude: 0,
+    caption: 'Caption for post 2',
+    createdAt: '2021-02-01T00:00:00.000Z',
+  },
+  {
+    id: 3,
+    user: {
+      id: 3,
+      userName: 'JimDoe',
+      email: 'jim@example.com',
+      passcode: '91011',
+      role: 'user',
+      isEnabled: true,
+      password: 'password',
+      username: 'jim',
+      authorities: [{ authority: 'ROLE_USER' }],
+      isAccountNonLocked: true,
+      isCredentialsNonExpired: true,
+      isAccountNonExpired: true,
+    },
+    group: {
+      id: 3,
+      name: 'Group Three',
+      description: 'Description for group three',
+      isPrivate: false,
+      user: null,
+      picture: 'http://example.com/group3.jpg',
+      createdAt: '2021-03-01T00:00:00.000Z',
+    },
+    category: { id: 3, description: 'Category Three' },
+    picture: 'http://example.com/post3.jpg',
+    latitude: 0,
+    longitude: 0,
+    caption: 'Caption for post 3',
+    createdAt: '2021-03-01T00:00:00.000Z',
+  },
+];
+
+// Mocking the fetch API
+beforeEach(() => {
+  global.fetch = jest.fn(() =>
+    Promise.resolve(
+      new Response(JSON.stringify({ content: mockPosts }), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    )
+  );
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('ExplorePins', () => {
-  const renderWithRouter = (ui: React.ReactElement) => {
-    return render(<MemoryRouter>{ui}</MemoryRouter>);
+  const renderWithRouter = (ui: string | number | boolean | Iterable<React.ReactNode> | JSX.Element | null | undefined, { route = '/' } = {}) => {
+    const history = createMemoryHistory({ initialEntries: [route] });
+    return {
+      ...render(<Router location={history.location} navigator={history}>{ui}</Router>),
+      history,
+    };
   };
 
-  test('renders pin items', () => {
+  test('renders posts', async () => {
     renderWithRouter(<ExplorePins />);
-
-    const pins = [
-      { id: 1, imageUrl: 'https://i.pinimg.com/originals/2e/c0/77/2ec0773a1fcd847a5bd258ea4bba668e.jpg' },
-      { id: 2, imageUrl: 'https://i.pinimg.com/originals/37/b4/63/37b463a42a437b19e5b8a7117fca473c.jpg' },
-      { id: 3, imageUrl: 'https://i.pinimg.com/originals/d7/45/a0/d745a0938efa00a33aef6f73135fe3ee.jpg' },
-      { id: 4, imageUrl: 'https://i.pinimg.com/originals/af/b6/9b/afb69b39eccdf0900aea9827c4d72e97.jpg' },
-      { id: 5, imageUrl: 'https://i.pinimg.com/originals/bf/d9/ad/bfd9ad5453ee46784f071cafb68c02b4.jpg' },
-      { id: 6, imageUrl: 'https://i.pinimg.com/originals/12/9d/5f/129d5f467b48f214224e155d4fa153b8.jpg' },
-    ];
-
-    pins.forEach(pin => {
-      expect(screen.getByAltText(`Pin ${pin.id}`)).toBeInTheDocument();
+  
+    // Filter out the posts that do not meet the condition
+    const postsToTest = mockPosts.filter(post => post.user.id !== 52);
+  
+    // Wait for the posts to be loaded and displayed
+    await waitFor(() => {
+      postsToTest.forEach(post => {
+        expect(screen.getByAltText(post.caption)).toBeInTheDocument();
+        expect(screen.getByText(post.caption)).toBeInTheDocument();
+        expect(screen.getByText(post.category.description)).toBeInTheDocument();
+      });
     });
   });
+  
+  test('each post links to the correct URL', async () => {
+    const { history } = renderWithRouter(<ExplorePins />);
 
-  test('each pin links to the correct URL', () => {
-    renderWithRouter(<ExplorePins />);
-
-    const pins = [
-      { id: 1, imageUrl: 'https://i.pinimg.com/originals/2e/c0/77/2ec0773a1fcd847a5bd258ea4bba668e.jpg' },
-      { id: 2, imageUrl: 'https://i.pinimg.com/originals/37/b4/63/37b463a42a437b19e5b8a7117fca473c.jpg' },
-      { id: 3, imageUrl: 'https://i.pinimg.com/originals/d7/45/a0/d745a0938efa00a33aef6f73135fe3ee.jpg' },
-      { id: 4, imageUrl: 'https://i.pinimg.com/originals/af/b6/9b/afb69b39eccdf0900aea9827c4d72e97.jpg' },
-      { id: 5, imageUrl: 'https://i.pinimg.com/originals/bf/d9/ad/bfd9ad5453ee46784f071cafb68c02b4.jpg' },
-      { id: 6, imageUrl: 'https://i.pinimg.com/originals/12/9d/5f/129d5f467b48f214224e155d4fa153b8.jpg' },
-    ];
-
-    pins.forEach(pin => {
-      const linkElement = screen.getByAltText(`Pin ${pin.id}`).closest('a');
-      expect(linkElement).toHaveAttribute('href', `/pin/${pin.id}`);
+    const postsToTest = mockPosts.filter(post => post.user.id !== 52);
+  
+    // Ensure there is at least one post to test
+    expect(postsToTest.length).toBeGreaterThan(0);
+  
+    // Wait for the posts to be loaded and displayed
+    await waitFor(() => {
+      postsToTest.forEach(post => {
+        const linkElement = screen.getByAltText(post.caption).closest('div');
+        expect(linkElement).toHaveAttribute('class', 'p-4 border rounded-lg shadow-sm cursor-pointer');
+      });
     });
+  
+    // Now that we've asserted the array has items, we can safely access the first item
+    const firstPostLink = screen.getByAltText(postsToTest[0].caption).closest('div') as HTMLDivElement;
+    fireEvent.click(firstPostLink);
+    expect(history.location.pathname).toBe(`/post/${postsToTest[0].id}`);
   });
 });

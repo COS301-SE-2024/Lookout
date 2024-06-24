@@ -9,16 +9,16 @@ import java.time.Instant
 data class Groups(
     @Id
     @GeneratedValue
-    @Column(name = "groupid", nullable = false)
+    @Column(name = "groupid")
     var id: Long = 0,
 
     @Column(name = "name", nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(name = "description", nullable = false)
-    val description: String,
+    var description: String,
 
-    @Column(name = "private", nullable = false)
+    @Column(name = "private")
     val isPrivate: Boolean = false,
 
     @ManyToOne
@@ -26,8 +26,8 @@ data class Groups(
     var user: User? = null,
 
     @Column(name = "picture")
-    val picture: String? = "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
+    var picture: String? = "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     val createdAt: Instant? = Instant.now()
 )

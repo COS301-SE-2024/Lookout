@@ -8,11 +8,11 @@ import java.util.*
 data class GroupMembers (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     var id: Long = 0,
 
     @ManyToOne
-    @JoinColumn(name = "groupid", nullable = false)
+    @JoinColumn(name = "groupid")
     val group: Groups? = null,
 
     @ManyToOne
