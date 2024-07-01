@@ -159,7 +159,7 @@ Content-Type: application/json
 
 {
   "user": {
-    "id": 52
+    "id": 2
   },
   "post": {
     "id": 19,

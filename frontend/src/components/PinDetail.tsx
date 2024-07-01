@@ -53,6 +53,8 @@ const PinDetail: React.FC = () => {
   const [theme, setTheme] = useState('default');
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState<boolean>(false); // Track if the post is saved
+  const [userId] = useState<number>(2); // Assuming a fixed user ID for this example
 
   useEffect(() => {
     const localStoreTheme = localStorage.getItem('data-theme') || 'default';
@@ -92,8 +94,61 @@ const PinDetail: React.FC = () => {
       }
     };
 
+    const checkIfSaved = async () => {
+      try {
+        const response = await fetch(`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`);
+        const data = await response.json();
+        setIsSaved(data);
+      } catch (error) {
+        console.error('Error checking saved status:', error);
+      }
+    };
+
     fetchPost();
-  }, [id]);
+    checkIfSaved();
+  }, [id, userId]);
+
+  const handleSaveClick = async () => {
+    try {
+      const response = await fetch('/api/savedPosts/SavePost', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: { id: userId },
+          post: { id: post?.id, picture: post?.picture }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save post');
+      }
+
+      setIsSaved(true);
+    } catch (error: any) {
+      console.error('Error saving post:', error);
+    }
+  };
+
+  const handleUnsaveClick = async () => {
+    try {
+      const response = await fetch(`/api/savedPosts/UnsavePost?userId=${userId}&postId=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to unsave post');
+      }
+
+      setIsSaved(false);
+    } catch (error: any) {
+      console.error('Error unsaving post:', error);
+    }
+  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -138,6 +193,14 @@ const PinDetail: React.FC = () => {
           onClick={() => navigate(`/group/${post.group.id}`, { state: { group: post.group } })}
         >
           View Group
+        </button>
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          className={`font-bold py-2 px-4 rounded ${isSaved ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
+          onClick={isSaved ? handleUnsaveClick : handleSaveClick}
+        >
+          {isSaved ? 'Unsave' : 'Save'}
         </button>
       </div>
     </div>

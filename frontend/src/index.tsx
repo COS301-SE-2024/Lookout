@@ -17,6 +17,7 @@ import GroupDetail from "./components/GroupDetail";
 import PinDetail from "./components/PinDetail";
 import Profile from "./screens/Profile";
 import UserPostDetails from "./components/UserPostDetails";
+import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Main() {
@@ -63,6 +64,10 @@ function Main() {
                 <Route
                     path="/user_post/:id"
                     element={<ProtectedRoute element={UserPostDetails} />}
+                />
+                <Route
+                    path="/saved_post/:id"
+                    element={<ProtectedRoute element={SavedPostDetails} />}
                 />
             </Route>
         )
