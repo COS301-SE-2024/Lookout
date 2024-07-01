@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "saved_posts")
-data class SavedPosts (
+data class SavedPosts(
     @Id
     @GeneratedValue
     @Column(name = "id")
