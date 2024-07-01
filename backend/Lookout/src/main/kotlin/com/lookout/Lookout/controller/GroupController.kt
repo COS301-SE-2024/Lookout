@@ -1,5 +1,7 @@
 package com.lookout.Lookout.controller
 
+import com.lookout.Lookout.dto.GroupDto
+import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.AddOrRemoveMemberFromGroup
 import com.lookout.Lookout.entity.GroupMembers
 import com.lookout.Lookout.entity.Groups
@@ -20,10 +22,24 @@ class GroupController(private val groupService: GroupService) {
     fun getAllGroups(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Groups>> {
+    ): ResponseEntity<Page<GroupDto>> {
         val pageable: Pageable = PageRequest.of(page, size)
-        val groups = groupService.findAll(pageable)
+        val groups = groupService.findAll(pageable).map { group -> convertToDto(group) }
         return ResponseEntity.ok(groups)
+    }
+
+    fun convertToDto(group: Groups): GroupDto {
+        return GroupDto(
+            id = group.id,
+            name = group.name,
+            description = group.description,
+            isPrivate = group.isPrivate,
+            picture = group.picture.toString(),
+            createdAt = group.createdAt.toString(),
+            userId = group.user?.id ?: 0,
+            username = group.user?.username.toString(),
+            role = group.user?.role.toString()
+        )
     }
 
     @GetMapping("/{id}")
