@@ -93,7 +93,7 @@ Content-Type: application/json
   "picture": "https://toppng.com/uploads/preview/safari-animals-png-cute-safari-animals-11562876426jornlea5ue.png",
   "latitude": "123.123",
   "longitude": "123.123",
-  "caption": "This is a test post"
+  "caption": "This is a test post with the new DTO"
 }
 ###
 
@@ -104,7 +104,7 @@ Accept: application/json
 
 ###
 ### Get a post by ID
-GET http://localhost:8080/api/posts/16
+GET http://localhost:8080/api/posts/19
 Accept: application/json
 
 ###
@@ -141,7 +141,7 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-  "id": 4,
+  "id": 135,
   "userId": 52,
   "groupId": 2,
   "categoryId": 3,

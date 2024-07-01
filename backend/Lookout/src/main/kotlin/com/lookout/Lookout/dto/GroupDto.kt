@@ -5,7 +5,6 @@ data class GroupDto(
     val name: String,
     val description: String,
     val isPrivate: Boolean,
-//    val user: UserDto,
     val picture: String,
     val createdAt: String,
     val userId: Long,

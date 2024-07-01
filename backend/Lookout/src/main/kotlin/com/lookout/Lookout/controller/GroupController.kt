@@ -1,7 +1,6 @@
 package com.lookout.Lookout.controller
 
 import com.lookout.Lookout.dto.GroupDto
-import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.AddOrRemoveMemberFromGroup
 import com.lookout.Lookout.entity.GroupMembers
 import com.lookout.Lookout.entity.Groups
