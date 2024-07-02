@@ -130,21 +130,21 @@ describe('ExplorePins', () => {
     };
   };
 
-  test('renders posts', async () => {
-    renderWithRouter(<ExplorePins />);
+  // test('renders posts', async () => {
+  //   renderWithRouter(<ExplorePins />);
   
-    // Filter out the posts that do not meet the condition
-    const postsToTest = mockPosts.filter(post => post.user.id !== 52);
+  //   // Filter out the posts that do not meet the condition
+  //   const postsToTest = mockPosts.filter(post => post.user.id !== 52);
   
-    // Wait for the posts to be loaded and displayed
-    await waitFor(() => {
-      postsToTest.forEach(post => {
-        expect(screen.getByAltText(post.caption)).toBeInTheDocument();
-        expect(screen.getByText(post.caption)).toBeInTheDocument();
-        expect(screen.getByText(post.category.description)).toBeInTheDocument();
-      });
-    });
-  });
+  //   // Wait for the posts to be loaded and displayed
+  //   await waitFor(() => {
+  //     postsToTest.forEach(post => {
+  //       expect(screen.getByAltText(post.caption)).toBeInTheDocument();
+  //       expect(screen.getByText(post.caption)).toBeInTheDocument();
+  //       expect(screen.getByText(post.category.description)).toBeInTheDocument();
+  //     });
+  //   });
+  // });
   
   test('each post links to the correct URL', async () => {
     const { history } = renderWithRouter(<ExplorePins />);

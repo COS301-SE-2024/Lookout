@@ -14,8 +14,8 @@ POST http://localhost:8080/api/groups
 Content-Type: application/json
 
 {
-  "name": "Squid Squad",
-  "description": "This is a group for people interested in sharks",
+  "name": "Whale Squad",
+  "description": "This is a group for people interested in Whale",
   "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
   "user": {
     "id": 2
@@ -24,7 +24,7 @@ Content-Type: application/json
 ###
 
 ### Update a group
-PUT http://localhost:8080/api/groups/852
+PUT http://localhost:8080/api/groups/6
 Content-Type: application/json
 
 {
@@ -93,7 +93,7 @@ Content-Type: application/json
   "picture": "https://toppng.com/uploads/preview/safari-animals-png-cute-safari-animals-11562876426jornlea5ue.png",
   "latitude": "123.123",
   "longitude": "123.123",
-  "caption": "This is a test post"
+  "caption": "This is a test post with the new DTO"
 }
 ###
 
@@ -104,7 +104,7 @@ Accept: application/json
 
 ###
 ### Get a post by ID
-GET http://localhost:8080/api/posts/16
+GET http://localhost:8080/api/posts/19
 Accept: application/json
 
 ###
@@ -141,7 +141,7 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-  "id": 4,
+  "id": 135,
   "userId": 52,
   "groupId": 2,
   "categoryId": 3,

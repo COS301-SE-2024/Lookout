@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 interface Post {
   id: number;
+  description: String;
+  username: string;
+  groupName: string;
+  groupDescription: string;
   user: {
     id: number;
-    userName: string;
     email: string;
     passcode: string;
     role: string;
@@ -167,10 +170,10 @@ const UserPostDetails = () => {
       </div>
 
       <div className="text-center mb-4">
-        <p className="text-gray-700">{post.category.description}</p>
-        <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
-        <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
-        <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
+        <p className="text-gray-700">{post.description}</p>
+        <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
+        <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
       </div>
 
       {!isEditing ? (
