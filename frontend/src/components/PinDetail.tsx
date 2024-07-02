@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+
 
 interface Post {
   id: number;
@@ -55,6 +57,7 @@ const PinDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState<boolean>(false); // Track if the post is saved
   const [userId] = useState<number>(2); // Assuming a fixed user ID for this example
+  const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     const localStoreTheme = localStorage.getItem('data-theme') || 'default';
@@ -183,10 +186,22 @@ const PinDetail: React.FC = () => {
         <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
         <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
         <div className="mt-4">
-          <p>View it on the map below</p>
+          
         </div>
       </div>
-      <div className="h-20 bg-green-900 mb-4"></div>
+      <h2>View it on the map below:</h2>
+     
+      <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
+        <Map
+          defaultZoom={12}
+          defaultCenter={{ lat: post.latitude, lng: post.longitude }}
+          mapId="your-map-id"
+          style={{ height: '300px', width: '100%' }}
+        >
+          <Marker position={{ lat: post.latitude, lng: post.longitude }} />
+        </Map>
+      </APIProvider>
+      <br/>
       <div className="flex justify-center">
         <button
           className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"

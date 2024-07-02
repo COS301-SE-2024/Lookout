@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 interface Post {
   id: number;
   user: {
@@ -54,6 +55,7 @@ const UserPostDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
   const [error, setError] = useState<string | null>(null);
+  const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     fetch(`/api/posts/${id}`, {
@@ -215,6 +217,19 @@ const UserPostDetails = () => {
           Delete
         </button>
       </div>
+
+      <h2>View it on the map below:</h2>
+     
+      <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
+        <Map
+          defaultZoom={12}
+          defaultCenter={{ lat: post.latitude, lng: post.longitude }}
+          mapId="your-map-id"
+          style={{ height: '300px', width: '100%' }}
+        >
+          <Marker position={{ lat: post.latitude, lng: post.longitude }} />
+        </Map>
+      </APIProvider>
 
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}

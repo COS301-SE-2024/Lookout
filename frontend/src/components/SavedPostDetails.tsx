@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
 interface Post {
   id: number;
@@ -56,6 +57,7 @@ const SavedPostDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(true); // Assuming the post is initially saved
+  const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     fetch(`/api/posts/${id}`, {
@@ -87,9 +89,10 @@ const SavedPostDetails = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save post');
+        const errorText = await response.text();
+        throw new Error(`Failed to save post: ${errorText}`);
       }
-
+      
       setIsSaved(true);
       setIsLoading(false);
     } catch (error: any) {
@@ -241,6 +244,17 @@ const SavedPostDetails = () => {
           {isSaved ? 'Unsave' : 'Save'}
         </button>
       </div>
+      <br/>
+      <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
+        <Map
+          defaultZoom={12}
+          defaultCenter={{ lat: post.latitude, lng: post.longitude }}
+          mapId="your-map-id"
+          style={{ height: '300px', width: '100%' }}
+        >
+          <Marker position={{ lat: post.latitude, lng: post.longitude }} />
+        </Map>
+      </APIProvider>
 
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
