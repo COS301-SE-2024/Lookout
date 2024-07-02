@@ -3,6 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 interface Post {
   id: number;
+  username: string;
+  description: string;
+  groupName: string;
+  groupDescription: string;
   user: {
     id: number;
     userName: string;
@@ -22,9 +26,9 @@ interface Post {
     name: string;
     description: string;
     isPrivate: boolean;
+    userId: number;
+    username: string;
     user: {
-      id: number;
-      userName: string;
       email: string;
       passcode: string;
       role: string;
@@ -84,6 +88,7 @@ const PinDetail: React.FC = () => {
       try {
         const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
+        console.log(data);
         setPost(data);
         setLoading(false);
       } catch (error) {
@@ -123,10 +128,10 @@ const PinDetail: React.FC = () => {
       <div className="text-center mb-4">
         <h1 className="text-2xl font-bold mb-2">{post.caption}</h1>
         <img src={post.picture} alt={post.caption} className="w-full rounded-lg mb-4" />
-        <p className="text-gray-700">{post.category.description}</p>
-        <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
-        <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
-        <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
+        <p className="text-gray-700">{post.description}</p>
+        <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
+        <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
         <div className="mt-4">
           <p>View it on the map below</p>
         </div>

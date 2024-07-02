@@ -32,7 +32,10 @@ class PostController(private val postService: PostsService) {
             categoryId = post.category?.id ?: 0,
             picture = post.picture.toString(),
             latitude = post.latitude,
-            longitude = post.longitude
+            longitude = post.longitude,
+            description = post.category?.description.toString(),
+            groupName = post.group?.name.toString(),
+            groupDescription = post.group?.description.toString()
         )
     }
 

@@ -30,6 +30,7 @@ interface Post {
   id: number;
   user: User;
   group: Group;
+  description: string;
   category: { id: number; description: string };
   picture: string;
   latitude: number;
@@ -58,7 +59,7 @@ const GroupDetail: React.FC = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data); // Log the data to check the response format
+        console.log(data); // Log the data to check the response format
         setPosts(data.content); // Extract 'content' array from the response
       })
       .catch((error) => console.error('Error fetching posts:', error));
@@ -121,7 +122,7 @@ const GroupDetail: React.FC = () => {
             <div key={post.id} className="p-4 border rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold mb-2">{post.caption}</h3>
               {post.picture && <img src={post.picture} alt={post.caption} className="w-full h-auto mb-2 rounded" />}
-              <p className="text-gray-700">{post.category.description}</p>
+              <p className="text-gray-700">{post.description}</p>
               <p className="text-gray-500 text-sm mt-2">Posted on: {new Date(post.createdAt).toLocaleDateString()}</p>
             </div>
           ))}
