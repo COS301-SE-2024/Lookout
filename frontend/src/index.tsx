@@ -16,6 +16,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import GroupDetail from "./components/GroupDetail";
 import PinDetail from "./components/PinDetail";
 import Profile from "./screens/Profile";
+import UpdatedExplore from "./screens/UpdatedExplore";
 import UserPostDetails from "./components/UserPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -41,6 +42,10 @@ function Main() {
                 <Route
                     path="/explore"
                     element={<ProtectedRoute element={ExploreScreen} />}
+                />
+                <Route
+                    path="/explore2"
+                    element={<ProtectedRoute element={UpdatedExplore} />}
                 />
                 <Route
                     path="/groups"

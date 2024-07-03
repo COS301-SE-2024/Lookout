@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import HorizontalCarousel from './HorizontalCarousel'; // Adjust the import path as needed
 
 interface Article {
   title: string;
@@ -38,28 +38,25 @@ const ExploreArticles: React.FC = () => {
     fetchArticles();
   }, [fetchArticles]); // Include fetchArticles in the dependency array
 
+  const loadMoreArticles = useCallback(() => {
+    if (hasMore) {
+      fetchArticles();
+    }
+  }, [fetchArticles, hasMore]);
+
   return (
-    <div className="container mx-auto p-4">
-      <InfiniteScroll
-        dataLength={articles.length}
-        next={fetchArticles}
-        hasMore={hasMore}
-        loader={<h4>Loading articles...</h4>}
-        endMessage={<p style={{ textAlign: 'center' }}>No more articles to show</p>}
-      >
-        <div className="space-y-4">
-          {articles.map((article, index) => (
-            <a key={index} href={article.url} target="_blank" rel="noopener noreferrer" className="block border rounded-lg shadow-sm overflow-hidden hover:shadow-md">
-              <div className="p-4">
-                <div className="text-lg font-semibold">{article.title}</div>
-                <div className="text-gray-500">By {article.author}</div>
-                <img src={article.urlToImage} alt={article.title} className="w-full h-48 object-cover mt-2 rounded-lg" />
-                <p className="text-sm text-gray-600 mt-2">{article.description}</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </InfiniteScroll>
+    <div className="p-4 scrollbar-hide">
+      <HorizontalCarousel>
+        {articles.map((article, index) => (
+          <a key={index} href={article.url} target="_blank" rel="noopener noreferrer" className="min-w-[300px] bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <img src={article.urlToImage} alt={article.title} className="w-full h-48 object-cover" />
+            <div className="p-4">
+              <h2 className="text-l font-semibold">{article.title}</h2>
+              <p className="text-gray-500">By {article.author}</p>
+            </div>
+          </a>
+        ))}
+      </HorizontalCarousel>
     </div>
   );
 };
