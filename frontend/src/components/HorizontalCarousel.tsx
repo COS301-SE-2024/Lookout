@@ -1,4 +1,3 @@
-// src/components/HorizontalCarousel.tsx
 import React, { useRef } from 'react';
 import { FaChevronLeft } from "react-icons/fa";
 import { FaChevronRight } from "react-icons/fa";
