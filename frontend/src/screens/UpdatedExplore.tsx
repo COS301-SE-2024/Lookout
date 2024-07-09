@@ -94,6 +94,7 @@ interface Post {
   user: User;
   group: Group;
   description: String;
+  title: string;
   category: { id: number; description: string };
   picture: string;
   latitude: number;
@@ -224,8 +225,8 @@ const UpdatedExplore: React.FC = () => {
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
-              <h2 className="text-xl font-semibold">{post.caption}</h2>
-              <p className="text-gray-700">{post.description}</p>
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-700">{post.caption}</p>
               <p className="text-gray-500 text-sm flex items-center">
                 <IoLocationOutline className="h-4 w-4 mr-1" />
                 {/* {post.location} */}
