@@ -112,5 +112,5 @@ const ExplorePins: React.FC = () => {
     </div>
   );
 };
-
+  
 export default ExplorePins;

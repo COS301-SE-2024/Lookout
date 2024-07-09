@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import PostsGrid from "../components/postsGrid";
+import SavedPostsGrid from "../components/savedPostsGrid";
 import GroupsList from "../components/GroupsList";
 import { FaCog } from "react-icons/fa";
 import SettingsModal from "../components/SettingsModal";
@@ -53,7 +54,17 @@ const Profile = () => {
           }`}
           onClick={() => setActiveTab("posts")}
         >
-          Posts
+          Your Posts
+        </button>
+        <button
+          className={`button px-4 py-2 mr-4 rounded focus:outline-none ${
+            activeTab === "savedPosts"
+              ? "active border-b-4 border-[#6A994E] font-bold"
+              : ""
+          }`}
+          onClick={() => setActiveTab("savedPosts")}
+        >
+          Saved Posts
         </button>
         <button
           className={`button px-4 py-2 rounded focus:outline-none ${
@@ -65,20 +76,15 @@ const Profile = () => {
         >
           Groups
         </button>
+        
       </div>
 
       {/* Content */}
       <div className="mt-8 w-full">
-        {activeTab === "posts" ? (
-          <div>
-          <PostsGrid />
-        </div>
-        ) : (
-          <div>
-            <GroupsList />
-          </div>
-        )}
-      </div>
+				{activeTab === "posts" && <PostsGrid />}
+				{activeTab === "savedPosts" && <SavedPostsGrid />}
+				{activeTab === "groups" && <GroupsList/>}
+			</div>
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
       <Modal isOpen={modalOpen} onClose={closeModal} message={message} />
     </div>

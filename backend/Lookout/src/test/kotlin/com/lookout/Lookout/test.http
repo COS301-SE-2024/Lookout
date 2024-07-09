@@ -152,3 +152,33 @@ Content-Type: application/json
 }
 ###
 
+###Save a post
+POST /api/savedPosts/SavePost HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "user": {
+    "id": 2
+  },
+  "post": {
+    "id": 19,
+    "picture": ""
+  }
+}
+###
+
+### Unsave a post
+DELETE /api/savedPosts/UnsavePost?userId=1&postId=19 HTTP/1.1
+Host: localhost:8080
+###
+
+### Get saved posts by user ID
+GET /api/savedPosts/user/2 HTTP/1.1
+Host: localhost:8080
+###
+
+### Check if a post is saved by a user
+GET /api/savedPosts/isPostSaved?userId=52&postId=20 HTTP/1.1
+Host: localhost:8080
+###

@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+
 interface Post {
   id: number;
-  description: String;
-  username: string;
-  groupName: string;
-  groupDescription: string;
   user: {
     id: number;
+    userName: string;
     email: string;
     passcode: string;
     role: string;
@@ -50,14 +48,16 @@ interface Post {
   createdAt: string;
 }
 
-const UserPostDetails = () => {
+const SavedPostDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
-  const [editableCaption, setEditableCaption] = useState<string>(''); 
+  const [editableCaption, setEditableCaption] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState<boolean>(true); // Assuming the post is initially saved
+  const [userId] = useState<number>(2);
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
@@ -70,15 +70,42 @@ const UserPostDetails = () => {
       .then(response => response.json())
       .then(data => {
         setPost(data);
-        setEditableCaption(data.caption); 
+        setEditableCaption(data.caption);
       })
       .catch(error => console.error('Error fetching post:', error));
   }, [id]);
 
-  const handleDeleteClick = async () => {
+  const handleSaveClick = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/posts/${id}`, {
+      const response = await fetch('/api/savedPosts/SavePost', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: { id: post?.user.id },
+          post: { id: post?.id, picture: post?.picture }
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to save post: ${errorText}`);
+      }
+      
+      setIsSaved(true);
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error.message);
+      setIsLoading(false);
+    }
+  };
+
+  const handleUnsaveClick = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/savedPosts/UnsavePost?userId=${userId}&postId=${post?.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -86,15 +113,13 @@ const UserPostDetails = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete post');
+        throw new Error('Failed to unsave post');
       }
 
-     // console.log("Post deleted successfully, navigating to profile");
+      setIsSaved(false);
       setIsLoading(false);
-      navigate('/profile', { state: { message: 'Post was successfully deleted' } });
     } catch (error: any) {
       setError(error.message);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -105,7 +130,7 @@ const UserPostDetails = () => {
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    setEditableCaption(post ? post.caption : ''); 
+    setEditableCaption(post ? post.caption : '');
   };
 
   const handleSaveEdit = async () => {
@@ -133,8 +158,8 @@ const UserPostDetails = () => {
       }
 
       const updatedPost = await response.json();
-      setPost(updatedPost); 
-      setIsEditing(false); 
+      setPost(updatedPost);
+      setIsEditing(false);
       setIsLoading(false);
     } catch (error: any) {
       setError(error.message);
@@ -166,16 +191,16 @@ const UserPostDetails = () => {
       <div className="flex justify-center items-center">
         <p className="text-2xl font-bold mb-2">{post.caption}</p>
       </div>
-  
+
       <div className="flex justify-center items-center">
         <img src={post.picture} alt={`${post.caption} logo`} className="w-full rounded-lg mb-4" />
       </div>
 
       <div className="text-center mb-4">
-        <p className="text-gray-700">{post.description}</p>
-        <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
-        <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
-        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
+        <p className="text-gray-700">{post.category.description}</p>
+        <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
+        <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
       </div>
 
       {!isEditing ? (
@@ -211,18 +236,16 @@ const UserPostDetails = () => {
           </div>
         </div>
       )}
-      <br/>
+      <br />
       <div className="flex justify-center items-center text-center">
         <button
-          onClick={handleDeleteClick}
-          className="mr-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+          onClick={isSaved ? handleUnsaveClick : handleSaveClick}
+          className={`mr-2 ${isSaved ? 'bg-red-500' : 'bg-green-500'} text-white px-4 py-2 rounded-lg hover:${isSaved ? 'bg-red-600' : 'bg-green-600'}`}
         >
-          Delete
+          {isSaved ? 'Unsave' : 'Save'}
         </button>
       </div>
-
-      <h2>View it on the map below:</h2>
-     
+      <br/>
       <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
         <Map
           defaultZoom={12}
@@ -240,4 +263,4 @@ const UserPostDetails = () => {
   );
 };
 
-export default UserPostDetails;
+export default SavedPostDetails;
