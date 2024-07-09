@@ -18,7 +18,7 @@ const PostsGrid: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    fetch('/api/posts/user/52', {
+    fetch('/api/posts/user/1', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

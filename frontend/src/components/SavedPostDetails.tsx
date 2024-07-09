@@ -57,6 +57,7 @@ const SavedPostDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(true); // Assuming the post is initially saved
+  const [userId] = useState<number>(2);
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
@@ -104,7 +105,7 @@ const SavedPostDetails = () => {
   const handleUnsaveClick = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/savedPosts/UnsavePost?userId=${post?.user.id}&postId=${post?.id}`, {
+      const response = await fetch(`/api/savedPosts/UnsavePost?userId=${userId}&postId=${post?.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
