@@ -38,11 +38,11 @@ const ExploreArticles: React.FC = () => {
     fetchArticles();
   }, [fetchArticles]); // Include fetchArticles in the dependency array
 
-  const loadMoreArticles = useCallback(() => {
-    if (hasMore) {
-      fetchArticles();
-    }
-  }, [fetchArticles, hasMore]);
+  // const loadMoreArticles = useCallback(() => {
+  //   if (hasMore) {
+  //     fetchArticles();
+  //   }
+  // }, [fetchArticles, hasMore]);
 
   return (
     <div className="p-4 scrollbar-hide">

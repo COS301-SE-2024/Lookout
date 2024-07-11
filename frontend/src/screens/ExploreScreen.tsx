@@ -5,15 +5,6 @@ import { IoLocationOutline } from "react-icons/io5";
 import CategoryPill from "../components/CategoryPill";
 import { useNavigate } from "react-router-dom";
 
-interface PointOfInterest {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  location: string;
-  category: string;
-}
-
 // const pointsOfInterest: PointOfInterest[] = [
 //   {
 //     id: 1,
