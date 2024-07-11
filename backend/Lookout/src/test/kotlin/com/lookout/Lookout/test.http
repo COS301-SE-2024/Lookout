@@ -18,7 +18,7 @@ Content-Type: application/json
   "description": "This is a group for people interested in Whale",
   "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
   "user": {
-    "id": 2
+    "id": 1
   }
 }
 ###
@@ -87,13 +87,14 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-  "userid": 52,
+  "userid": 1,
   "groupid": 2,
-  "categoryid": 3,
-  "picture": "https://toppng.com/uploads/preview/safari-animals-png-cute-safari-animals-11562876426jornlea5ue.png",
+  "categoryid": 5,
+  "picture": "https://media.istockphoto.com/id/1427130990/photo/old-broken-withered-wooden-fence-around-private-property.jpg?s=612x612&w=0&k=20&c=QXSbJUcfW16oajIGvPNeTchIUfThhpUUdEMZ_kZRPqk=",
   "latitude": "123.123",
   "longitude": "123.123",
-  "caption": "This is a test post with the new DTO"
+  "caption": "Found this fence breach",
+  "title": "Security Concern"
 }
 ###
 

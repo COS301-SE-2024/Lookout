@@ -34,6 +34,7 @@ class PostController(private val postService: PostsService) {
             latitude = post.latitude,
             longitude = post.longitude,
             description = post.category?.description.toString(),
+            title = post.title.toString(),
             groupName = post.group?.name.toString(),
             groupDescription = post.group?.description.toString()
         )
