@@ -12,7 +12,7 @@ interface Article {
 const ExploreArticles: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [, setHasMore] = useState(true);
   const pageSize = 10; // Number of articles per page
 
   const fetchArticles = useCallback(() => {
