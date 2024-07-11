@@ -89,12 +89,12 @@ Content-Type: application/json
 {
   "userid": 1,
   "groupid": 2,
-  "categoryid": 1,
-  "picture": "https://www.krugerpark.co.za/images/black-maned-lion-shem-compion-786x500.jpg",
+  "categoryid": 5,
+  "picture": "https://media.istockphoto.com/id/1427130990/photo/old-broken-withered-wooden-fence-around-private-property.jpg?s=612x612&w=0&k=20&c=QXSbJUcfW16oajIGvPNeTchIUfThhpUUdEMZ_kZRPqk=",
   "latitude": "123.123",
   "longitude": "123.123",
-  "caption": "Just saw a lion in the safari park",
-  "title": "Lion Sighting"
+  "caption": "Found this fence breach",
+  "title": "Security Concern"
 }
 ###
 

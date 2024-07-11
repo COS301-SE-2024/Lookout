@@ -106,6 +106,9 @@ interface Post {
 const UpdatedExplore: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [animalposts, setanimalPosts] = useState<Post[]>([]);
+  const [campingposts, setcampingPosts] = useState<Post[]>([]);
+  const [poiposts, setpoiPosts] = useState<Post[]>([]);
+  const [securityposts, setsecurityPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -114,12 +117,27 @@ const UpdatedExplore: React.FC = () => {
       try {
         const response = await fetch('/api/posts/category/3?page=0&size=10');
         const animalResponse =  await fetch('/api/posts/category/1?page=0&size=10')
+        const campResponse =  await fetch('/api/posts/category/2?page=0&size=10')
+        const poiResponse = await fetch('/api/posts/category/4?page=0&size=10')
+        const securityResponse = await fetch('/api/posts/category/5?page=0&size=10')
+
         const data = await response.json();
         const animalData= await animalResponse.json();
-        console.log(data)
-        console.log(animalData)
+        const campData = await campResponse.json();
+        const poiData = await poiResponse.json();
+        const securityData = await securityResponse.json();
+        
+        // console.log(data)
+        // console.log(animalData)
+        // console.log(campData)
+        // console.log(poiData)
+
         setPosts(data.content); 
         setanimalPosts(animalData.content);
+        setcampingPosts(campData.content);
+        setpoiPosts(poiData.content);
+        setsecurityPosts(securityData.content);
+
         setLoading(false);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -152,6 +170,9 @@ const UpdatedExplore: React.FC = () => {
   }
   const filteredPosts = posts.filter(post => post.userId !== 52);
   const filteredAnimalPosts = animalposts.filter(post => post.userId ! = 52)
+  const filteredCampPosts = campingposts.filter(post => post.userId ! = 52)
+  const filteredPoiPosts = poiposts.filter(post => post.userId ! = 52)
+  const filteredSecurityPosts = securityposts.filter(post => post.userId ! = 52)
 
   return (
     <div className="p-4 scrollbar-hide">
@@ -195,24 +216,25 @@ const UpdatedExplore: React.FC = () => {
 
       <h1 className="text-2xl font-bold mb-4">Campsite</h1>
       <HorizontalCarousel>
-        {pointsOfInterest.map((poi) => (
+        {filteredCampPosts.map((post) => (
           <div
-            key={poi.id}
+            key={post.id}
             className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
+            onClick={() => handlePostClick(post)}
           >
             <img
-              src={poi.imageUrl}
-              alt={poi.title}
+              src={post.picture}
+              alt={post.caption}
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
-              <h2 className="text-xl font-semibold">{poi.title}</h2>
-              <p className="text-gray-700">{poi.description}</p>
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-700">{post.caption}</p>
               <p className="text-gray-500 text-sm flex items-center">
                 <IoLocationOutline className="h-4 w-4 mr-1" />
-                {poi.location}
+                {/* {post.location} */}
               </p>
-              <CategoryPill category={poi.category} />
+              <CategoryPill category={"Campsite"} />
             </div>
           </div>
         ))}
@@ -246,24 +268,51 @@ const UpdatedExplore: React.FC = () => {
 
       <h1 className="text-2xl font-bold mb-4">Explore Points of Interest</h1>
       <HorizontalCarousel>
-        {pointsOfInterest.map((poi) => (
+        {filteredPoiPosts.map((post) => (
           <div
-            key={poi.id}
+            key={post.id}
             className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
+            onClick={() => handlePostClick(post)}
           >
             <img
-              src={poi.imageUrl}
-              alt={poi.title}
+              src={post.picture}
+              alt={post.caption}
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
-              <h2 className="text-xl font-semibold">{poi.description}</h2>
-              <p className="text-gray-700">{poi.title}</p>
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-700">{post.caption}</p>
               <p className="text-gray-500 text-sm flex items-center">
                 <IoLocationOutline className="h-4 w-4 mr-1" />
-                {poi.location}
+                {/* {post.location} */}
               </p>
-              <CategoryPill category={poi.category} />
+              <CategoryPill category={"Point of Interest"} />
+            </div>
+          </div>
+        ))}
+      </HorizontalCarousel>
+
+      <h1 className="text-2xl font-bold mb-4">Security Concerns</h1>
+      <HorizontalCarousel>
+        {filteredSecurityPosts.map((post) => (
+          <div
+            key={post.id}
+            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
+            onClick={() => handlePostClick(post)}
+          >
+            <img
+              src={post.picture}
+              alt={post.caption}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-700">{post.caption}</p>
+              <p className="text-gray-500 text-sm flex items-center">
+                <IoLocationOutline className="h-4 w-4 mr-1" />
+                {/* {post.location} */}
+              </p>
+              <CategoryPill category={"Security Concern"} />
             </div>
           </div>
         ))}
