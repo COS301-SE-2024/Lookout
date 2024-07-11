@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+
 interface Post {
   id: number;
-  description: String;
   username: string;
+  description: string;
   groupName: string;
   groupDescription: string;
   user: {
     id: number;
+    userName: string;
     email: string;
     passcode: string;
     role: string;
@@ -25,9 +27,9 @@ interface Post {
     name: string;
     description: string;
     isPrivate: boolean;
+    userId: number;
+    username: string;
     user: {
-      id: number;
-      userName: string;
       email: string;
       passcode: string;
       role: string;
