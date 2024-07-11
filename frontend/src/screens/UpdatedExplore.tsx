@@ -105,6 +105,7 @@ interface Post {
 
 const UpdatedExplore: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [animalposts, setanimalPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -112,9 +113,13 @@ const UpdatedExplore: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch('/api/posts/category/3?page=0&size=10');
+        const animalResponse =  await fetch('/api/posts/category/1?page=0&size=10')
         const data = await response.json();
+        const animalData= await animalResponse.json();
         console.log(data)
+        console.log(animalData)
         setPosts(data.content); 
+        setanimalPosts(animalData.content);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -133,7 +138,7 @@ const UpdatedExplore: React.FC = () => {
     navigate(`/post/${post.id}`, { state: { post } });
   }
 
-  if (posts.length === 0) {
+  if (posts.length === 0 || animalposts.length === 0) {
     return (
       <div className="text-center">
         <img
@@ -146,6 +151,7 @@ const UpdatedExplore: React.FC = () => {
     );
   }
   const filteredPosts = posts.filter(post => post.userId !== 52);
+  const filteredAnimalPosts = animalposts.filter(post => post.userId ! = 52)
 
   return (
     <div className="p-4 scrollbar-hide">
@@ -163,24 +169,25 @@ const UpdatedExplore: React.FC = () => {
 
       <h1 className="text-2xl font-bold mb-4">Animal Sighting</h1>
       <HorizontalCarousel>
-        {pointsOfInterest.map((poi) => (
+        {filteredAnimalPosts.map((post) => (
           <div
-            key={poi.id}
+            key={post.id}
             className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
+            onClick={() => handlePostClick(post)}
           >
             <img
-              src={poi.imageUrl}
-              alt={poi.title}
+              src={post.picture}
+              alt={post.caption}
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
-              <h2 className="text-xl font-semibold">{poi.title}</h2>
-              <p className="text-gray-700">{poi.description}</p>
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-700">{post.caption}</p>
               <p className="text-gray-500 text-sm flex items-center">
                 <IoLocationOutline className="h-4 w-4 mr-1" />
-                {poi.location}
+                {/* {post.location} */}
               </p>
-              <CategoryPill category={poi.category} />
+              <CategoryPill category={"Animal Sighting"} />
             </div>
           </div>
         ))}

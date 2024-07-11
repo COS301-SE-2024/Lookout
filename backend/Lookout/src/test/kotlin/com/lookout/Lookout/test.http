@@ -89,11 +89,12 @@ Content-Type: application/json
 {
   "userid": 1,
   "groupid": 2,
-  "categoryid": 3,
-  "picture": "https://toppng.com/uploads/preview/safari-animals-png-cute-safari-animals-11562876426jornlea5ue.png",
+  "categoryid": 1,
+  "picture": "https://www.krugerpark.co.za/images/black-maned-lion-shem-compion-786x500.jpg",
   "latitude": "123.123",
   "longitude": "123.123",
-  "caption": "This is a test post with the new DTO"
+  "caption": "Just saw a lion in the safari park",
+  "title": "Lion Sighting"
 }
 ###
 
