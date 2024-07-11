@@ -36,22 +36,22 @@ const Navigationbar = () => {
 						<ul className="flex justify-center space-x-4">
 							<li>
 								<Link to="/" className="text-white">
-									<FaHouse className="mr-1" /> Home
+									<FaHouse className="ml-4" /> Home
 								</Link>
 							</li>
 							<li>
 								<Link to="/explore" className="text-white">
-									<FaMap className="mr-1" /> Explore
+									<FaMap className="ml-4" /> Explore
 								</Link>
 							</li>
 							<li>
 								<Link to="/groups" className="text-white">
-									<FaUsers className="mr-1" /> Groups
+									<FaUsers className="ml-4" /> Groups
 								</Link>
 							</li>
 							<li>
 								<Link to="/profile" className="text-white">
-									<FaUser className="mr-1" /> Profile
+									<FaUser className="ml-4" /> Profile
 								</Link>
 							</li>
 						</ul>

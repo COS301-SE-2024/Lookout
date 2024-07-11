@@ -9,13 +9,13 @@ import {
     createRoutesFromElements,
 } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
-import ExploreScreen from "./screens/ExploreScreen";
 import GroupScreen from "./screens/GroupScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import GroupDetail from "./components/GroupDetail";
 import PinDetail from "./components/PinDetail";
 import Profile from "./screens/Profile";
+import ExploreScreen from "./screens/ExploreScreen";
 import UserPostDetails from "./components/UserPostDetails";
 import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";

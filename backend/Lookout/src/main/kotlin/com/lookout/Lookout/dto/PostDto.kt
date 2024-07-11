@@ -10,6 +10,7 @@ data class PostDto (
     val groupName: String,
     val groupDescription: String,
     val description: String,
+    val title: String,
     val categoryId: Long,
     val picture: String,
     val latitude: Double,
