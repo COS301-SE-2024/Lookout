@@ -99,7 +99,7 @@ Content-Type: application/json
 ###
 
 ### Get all posts
-GET http://localhost:8080/api/posts/user/52
+GET http://localhost:8080/api/posts/user/1
 Accept: application/json
 ###
 

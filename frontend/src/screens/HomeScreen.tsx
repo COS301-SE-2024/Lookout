@@ -135,6 +135,7 @@ interface Post {
   latitude: number;
   longitude: number;
   caption: string;
+  title: string;
 }
 
 type Group = { id: number, name: string, categories: { id: number, name: string }[] };
@@ -142,11 +143,10 @@ type Group = { id: number, name: string, categories: { id: number, name: string 
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
+  const id = 2; 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false); 
   const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
-  //const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
@@ -154,6 +154,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [caption, setCaption] = useState("");
   const [picture, setPicture] = useState("");
+  const [title, setTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const navigate = useNavigate();
 
@@ -222,13 +223,14 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
     }
 
     const newPost = {
-      userid: 52,
+      userid: id,
       groupid: selectedGroup,
       categoryid: selectedCategory,
       picture: picture || "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
       latitude: latitude,
       longitude: longitude,
-      caption: caption
+      caption: caption,
+      title: title
     };
 
     try {
@@ -248,6 +250,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
       const createdPost = await response.json();
       //console.log('Post created successfully:', createdPost);
       setCaption("");
+      setTitle("");
       setPicture("");
       setSelectedGroup(null);
       setSelectedCategory(null);
@@ -305,7 +308,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
 
 
   useEffect(() => {
-    fetch('/api/groups/user/1', {
+    fetch(`/api/groups/user/${id}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -313,7 +316,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        //console.log(data); // Log the data to check the response format
+        // console.log(data); // Log the data to check the response format
         setGroups(data);
       })
       .catch((error) => console.error('Error fetching groups:', error));
@@ -439,6 +442,23 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
                   placeholder="Enter description"
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
+                ></textarea>
+              </div>
+
+              <div className="mb-3">
+                <label
+                  htmlFor="formDescription"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Title:
+                </label>
+                <textarea
+                  id="formDescription"
+                  rows={2}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter description"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 ></textarea>
               </div>
             </form>
