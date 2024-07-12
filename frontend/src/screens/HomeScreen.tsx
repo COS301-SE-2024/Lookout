@@ -14,6 +14,10 @@ import '../assets/styles/home.css'
 import HomePins from '../components/HomePins';
 import { FaPlus } from "react-icons/fa";
 import Legend from '../components/Legend';
+import { Fa0 } from 'react-icons/fa6';
+
+import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
+
 
 
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
@@ -142,15 +146,40 @@ type Group = { id: number, name: string, categories: { id: number, name: string 
 
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
+const handleCapture = (url: string) => {
+  // Example function to shorten URL (replace with your actual implementation)
+  const shortenURL = async (url: string) => {
+    // Simulated URL shortening process (replace with actual implementation)
+    return new Promise<string>((resolve, reject) => {
+      setTimeout(() => {
+        const shortenedURL = url.substring(0, 20); // Simulated shortening
+        resolve(shortenedURL);
+      }, 1000); // Simulate API delay
+    });
+  };
+
+  // Handle URL shortening and further processing
+  shortenURL(url)
+    .then(shortenedURL => {
+      // Process the shortenedURL (e.g., store it in state or send it to the server)
+      console.log("Shortened URL:", shortenedURL);
+    })
+    .catch(error => {
+      console.error("Error shortening URL:", error);
+    });
+};
+
 const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
-  const id = 2; 
+  const id = 2;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false); 
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
+  const [isPhotoOptionsModalOpen, setIsPhotoOptionsModalOpen] = useState(false);
+  const [isCameraModalOpen, setIsCameraModalOpen] = useState(false); // New state for camera modal
   const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); // State for success modal
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [caption, setCaption] = useState("");
   const [picture, setPicture] = useState("");
@@ -268,9 +297,21 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   };
 
   const handleAddPhotoClick = () => {
+    
     if (fileInputRef.current) {
       fileInputRef.current.click();
+      
     }
+    setIsPhotoOptionsModalOpen(false);
+  };
+
+  const handleTakePhotoClick = () => {
+    setIsCameraModalOpen(true);
+    setIsPhotoOptionsModalOpen(false);
+  };
+
+  const openPhotoModal = () => {
+    setIsPhotoOptionsModalOpen(true);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -355,6 +396,8 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
         +
       </button>
 
+    
+
       {/* Add pin modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -367,11 +410,12 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
             <div className="flex justify-center mb-3">
               <button
                 className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-                onClick={handleAddPhotoClick}
+                onClick={openPhotoModal}
               >
                 <FaPlus />
               </button>
             </div>
+
 
             <div className="text-center mb-3">
               <span className="text-lg">Add a photo</span>
@@ -492,6 +536,58 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
           </div>
         </div>
       )}
+
+{/* PhotoOptions modal */}
+{isPhotoOptionsModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto relative">
+      <h2 className="text-2xl font-bold mb-4 text-center">Photo</h2>
+      <div className="flex justify-between mb-4">
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onClick={handleAddPhotoClick}
+        >
+          Upload A Photo
+        </button>
+        <button
+          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          onClick={handleTakePhotoClick}
+        >
+          Take A Photo
+        </button>
+      </div>
+      <button
+        className="absolute top-4 right-4 px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+        onClick={() => setIsPhotoOptionsModalOpen(false)}
+      >
+        x
+      </button>
+    </div>
+  </div>
+)}
+
+{/* Camera modal */}
+{isCameraModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="relative bg-white p-6 rounded-lg w-full max-w-sm mx-auto">
+      <button className="absolute top-2 right-2 text-xl" onClick={() => setIsCameraModalOpen(false)}>
+        &times;
+      </button>
+      <h2 className="text-2xl font-bold mb-4">Take A Photo</h2>
+      <CameraComponent
+        onCapture={(url) => {
+          setPicture(url);
+          console.log("Compressed photo URL:", url);
+          setIsCameraModalOpen(false);
+          console.log('testtt')
+        }}
+      />
+    </div>
+  </div>
+)}
+
+
+
 
       {/* Menu modal */}
       {isMenuModalOpen && (

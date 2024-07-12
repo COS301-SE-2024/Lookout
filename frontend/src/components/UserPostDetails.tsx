@@ -49,11 +49,15 @@ interface Post {
   latitude: number;
   longitude: number;
   caption: string;
+  title: string;
   createdAt: string;
 }
 
 const UserPostDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const userId = 1;
+  const postId = Number(id);
+  // console.log("user id ",userId)
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [editableCaption, setEditableCaption] = useState<string>(''); 
@@ -63,7 +67,7 @@ const UserPostDetails = () => {
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
-    fetch(`/api/posts/${id}`, {
+    fetch(`/api/posts/${postId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -71,16 +75,23 @@ const UserPostDetails = () => {
     })
       .then(response => response.json())
       .then(data => {
-        setPost(data);
-        setEditableCaption(data.caption); 
+        if (data) {
+          setPost(data);
+          setEditableCaption(data.caption); 
+        } else {
+          setError('Failed to load post data.');
+        }
       })
-      .catch(error => console.error('Error fetching post:', error));
-  }, [id]);
+      .catch(error => {
+        console.error('Error fetching post:', error);
+        setError('Error fetching post data.');
+      });
+  }, [postId]);
 
   const handleDeleteClick = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/posts/${id}`, {
+      const response = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +102,6 @@ const UserPostDetails = () => {
         throw new Error('Failed to delete post');
       }
 
-     // console.log("Post deleted successfully, navigating to profile");
       setIsLoading(false);
       navigate('/profile', { state: { message: 'Post was successfully deleted' } });
     } catch (error: any) {
@@ -111,38 +121,56 @@ const UserPostDetails = () => {
   };
 
   const handleSaveEdit = async () => {
+    if (!post) {
+      setError('Post data is not loaded yet.');
+      return;
+    }
+
+    console.log('POST ID:', postId);
+    console.log('USER ID:', userId);
+    
+  
     setIsLoading(true);
     try {
+      const requestBody = {
+        id: postId,
+        userId: userId,
+        groupId: post.group.id,
+        categoryId: post.category.id,
+        picture: post.picture,
+        latitude: post.latitude,
+        longitude: post.longitude,
+        caption: editableCaption,
+        title: post.title
+      };
+  
+      console.log('Request Body:', requestBody);
+  
       const response = await fetch('/api/posts/UpdatePost', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: post?.id,
-          userId: post?.user.id,
-          groupId: post?.group.id,
-          categoryId: post?.category.id,
-          picture: post?.picture,
-          latitude: post?.latitude,
-          longitude: post?.longitude,
-          caption: editableCaption,
-        }),
+        body: JSON.stringify(requestBody),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to update caption');
+        throw new Error('Failed to update post');
       }
-
+  
       const updatedPost = await response.json();
+      console.log("updated post success", updatedPost);
       setPost(updatedPost); 
       setIsEditing(false); 
       setIsLoading(false);
+      console.log("updated post success", updatedPost);
     } catch (error: any) {
+      console.log("updated post error", error);
       setError(error.message);
       setIsLoading(false);
     }
   };
+  
 
   if (!post) {
     return <div>Loading...</div>;
@@ -178,6 +206,7 @@ const UserPostDetails = () => {
         <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
         <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
         <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
+        <p className="text-gray-500 text-sm mt-2">Title: {post.title}</p>
       </div>
 
       {!isEditing ? (
@@ -243,3 +272,4 @@ const UserPostDetails = () => {
 };
 
 export default UserPostDetails;
+
