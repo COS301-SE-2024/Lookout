@@ -94,7 +94,7 @@ class GroupController(private val groupService: GroupService) {
     }
 
     @PostMapping("/AddMemberToGroup")
-    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<IllegalArgumentException> {
         return try {
             val groupId = request.groupId
             val userId = request.userId
@@ -105,7 +105,7 @@ class GroupController(private val groupService: GroupService) {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e)
         }
     }
 

@@ -49,30 +49,59 @@ const GroupDetail: React.FC = () => {
   // State for joined groups
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 
-  // Fetch posts when component mounts
-  useEffect(() => {
-    fetch(`/api/posts/group/${group.id}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // Log the data to check the response format
-        setPosts(data.content); // Extract 'content' array from the response
-      })
-      .catch((error) => console.error('Error fetching posts:', error));
-  }, [group.id]);
+// Add useEffect to check if the user is in the group
+useEffect(() => {
+  // Assuming there's a way to get the current user's ID, perhaps from a global state or context
+  const currentUserId = 1; // Placeholder user ID
 
-  // Handle join button click
-  const handleJoinClick = (id: number) => {
-    if (joinedGroups.includes(id)) {
-      setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
-    } else {
-      setJoinedGroups([...joinedGroups, id]);
-    }
+  fetch(`/api/groups/user/${currentUserId}`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Assuming the API returns an array of groups the user is part of
+      const isUserInGroup = data.some((userGroup: { id: number; }) => userGroup.id === group.id);
+      if (isUserInGroup) {
+        setJoinedGroups((prevGroups) => [...prevGroups, group.id]);
+      }
+    })
+    .catch((error) => console.error('Error checking group membership:', error));
+}, [group.id]);
+
+// Modify handleJoinClick to also send API requests
+const handleJoinClick = (id: number) => {
+  const apiUrl = joinedGroups.includes(id)
+    ? '/api/groups/RemoveMemberFromGroup'
+    : '/api/groups/AddMemberToGroup';
+
+  const requestBody = {
+    groupId: id,
+    userId: 1, // Assuming there's a way to get the current user's ID
   };
+
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  })
+    .then((response) => {
+      if (response.ok) {
+        if (joinedGroups.includes(id)) {
+          setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
+        } else {
+          setJoinedGroups([...joinedGroups, id]);
+        }
+      } else {
+        throw new Error('Failed to update group membership');
+      }
+    })
+    .catch((error) => console.error('Error updating group membership:', error));
+};
 
   return (
     <div className="container mx-auto p-4 relative">
