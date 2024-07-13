@@ -4,60 +4,20 @@ import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
 interface Post {
   id: number;
-  username: string;
-  description: string;
-  groupName: string;
-  groupDescription: string;
-  user: {
-    id: number;
-    userName: string;
-    email: string;
-    passcode: string;
-    role: string;
-    username: string;
-    authorities: { authority: string }[];
-    isCredentialsNonExpired: boolean;
-    isAccountNonExpired: boolean;
-    isAccountNonLocked: boolean;
-    password: string;
-    isEnabled: boolean;
-  };
-  group: {
-    id: number;
-    name: string;
-    description: string;
-    isPrivate: boolean;
-    userId: number;
-    username: string;
-    user: {
-      email: string;
-      passcode: string;
-      role: string;
-      username: string;
-      authorities: { authority: string }[];
-      isCredentialsNonExpired: boolean;
-      isAccountNonExpired: boolean;
-      isAccountNonLocked: boolean;
-      password: string;
-      isEnabled: boolean;
-    };
-    picture: string;
-    createdAt: string;
-  };
-  category: { id: number; description: string };
+  userid: number; 
+  groupid: number; 
+  categoryid: number; 
   picture: string;
   latitude: number;
   longitude: number;
   caption: string;
   title: string;
-  createdAt: string;
 }
 
 const UserPostDetails = () => {
   const { id } = useParams<{ id: string }>();
   const userId = 1;
   const postId = Number(id);
-  // console.log("user id ",userId)
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [editableCaption, setEditableCaption] = useState<string>(''); 
@@ -75,7 +35,7 @@ const UserPostDetails = () => {
     })
       .then(response => response.json())
       .then(data => {
-        if (data) {
+        if (data) { 
           setPost(data);
           setEditableCaption(data.caption); 
         } else {
@@ -121,22 +81,32 @@ const UserPostDetails = () => {
   };
 
   const handleSaveEdit = async () => {
-    if (!post) {
-      setError('Post data is not loaded yet.');
-      return;
-    }
 
-    console.log('POST ID:', postId);
-    console.log('USER ID:', userId);
-    
+    console.log('handleSaveEdit called'); 
   
+  if (!post) {
+    setError('Post data is not loaded yet.');
+    return;
+  }
+
+
+  console.log("id: ", post?.id)
+  console.log("userId: ", userId)
+  console.log("groupId: ", post?.groupid)
+  console.log("categoryId: ", post?.categoryid)
+  console.log("picture: ", post?.picture)
+  console.log("latitude: ", post?.latitude)
+  console.log("longitude: ", post?.longitude)
+  console.log("caption: ", editableCaption)
+  console.log("title: ", post?.title)
+
     setIsLoading(true);
     try {
       const requestBody = {
         id: postId,
-        userId: userId,
-        groupId: post.group.id,
-        categoryId: post.category.id,
+        userid: post.userid, 
+        groupid: post.groupid, 
+        categoryid: post.categoryid,
         picture: post.picture,
         latitude: post.latitude,
         longitude: post.longitude,
@@ -158,20 +128,25 @@ const UserPostDetails = () => {
         throw new Error('Failed to update post');
       }
   
-      const updatedPost = await response.json();
+      const updatedPost: Post = await response.json();
+      console.log(updatedPost)
+  
+      if (!updatedPost || !updatedPost.id) {
+        throw new Error('Invalid post structure received from the server');
+      }
+  
       console.log("updated post success", updatedPost);
       setPost(updatedPost); 
       setIsEditing(false); 
       setIsLoading(false);
-      console.log("updated post success", updatedPost);
     } catch (error: any) {
       console.log("updated post error", error);
       setError(error.message);
+      setIsEditing(false); 
       setIsLoading(false);
     }
   };
   
-
   if (!post) {
     return <div>Loading...</div>;
   }
@@ -202,10 +177,10 @@ const UserPostDetails = () => {
       </div>
 
       <div className="text-center mb-4">
-        <p className="text-gray-700">{post.description}</p>
+        {/* <p className="text-gray-700">{post.description}</p>
         <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
         <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
-        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p> */}
         <p className="text-gray-500 text-sm mt-2">Title: {post.title}</p>
       </div>
 

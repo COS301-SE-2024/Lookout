@@ -105,7 +105,7 @@ Accept: application/json
 
 ###
 ### Get a post by ID
-GET http://localhost:8080/api/posts/19
+GET http://localhost:8080/api/posts/1
 Accept: application/json
 
 ###
@@ -149,7 +149,7 @@ Content-Type: application/json
   "picture": "https://newpicturelink.com/updated.png",
   "latitude": 124.124,
   "longitude": 124.124,
-  "caption": "Found this new campsite xx",
+  "caption": "Found this new campsite xxx",
   "title": "this is a test update"
 }
 ###
