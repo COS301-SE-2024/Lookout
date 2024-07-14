@@ -2,29 +2,16 @@ import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
-interface User {
-    id: number;
-    userName: string;
-    email: string;
-    passcode: string;
-    role: string;
-    isEnabled: boolean;
-    password: string;
-    username: string;
-    authorities: { authority: string }[];
-    isAccountNonLocked: boolean;
-    isCredentialsNonExpired: boolean;
-    isAccountNonExpired: boolean;
-}
-  
 interface Group {
     id: number;
     name: string;
     description: string;
     isPrivate: boolean;
-    user: User | null;
     picture: string;
     createdAt: string;
+    userId: number;
+    username: string;
+    role: string;
 }
 
 interface GroupResponse {
@@ -43,31 +30,61 @@ const SearchGroups: React.FC = () => {
 
     const handleJoinClick = (e: React.MouseEvent, id: number) => {
         e.stopPropagation();
-        if (joinedGroups.includes(id)) {
-            setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
-        } else {
-            setJoinedGroups([...joinedGroups, id]);
-        }
+        const url = joinedGroups.includes(id) ? '/api/groups/RemoveMemberFromGroup' : '/api/groups/AddMemberToGroup';
+        const body = JSON.stringify({ groupId: id, userId: 2 }); // Assuming userId is 2 for this example
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: body
+        }).then(response => {
+            if (response.status === 204) {
+                if (joinedGroups.includes(id)) {
+                    setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
+                } else {
+                    setJoinedGroups([...joinedGroups, id]);
+                }
+            } else if (response.status === 400) {
+                response.text().then(errorMessage => {
+                    console.error(errorMessage);
+                    // alert(errorMessage);
+                });
+            } else {
+                throw new Error('Unexpected response status');
+            }
+        }).catch(error => console.error('Error:', error));
     };
 
     useEffect(() => {
-        // Fetch groups from API
         fetch('/api/groups')
             .then(response => response.json())
             .then((data: GroupResponse) => {
-                //console.log('Fetched groups:', data.content);
+                // console.log("Fetched all groups:", data); // Debug log
                 setGroups(data.content);
                 setFilteredGroups(data.content);
             })
             .catch(error => console.error('Error fetching groups:', error));
+
+        fetch('/api/groups/user/2') // Assuming userId is 2 for this example
+            .then(response => {
+                // console.log("Fetch joined groups response status:", response.status); // Debug log
+                return response.json();
+            })
+            .then((data: Group[]) => {
+                // console.log("Fetched joined groups:", data); // Debug log
+                const joinedGroupIds = data.map(group => group.id);
+                setJoinedGroups(joinedGroupIds);
+            })
+            .catch(error => console.error('Error fetching joined groups:', error));
     }, []);
 
     useEffect(() => {
         setFilteredGroups(
             groups.filter(group =>
                 group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (group.user && group.user.userName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                (group.user && group.user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                group.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 group.description.toLowerCase().includes(searchQuery.toLowerCase())
             )
         );
@@ -111,7 +128,7 @@ const SearchGroups: React.FC = () => {
                                     />
                                     <div className="flex-1">
                                         <div className="text-lg font-semibold">{group.name}</div>
-                                        <div className="text-gray-500">{group.user ? group.user.userName : 'No owner'}</div>
+                                        <div className="text-gray-500">{group.username || 'No owner'}</div>
                                         <p className="text-sm text-gray-600 mt-1">{group.description}</p>
                                     </div>
                                     <button

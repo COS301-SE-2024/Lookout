@@ -44,64 +44,65 @@ const GroupDetail: React.FC = () => {
   const location = useLocation();
   const { group } = location.state as { group: Group };
 
-  // State for posts
-  const [posts, setPosts] = useState<Post[]>([]);
-  // State for joined groups
+
+  const [posts] = useState<Post[]>([]);
+
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 
-// Add useEffect to check if the user is in the group
-useEffect(() => {
-  // Assuming there's a way to get the current user's ID, perhaps from a global state or context
-  const currentUserId = 1; // Placeholder user ID
 
-  fetch(`/api/groups/user/${currentUserId}`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      // Assuming the API returns an array of groups the user is part of
-      const isUserInGroup = data.some((userGroup: { id: number; }) => userGroup.id === group.id);
-      if (isUserInGroup) {
-        setJoinedGroups((prevGroups) => [...prevGroups, group.id]);
-      }
+  useEffect(() => {
+    const currentUserId = 2; // Placeholder user ID
+
+    fetch(`/api/groups/user/${currentUserId}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
     })
-    .catch((error) => console.error('Error checking group membership:', error));
-}, [group.id]);
-
-// Modify handleJoinClick to also send API requests
-const handleJoinClick = (id: number) => {
-  const apiUrl = joinedGroups.includes(id)
-    ? '/api/groups/RemoveMemberFromGroup'
-    : '/api/groups/AddMemberToGroup';
-
-  const requestBody = {
-    groupId: id,
-    userId: 1, // Assuming there's a way to get the current user's ID
-  };
-
-  fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  })
-    .then((response) => {
-      if (response.ok) {
-        if (joinedGroups.includes(id)) {
-          setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
-        } else {
-          setJoinedGroups([...joinedGroups, id]);
+      .then((response) => response.json())
+      .then((data) => {
+        const isUserInGroup = data.some((userGroup: { id: number }) => userGroup.id === group.id);
+        if (isUserInGroup) {
+          setJoinedGroups((prevGroups) => [...prevGroups, group.id]);
         }
-      } else {
-        throw new Error('Failed to update group membership');
-      }
+      })
+      .catch((error) => console.error('Error checking group membership:', error));
+  }, [group.id]);
+
+  const handleJoinClick = (id: number) => {
+    const apiUrl = joinedGroups.includes(id)
+      ? '/api/groups/RemoveMemberFromGroup'
+      : '/api/groups/AddMemberToGroup';
+
+    const requestBody = {
+      groupId: id,
+      userId: 2, // PLaceholder id
+    };
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
     })
-    .catch((error) => console.error('Error updating group membership:', error));
-};
+      .then((response) => {
+        if (response.status === 204) {
+          if (joinedGroups.includes(id)) {
+            setJoinedGroups(joinedGroups.filter((groupId) => groupId !== id));
+          } else {
+            setJoinedGroups([...joinedGroups, id]);
+          }
+        } else if (response.status === 400) {
+          response.text().then((errorMessage) => {
+            console.error(errorMessage);
+          });
+        } else {
+          throw new Error('Failed to update group membership');
+        }
+      })
+      .catch((error) => console.error('Error updating group membership:', error));
+  };
 
   return (
     <div className="container mx-auto p-4 relative">
