@@ -17,6 +17,8 @@ interface GroupRepository : JpaRepository<Groups, Long> {
     fun findGroupsByUserId(@Param("userId") userId: Long): List<Groups>
     fun findByUserId(userId: Long, pageable: Pageable): Page<Groups>
 
+    @Query("SELECT COUNT(gm) FROM GroupMembers gm WHERE gm.group.id = :groupId AND gm.user.id = :userId")
+    fun countMembersInGroup(@Param("groupId") groupId: Long, @Param("userId") userId: Long): Long
 
     @Modifying
     @Query("INSERT INTO Group_Members (groupid, userid) VALUES (:groupId, :userId)", nativeQuery = true)

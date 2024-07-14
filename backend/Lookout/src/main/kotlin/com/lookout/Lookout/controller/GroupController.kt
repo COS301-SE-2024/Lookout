@@ -94,7 +94,7 @@ class GroupController(private val groupService: GroupService) {
     }
 
     @PostMapping("/AddMemberToGroup")
-    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<String> {
         return try {
             val groupId = request.groupId
             val userId = request.userId
@@ -102,15 +102,15 @@ class GroupController(private val groupService: GroupService) {
                 groupService.addMember(groupId, userId)
                 ResponseEntity.noContent().build()
             } else {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Group ID or User ID is null")
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
     @PostMapping("/RemoveMemberFromGroup")
-    fun RemoveMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+    fun removeMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<String> {
         return try {
             val groupId = request.groupId
             val userId = request.userId
@@ -118,10 +118,10 @@ class GroupController(private val groupService: GroupService) {
                 groupService.removeMember(groupId, userId)
                 ResponseEntity.noContent().build()
             } else {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Group ID or User ID is null")
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
