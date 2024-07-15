@@ -42,15 +42,13 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ onCapture }) => {
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        // Use toDataURL with 'image/jpeg' and a quality parameter to compress the image
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // Adjust quality as needed (0.0 to 1.0)
+        // Use toDataURL without parameters to get the default PNG format (lossless)
+        const dataUrl = canvas.toDataURL(); // Default is 'image/png'
         setPhoto(dataUrl);
-        onCapture(dataUrl); // Call the onCapture prop function with compressed image URL
+        onCapture(dataUrl); // Call the onCapture prop function with the image URL
       }
     }
   };
-  
-  
 
   return (
     <div className="flex flex-col items-center">

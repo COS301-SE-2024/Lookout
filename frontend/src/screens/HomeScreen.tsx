@@ -14,7 +14,6 @@ import '../assets/styles/home.css'
 import HomePins from '../components/HomePins';
 import { FaPlus } from "react-icons/fa";
 import Legend from '../components/Legend';
-import { Fa0 } from 'react-icons/fa6';
 
 import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
 
@@ -146,28 +145,7 @@ type Group = { id: number, name: string, categories: { id: number, name: string 
 
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-const handleCapture = (url: string) => {
-  // Example function to shorten URL (replace with your actual implementation)
-  const shortenURL = async (url: string) => {
-    // Simulated URL shortening process (replace with actual implementation)
-    return new Promise<string>((resolve, reject) => {
-      setTimeout(() => {
-        const shortenedURL = url.substring(0, 20); // Simulated shortening
-        resolve(shortenedURL);
-      }, 1000); // Simulate API delay
-    });
-  };
 
-  // Handle URL shortening and further processing
-  shortenURL(url)
-    .then(shortenedURL => {
-      // Process the shortenedURL (e.g., store it in state or send it to the server)
-      console.log("Shortened URL:", shortenedURL);
-    })
-    .catch(error => {
-      console.error("Error shortening URL:", error);
-    });
-};
 
 const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   const id = 2;
@@ -188,6 +166,37 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   const navigate = useNavigate();
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  // const BITLY_API_URL = 'https://api-ssl.bitly.com/v4/shorten';
+  // const BITLY_ACCESS_TOKEN = '425dd74299985478adcf6bf15f02c09b5bcb8af2';
+
+  // const shortenURL = async (longUrl: string) => {
+  //   console.log("long url ",longUrl)
+  //   const config = {
+  //     headers: {
+  //       Authorization: `Bearer ${BITLY_ACCESS_TOKEN}`,
+  //       'Content-Type': 'application/json',
+  //     },
+  //   };
+  
+  //   const data = {
+  //     long_url: longUrl,
+  //   };
+  
+  //   console.log('Request Data:', data);
+  //   console.log('Request Config:', config);
+
+  //   try {
+  //     const response = await axios.post(BITLY_API_URL, data, config);
+  //     return response.data.link;
+  //   } catch (error) {
+  //     console.error('Error shortening URL:', error);
+  //     return null;
+  //   }
+  // };
+  // // Example to shorten url
+  // const longUrl = 'https://example.com/your-long-photo-url';
+  // shortenURL(longUrl).then(shortUrl => console.log('Short URL:', shortUrl));
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -576,8 +585,9 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
       <h2 className="text-2xl font-bold mb-4">Take A Photo</h2>
       <CameraComponent
         onCapture={(url) => {
+          // shortenURL(url);
           setPicture(url);
-          console.log("Compressed photo URL:", url);
+          // console.log("Compressed photo URL:", url);
           setIsCameraModalOpen(false);
           console.log('testtt')
         }}
