@@ -167,37 +167,6 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
-  // const BITLY_API_URL = 'https://api-ssl.bitly.com/v4/shorten';
-  // const BITLY_ACCESS_TOKEN = '425dd74299985478adcf6bf15f02c09b5bcb8af2';
-
-  // const shortenURL = async (longUrl: string) => {
-  //   console.log("long url ",longUrl)
-  //   const config = {
-  //     headers: {
-  //       Authorization: `Bearer ${BITLY_ACCESS_TOKEN}`,
-  //       'Content-Type': 'application/json',
-  //     },
-  //   };
-  
-  //   const data = {
-  //     long_url: longUrl,
-  //   };
-  
-  //   console.log('Request Data:', data);
-  //   console.log('Request Config:', config);
-
-  //   try {
-  //     const response = await axios.post(BITLY_API_URL, data, config);
-  //     return response.data.link;
-  //   } catch (error) {
-  //     console.error('Error shortening URL:', error);
-  //     return null;
-  //   }
-  // };
-  // // Example to shorten url
-  // const longUrl = 'https://example.com/your-long-photo-url';
-  // shortenURL(longUrl).then(shortUrl => console.log('Short URL:', shortUrl));
-
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
