@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FaChevronRight, FaTimes, FaChevronLeft } from "react-icons/fa";
 import ToggleButton from "./ThemeToggleButton";
 import { getEmailFromLocalStorage } from "../utils/auth";
@@ -82,6 +82,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 		undefined
 	);
 	const jsx = useMemo(() => {
+		const modalStyles = {
+			modalContainer:
+				"fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
+			modalContent:
+				"bg-bkg rounded-lg p-8 relative w-11/12 md:w-96 h-full md:h-auto overflow-y-auto",
+			closeButton: "absolute top-2 left-2 cursor-pointer",
+			closeIcon: "text-gray-500 hover:text-gray-700",
+			settingsTitle: "text-xl font-semibold mb-4 ml-8",
+			sectionTitle: "text-lg font-semibold mt-4 mb-2",
+			logoutButton:
+				"bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full"
+		};
 		if (selectedIndex === undefined) {
 			return undefined;
 		}
@@ -129,7 +141,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 								<li
 									key={index}
 									onClick={() => setSelectedIndex(index)}
-									className="py-2 border-t border-b flex items-center justify-between"
+									className="py-2 border-t border-b flex items-center justify-between cursor-pointer"
 								>
 									<div className="flex items-center">
 										{setting}
