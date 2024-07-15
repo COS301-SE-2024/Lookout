@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 export const EditProfile = () => {
 	const [picture, setPicture] = useState("");
