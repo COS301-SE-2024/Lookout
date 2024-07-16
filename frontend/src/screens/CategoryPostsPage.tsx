@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 
 interface User {
   userName: string;
@@ -59,32 +60,63 @@ const CategoryPostsPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
+
+  const fetchPosts = async (page: number) => {
+    setLoading(true); // Set loading to true before fetching
+    try {
+      const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=12`);
+      const data = await response.json();
+      if (page === 0) {
+        setPosts(data.content); // Reset posts if it's the first page
+      } else {
+        setPosts((prevPosts) => [...prevPosts, ...data.content]);
+      }
+      setHasMore(data.content.length > 0);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts(0); // Fetch initial posts
+  }, [categoryId]);
+
+  useEffect(() => {
+    if (page > 0) { // Fetch more posts if page is incremented
+      fetchPosts(page);
+    }
+  }, [page]);
+
+  const handleScroll = useCallback(() => {
+    if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100 && hasMore && !loading) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [hasMore, loading]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   const handlePostClick = (post: Post) => {
     navigate(`/post/${post.id}`, { state: { post } });
   };
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(`/api/posts/category/${categoryId}?page=0&size=50`);
-        const data = await response.json();
-        setPosts(data.content);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [categoryId]);
-
   const categoryName = categoryMap[Number(categoryId)] || "Unknown Category";
 
   return (
     <div className="p-4">
+      <div className="flex items-center mb-4">
+        <button onClick={() => navigate('/explore')} className="text-blue-500">
+          <MdKeyboardArrowLeft size={42} color="green" />
+        </button>
+        <h1 className="text-2xl font-bold ml-2">{categoryName}</h1>
+      </div>
       {loading && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
           {[...Array(8)].map((_, index) => (
@@ -94,7 +126,6 @@ const CategoryPostsPage: React.FC = () => {
       )}
       {!loading && (
         <>
-          <h1 className="text-2xl font-bold mb-4">{categoryName}</h1>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
             {posts.map((post) => (
               <div 
