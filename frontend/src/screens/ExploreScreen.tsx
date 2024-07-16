@@ -42,6 +42,7 @@ interface Post {
   longitude: number;
   caption: string;
   createdAt: string;
+  categoryId: any;
 }
 
 const ExploreScreen: React.FC = () => {
@@ -74,6 +75,8 @@ const ExploreScreen: React.FC = () => {
         const poiData = await poiResponse.json();
         const securityData = await securityResponse.json();
 
+        console.log(animalData)
+
         setPosts(data.content);
         setAnimalPosts(animalData.content);
         setCampingPosts(campData.content);
@@ -89,10 +92,6 @@ const ExploreScreen: React.FC = () => {
 
     fetchPosts();
   }, []);
-
-  const handlePostClick = (post: Post) => {
-    navigate(`/post/${post.id}`, { state: { post } });
-  };
 
   const filteredPosts = posts.filter((post) => post.userId !== 52);
   const filteredAnimalPosts = animalPosts.filter((post) => post.userId !== 52);

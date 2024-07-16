@@ -28,6 +28,7 @@ interface User {
   }
   
   interface Post {
+    categoryId: any;
     id: number;
     userId: number;
     user: User;
@@ -90,7 +91,7 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
           <IoLocationOutline className="h-4 w-4 mr-1" />
           {location || "Loading location..."} {/* Displaying the formatted location */}
         </p>
-        <CategoryPill category={"Animal Sighting"} />
+        <CategoryPill categoryId={post.categoryId} />
       </div>
     </div>
   );

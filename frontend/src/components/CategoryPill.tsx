@@ -2,8 +2,18 @@ import React from 'react';
 import { FaPaw, FaExclamationTriangle, FaHiking, FaStar, FaCampground } from 'react-icons/fa'; // Import icons
 
 interface CategoryPillProps {
-  category: string;
+  categoryId: number; // Accept category ID instead of string
 }
+
+// Mapping of category IDs to category names
+const categoryMap: { [key: number]: string } = {
+  1: 'Animal Sighting',
+  2: 'Campsite',
+  3: 'Hiking Trail',
+  4: 'Point of Interest',
+  5: 'Security Concern',
+  // Add more mappings as needed
+};
 
 const categoryConfig: { [key: string]: { colorClass: string; icon: React.ReactNode } } = {
   'Animal Sighting': { colorClass: 'bg-green-100 text-green-800', icon: <FaPaw className="mr-1" /> },
@@ -14,12 +24,14 @@ const categoryConfig: { [key: string]: { colorClass: string; icon: React.ReactNo
   // Add more categories and icons as needed
 };
 
-const CategoryPill: React.FC<CategoryPillProps> = ({ category }) => {
-  const { colorClass, icon } = categoryConfig[category] || { colorClass: 'bg-gray-100 text-gray-800', icon: null };
+const CategoryPill: React.FC<CategoryPillProps> = ({ categoryId }) => {
+  const categoryName = categoryMap[categoryId]; // Get the category name from the ID
+  const { colorClass, icon } = categoryConfig[categoryName] || { colorClass: 'bg-gray-100 text-gray-800', icon: null };
+  
   return (
     <span className={`inline-flex items-center ${colorClass} text-xs px-2 py-1 rounded-full mt-2`}>
       {icon}
-      {category}
+      {categoryName || 'Unknown Category'} {/* Displaying the category name */}
     </span>
   );
 };
