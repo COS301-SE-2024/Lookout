@@ -4,6 +4,7 @@ import HorizontalCarousel from "../components/HorizontalCarousel";
 import { useNavigate } from "react-router-dom";
 import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 import ExplorePost from "../components/ExplorePost";
+import { Link } from "react-router-dom";
 
 interface User {
   userName: string;
@@ -75,7 +76,7 @@ const ExploreScreen: React.FC = () => {
         const poiData = await poiResponse.json();
         const securityData = await securityResponse.json();
 
-        console.log(animalData)
+        console.log(animalData);
 
         setPosts(data.content);
         setAnimalPosts(animalData.content);
@@ -119,29 +120,47 @@ const ExploreScreen: React.FC = () => {
 
       {!loading && (
         <>
-          <h1 className="text-2xl font-bold mb-4">Animal Sighting</h1>
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
+            <span>Animal Sightings</span>
+            <Link to="/category/1" className="text-black-500 underline">
+              View All
+            </Link>
+          </h1>
           <HorizontalCarousel>
             {filteredAnimalPosts.map((post) => (
               <ExplorePost key={post.id} post={post} />
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4">Campsite</h1>
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
+            <span>Campsites</span>
+            <Link to="/category/2" className="text-black-500 underline">
+              View All
+            </Link>
+          </h1>
           <HorizontalCarousel>
             {filteredCampPosts.map((post) => (
               <ExplorePost key={post.id} post={post} />
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4">Hiking Trails</h1>
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
+            <span>Hiking Trails</span>
+            <Link to="/category/3" className="text-black-500 underline">
+              View All
+            </Link>
+          </h1>
           <HorizontalCarousel>
             {filteredPosts.map((post) => (
               <ExplorePost key={post.id} post={post} />
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4">
-            Explore Points of Interest
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
+            <span>Points of Interest</span>
+            <Link to="/category/4" className="text-black-500 underline">
+              View All
+            </Link>
           </h1>
           <HorizontalCarousel>
             {filteredPoiPosts.map((post) => (
@@ -149,7 +168,12 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4">Security Concerns</h1>
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
+            <span>Security Concerns</span>
+            <Link to="/category/5" className="text-black-500 underline">
+              View All
+            </Link>
+          </h1>
           <HorizontalCarousel>
             {filteredSecurityPosts.map((post) => (
               <ExplorePost key={post.id} post={post} />
