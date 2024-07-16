@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface User {
-  id: number;
   userName: string;
   email: string;
   passcode: string;
@@ -28,8 +27,10 @@ interface Group {
 
 interface Post {
   id: number;
+  userId: number;
   user: User;
   group: Group;
+  description: String;
   category: { id: number; description: string };
   picture: string;
   latitude: number;
@@ -49,6 +50,7 @@ const ExplorePins: React.FC = () => {
       try {
         const response = await fetch('/api/posts?page=0&size=10');
         const data = await response.json();
+        console.log(data)
         setPosts(data.content); 
         setLoading(false);
       } catch (error) {
@@ -82,7 +84,7 @@ const ExplorePins: React.FC = () => {
   }
 
   // Filter posts based on the condition (user.id !== givenUserId)
-  const filteredPosts = posts.filter(post => post.user.id !== givenUserId);
+  const filteredPosts = posts.filter(post => post.userId !== givenUserId);
 
   return (
     <div className="container mx-auto p-4">
@@ -102,7 +104,7 @@ const ExplorePins: React.FC = () => {
               />
             )}
             <h3 className="text-lg font-semibold mb-2">{post.caption}</h3>
-            <p className="text-gray-700">{post.category.description}</p>
+            <p className="text-gray-700">{post.description}</p>
             <p className="text-gray-500 text-sm mt-2">Posted on: {new Date(post.createdAt).toLocaleDateString()}</p>
           </div>
         ))}
@@ -110,5 +112,5 @@ const ExplorePins: React.FC = () => {
     </div>
   );
 };
-
+  
 export default ExplorePins;

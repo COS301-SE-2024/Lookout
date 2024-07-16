@@ -1,6 +1,8 @@
 package com.lookout.Lookout.controller
 
 
+import com.lookout.Lookout.dto.GroupDto
+import com.lookout.Lookout.dto.PostDto
 import com.lookout.Lookout.entity.CreatePost
 import com.lookout.Lookout.entity.UpdatePost
 import com.lookout.Lookout.entity.Groups
@@ -19,12 +21,31 @@ import org.springframework.data.domain.Pageable
 @RequestMapping("/api/posts")
 class PostController(private val postService: PostsService) {
 
+    fun convertToDto(post: Posts): PostDto {
+        return PostDto(
+            id = post.id?:0,
+            caption = post.caption.toString(),
+            createdAt = post.createdAt.toString(),
+            userId = post.user?.id ?: 0,
+            username = post.user?.username.toString(),
+            groupId = post.group?.id ?: 0,
+            categoryId = post.category?.id ?: 0,
+            picture = post.picture.toString(),
+            latitude = post.latitude,
+            longitude = post.longitude,
+            description = post.category?.description.toString(),
+            title = post.title.toString(),
+            groupName = post.group?.name.toString(),
+            groupDescription = post.group?.description.toString()
+        )
+    }
+
     // Get a post by ID
     @GetMapping("/{id}")
-    fun getPostById(@PathVariable id: Long): ResponseEntity<Posts> {
+    fun getPostById(@PathVariable id: Long): ResponseEntity<PostDto> {
         val post = postService.findById(id)
         return if (post != null) {
-            ResponseEntity.ok(post)
+            ResponseEntity.ok(convertToDto(post))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -32,10 +53,10 @@ class PostController(private val postService: PostsService) {
 
     // Create a post
     @PostMapping ("/CreatePost")
-    fun createPost(@RequestBody post: CreatePost): ResponseEntity<Posts> {
+    fun createPost(@RequestBody post: CreatePost): ResponseEntity<PostDto> {
         try {
             val savedPost = postService.createPost(post)
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedPost)
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(savedPost))
         } catch (e: IllegalArgumentException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
@@ -58,9 +79,9 @@ class PostController(private val postService: PostsService) {
     fun getAllPosts(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Posts>> {
+    ): ResponseEntity<Page<PostDto>> {
         val pageable: Pageable = PageRequest.of(page, size)
-        val posts = postService.findAll(pageable)
+        val posts = postService.findAll(pageable).map { post -> convertToDto(post)}
         return ResponseEntity.ok(posts)
     }
 
@@ -70,9 +91,9 @@ class PostController(private val postService: PostsService) {
         @PathVariable userId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Posts>> {
+    ): ResponseEntity<Page<PostDto>> {
         val pageable: Pageable = PageRequest.of(page, size)
-        val posts = postService.findByUserId(userId, pageable)
+        val posts = postService.findByUserId(userId, pageable).map { post -> convertToDto(post)}
         return ResponseEntity.ok(posts)
     }
 
@@ -82,9 +103,9 @@ class PostController(private val postService: PostsService) {
         @PathVariable groupId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Posts>> {
+    ): ResponseEntity<Page<PostDto>> {
         val pageable: Pageable = PageRequest.of(page, size)
-        val posts = postService.findByGroupId(groupId, pageable)
+        val posts = postService.findByGroupId(groupId, pageable).map { post -> convertToDto(post)}
         return ResponseEntity.ok(posts)
     }
 
@@ -94,18 +115,18 @@ class PostController(private val postService: PostsService) {
         @PathVariable categoryId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Posts>> {
+    ): ResponseEntity<Page<PostDto>> {
         val pageable: Pageable = PageRequest.of(page, size)
-        val posts = postService.findByCategoryId(categoryId, pageable)
+        val posts = postService.findByCategoryId(categoryId, pageable).map { post -> convertToDto(post)}
         return ResponseEntity.ok(posts)
     }
 
     // Update a post
     @PostMapping("/UpdatePost")
-    fun updatePost(@RequestBody post: UpdatePost): ResponseEntity<Posts>{
+    fun updatePost(@RequestBody post: UpdatePost): ResponseEntity<PostDto>{
         val updatedPost = postService.updatePost(post)
         return if (updatedPost != null) {
-            ResponseEntity.ok(updatedPost)
+            ResponseEntity.ok(convertToDto(updatedPost))
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
         }

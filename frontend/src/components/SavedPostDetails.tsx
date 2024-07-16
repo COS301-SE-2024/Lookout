@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
-
 interface Post {
   id: number;
   username: string;
@@ -53,68 +52,29 @@ interface Post {
   createdAt: string;
 }
 
-const PinDetail: React.FC = () => {
+const SavedPostDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [theme, setTheme] = useState('default');
   const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isSaved, setIsSaved] = useState<boolean>(false); // Track if the post is saved
-  const [userId] = useState<number>(2); // Assuming a fixed user ID for this example
+  const [isSaved, setIsSaved] = useState<boolean>(true);
+  const [userId] = useState<number>(2);
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
-    const localStoreTheme = localStorage.getItem('data-theme') || 'default';
-    setTheme(localStoreTheme);
-  }, []);
 
-  useEffect(() => {
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'data-theme') {
-        const newTheme = localStorage.getItem('data-theme') || 'default';
-        setTheme(newTheme);
-        document.documentElement.setAttribute('data-theme', newTheme);
-      }
-    };
 
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const response = await fetch(`/api/posts/${id}`);
-        const data = await response.json();
-        console.log(data);
+    fetch(`/api/posts/${id}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
         setPost(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching post:', error);
-        setLoading(false);
-      }
-    };
-
-    const checkIfSaved = async () => {
-      try {
-        const response = await fetch(`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`);
-        const data = await response.json();
-        setIsSaved(data);
-      } catch (error) {
-        console.error('Error checking saved status:', error);
-      }
-    };
-
-    fetchPost();
-    checkIfSaved();
-  }, [id, userId]);
+      })
+      .catch(error => console.error('Error fetching post:', error));
+  }, [id]);
 
   const handleSaveClick = async () => {
     try {
@@ -124,15 +84,16 @@ const PinDetail: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user: { id: userId },
+          user: { id: post?.user.id },
           post: { id: post?.id, picture: post?.picture }
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save post');
+        const errorText = await response.text();
+        throw new Error(`Failed to save post: ${errorText}`);
       }
-
+      
       setIsSaved(true);
     } catch (error: any) {
       console.error('Error saving post:', error);
@@ -141,7 +102,7 @@ const PinDetail: React.FC = () => {
 
   const handleUnsaveClick = async () => {
     try {
-      const response = await fetch(`/api/savedPosts/UnsavePost?userId=${userId}&postId=${id}`, {
+      const response = await fetch(`/api/savedPosts/UnsavePost?userId=${userId}&postId=${post?.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -158,12 +119,8 @@ const PinDetail: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   if (!post) {
-    return <p>Post not found.</p>;
+    return <div>Loading...</div>;
   }
 
   return (
@@ -227,4 +184,4 @@ const PinDetail: React.FC = () => {
   );
 };
 
-export default PinDetail;
+export default SavedPostDetails;

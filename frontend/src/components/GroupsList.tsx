@@ -17,7 +17,7 @@ const GroupsList: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
-    fetch('/api/groups/user/1', {
+    fetch('/api/groups/user/2', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

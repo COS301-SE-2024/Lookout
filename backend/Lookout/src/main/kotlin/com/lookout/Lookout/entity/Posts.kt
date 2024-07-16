@@ -33,6 +33,9 @@ data class Posts(
     @Column(name = "longitude", nullable = false)
     val longitude: Double,
 
+    @Column(name = "title")
+    var title: String? = null,
+
     @Column(name = "caption")
     var caption: String? = null,
 

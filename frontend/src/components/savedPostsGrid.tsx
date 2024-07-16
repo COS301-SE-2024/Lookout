@@ -13,12 +13,17 @@ interface Post {
   caption: string;
 }
 
-const PostsGrid: React.FC = () => {
+interface SavedPost {
+  id: number;
+  post: Post;
+}
+
+const SavedPostsGrid: React.FC = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [savedPosts, setSavedPosts] = useState<SavedPost[]>([]);
 
   useEffect(() => {
-    fetch('/api/posts/user/1', {
+    fetch('/api/savedPosts/user/2', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -26,29 +31,28 @@ const PostsGrid: React.FC = () => {
     })
     .then((response) => response.json())
     .then((data) => {
-      // console.log(data.content); // Log the data to check the response format
-      setPosts(data.content);
+      setSavedPosts(data);
     })
-    .catch((error) => console.error('Error fetching posts:', error));
+    .catch((error) => console.error('Error fetching saved posts:', error));
   }, []);
 
-  const handlePostsClick = (post: Post) => {
-    navigate(`/user_post/${post.id}`, { state: { post } });
+  const handlePostClick = (post: Post) => {
+    navigate(`/saved_post/${post.id}`, { state: { post } });
   };
 
   return (
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts.map(post => (
-          <div key={post.id} className="w-full overflow-hidden rounded-md" onClick={() => handlePostsClick(post)}>
-            <Link to={`/post/${post.id}`}>
+        {savedPosts.map(savedPost => (
+          <div key={savedPost.post.id} className="w-full overflow-hidden rounded-md" onClick={() => handlePostClick(savedPost.post)}>
+            <Link to={`/saved_post/${savedPost.post.id}`}>
               <img
-                src={post.picture}
-                alt={`Post ${post.id}`}
+                src={savedPost.post.picture}
+                alt={`Post ${savedPost.post.id}`}
                 className="w-full h-full object-cover"
                 style={{ height: '150px' }}
               />
-              <div className="mt-2 text-center">{post.caption}</div>
+              <div className="mt-2 text-center">{savedPost.post.caption}</div>
             </Link>
           </div>
         ))}
@@ -57,4 +61,4 @@ const PostsGrid: React.FC = () => {
   );
 };
 
-export default PostsGrid;
+export default SavedPostsGrid;

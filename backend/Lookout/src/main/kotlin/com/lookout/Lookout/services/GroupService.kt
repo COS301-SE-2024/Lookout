@@ -1,5 +1,6 @@
 package com.lookout.Lookout.service
 
+import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.repository.GroupRepository
 import com.lookout.Lookout.entity.UpdateGroup
@@ -35,6 +36,11 @@ class GroupService(private val groupRepository: GroupRepository, private val use
     fun addMember(groupId: Long, userId: Long) {
         val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
         val user = userService.findById(userId).orElseThrow { IllegalArgumentException("User not found with id: $userId") }
+
+        if (groupRepository.countMembersInGroup(group.id, user.id) > 0) {
+            throw IllegalArgumentException("User is already in the group")
+        }
+
         groupRepository.addMemberToGroup(group.id, user.id)
     }
 
@@ -42,6 +48,11 @@ class GroupService(private val groupRepository: GroupRepository, private val use
     fun removeMember(groupId: Long, userId: Long) {
         val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
         val user = userService.findById(userId).orElseThrow { IllegalArgumentException("User not found with id: $userId") }
+
+        if (groupRepository.countMembersInGroup(group.id, user.id).toInt() == 0) {
+            throw IllegalArgumentException("User is not in the group")
+        }
+
         groupRepository.removeMemberFromGroup(group.id, user.id)
     }
 
@@ -58,4 +69,5 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         }
         return null
     }
+
 }

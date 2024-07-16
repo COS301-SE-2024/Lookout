@@ -30,6 +30,7 @@ interface Post {
   id: number;
   user: User;
   group: Group;
+  description: string;
   category: { id: number; description: string };
   picture: string;
   latitude: number;
@@ -43,14 +44,16 @@ const GroupDetail: React.FC = () => {
   const location = useLocation();
   const { group } = location.state as { group: Group };
 
-  // State for posts
-  const [posts, setPosts] = useState<Post[]>([]);
-  // State for joined groups
+
+  const [posts] = useState<Post[]>([]);
+
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 
-  // Fetch posts when component mounts
+
   useEffect(() => {
-    fetch(`/api/posts/group/${group.id}`, {
+    const currentUserId = 2; // Placeholder user ID
+
+    fetch(`/api/groups/user/${currentUserId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -58,19 +61,47 @@ const GroupDetail: React.FC = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data); // Log the data to check the response format
-        setPosts(data.content); // Extract 'content' array from the response
+        const isUserInGroup = data.some((userGroup: { id: number }) => userGroup.id === group.id);
+        if (isUserInGroup) {
+          setJoinedGroups((prevGroups) => [...prevGroups, group.id]);
+        }
       })
-      .catch((error) => console.error('Error fetching posts:', error));
+      .catch((error) => console.error('Error checking group membership:', error));
   }, [group.id]);
 
-  // Handle join button click
   const handleJoinClick = (id: number) => {
-    if (joinedGroups.includes(id)) {
-      setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
-    } else {
-      setJoinedGroups([...joinedGroups, id]);
-    }
+    const apiUrl = joinedGroups.includes(id)
+      ? '/api/groups/RemoveMemberFromGroup'
+      : '/api/groups/AddMemberToGroup';
+
+    const requestBody = {
+      groupId: id,
+      userId: 2, // PLaceholder id
+    };
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          if (joinedGroups.includes(id)) {
+            setJoinedGroups(joinedGroups.filter((groupId) => groupId !== id));
+          } else {
+            setJoinedGroups([...joinedGroups, id]);
+          }
+        } else if (response.status === 400) {
+          response.text().then((errorMessage) => {
+            console.error(errorMessage);
+          });
+        } else {
+          throw new Error('Failed to update group membership');
+        }
+      })
+      .catch((error) => console.error('Error updating group membership:', error));
   };
 
   return (
@@ -121,7 +152,7 @@ const GroupDetail: React.FC = () => {
             <div key={post.id} className="p-4 border rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold mb-2">{post.caption}</h3>
               {post.picture && <img src={post.picture} alt={post.caption} className="w-full h-auto mb-2 rounded" />}
-              <p className="text-gray-700">{post.category.description}</p>
+              <p className="text-gray-700">{post.description}</p>
               <p className="text-gray-500 text-sm mt-2">Posted on: {new Date(post.createdAt).toLocaleDateString()}</p>
             </div>
           ))}

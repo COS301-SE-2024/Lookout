@@ -1,62 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+
 interface Post {
   id: number;
-  user: {
-    id: number;
-    userName: string;
-    email: string;
-    passcode: string;
-    role: string;
-    username: string;
-    authorities: { authority: string }[];
-    isCredentialsNonExpired: boolean;
-    isAccountNonExpired: boolean;
-    isAccountNonLocked: boolean;
-    password: string;
-    isEnabled: boolean;
-  };
-  group: {
-    id: number;
-    name: string;
-    description: string;
-    isPrivate: boolean;
-    user: {
-      id: number;
-      userName: string;
-      email: string;
-      passcode: string;
-      role: string;
-      username: string;
-      authorities: { authority: string }[];
-      isCredentialsNonExpired: boolean;
-      isAccountNonExpired: boolean;
-      isAccountNonLocked: boolean;
-      password: string;
-      isEnabled: boolean;
-    };
-    picture: string;
-    createdAt: string;
-  };
-  category: { id: number; description: string };
+  userid: number; 
+  groupid: number; 
+  categoryid: number; 
   picture: string;
   latitude: number;
   longitude: number;
   caption: string;
-  createdAt: string;
+  title: string;
 }
 
 const UserPostDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const userId = 1;
+  const postId = Number(id);
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [editableCaption, setEditableCaption] = useState<string>(''); 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
   const [error, setError] = useState<string | null>(null);
+  const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
-    fetch(`/api/posts/${id}`, {
+    fetch(`/api/posts/${postId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -64,16 +35,23 @@ const UserPostDetails = () => {
     })
       .then(response => response.json())
       .then(data => {
-        setPost(data);
-        setEditableCaption(data.caption); 
+        if (data) { 
+          setPost(data);
+          setEditableCaption(data.caption); 
+        } else {
+          setError('Failed to load post data.');
+        }
       })
-      .catch(error => console.error('Error fetching post:', error));
-  }, [id]);
+      .catch(error => {
+        console.error('Error fetching post:', error);
+        setError('Error fetching post data.');
+      });
+  }, [postId]);
 
   const handleDeleteClick = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/posts/${id}`, {
+      const response = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +62,6 @@ const UserPostDetails = () => {
         throw new Error('Failed to delete post');
       }
 
-     // console.log("Post deleted successfully, navigating to profile");
       setIsLoading(false);
       navigate('/profile', { state: { message: 'Post was successfully deleted' } });
     } catch (error: any) {
@@ -104,39 +81,72 @@ const UserPostDetails = () => {
   };
 
   const handleSaveEdit = async () => {
+
+    console.log('handleSaveEdit called'); 
+  
+  if (!post) {
+    setError('Post data is not loaded yet.');
+    return;
+  }
+
+
+  console.log("id: ", post?.id)
+  console.log("userId: ", userId)
+  console.log("groupId: ", post?.groupid)
+  console.log("categoryId: ", post?.categoryid)
+  console.log("picture: ", post?.picture)
+  console.log("latitude: ", post?.latitude)
+  console.log("longitude: ", post?.longitude)
+  console.log("caption: ", editableCaption)
+  console.log("title: ", post?.title)
+
     setIsLoading(true);
     try {
+      const requestBody = {
+        id: postId,
+        userid: post.userid, 
+        groupid: post.groupid, 
+        categoryid: post.categoryid,
+        picture: post.picture,
+        latitude: post.latitude,
+        longitude: post.longitude,
+        caption: editableCaption,
+        title: post.title
+      };
+  
+      console.log('Request Body:', requestBody);
+  
       const response = await fetch('/api/posts/UpdatePost', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: post?.id,
-          userId: post?.user.id,
-          groupId: post?.group.id,
-          categoryId: post?.category.id,
-          picture: post?.picture,
-          latitude: post?.latitude,
-          longitude: post?.longitude,
-          caption: editableCaption,
-        }),
+        body: JSON.stringify(requestBody),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to update caption');
+        throw new Error('Failed to update post');
       }
-
-      const updatedPost = await response.json();
+  
+      const updatedPost: Post = await response.json();
+      console.log(updatedPost)
+  
+      if (!updatedPost || !updatedPost.id) {
+        throw new Error('Invalid post structure received from the server');
+      }
+  
+      console.log("updated post success", updatedPost);
       setPost(updatedPost); 
       setIsEditing(false); 
       setIsLoading(false);
     } catch (error: any) {
+      console.log("updated post error", error);
       setError(error.message);
+      setIsEditing(false); 
       setIsLoading(false);
     }
   };
-
+  
   if (!post) {
     return <div>Loading...</div>;
   }
@@ -167,10 +177,11 @@ const UserPostDetails = () => {
       </div>
 
       <div className="text-center mb-4">
-        <p className="text-gray-700">{post.category.description}</p>
-        <p className="text-gray-500 text-sm mt-2">Posted by: {post.user.username}</p>
-        <p className="text-gray-500 text-sm mt-2">Group: {post.group.name}</p>
-        <p className="text-gray-500 text-sm mt-2">Group description: {post.group.description}</p>
+        {/* <p className="text-gray-700">{post.description}</p>
+        <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
+        <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p> */}
+        <p className="text-gray-500 text-sm mt-2">Title: {post.title}</p>
       </div>
 
       {!isEditing ? (
@@ -216,6 +227,19 @@ const UserPostDetails = () => {
         </button>
       </div>
 
+      <h2>View it on the map below:</h2>
+     
+      <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
+        <Map
+          defaultZoom={12}
+          defaultCenter={{ lat: post.latitude, lng: post.longitude }}
+          mapId="your-map-id"
+          style={{ height: '300px', width: '100%' }}
+        >
+          <Marker position={{ lat: post.latitude, lng: post.longitude }} />
+        </Map>
+      </APIProvider>
+
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
     </div>
@@ -223,3 +247,4 @@ const UserPostDetails = () => {
 };
 
 export default UserPostDetails;
+
