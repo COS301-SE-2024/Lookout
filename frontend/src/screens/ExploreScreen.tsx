@@ -4,6 +4,7 @@ import HorizontalCarousel from "../components/HorizontalCarousel";
 import { IoLocationOutline } from "react-icons/io5";
 import CategoryPill from "../components/CategoryPill";
 import { useNavigate } from "react-router-dom";
+import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 
 // const pointsOfInterest: PointOfInterest[] = [
 //   {
@@ -95,10 +96,10 @@ interface Post {
 
 const ExploreScreen: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [animalposts, setanimalPosts] = useState<Post[]>([]);
-  const [campingposts, setcampingPosts] = useState<Post[]>([]);
-  const [poiposts, setpoiPosts] = useState<Post[]>([]);
-  const [securityposts, setsecurityPosts] = useState<Post[]>([]);
+  const [animalPosts, setAnimalPosts] = useState<Post[]>([]);
+  const [campingPosts, setCampingPosts] = useState<Post[]>([]);
+  const [poiPosts, setPoiPosts] = useState<Post[]>([]);
+  const [securityPosts, setSecurityPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -106,27 +107,22 @@ const ExploreScreen: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch('/api/posts/category/3?page=0&size=10');
-        const animalResponse =  await fetch('/api/posts/category/1?page=0&size=10')
-        const campResponse =  await fetch('/api/posts/category/2?page=0&size=10')
-        const poiResponse = await fetch('/api/posts/category/4?page=0&size=10')
-        const securityResponse = await fetch('/api/posts/category/5?page=0&size=10')
+        const animalResponse = await fetch('/api/posts/category/1?page=0&size=10');
+        const campResponse = await fetch('/api/posts/category/2?page=0&size=10');
+        const poiResponse = await fetch('/api/posts/category/4?page=0&size=10');
+        const securityResponse = await fetch('/api/posts/category/5?page=0&size=10');
 
         const data = await response.json();
-        const animalData= await animalResponse.json();
+        const animalData = await animalResponse.json();
         const campData = await campResponse.json();
         const poiData = await poiResponse.json();
         const securityData = await securityResponse.json();
-        
-        // console.log(data)
-        // console.log(animalData)
-        // console.log(campData)
-        // console.log(poiData)
 
-        setPosts(data.content); 
-        setanimalPosts(animalData.content);
-        setcampingPosts(campData.content);
-        setpoiPosts(poiData.content);
-        setsecurityPosts(securityData.content);
+        setPosts(data.content);
+        setAnimalPosts(animalData.content);
+        setCampingPosts(campData.content);
+        setPoiPosts(poiData.content);
+        setSecurityPosts(securityData.content);
 
         setLoading(false);
       } catch (error) {
@@ -138,31 +134,15 @@ const ExploreScreen: React.FC = () => {
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   const handlePostClick = (post: Post) => {
     navigate(`/post/${post.id}`, { state: { post } });
-  }
+  };
 
-  if (posts.length === 0 || animalposts.length === 0) {
-    return (
-      <div className="text-center">
-        <img
-          src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
-          alt="No posts"
-          className="w-68 h-64 mx-auto mb-4"
-        />
-        <p className="text-gray-600">There are no posts yet. Be the first to post!</p>
-      </div>
-    );
-  }
   const filteredPosts = posts.filter(post => post.userId !== 52);
-  const filteredAnimalPosts = animalposts.filter(post => post.userId ! = 52)
-  const filteredCampPosts = campingposts.filter(post => post.userId ! = 52)
-  const filteredPoiPosts = poiposts.filter(post => post.userId ! = 52)
-  const filteredSecurityPosts = securityposts.filter(post => post.userId ! = 52)
+  const filteredAnimalPosts = animalPosts.filter(post => post.userId !== 52);
+  const filteredCampPosts = campingPosts.filter(post => post.userId !== 52);
+  const filteredPoiPosts = poiPosts.filter(post => post.userId !== 52);
+  const filteredSecurityPosts = securityPosts.filter(post => post.userId !== 52);
 
   return (
     <div className="p-4 scrollbar-hide">
@@ -178,140 +158,146 @@ const ExploreScreen: React.FC = () => {
         `}
       </style>
 
-      <h1 className="text-2xl font-bold mb-4">Animal Sighting</h1>
-      <HorizontalCarousel>
-        {filteredAnimalPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={post.picture}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Animal Sighting"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
+      {loading && <ExploreSkeletonScreen />}
 
-      <h1 className="text-2xl font-bold mb-4">Campsite</h1>
-      <HorizontalCarousel>
-        {filteredCampPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={post.picture}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Campsite"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
+      {!loading && (
+        <>
+          <h1 className="text-2xl font-bold mb-4">Animal Sighting</h1>
+          <HorizontalCarousel>
+            {filteredAnimalPosts.map((post) => (
+              <div
+                key={post.id}
+                className="min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={() => handlePostClick(post)}
+              >
+                <img
+                  src={post.picture}
+                  alt={post.caption}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <p className="text-gray-700">{post.caption}</p>
+                  <p className="text-gray-500 text-sm flex items-center">
+                    <IoLocationOutline className="h-4 w-4 mr-1" />
+                    {/* {post.location} */}
+                  </p>
+                  <CategoryPill category={"Animal Sighting"} />
+                </div>
+              </div>
+            ))}
+          </HorizontalCarousel>
 
-      <h1 className="text-2xl font-bold mb-4">Hiking Trails</h1>
-      <HorizontalCarousel>
-        {filteredPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={post.picture}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Hiking Trail"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
+          <h1 className="text-2xl font-bold mb-4">Campsite</h1>
+          <HorizontalCarousel>
+            {filteredCampPosts.map((post) => (
+              <div
+                key={post.id}
+                className="min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={() => handlePostClick(post)}
+              >
+                <img
+                  src={post.picture}
+                  alt={post.caption}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <p className="text-gray-700">{post.caption}</p>
+                  <p className="text-gray-500 text-sm flex items-center">
+                    <IoLocationOutline className="h-4 w-4 mr-1" />
+                    {/* {post.location} */}
+                  </p>
+                  <CategoryPill category={"Campsite"} />
+                </div>
+              </div>
+            ))}
+          </HorizontalCarousel>
 
-      <h1 className="text-2xl font-bold mb-4">Explore Points of Interest</h1>
-      <HorizontalCarousel>
-        {filteredPoiPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={post.picture}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Point of Interest"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
+          <h1 className="text-2xl font-bold mb-4">Hiking Trails</h1>
+          <HorizontalCarousel>
+            {filteredPosts.map((post) => (
+              <div
+                key={post.id}
+                className="min-w-[300px] ml-8 h-96 bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={() => handlePostClick(post)}
+              >
+                <img
+                  src={post.picture}
+                  alt={post.caption}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <p className="text-gray-700">{post.caption}</p>
+                  <p className="text-gray-500 text-sm flex items-center">
+                    <IoLocationOutline className="h-4 w-4 mr-1" />
+                    {/* {post.location} */}
+                  </p>
+                  <CategoryPill category={"Hiking Trail"} />
+                </div>
+              </div>
+            ))}
+          </HorizontalCarousel>
 
-      <h1 className="text-2xl font-bold mb-4">Security Concerns</h1>
-      <HorizontalCarousel>
-        {filteredSecurityPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={post.picture}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Security Concern"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
+          <h1 className="text-2xl font-bold mb-4">Explore Points of Interest</h1>
+          <HorizontalCarousel>
+            {filteredPoiPosts.map((post) => (
+              <div
+                key={post.id}
+                className="min-w-[300px] ml-8 h-96 bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={() => handlePostClick(post)}
+              >
+                <img
+                  src={post.picture}
+                  alt={post.caption}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <p className="text-gray-700">{post.caption}</p>
+                  <p className="text-gray-500 text-sm flex items-center">
+                    <IoLocationOutline className="h-4 w-4 mr-1" />
+                    {/* {post.location} */}
+                  </p>
+                  <CategoryPill category={"Point of Interest"} />
+                </div>
+              </div>
+            ))}
+          </HorizontalCarousel>
 
-      <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
-      <HorizontalCarousel>
-        <ExploreArticles />
-      </HorizontalCarousel>
+          <h1 className="text-2xl font-bold mb-4">Security Concerns</h1>
+          <HorizontalCarousel>
+            {filteredSecurityPosts.map((post) => (
+              <div
+                key={post.id}
+                className="min-w-[300px] ml-8 h-96 bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={() => handlePostClick(post)}
+              >
+                <img
+                  src={post.picture}
+                  alt={post.caption}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <p className="text-gray-700">{post.caption}</p>
+                  <p className="text-gray-500 text-sm flex items-center">
+                    <IoLocationOutline className="h-4 w-4 mr-1" />
+                    {/* {post.location} */}
+                  </p>
+                  <CategoryPill category={"Security Concern"} />
+                </div>
+              </div>
+            ))}
+          </HorizontalCarousel>
+
+          <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
+          <div className="">
+            <ExploreArticles />
+          </div>
+        </>
+      )}
     </div>
   );
 };
