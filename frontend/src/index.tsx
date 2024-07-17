@@ -20,6 +20,7 @@ import UserPostDetails from "./components/UserPostDetails";
 import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CategoryPostsPage from "./screens/CategoryPostsPage";
+import ExploreGroups from "./components/ExploreGroups";
 
 function Main() {
   useEffect(() => {
@@ -48,6 +49,7 @@ function Main() {
           path="/groups"
           element={<ProtectedRoute element={GroupScreen} />}
         />
+        <Route path="/exploreGroups" element={<ProtectedRoute element={ExploreGroups} />} />
         <Route path="/login" element={<LoginScreen />} />{" "}
         <Route path="/signup" element={<SignUpScreen />} />{" "}
         <Route

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
+import CategoryPill from "../components/CategoryPill"; // Import CategoryPill component
 
 interface User {
   userName: string;
@@ -49,6 +50,7 @@ const categoryMap: { [key: number]: string } = {
   3: 'Hiking Trails',
   4: 'Points of Interest',
   5: 'Security Concerns',
+  6: 'Groups', // Add group category
 };
 
 const Skeleton = () => (
@@ -60,6 +62,7 @@ const Skeleton = () => (
 const CategoryPostsPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -86,15 +89,32 @@ const CategoryPostsPage: React.FC = () => {
     }
   };
 
+  const fetchGroups = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/groups");
+      const data = await response.json();
+      setGroups(data.content);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchPosts(0); // Fetch initial posts
+    if (categoryId === "6") {
+      fetchGroups(); // Fetch groups if categoryId is 6 (Groups)
+    } else {
+      fetchPosts(0); // Fetch initial posts for other categories
+    }
   }, [categoryId]);
 
   useEffect(() => {
-    if (page > 0) { // Fetch more posts if page is incremented
-      fetchPosts(page);
+    if (categoryId !== "6" && page > 0) {
+      fetchPosts(page); // Fetch more posts if page is incremented and category is not Groups
     }
-  }, [page]);
+  }, [page, categoryId]);
 
   const handleScroll = useCallback(() => {
     if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100 && hasMore && !loading) {
@@ -109,6 +129,10 @@ const CategoryPostsPage: React.FC = () => {
 
   const handlePostClick = (post: Post) => {
     navigate(`/post/${post.id}`, { state: { post } });
+  };
+
+  const handleGroupClick = (group: Group) => {
+    navigate(`/group/${group.id}`, { state: { group } });
   };
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -144,22 +168,24 @@ const CategoryPostsPage: React.FC = () => {
           </button>
           <h1 className="text-2xl font-bold ml-2">{categoryName}</h1>
         </div>
-        <select value={sortOrder} onChange={handleSortChange} className="border border-gray-300 rounded-md p-2">
-          <option value="newest">
-            <FaSortAmountDown className="inline-block mr-2" />
-            Sort By Newest Posts
-          </option>
-          <option value="oldest">
-            <FaSortAmountUp className="inline-block mr-2" />
-            Sorty By Oldest Posts
-          </option>
-          <option value="titleAsc">
-            Sort By Post Title A-Z
-          </option>
-          <option value="titleDesc">
-          Sort By Post Title Z-A
-          </option>
-        </select>
+        {categoryId !== "6" && (
+          <select value={sortOrder} onChange={handleSortChange} className="border border-gray-300 rounded-md p-2">
+            <option value="newest">
+              <FaSortAmountDown className="inline-block mr-2" />
+              Sort By Newest Posts
+            </option>
+            <option value="oldest">
+              <FaSortAmountUp className="inline-block mr-2" />
+              Sort By Oldest Posts
+            </option>
+            <option value="titleAsc">
+              Sort By Post Title A-Z
+            </option>
+            <option value="titleDesc">
+              Sort By Post Title Z-A
+            </option>
+          </select>
+        )}
       </div>
       {loading && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
@@ -168,7 +194,26 @@ const CategoryPostsPage: React.FC = () => {
           ))}
         </div>
       )}
-      {!loading && (
+      {!loading && categoryId === "6" && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
+          {groups.map((group) => (
+            <div 
+              key={group.id} 
+              className="overflow-hidden relative cursor-pointer"
+              onClick={() => handleGroupClick(group)}
+            >
+              <img 
+                src={group.picture} 
+                alt={group.name} 
+                className="w-full h-48 object-cover" />
+              <div className="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white text-xs p-1">
+                {group.name}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {!loading && categoryId !== "6" && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
           {sortedPosts.map((post) => (
             <div 

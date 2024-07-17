@@ -4,6 +4,7 @@ import HorizontalCarousel from "../components/HorizontalCarousel";
 import { useNavigate } from "react-router-dom";
 import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 import ExplorePost from "../components/ExplorePost";
+import ExploreGroup from "../components/ExploreGroup";
 import { Link } from "react-router-dom";
 
 interface User {
@@ -52,6 +53,7 @@ const ExploreScreen: React.FC = () => {
   const [campingPosts, setCampingPosts] = useState<Post[]>([]);
   const [poiPosts, setPoiPosts] = useState<Post[]>([]);
   const [securityPosts, setSecurityPosts] = useState<Post[]>([]);
+  const [groupPosts, setGroupPosts] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -70,19 +72,24 @@ const ExploreScreen: React.FC = () => {
           "/api/posts/category/5?page=0&size=10"
         );
 
+        const groupResponse = await fetch("/api/groups");
+
         const data = await response.json();
         const animalData = await animalResponse.json();
         const campData = await campResponse.json();
         const poiData = await poiResponse.json();
         const securityData = await securityResponse.json();
+        const groupData = await groupResponse.json();
 
-        console.log(animalData);
+        // console.log(animalData);
+        console.log("Fetched posts:", groupData);
 
         setPosts(data.content);
         setAnimalPosts(animalData.content);
         setCampingPosts(campData.content);
         setPoiPosts(poiData.content);
         setSecurityPosts(securityData.content);
+        setGroupPosts(groupData.content);
 
         setLoading(false);
       } catch (error) {
@@ -101,6 +108,7 @@ const ExploreScreen: React.FC = () => {
   const filteredSecurityPosts = securityPosts.filter(
     (post) => post.userId !== 52
   );
+  const filteredGroupPosts = groupPosts.filter((group) => group.user?.userName !== "someUserName"); // Adjust the filter condition as needed
 
   return (
     <div className="p-4 scrollbar-hide">
@@ -179,6 +187,19 @@ const ExploreScreen: React.FC = () => {
               <ExplorePost key={post.id} post={post} />
             ))}
           </HorizontalCarousel>
+
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
+            <span>Groups</span>
+            <Link to="/category/6" className="text-black-500 underline"> {/* to be changed to searchgroups page */}
+              View All
+            </Link>
+          </h1>
+          <HorizontalCarousel>
+            {filteredGroupPosts.map((group) => (
+              <ExploreGroup key={group.id} group={group} />
+            ))}
+          </HorizontalCarousel>
+
 
           <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
           <div className="">
