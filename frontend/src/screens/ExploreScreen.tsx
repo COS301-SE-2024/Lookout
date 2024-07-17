@@ -54,6 +54,7 @@ const ExploreScreen: React.FC = () => {
   const [poiPosts, setPoiPosts] = useState<Post[]>([]);
   const [securityPosts, setSecurityPosts] = useState<Post[]>([]);
   const [groupPosts, setGroupPosts] = useState<Group[]>([]);
+  const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -73,6 +74,7 @@ const ExploreScreen: React.FC = () => {
         );
 
         const groupResponse = await fetch("/api/groups");
+        const userGroupResponse = await fetch(`/api/groups/user/2`);
 
         const data = await response.json();
         const animalData = await animalResponse.json();
@@ -80,6 +82,7 @@ const ExploreScreen: React.FC = () => {
         const poiData = await poiResponse.json();
         const securityData = await securityResponse.json();
         const groupData = await groupResponse.json();
+        const userGroupData = await userGroupResponse.json();
 
         // console.log(animalData);
         console.log("Fetched posts:", groupData);
@@ -90,6 +93,7 @@ const ExploreScreen: React.FC = () => {
         setPoiPosts(poiData.content);
         setSecurityPosts(securityData.content);
         setGroupPosts(groupData.content);
+        setUserGroups(userGroupData);
 
         setLoading(false);
       } catch (error) {
@@ -108,7 +112,9 @@ const ExploreScreen: React.FC = () => {
   const filteredSecurityPosts = securityPosts.filter(
     (post) => post.userId !== 52
   );
-  const filteredGroupPosts = groupPosts.filter((group) => group.user?.userName !== "someUserName"); // Adjust the filter condition as needed
+  const filteredGroupPosts = groupPosts.filter(
+    group => !userGroups.some(userGroup => userGroup.id === group.id)
+  );
 
   return (
     <div className="p-4 scrollbar-hide">

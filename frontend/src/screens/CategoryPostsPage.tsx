@@ -63,6 +63,7 @@ const CategoryPostsPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [posts, setPosts] = useState<Post[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -92,9 +93,14 @@ const CategoryPostsPage: React.FC = () => {
   const fetchGroups = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/groups");
-      const data = await response.json();
-      setGroups(data.content);
+      const groupResponse = await fetch("/api/groups");
+      const userGroupResponse = await fetch(`/api/groups/user/2`);
+      
+      const groupData = await groupResponse.json();
+      const userGroupData = await userGroupResponse.json();
+      
+      setGroups(groupData.content);
+      setUserGroups(userGroupData);
     } catch (error) {
       console.error("Error fetching groups:", error);
     } finally {
@@ -157,6 +163,11 @@ const CategoryPostsPage: React.FC = () => {
     }
   });
 
+  const filteredGroups = groups.filter(
+    group => !userGroups.some(userGroup => userGroup.id === group.id)
+  );
+
+
   const categoryName = categoryMap[Number(categoryId)] || "Unknown Category";
 
   return (
@@ -196,7 +207,7 @@ const CategoryPostsPage: React.FC = () => {
       )}
       {!loading && categoryId === "6" && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
-          {groups.map((group) => (
+          {filteredGroups.map((group) => (
             <div 
               key={group.id} 
               className="overflow-hidden relative cursor-pointer"
