@@ -71,7 +71,7 @@ const CategoryPostsPage: React.FC = () => {
   );
   const navigate = useNavigate();
 
-  const fetchPosts = async (page: number) => {
+  const fetchPosts = useCallback(async (page: number) => {
     setLoading(true);
     try {
       const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=12`);
@@ -87,7 +87,7 @@ const CategoryPostsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [categoryId]);
 
   const fetchGroups = async () => {
     setLoading(true);
@@ -113,7 +113,7 @@ const CategoryPostsPage: React.FC = () => {
     } else {
       fetchPosts(0);
     }
-  }, [fetchPosts, categoryId]);
+  }, [fetchPosts, fetchGroups, categoryId]);
 
   useEffect(() => {
     if (categoryId !== "6" && page > 0) {
