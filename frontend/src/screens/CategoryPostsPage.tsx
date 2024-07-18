@@ -113,13 +113,13 @@ const CategoryPostsPage: React.FC = () => {
     } else {
       fetchPosts(0);
     }
-  }, [categoryId]);
+  }, [fetchPosts, categoryId]);
 
   useEffect(() => {
     if (categoryId !== "6" && page > 0) {
       fetchPosts(page);
     }
-  }, [page, categoryId]);
+  }, [fetchPosts, page, categoryId]);
 
   const handleScroll = useCallback(() => {
     if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100 && hasMore && !loading) {
