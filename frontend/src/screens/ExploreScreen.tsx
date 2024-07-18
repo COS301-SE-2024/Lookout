@@ -53,7 +53,7 @@ const ExploreScreen: React.FC = () => {
   const [poiPosts, setPoiPosts] = useState<Post[]>([]);
   const [securityPosts, setSecurityPosts] = useState<Post[]>([]);
   const [groupPosts, setGroupPosts] = useState<Group[]>([]);
-  const [userGroups, setUserGroups] = useState<Group[]>([]);
+  const [, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
