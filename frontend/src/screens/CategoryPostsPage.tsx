@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
-import CategoryPill from "../components/CategoryPill"; // Import CategoryPill component
 
 interface User {
   userName: string;
@@ -73,12 +72,12 @@ const CategoryPostsPage: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchPosts = async (page: number) => {
-    setLoading(true); // Set loading to true before fetching
+    setLoading(true);
     try {
       const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=12`);
       const data = await response.json();
       if (page === 0) {
-        setPosts(data.content); // Reset posts if it's the first page
+        setPosts(data.content);
       } else {
         setPosts((prevPosts) => [...prevPosts, ...data.content]);
       }
@@ -110,15 +109,15 @@ const CategoryPostsPage: React.FC = () => {
 
   useEffect(() => {
     if (categoryId === "6") {
-      fetchGroups(); // Fetch groups if categoryId is 6 (Groups)
+      fetchGroups();
     } else {
-      fetchPosts(0); // Fetch initial posts for other categories
+      fetchPosts(0);
     }
   }, [categoryId]);
 
   useEffect(() => {
     if (categoryId !== "6" && page > 0) {
-      fetchPosts(page); // Fetch more posts if page is incremented and category is not Groups
+      fetchPosts(page);
     }
   }, [page, categoryId]);
 
@@ -167,7 +166,6 @@ const CategoryPostsPage: React.FC = () => {
     group => !userGroups.some(userGroup => userGroup.id === group.id)
   );
 
-
   const categoryName = categoryMap[Number(categoryId)] || "Unknown Category";
 
   return (
@@ -183,17 +181,17 @@ const CategoryPostsPage: React.FC = () => {
           <select value={sortOrder} onChange={handleSortChange} className="border border-gray-300 rounded-md p-2">
             <option value="newest">
               <FaSortAmountDown className="inline-block mr-2" />
-              Sort By Newest Posts
+              Newest
             </option>
             <option value="oldest">
               <FaSortAmountUp className="inline-block mr-2" />
-              Sort By Oldest Posts
+              Oldest
             </option>
             <option value="titleAsc">
-              Sort By Post Title A-Z
+              A-Z
             </option>
             <option value="titleDesc">
-              Sort By Post Title Z-A
+              Z-A
             </option>
           </select>
         )}
