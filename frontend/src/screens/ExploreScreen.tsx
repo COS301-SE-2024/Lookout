@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import ExploreArticles from "../components/ExploreArticles";
-import HorizontalCarousel from "../components/HorizontalCarousel";
-import { useNavigate } from "react-router-dom";
-import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
+import { Link } from "react-router-dom";
 import ExplorePost from "../components/ExplorePost";
 import ExploreGroup from "../components/ExploreGroup";
-import { Link } from "react-router-dom";
+import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
+import HorizontalCarousel from "../components/HorizontalCarousel";
+import ExploreArticles from "../components/ExploreArticles";
 
 interface User {
   userName: string;
@@ -56,7 +55,7 @@ const ExploreScreen: React.FC = () => {
   const [groupPosts, setGroupPosts] = useState<Group[]>([]);
   const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -84,9 +83,6 @@ const ExploreScreen: React.FC = () => {
         const groupData = await groupResponse.json();
         const userGroupData = await userGroupResponse.json();
 
-        // console.log(animalData);
-        console.log("Fetched posts:", groupData);
-
         setPosts(data.content);
         setAnimalPosts(animalData.content);
         setCampingPosts(campData.content);
@@ -105,15 +101,27 @@ const ExploreScreen: React.FC = () => {
     fetchPosts();
   }, []);
 
-  const filteredPosts = posts.filter((post) => post.userId !== 52);
-  const filteredAnimalPosts = animalPosts.filter((post) => post.userId !== 52);
-  const filteredCampPosts = campingPosts.filter((post) => post.userId !== 52);
-  const filteredPoiPosts = poiPosts.filter((post) => post.userId !== 52);
-  const filteredSecurityPosts = securityPosts.filter(
-    (post) => post.userId !== 52
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const filteredGroupPosts = groupPosts.filter(
-    group => !userGroups.some(userGroup => userGroup.id === group.id)
+  const filteredAnimalPosts = animalPosts.filter((post) =>
+    post.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const filteredCampPosts = campingPosts.filter((post) =>
+    post.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const filteredPoiPosts = poiPosts.filter((post) =>
+    post.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const filteredSecurityPosts = securityPosts.filter((post) =>
+    post.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const filteredGroupPosts = groupPosts.filter((group) =>
+    group.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -124,15 +132,47 @@ const ExploreScreen: React.FC = () => {
             display: none;
           }
           .scrollbar-hide {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .search-results-container {
+            display: grid;
+            gap: 16px;
+            justify-items: start;
+          }
+          .search-results-container .search-result-card {
+            width: 100%;
+            margin: 0;
+          }
+          @media (min-width: 768px) {
+            .search-results-container {
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+          }
+          @media (max-width: 767px) {
+            .search-results-container {
+              grid-template-columns: 1fr;
+            }
+            .search-bar {
+              width: 100%;
+            }
           }
         `}
       </style>
 
+      <div className="mb-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for Posts or Groups"
+          className="border p-2 rounded w-full search-bar"
+        />
+      </div>
+
       {loading && <ExploreSkeletonScreen />}
 
-      {!loading && (
+      {!loading && searchQuery === "" && (
         <>
           <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
             <span>Animal Sightings</span>
@@ -196,7 +236,7 @@ const ExploreScreen: React.FC = () => {
 
           <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
             <span>Groups</span>
-            <Link to="/category/6" className="text-black-500 underline"> {/* to be changed to searchgroups page */}
+            <Link to="/category/6" className="text-black-500 underline">
               View All
             </Link>
           </h1>
@@ -206,12 +246,46 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-
           <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
           <div className="">
             <ExploreArticles />
           </div>
         </>
+      )}
+
+      {!loading && searchQuery !== "" && (
+        <div className="search-results-container">
+          {filteredPosts.map((post) => (
+            <div className="search-result-card">
+              <ExplorePost key={post.id} post={post} />
+            </div>
+          ))}
+          {filteredAnimalPosts.map((post) => (
+            <div className="search-result-card">
+              <ExplorePost key={post.id} post={post} />
+            </div>
+          ))}
+          {filteredCampPosts.map((post) => (
+            <div className="search-result-card">
+              <ExplorePost key={post.id} post={post} />
+            </div>
+          ))}
+          {filteredPoiPosts.map((post) => (
+            <div className="search-result-card">
+              <ExplorePost key={post.id} post={post} />
+            </div>
+          ))}
+          {filteredSecurityPosts.map((post) => (
+            <div className="search-result-card">
+              <ExplorePost key={post.id} post={post} />
+            </div>
+          ))}
+          {filteredGroupPosts.map((group) => (
+            <div className="search-result-card">
+              <ExploreGroup key={group.id} group={group} />
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
