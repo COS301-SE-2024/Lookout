@@ -89,7 +89,7 @@ const CategoryPostsPage: React.FC = () => {
     }
   }, [categoryId]);
 
-  const fetchGroups = async () => {
+  const fetchGroups = useCallback(async () => {
     setLoading(true);
     try {
       const groupResponse = await fetch("/api/groups");
@@ -105,7 +105,7 @@ const CategoryPostsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (categoryId === "6") {
