@@ -97,8 +97,8 @@ class AuthenticationService(private val userRepository: UserRepository,
 
 
     private fun saveUserToken(jwt: String, user: User) {
-        val token = JwtToken(token = jwt, loggedOut = false, user = user)
-        tokenRepository.save(token)
+//        val token = JwtToken(token = jwt, loggedOut = false, user = user)
+//        tokenRepository.save(token)
     }
 
 }
