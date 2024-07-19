@@ -10,13 +10,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 	element: Element,
 	...rest
 }) => {
-	const isAuthenticated = Boolean(localStorage.getItem("authToken"));
+	const isAuthenticated = true;
 	const location = useLocation();
 
 	return isAuthenticated ? (
 		<Element {...rest} />
 	) : (
-		<Navigate to="/login" state={{ from: location }} />
+		<Navigate to="/explore" state={{ from: location }} />
 	);
 };
 

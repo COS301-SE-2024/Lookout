@@ -99,13 +99,13 @@ Content-Type: application/json
 ###
 
 ### Get all posts
-GET http://localhost:8080/api/posts/user/52
+GET http://localhost:8080/api/posts/user/1
 Accept: application/json
 ###
 
 ###
 ### Get a post by ID
-GET http://localhost:8080/api/posts/19
+GET http://localhost:8080/api/posts/1
 Accept: application/json
 
 ###
@@ -142,14 +142,15 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-  "id": 135,
-  "userId": 52,
+  "id": 1,
+  "userId": 1,
   "groupId": 2,
   "categoryId": 3,
   "picture": "https://newpicturelink.com/updated.png",
   "latitude": 124.124,
   "longitude": 124.124,
-  "caption": "This is an updated test post 2"
+  "caption": "Found this new campsite xxx",
+  "title": "this is a test update"
 }
 ###
 
