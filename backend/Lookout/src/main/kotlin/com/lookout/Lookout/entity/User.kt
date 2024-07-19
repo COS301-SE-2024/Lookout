@@ -35,6 +35,15 @@ data class User(
         return passcode
     }
 
+   fun setUsername(newUsername: String) {
+        this.userName = newUsername
+   }
+
+    @JvmName("customSetEmail")
+    fun setEmail(newEmail: String) {
+        this.email = newEmail
+    }
+
     override fun getUsername(): String? {
         return userName
     }
@@ -54,5 +63,7 @@ data class User(
     override fun isEnabled(): Boolean {
         return true
     }
+
+
 }
 

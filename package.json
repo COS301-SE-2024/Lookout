@@ -2,6 +2,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.4",
     "cors": "^2.8.5",
-    "daisyui": "^4.12.10"
+    "daisyui": "^4.12.10",
+    "typescript-cookie": "^1.0.6"
   }
 }

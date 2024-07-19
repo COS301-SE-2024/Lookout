@@ -11,7 +11,7 @@ import java.util.*
 
 
 @Service
-class UserService: UserDetailsService {
+class UserService : UserDetailsService {
 
     @Autowired
     private lateinit var userRepository: UserRepository
@@ -28,5 +28,19 @@ class UserService: UserDetailsService {
 
     fun findById(id: Long): Optional<User> {
         return userRepository.findById(id)
+    }
+
+    fun updateUsername(id: Long, newUsername: String): User {
+        val user = userRepository.findById(id)
+            .orElseThrow { UsernameNotFoundException("User not found with that id") }
+        user.userName = newUsername
+        return userRepository.save(user)
+    }
+
+    fun updateEmail(id: Long, newEmail: String): User {
+        val user = userRepository.findById(id)
+            .orElseThrow { UsernameNotFoundException("User not found with that id") }
+        user.email = newEmail
+        return userRepository.save(user)
     }
 }
