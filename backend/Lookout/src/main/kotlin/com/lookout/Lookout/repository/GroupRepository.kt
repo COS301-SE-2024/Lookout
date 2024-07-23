@@ -27,4 +27,5 @@ interface GroupRepository : JpaRepository<Groups, Long> {
     @Modifying
     @Query("DELETE FROM Group_Members WHERE groupid = :groupId AND userid = :userId", nativeQuery = true)
     fun removeMemberFromGroup(@Param("groupId") groupId: Long, @Param("userId") userId: Long)
+
 }

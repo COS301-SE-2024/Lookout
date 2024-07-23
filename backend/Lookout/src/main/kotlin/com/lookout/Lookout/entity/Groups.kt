@@ -29,5 +29,5 @@ data class Groups(
     var picture: String? = "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
 
     @Column(name = "created_at", updatable = false)
-    val createdAt: Instant? = Instant.now()
+    val createdAt: Instant? = Instant.now(),
 )

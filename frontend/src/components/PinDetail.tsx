@@ -13,6 +13,8 @@ interface Post {
   categoryId: any;
   groupId: number;
   title: string;
+  groupPicture: string;
+  admin: string;
   user: {
     id: number;
     userName: string;
@@ -242,27 +244,47 @@ const PinDetail: React.FC = () => {
               alt={post.title}
               className="w-full md:w-1/2 lg:w-1/3 mx-auto rounded-lg mb-4"
             />
-            <p className="text-gray-700">{post.caption}</p>
+            <p className="text-gray-700 font-bold">{post.caption}</p>
             <p className="text-gray-500 text-sm mt-2">
               Posted by: {post.username}
             </p>
             <CategoryPill categoryId={post.categoryId} />
           </div>
 
+          <div className="mt-8 mr-32">
+            <h1 className="text-xl font-bold">See more Posts like this:</h1>
+          </div>
+
           {/* Group Information */}
           <div
-            className="text-blue-500 cursor-pointer hover:underline mt-4"
+            className="bg-white p-4 rounded-lg shadow-md mt-4 cursor-pointer mx-auto w-full md:w-3/4 lg:w-1/2"
             onClick={() =>
               navigate(`/group/${post.groupId}`, {
-                state: { group: post.groupId },
+                state: { group: post.group },
               })
             }
           >
-            Group: {post.groupName}
+            <img
+              src={post.groupPicture}
+              alt={post.groupName}
+              className="w-24 h-24 mx-auto rounded-full mb-4"
+            />
+            <h2 className="text-xl font-bold">{post.groupName}</h2>
+            <p className="text-gray-500 text-sm">
+              Admin: {post.admin || "No owner"}
+            </p>
+            <p className="text-gray-500 text-sm mt-2">
+              {post.groupDescription}
+            </p>
+            <div className="flex justify-around mt-4">
+              {/* <div>
+                <p className="text-gray-500 text-sm">Members: numMembers</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Posts: numPosts</p>
+              </div> */}
+            </div>
           </div>
-          <p className="text-gray-500 text-sm mt-2">
-            Group description: {post.groupDescription}
-          </p>
 
           {/* Save/Unsave Button */}
           <div className="mt-4">
@@ -282,7 +304,6 @@ const PinDetail: React.FC = () => {
 
       {activeTab === "map" && (
         <div className="mt-4">
-
           <div className="flex justify-center mt-4">
             <APIProvider
               apiKey={apicode || ""}
@@ -315,7 +336,7 @@ const PinDetail: React.FC = () => {
               Group Description: {post.groupDescription}
             </p>
             <div className="text-center">
-            <CategoryPill categoryId={post.categoryId} />
+              <CategoryPill categoryId={post.categoryId} />
             </div>
           </div>
         </div>
