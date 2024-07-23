@@ -178,7 +178,7 @@ const PinDetail: React.FC = () => {
   };
 
   if (loading) {
-    return <SkeletonPinDetail />;;
+    return <SkeletonPinDetail />;
   }
 
   if (!post) {
@@ -234,34 +234,38 @@ const PinDetail: React.FC = () => {
 
       {activeTab === "post" && (
         <div className="text-center mb-4">
-          <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
-          <img
-            src={decodedPictureUrl}
-            alt={post.caption}
-            className="w-full md:w-1/2 lg:w-1/3 mx-auto rounded-lg mb-4"
-          />
-          <p className="text-gray-700">{post.caption}</p>
-          <CategoryPill categoryId={post.categoryId} />
-          <p className="text-gray-500 text-sm mt-2">
-            Posted by: {post.username}
-          </p>
-          <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
+          {/* Post Section */}
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
+            <img
+              src={decodedPictureUrl}
+              alt={post.title}
+              className="w-full md:w-1/2 lg:w-1/3 mx-auto rounded-lg mb-4"
+            />
+            <p className="text-gray-700">{post.caption}</p>
+            <p className="text-gray-500 text-sm mt-2">
+              Posted by: {post.username}
+            </p>
+            <CategoryPill categoryId={post.categoryId} />
+          </div>
+
+          {/* Group Information */}
+          <div
+            className="text-blue-500 cursor-pointer hover:underline mt-4"
+            onClick={() =>
+              navigate(`/group/${post.groupId}`, {
+                state: { group: post.groupId },
+              })
+            }
+          >
+            Group: {post.groupName}
+          </div>
           <p className="text-gray-500 text-sm mt-2">
             Group description: {post.groupDescription}
           </p>
+
+          {/* Save/Unsave Button */}
           <div className="mt-4">
-            <button
-              className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
-              onClick={() =>
-                navigate(`/group/${post.groupId}`, {
-                  state: { group: post.groupId },
-                })
-              }
-            >
-              View Group
-            </button>
-          </div>
-          <div className="flex justify-center mt-4">
             <button
               className={`font-bold py-2 px-4 rounded ${
                 isSaved
@@ -278,21 +282,6 @@ const PinDetail: React.FC = () => {
 
       {activeTab === "map" && (
         <div className="mt-4">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-2 text-center">
-              {post.title}
-            </h2>
-            <p className="text-gray-700 mb-4 text-center">{post.description}</p>
-            <p className="text-gray-500 text-sm mb-2 text-center">
-              Posted by: {post.username}
-            </p>
-            <p className="text-gray-500 text-sm mb-2 text-center">
-              Group: {post.groupName}
-            </p>
-            <p className="text-gray-500 text-sm mb-2 text-center">
-              Group Description: {post.groupDescription}
-            </p>
-          </div>
 
           <div className="flex justify-center mt-4">
             <APIProvider
@@ -312,7 +301,23 @@ const PinDetail: React.FC = () => {
             </APIProvider>
           </div>
 
-          
+          <div className="mt-8 bg-white p-4 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-2 text-center">
+              {post.title}
+            </h2>
+            <p className="text-gray-500 text-sm mb-2 text-center">
+              Posted by: {post.username}
+            </p>
+            <p className="text-gray-500 text-sm mb-2 text-center">
+              Group: {post.groupName}
+            </p>
+            <p className="text-gray-500 text-sm mb-2 text-center">
+              Group Description: {post.groupDescription}
+            </p>
+            <div className="text-center">
+            <CategoryPill categoryId={post.categoryId} />
+            </div>
+          </div>
         </div>
       )}
     </div>
