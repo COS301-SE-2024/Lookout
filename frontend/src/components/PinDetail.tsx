@@ -326,15 +326,20 @@ const PinDetail: React.FC = () => {
             <h2 className="text-2xl font-bold mb-2 text-center">
               {post.title}
             </h2>
+            <img
+              src={post.groupPicture}
+              alt={post.groupName}
+              className="w-24 h-24 mx-auto rounded-full mb-4"
+            />
             <p className="text-gray-500 text-sm mb-2 text-center">
               Posted by: {post.username}
             </p>
             <p className="text-gray-500 text-sm mb-2 text-center">
               Group: {post.groupName}
             </p>
-            <p className="text-gray-500 text-sm mb-2 text-center">
+            {/* <p className="text-gray-500 text-sm mb-2 text-center">
               Group Description: {post.groupDescription}
-            </p>
+            </p> */}
             <div className="text-center">
               <CategoryPill categoryId={post.categoryId} />
             </div>
