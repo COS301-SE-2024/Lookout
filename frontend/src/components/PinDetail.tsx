@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import CategoryPill from "./CategoryPill";
+import SkeletonPinDetail from "./PinDetailSkeleton";
 
 interface Post {
   id: number;
@@ -176,7 +177,7 @@ const PinDetail: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <SkeletonPinDetail />;;
   }
 
   if (!post) {
