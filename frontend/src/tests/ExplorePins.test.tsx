@@ -168,3 +168,4 @@
 //     expect(history.location.pathname).toBe(`/post/${postsToTest[0].id}`);
 //   });
 // });
+export{}
