@@ -11,6 +11,7 @@ interface Post {
   groupName: string;
   groupDescription: string;
   categoryId: any;
+  groupId: number;
   title: string;
   user: {
     id: number;
@@ -252,8 +253,8 @@ const PinDetail: React.FC = () => {
             <button
               className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
               onClick={() =>
-                navigate(`/group/${post.group.id}`, {
-                  state: { group: post.group },
+                navigate(`/group/${post.groupId}`, {
+                  state: { group: post.groupId },
                 })
               }
             >

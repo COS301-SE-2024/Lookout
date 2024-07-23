@@ -33,6 +33,7 @@ interface Group {
 interface Post {
   id: number;
   userId: number;
+  groupId: number;
   user: User;
   group: Group;
   description: String;
