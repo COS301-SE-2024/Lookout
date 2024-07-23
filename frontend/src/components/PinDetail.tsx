@@ -80,9 +80,9 @@ const PinDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"post" | "map">("post");
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-  const handleSaveToggle = (postId: any) => {
-    setIsSaved(!isSaved);
-  };
+  // const handleSaveToggle = (postId: any) => {
+  //   setIsSaved(!isSaved);
+  // };
 
   useEffect(() => {
     const localStoreTheme = localStorage.getItem("data-theme") || "default";
