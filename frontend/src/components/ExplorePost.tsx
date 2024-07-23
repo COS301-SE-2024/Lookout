@@ -83,7 +83,7 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
 
   return (
     <div
-      className="min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+      className="relative min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
       onClick={() => handlePostClick(post)}
     >
       <img

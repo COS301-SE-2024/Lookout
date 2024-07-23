@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import CategoryPill from "./CategoryPill";
 import SkeletonPinDetail from "./PinDetailSkeleton";
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 interface Post {
   id: number;
@@ -78,6 +79,10 @@ const PinDetail: React.FC = () => {
   const [userId] = useState<number>(2);
   const [activeTab, setActiveTab] = useState<"post" | "map">("post");
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
+  const handleSaveToggle = (postId: any) => {
+    setIsSaved(!isSaved);
+  };
 
   useEffect(() => {
     const localStoreTheme = localStorage.getItem("data-theme") || "default";
@@ -235,73 +240,68 @@ const PinDetail: React.FC = () => {
       </div>
 
       {activeTab === "post" && (
-        <div className="text-center mb-4">
-          {/* Post Section */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
-            <img
-              src={decodedPictureUrl}
-              alt={post.title}
-              className="w-full md:w-1/2 lg:w-1/3 mx-auto rounded-lg mb-4"
-            />
-            <p className="text-gray-700 font-bold">{post.caption}</p>
-            <p className="text-gray-500 text-sm mt-2">
-              Posted by: {post.username}
-            </p>
-            <CategoryPill categoryId={post.categoryId} />
-          </div>
-
-          <div className="mt-8 mr-32">
-            <h1 className="text-xl font-bold">See more Posts like this:</h1>
-          </div>
-
-          {/* Group Information */}
-          <div
-            className="bg-white p-4 rounded-lg shadow-md mt-4 cursor-pointer mx-auto w-full md:w-3/4 lg:w-1/2"
-            onClick={() =>
-              navigate(`/group/${post.groupId}`, {
-                state: { group: post.group },
-              })
-            }
+      <div className="text-center mb-4">
+        {/* Post Section */}
+        <div className="relative bg-white p-4 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
+          <img
+            src={decodedPictureUrl}
+            alt={post.title}
+            className="w-full md:w-1/2 lg:w-1/3 mx-auto rounded-lg mb-4"
+          />
+          <button
+            className="absolute top-4 right-4 text-2xl"
+            onClick={isSaved ? handleUnsaveClick : handleSaveClick}
           >
-            <img
-              src={post.groupPicture}
-              alt={post.groupName}
-              className="w-24 h-24 mx-auto rounded-full mb-4"
-            />
-            <h2 className="text-xl font-bold">{post.groupName}</h2>
-            <p className="text-gray-500 text-sm">
-              Admin: {post.admin || "No owner"}
-            </p>
-            <p className="text-gray-500 text-sm mt-2">
-              {post.groupDescription}
-            </p>
-            <div className="flex justify-around mt-4">
-              {/* <div>
-                <p className="text-gray-500 text-sm">Members: numMembers</p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">Posts: numPosts</p>
-              </div> */}
-            </div>
-          </div>
+            {isSaved ? (
+              <FaHeart className="text-red-500" />
+            ) : (
+              <FaRegHeart className="text-gray-500" />
+            )}
+          </button>
+          <p className="text-gray-700 font-bold">{post.caption}</p>
+          <p className="text-gray-500 text-sm mt-2">
+            Posted by: {post.username}
+          </p>
+          <CategoryPill categoryId={post.categoryId} />
+        </div>
 
-          {/* Save/Unsave Button */}
-          <div className="mt-4">
-            <button
-              className={`font-bold py-2 px-4 rounded ${
-                isSaved
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-green-500 hover:bg-green-600"
-              }`}
-              onClick={isSaved ? handleUnsaveClick : handleSaveClick}
-            >
-              {isSaved ? "Unsave" : "Save"}
-            </button>
+        <div className="mt-8 mr-32">
+          <h1 className="text-xl font-bold">See more Posts like this:</h1>
+        </div>
+
+        {/* Group Information */}
+        <div
+          className="bg-white p-4 rounded-lg shadow-md mt-4 cursor-pointer mx-auto w-full md:w-3/4 lg:w-1/2"
+          onClick={() =>
+            navigate(`/group/${post.groupId}`, {
+              state: { group: post.group },
+            })
+          }
+        >
+          <img
+            src={post.groupPicture}
+            alt={post.groupName}
+            className="w-24 h-24 mx-auto rounded-full mb-4"
+          />
+          <h2 className="text-xl font-bold">{post.groupName}</h2>
+          <p className="text-gray-500 text-sm">
+            Admin: {post.admin || "No owner"}
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            {post.groupDescription}
+          </p>
+          <div className="flex justify-around mt-4">
+            {/* <div>
+              <p className="text-gray-500 text-sm">Members: numMembers</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Posts: numPosts</p>
+            </div> */}
           </div>
         </div>
-      )}
-
+      </div>
+    )}
       {activeTab === "map" && (
         <div className="mt-4">
           <div className="flex justify-center mt-4">
