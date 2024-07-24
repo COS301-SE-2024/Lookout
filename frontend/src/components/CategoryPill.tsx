@@ -30,7 +30,7 @@ const CategoryPill: React.FC<CategoryPillProps> = ({ categoryId }) => {
   const { colorClass, icon } = categoryConfig[categoryName] || { colorClass: 'bg-gray-100 text-gray-800', icon: null };
   
   return (
-    <span className={`inline-flex items-center ${colorClass} text-xs px-2 py-1 rounded-full mt-2`}>
+    <span className={`inline-flex items-center ${colorClass} text-s px-2 py-1 rounded-full mt-2`}>
       {icon}
       {categoryName || 'Unknown Category'} {/* Displaying the category name */}
     </span>

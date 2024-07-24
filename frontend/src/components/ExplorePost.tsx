@@ -4,46 +4,51 @@ import CategoryPill from "../components/CategoryPill";
 import { useNavigate } from "react-router-dom";
 
 interface User {
-    userName: string;
-    email: string;
-    passcode: string;
-    role: string;
-    isEnabled: boolean;
-    password: string;
-    username: string;
-    authorities: { authority: string }[];
-    isAccountNonLocked: boolean;
-    isCredentialsNonExpired: boolean;
-    isAccountNonExpired: boolean;
-  }
-  
-  interface Group {
-    id: number;
-    name: string;
-    description: string;
-    isPrivate: boolean;
-    user: User | null;
-    picture: string;
-    createdAt: string;
-  }
-  
-  interface Post {
-    categoryId: any;
-    id: number;
-    userId: number;
-    user: User;
-    group: Group;
-    description: String;
-    title: string;
-    category: { id: number; description: string };
-    picture: string;
-    latitude: number;
-    longitude: number;
-    caption: string;
-    createdAt: string;
-  }
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
+}
 
-  
+interface Group {
+  id: number;
+  name: string;
+  description: string;
+  isPrivate: boolean;
+  user: User | null;
+  picture: string;
+  createdAt: string;
+}
+
+interface Post {
+  categoryId: any;
+  id: number;
+  userId: number;
+  user: User;
+  group: Group;
+  description: String;
+  title: string;
+  category: { id: number; description: string };
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
+  createdAt: string;
+}
+
+const hexToString = (hex: string) => {
+  const cleanedHex = hex.replace(/\\x/g, '');
+  const str = cleanedHex.match(/.{1,2}/g)?.map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+  return str || '';
+};
+
 const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
   const [location, setLocation] = useState<string>("");
   const navigate = useNavigate();
@@ -59,7 +64,7 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
           `https://us1.locationiq.com/v1/reverse?key=${apiKey}&lat=${lat}&lon=${lon}&format=json`
         );
         const data = await response.json();
-        
+
         // Assuming 'display_name' contains the desired formatted location
         setLocation(data.display_name);
       } catch (error) {
@@ -74,13 +79,15 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
     navigate(`/post/${post.id}`, { state: { post } });
   };
 
+  const decodedPictureUrl = hexToString(post.picture);
+
   return (
     <div
-      className="min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+      className="relative min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
       onClick={() => handlePostClick(post)}
     >
       <img
-        src={post.picture}
+        src={decodedPictureUrl}
         alt={post.caption}
         className="w-full h-48 object-cover"
       />
