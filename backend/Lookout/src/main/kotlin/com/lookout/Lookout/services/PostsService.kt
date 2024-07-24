@@ -22,7 +22,7 @@ class PostsService(
     private val categoryRepository: CategoryRepository
 ) {
 
-    fun createPost(createPost: CreatePost): Posts {
+    fun createPost(createPost: CreatePost){//: Posts {
         val user = userRepository.findById(createPost.userid).orElse(null)
         if (user == null) {
             throw IllegalArgumentException("User not found")
@@ -35,18 +35,18 @@ class PostsService(
         if (category == null) {
             throw IllegalArgumentException("Category not found")
         }
-        val post = Posts(
-            user = user,
-            group = group,
-            category = category,
-            picture = createPost.picture,
-            latitude = createPost.latitude,
-            longitude = createPost.longitude,
-            caption = createPost.caption,
-            createdAt = Instant.now(),
-            title = createPost.title,
-        )
-        return postRepository.save(post)
+//        val post = Posts(
+//            user = user,
+//            group = group,
+//            category = category,
+//            picture = createPost.picture,
+//            latitude = createPost.latitude,
+//            longitude = createPost.longitude,
+//            caption = createPost.caption,
+//            createdAt = Instant.now(),
+//            title = createPost.title,
+//        )
+        //return postRepository.save(post)
     }
 
     fun findById(id: Long): Posts? {
