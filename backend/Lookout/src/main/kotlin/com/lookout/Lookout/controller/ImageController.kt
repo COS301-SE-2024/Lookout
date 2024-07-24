@@ -4,6 +4,9 @@ package com.lookout.Lookout.controller
 import com.lookout.Lookout.dto.ImageRequest
 import com.lookout.Lookout.entity.Image
 import com.lookout.Lookout.services.ImageService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -104,6 +107,30 @@ class ImageController(private val postService: ImageService) {
         } else {
             ResponseEntity(HttpStatus.NOT_FOUND)
         }
+    }
+
+    // Get posts by Category ID
+    @GetMapping("/category/{categoryId}")
+    fun getPostsByCategoryId(
+        @PathVariable categoryId: Long,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<Image>> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        val posts = postService.findByCategoryId(categoryId, pageable)
+        return ResponseEntity(posts, HttpStatus.OK)
+    }
+
+    // Get posts by User ID
+    @GetMapping("/user/{userId}")
+    fun getPostsByUserId(
+        @PathVariable userId: Long,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<Image>> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        val posts = postService.findByUserId(userId, pageable)
+        return ResponseEntity.ok(posts)
     }
 
     @GetMapping("/all")

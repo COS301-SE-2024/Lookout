@@ -105,11 +105,11 @@ const ExploreScreen: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/api/posts/category/3?page=0&size=10');
-        const animalResponse =  await fetch('/api/posts/category/1?page=0&size=10')
-        const campResponse =  await fetch('/api/posts/category/2?page=0&size=10')
-        const poiResponse = await fetch('/api/posts/category/4?page=0&size=10')
-        const securityResponse = await fetch('/api/posts/category/5?page=0&size=10')
+        const response = await fetch('/api/image/category/3?page=0&size=10');
+        const animalResponse =  await fetch('/api/image/category/1?page=0&size=10')
+        const campResponse =  await fetch('/api/image/category/2?page=0&size=10')
+        const poiResponse = await fetch('/api/image/category/4?page=0&size=10')
+        const securityResponse = await fetch('/api/image/category/5?page=0&size=10')
 
         const data = await response.json();
         const animalData= await animalResponse.json();
@@ -117,10 +117,10 @@ const ExploreScreen: React.FC = () => {
         const poiData = await poiResponse.json();
         const securityData = await securityResponse.json();
         
-        // console.log(data)
-        // console.log(animalData)
-        // console.log(campData)
-        // console.log(poiData)
+        console.log(data)
+        console.log(animalData)
+        console.log(campData)
+        console.log(poiData)
 
         setPosts(data.content); 
         setanimalPosts(animalData.content);
@@ -187,7 +187,7 @@ const ExploreScreen: React.FC = () => {
             onClick={() => handlePostClick(post)}
           >
             <img
-              src={post.picture}
+              src={`data:image/png;base64,${post.picture}`}
               alt={post.caption}
               className="w-full h-48 object-cover"
             />
@@ -213,7 +213,7 @@ const ExploreScreen: React.FC = () => {
             onClick={() => handlePostClick(post)}
           >
             <img
-              src={post.picture}
+              src={`data:image/png;base64,${post.picture}`}
               alt={post.caption}
               className="w-full h-48 object-cover"
             />
@@ -239,7 +239,7 @@ const ExploreScreen: React.FC = () => {
             onClick={() => handlePostClick(post)}
           >
             <img
-              src={post.picture}
+              src={`data:image/png;base64,${post.picture}`}
               alt={post.caption}
               className="w-full h-48 object-cover"
             />
@@ -265,7 +265,7 @@ const ExploreScreen: React.FC = () => {
             onClick={() => handlePostClick(post)}
           >
             <img
-              src={post.picture}
+              src={`data:image/png;base64,${post.picture}`}
               alt={post.caption}
               className="w-full h-48 object-cover"
             />
@@ -291,7 +291,7 @@ const ExploreScreen: React.FC = () => {
             onClick={() => handlePostClick(post)}
           >
             <img
-              src={post.picture}
+              src={`data:image/png;base64,${post.picture}`}
               alt={post.caption}
               className="w-full h-48 object-cover"
             />

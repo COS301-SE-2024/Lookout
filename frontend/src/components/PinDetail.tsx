@@ -91,7 +91,7 @@ const PinDetail: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/posts/${id}`);
+        const response = await fetch(`/api/image/${id}`);
         const data = await response.json();
         console.log(data);
         setPost(data);
@@ -185,7 +185,7 @@ const PinDetail: React.FC = () => {
 
       <div className="text-center mb-4">
         <h1 className="text-2xl font-bold mb-2">{post.caption}</h1>
-        <img src={post.picture} alt={post.caption} className="w-full rounded-lg mb-4" />
+        <img src={`data:image/png;base64,${post.picture}`} alt={post.caption} className="w-full rounded-lg mb-4" />
         <p className="text-gray-700">{post.description}</p>
         <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
         <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>

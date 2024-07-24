@@ -56,7 +56,8 @@ class AuthenticationService(private val userRepository: UserRepository,
             )
         )
 
-        val user = request.email.let { request.email?.let { it1 -> userRepository.findByEmail(it1).orElseThrow() } }
+        //val user = request.email.let { request.email?.let { it1 -> userRepository.findByEmail(it1).orElseThrow() } }
+        val user = userRepository.findByEmail(request.email!!).orElseThrow()
         val jwt = user?.let { jwtService.generateToken(it) }
 
         if (user != null) {

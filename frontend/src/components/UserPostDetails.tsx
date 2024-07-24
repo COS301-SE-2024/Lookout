@@ -27,7 +27,7 @@ const UserPostDetails = () => {
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
-    fetch(`/api/posts/${postId}`, {
+    fetch(`/api/image/${postId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -173,7 +173,7 @@ const UserPostDetails = () => {
       </div>
   
       <div className="flex justify-center items-center">
-        <img src={post.picture} alt={`${post.caption} logo`} className="w-full rounded-lg mb-4" />
+        <img src={`data:image/png;base64,${post.picture}`} alt={`${post.caption} logo`} className="w-full rounded-lg mb-4" />
       </div>
 
       <div className="text-center mb-4">
