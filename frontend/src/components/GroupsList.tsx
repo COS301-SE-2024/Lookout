@@ -25,14 +25,13 @@ const GroupsList: React.FC = () => {
     }) 
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data); // Log the data to check the response format
         setGroups(data);
       })
       .catch((error) => console.error('Error fetching groups:', error));
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-2 py-4"> {/* Adjusted padding here */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {groups.map((group) => (
           <GroupCard key={group.id} group={group} />
