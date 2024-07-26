@@ -91,4 +91,8 @@
 
 // });
 
-export {};
+const test: () => void = () => {
+    expect(true).tobe(true)
+}
+
+export{test}

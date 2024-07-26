@@ -168,4 +168,8 @@
 //     expect(history.location.pathname).toBe(`/post/${postsToTest[0].id}`);
 //   });
 // });
-export{}
+const test: () => void = () => {
+    expect(true).tobe(true)
+}
+
+export{test}
