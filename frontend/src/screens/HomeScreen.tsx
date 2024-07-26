@@ -130,12 +130,6 @@ type Group = { id: number, name: string, categories: { id: number, name: string 
 
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-interface ImageData {
-  id: number;
-  content: string;
-  picture: string; // Assuming picture is base64-encoded image data
-}
-
 const HomeScreen: React.FC = () => {
   const id = 2;
   const [isModalOpen, setIsModalOpen] = useState(false);
