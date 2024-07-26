@@ -96,7 +96,7 @@ const PinDetail: React.FC = () => {
         setTheme(newTheme);
         document.documentElement.setAttribute("data-theme", newTheme);
       }
-    };
+    }
 
     window.addEventListener("storage", handleStorageChange);
 
@@ -195,6 +195,7 @@ const PinDetail: React.FC = () => {
   const decodedPictureUrl = hexToString(post.picture);
 
   return (
+    <>
     <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
       <button
         onClick={() => navigate(-1)}
@@ -216,7 +217,7 @@ const PinDetail: React.FC = () => {
         </svg>
       </button>
 
-
+    </div>
       <div className="text-center mb-4">
         <h1 className="text-2xl font-bold mb-2">{post.caption}</h1>
         <img src={`data:image/png;base64,${post.picture}`} alt={post.caption} className="w-full rounded-lg mb-4" />
@@ -226,8 +227,8 @@ const PinDetail: React.FC = () => {
         <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
         <div className="mt-4">
           
-        </div>
       </div>
+    </div>
       <h2>View it on the map below:</h2>
      
       <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
@@ -375,6 +376,7 @@ const PinDetail: React.FC = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

@@ -19,19 +19,19 @@ const ExploreArticles: React.FC = () => {
     const apiKey = process.env.REACT_APP_API_KEY;
     const apiUrl = `https://newsapi.org/v2/everything?q=wildlife&pageSize=${pageSize}&page=${page}&apiKey=${apiKey}`;
 
-    // fetch(apiUrl)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     if (data.articles) {
-    //       setArticles(prevArticles => {
-    //         const newArticles: Article[] = data.articles;
-    //         return [...prevArticles, ...newArticles];
-    //       });
-    //       setHasMore(data.articles.length > 0);
-    //       setPage(prevPage => prevPage + 1); // Use function form to ensure correct state update
-    //     }
-    //   })
-    //   .catch(error => console.error('Error fetching articles:', error));
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data.articles) {
+          setArticles(prevArticles => {
+            const newArticles: Article[] = data.articles;
+            return [...prevArticles, ...newArticles];
+          });
+          setHasMore(data.articles.length > 0);
+          setPage(prevPage => prevPage + 1); // Use function form to ensure correct state update
+        }
+      })
+      .catch(error => console.error('Error fetching articles:', error));
   }, [page, pageSize]);
 
   useEffect(() => {

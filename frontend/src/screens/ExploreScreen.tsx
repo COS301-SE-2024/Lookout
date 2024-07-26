@@ -56,7 +56,7 @@ const ExploreScreen: React.FC = () => {
   const [groupPosts, setGroupPosts] = useState<Group[]>([]);
   const [, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -100,10 +100,6 @@ const ExploreScreen: React.FC = () => {
     fetchPosts();
   }, []);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
   const filteredPosts = posts.filter((post) =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -124,6 +120,7 @@ const ExploreScreen: React.FC = () => {
   );
 
   return (
+    <>
     <div className="p-4 scrollbar-hide">
       <style>
         {`
@@ -158,144 +155,6 @@ const ExploreScreen: React.FC = () => {
           }
         `}
       </style>
-
-      <h1 className="text-2xl font-bold mb-4">Animal Sighting</h1>
-      <HorizontalCarousel>
-        {filteredAnimalPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={`data:image/png;base64,${post.picture}`}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Animal Sighting"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
-
-      <h1 className="text-2xl font-bold mb-4">Campsite</h1>
-      <HorizontalCarousel>
-        {filteredCampPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={`data:image/png;base64,${post.picture}`}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Campsite"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
-
-      <h1 className="text-2xl font-bold mb-4">Hiking Trails</h1>
-      <HorizontalCarousel>
-        {filteredPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={`data:image/png;base64,${post.picture}`}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Hiking Trail"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
-
-      <h1 className="text-2xl font-bold mb-4">Explore Points of Interest</h1>
-      <HorizontalCarousel>
-        {filteredPoiPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={`data:image/png;base64,${post.picture}`}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Point of Interest"} />
-            </div>
-          </div>
-        ))}
-      </HorizontalCarousel>
-
-      <h1 className="text-2xl font-bold mb-4">Security Concerns</h1>
-      <HorizontalCarousel>
-        {filteredSecurityPosts.map((post) => (
-          <div
-            key={post.id}
-            className="min-w-[300px] h-96 bg-white rounded-lg shadow-md overflow-hidden"
-            onClick={() => handlePostClick(post)}
-          >
-            <img
-              src={`data:image/png;base64,${post.picture}`}
-              alt={post.caption}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="text-gray-700">{post.caption}</p>
-              <p className="text-gray-500 text-sm flex items-center">
-                <IoLocationOutline className="h-4 w-4 mr-1" />
-                {/* {post.location} */}
-              </p>
-              <CategoryPill category={"Security Concern"} />
-            </div>
-
-      <div className="mb-4">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search for Posts or Groups"
-          className="border p-2 rounded w-full search-bar"
-        />
-      </div>
-
       {loading && <ExploreSkeletonScreen />}
 
       {!loading && searchQuery === "" && (
@@ -415,6 +274,7 @@ const ExploreScreen: React.FC = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
