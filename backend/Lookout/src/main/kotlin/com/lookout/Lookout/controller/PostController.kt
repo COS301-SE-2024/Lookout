@@ -8,6 +8,7 @@ import com.lookout.Lookout.entity.UpdatePost
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.entity.Posts
+import com.lookout.Lookout.repository.GroupRepository
 import com.lookout.Lookout.service.PostsService
 //import com.lookout.Lookout.service.UserService
 import org.springframework.http.HttpStatus
@@ -23,20 +24,22 @@ class PostController(private val postService: PostsService) {
 
     fun convertToDto(post: Posts): PostDto {
         return PostDto(
-            id = post.id?:0,
+            id = post.id ?: 0,
             caption = post.caption.toString(),
             createdAt = post.createdAt.toString(),
             userId = post.user?.id ?: 0,
             username = post.user?.username.toString(),
             groupId = post.group?.id ?: 0,
+            groupName = post.group?.name.toString(),
+            groupDescription = post.group?.description.toString(),
+            groupPicture = post.group?.picture.toString(),
+            admin = post.group?.user?.username.toString(),
+            description = post.category?.description.toString(),
+            title = post.title.toString(),
             categoryId = post.category?.id ?: 0,
             picture = post.picture.toString(),
             latitude = post.latitude,
             longitude = post.longitude,
-            description = post.category?.description.toString(),
-            title = post.title.toString(),
-            groupName = post.group?.name.toString(),
-            groupDescription = post.group?.description.toString()
         )
     }
 
