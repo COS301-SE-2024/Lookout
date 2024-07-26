@@ -90,6 +90,7 @@
 //   // });
 
 // });
+export {};
 
 describe('SearchGroups', () => {
     it('should always pass this dummy test', () => {
