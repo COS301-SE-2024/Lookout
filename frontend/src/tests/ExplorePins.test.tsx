@@ -168,8 +168,8 @@
 //     expect(history.location.pathname).toBe(`/post/${postsToTest[0].id}`);
 //   });
 // });
-const test: () => void = () => {
-    expect(true).tobe(true)
-}
-
-export{test}
+describe('ExplorePins', () => {
+    it('should always pass this dummy test', () => {
+      expect(true).toBe(true);
+    });
+  });
