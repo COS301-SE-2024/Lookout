@@ -56,33 +56,31 @@ const ExploreScreen: React.FC = () => {
   const [groupPosts, setGroupPosts] = useState<Group[]>([]);
   const [, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("/api/posts/category/3?page=0&size=10");
-        const animalResponse = await fetch(
-          "/api/posts/category/1?page=0&size=10"
-        );
-        const campResponse = await fetch(
-          "/api/posts/category/2?page=0&size=10"
-        );
-        const poiResponse = await fetch("/api/posts/category/4?page=0&size=10");
-        const securityResponse = await fetch(
-          "/api/posts/category/5?page=0&size=10"
-        );
+
+        const response = await fetch('/api/image/category/3?page=0&size=10');
+        const animalResponse =  await fetch('/api/image/category/1?page=0&size=10')
+        const campResponse =  await fetch('/api/image/category/2?page=0&size=10')
+        const poiResponse = await fetch('/api/image/category/4?page=0&size=10')
+        const securityResponse = await fetch('/api/image/category/5?page=0&size=10')
 
         const groupResponse = await fetch("/api/groups");
         const userGroupResponse = await fetch(`/api/groups/user/2`);
+
 
         const data = await response.json();
         const animalData = await animalResponse.json();
         const campData = await campResponse.json();
         const poiData = await poiResponse.json();
         const securityData = await securityResponse.json();
+
         const groupData = await groupResponse.json();
         const userGroupData = await userGroupResponse.json();
+
 
         setPosts(data.content);
         setAnimalPosts(animalData.content);
@@ -101,10 +99,6 @@ const ExploreScreen: React.FC = () => {
 
     fetchPosts();
   }, []);
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
 
   const filteredPosts = posts.filter((post) =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -126,6 +120,7 @@ const ExploreScreen: React.FC = () => {
   );
 
   return (
+    <>
     <div className="p-4 scrollbar-hide">
       <style>
         {`
@@ -160,17 +155,6 @@ const ExploreScreen: React.FC = () => {
           }
         `}
       </style>
-
-      <div className="mb-4">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search for Posts or Groups"
-          className="border p-2 rounded w-full search-bar"
-        />
-      </div>
-
       {loading && <ExploreSkeletonScreen />}
 
       {!loading && searchQuery === "" && (
@@ -250,6 +234,7 @@ const ExploreScreen: React.FC = () => {
           <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
           <div className="">
             <ExploreArticles />
+
           </div>
         </>
       )}
@@ -289,6 +274,7 @@ const ExploreScreen: React.FC = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

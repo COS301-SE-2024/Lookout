@@ -126,28 +126,11 @@ const locations: Poi[] = [
 ];
 
 
-interface CreatePostsProps {
-  onCreatePost: (newPost: Post) => void;
-}
-
-interface Post {
-  userid: number;
-  groupid: number;
-  categoryid: number;
-  picture: string;
-  latitude: number;
-  longitude: number;
-  caption: string;
-  title: string;
-}
-
 type Group = { id: number, name: string, categories: { id: number, name: string }[] };
 
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-
-
-const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
+const HomeScreen: React.FC = () => {
   const id = 2;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
@@ -173,6 +156,8 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
         (position) => {
           setLatitude(position.coords.latitude);
           setLongitude(position.coords.longitude);
+          console.log('fetching location long:', position.coords.longitude);
+          console.log('fetching location lat:', position.coords.latitude);
         },
         (error) => {
           console.error('Error fetching location:', error);
@@ -188,7 +173,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
   useEffect(() => {
     const fetchPins = async () => {
       try {
-        const response = await fetch('/api/posts', {
+        const response = await fetch('/api/image/all', {
           method: 'GET',
           headers: {
           'Content-Type': 'application/json',
@@ -200,7 +185,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
         }
 
         const data = await response.json();
-        const formattedPins = data.content.map((pin: any) => ({
+        const formattedPins = data.map((pin: any) => ({
           id: pin.id,
           location: { lat: pin.latitude, lng: pin.longitude },
           caption: pin.caption,
@@ -208,7 +193,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
           image: pin.picture,
         }));
         setPins(formattedPins);
-        console.log(formattedPins);
+        console.log(data);
       } catch (error) {
         console.error('Error fetching pins:', error);
       }
@@ -217,6 +202,22 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
     fetchPins();
     
   }, []);
+
+  // Function to convert blob URL to base64
+  async function blobToBase64(blobUrl:string) {
+    const response = await fetch(blobUrl);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+                resolve(reader.result.split(',')[1]); // Get the base64 string
+            }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+  }
   
 
   const handleAddPinClick = async () => {
@@ -229,41 +230,49 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
       return;
     }
 
-    const newPost = {
-      userid: id,
-      groupid: selectedGroup,
-      categoryid: selectedCategory,
-      picture: picture || "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
-      latitude: latitude,
-      longitude: longitude,
-      caption: caption,
-      title: title
-    };
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let Image;
+
+    if (picture.startsWith('blob:')) {
+      Image = await blobToBase64(picture);
+    } else {
+      Image = picture.split(',')[1];
+    }
+    
+
+    const raw = JSON.stringify({
+      "caption": caption,
+      "title": title,
+      "categoryId": selectedCategory,
+      "userId": 112,
+      "groupId": selectedGroup,
+      "image": Image,
+      "latitude": latitude,
+      "longitude": longitude
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw
+  };
 
     try {
-      const response = await fetch('/api/posts/CreatePost', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newPost),
-      });
+      const response = await fetch("/api/image/create", requestOptions);
       
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      const createdPost = await response.json();
-      //console.log('Post created successfully:', createdPost);
       setCaption("");
       setTitle("");
       setPicture("");
       setSelectedGroup(null);
       setSelectedCategory(null);
       closeModal();
-
-      onCreatePost(createdPost);
       
       setIsSuccessModalOpen(true); // Open success modal
       // setIsModalOpen(false); // Close modal after successful pin addition
@@ -556,9 +565,7 @@ const HomeScreen: React.FC<CreatePostsProps> = ({ onCreatePost }) => {
         onCapture={(url) => {
           // shortenURL(url);
           setPicture(url);
-          // console.log("Compressed photo URL:", url);
           setIsCameraModalOpen(false);
-          console.log('testtt')
         }}
       />
     </div>

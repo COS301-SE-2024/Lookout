@@ -43,11 +43,6 @@ interface Post {
   createdAt: string;
 }
 
-const hexToString = (hex: string) => {
-  const cleanedHex = hex.replace(/\\x/g, '');
-  const str = cleanedHex.match(/.{1,2}/g)?.map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
-  return str || '';
-};
 
 const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
   const [location, setLocation] = useState<string>("");
@@ -79,15 +74,13 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
     navigate(`/post/${post.id}`, { state: { post } });
   };
 
-  const decodedPictureUrl = hexToString(post.picture);
-
   return (
     <div
       className="relative min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
       onClick={() => handlePostClick(post)}
     >
       <img
-        src={decodedPictureUrl}
+        src={`data:image/png;base64,${post.picture}`}
         alt={post.caption}
         className="w-full h-48 object-cover"
       />

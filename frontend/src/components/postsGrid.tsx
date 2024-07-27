@@ -18,7 +18,7 @@ const PostsGrid: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    fetch('/api/posts/user/1', {
+    fetch('/api/image/user/112', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -26,7 +26,7 @@ const PostsGrid: React.FC = () => {
     })
     .then((response) => response.json())
     .then((data) => {
-      // console.log(data.content); // Log the data to check the response format
+      console.log(data.content); // Log the data to check the response format
       setPosts(data.content);
     })
     .catch((error) => console.error('Error fetching posts:', error));
@@ -43,7 +43,7 @@ const PostsGrid: React.FC = () => {
           <div key={post.id} className="w-full overflow-hidden rounded-md" onClick={() => handlePostsClick(post)}>
             <Link to={`/post/${post.id}`}>
               <img
-                src={post.picture}
+                src={`data:image/png;base64,${post.picture}`}
                 alt={`Post ${post.id}`}
                 className="w-full h-full object-cover"
                 style={{ height: '150px' }}

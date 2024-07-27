@@ -63,7 +63,7 @@ const SavedPostDetails = () => {
   useEffect(() => {
 
 
-    fetch(`/api/posts/${id}`, {
+    fetch(`/api/image/${id}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -142,7 +142,7 @@ const SavedPostDetails = () => {
 
       <div className="text-center mb-4">
         <h1 className="text-2xl font-bold mb-2">{post.caption}</h1>
-        <img src={post.picture} alt={post.caption} className="w-full rounded-lg mb-4" />
+        <img src={`data:image/png;base64,${post.picture}`} alt={post.caption} className="w-full rounded-lg mb-4" />
         <p className="text-gray-700">{post.description}</p>
         <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
         <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import GroupCard from './GroupCard';
 
 interface Group {
@@ -13,7 +12,7 @@ interface Group {
 }
 
 const GroupsList: React.FC = () => {
-  const navigate = useNavigate();
+  
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {

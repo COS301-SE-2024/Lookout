@@ -96,7 +96,7 @@ const PinDetail: React.FC = () => {
         setTheme(newTheme);
         document.documentElement.setAttribute("data-theme", newTheme);
       }
-    };
+    }
 
     window.addEventListener("storage", handleStorageChange);
 
@@ -112,7 +112,7 @@ const PinDetail: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/posts/${id}`);
+        const response = await fetch(`/api/image/${id}`);
         const data = await response.json();
         console.log(data);
         setPost(data);
@@ -195,6 +195,7 @@ const PinDetail: React.FC = () => {
   const decodedPictureUrl = hexToString(post.picture);
 
   return (
+    <>
     <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
       <button
         onClick={() => navigate(-1)}
@@ -216,7 +217,35 @@ const PinDetail: React.FC = () => {
         </svg>
       </button>
 
+    </div>
+      <div className="text-center mb-4">
+        <h1 className="text-2xl font-bold mb-2">{post.caption}</h1>
+        <img src={`data:image/png;base64,${post.picture}`} alt={post.caption} className="w-full rounded-lg mb-4" />
+        <p className="text-gray-700">{post.description}</p>
+        <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
+        <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
+        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
+        <div className="mt-4">
+          
+      </div>
+    </div>
+      <h2>View it on the map below:</h2>
+     
+      <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
+        <Map
+          defaultZoom={12}
+          defaultCenter={{ lat: post.latitude, lng: post.longitude }}
+          mapId="your-map-id"
+          style={{ height: '300px', width: '100%' }}
+        >
+          <Marker position={{ lat: post.latitude, lng: post.longitude }} />
+        </Map>
+      </APIProvider>
+      <br/>
+      <div className="flex justify-center">
+
       <div className="mb-4 ml-16 mt-1">
+
         <button
           className={`mr-4 ${
             activeTab === "post"
@@ -347,6 +376,7 @@ const PinDetail: React.FC = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

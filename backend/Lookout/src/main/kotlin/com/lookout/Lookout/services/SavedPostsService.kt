@@ -1,7 +1,7 @@
 package com.lookout.Lookout.service
 
 import com.lookout.Lookout.entity.SavedPosts
-import com.lookout.Lookout.repository.PostRepository
+import com.lookout.Lookout.repository.ImageRepository
 import com.lookout.Lookout.repository.SavedPostRepository
 import com.lookout.Lookout.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class SavedPostsService(
     private val savedPostRepository: SavedPostRepository,
-    private val postRepository: PostRepository,
+    private val postRepository: ImageRepository,
     private val userRepository: UserRepository
 ) {
 

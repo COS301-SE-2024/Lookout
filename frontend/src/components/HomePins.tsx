@@ -62,7 +62,7 @@ const HomePins = (props: { pin: myPin[]}) => {
         <div id="content">
           <div id="siteNotice" style="color: black;>
             <h1 id="firstHeading" class="firstHeading"><b>${clickedPoi.category}</b></h1>
-            <img src=${clickedPoi.image} alt="poi" style="width:100px;height:50px;">
+            <img src=${`data:image/png;base64,${clickedPoi.image}`} alt="poi" style="width:100px;height:50px;">
             <p>${clickedPoi.caption}</p>
           </div>
         </div>

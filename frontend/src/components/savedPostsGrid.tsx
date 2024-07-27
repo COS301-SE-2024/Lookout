@@ -47,7 +47,7 @@ const SavedPostsGrid: React.FC = () => {
           <div key={savedPost.post.id} className="w-full overflow-hidden rounded-md" onClick={() => handlePostClick(savedPost.post)}>
             <Link to={`/saved_post/${savedPost.post.id}`}>
               <img
-                src={savedPost.post.picture}
+                src={`data:image/png;base64,${savedPost.post.picture}`}
                 alt={`Post ${savedPost.post.id}`}
                 className="w-full h-full object-cover"
                 style={{ height: '150px' }}

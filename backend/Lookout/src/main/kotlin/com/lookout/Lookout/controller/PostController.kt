@@ -56,13 +56,13 @@ class PostController(private val postService: PostsService) {
 
     // Create a post
     @PostMapping ("/CreatePost")
-    fun createPost(@RequestBody post: CreatePost): ResponseEntity<PostDto> {
-        try {
-            val savedPost = postService.createPost(post)
-            return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(savedPost))
-        } catch (e: IllegalArgumentException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
-        }
+    fun createPost(@RequestBody post: CreatePost){//: ResponseEntity<PostDto> {
+//        try {
+//            val savedPost = postService.createPost(post)
+//            return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(savedPost))
+//        } catch (e: IllegalArgumentException) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+//        }
     }
 
     // Delete a post
