@@ -3,6 +3,7 @@ package com.lookout.Lookout.controller
 
 import com.lookout.Lookout.dto.ImageRequest
 import com.lookout.Lookout.entity.Image
+import com.lookout.Lookout.entity.Posts
 import com.lookout.Lookout.services.ImageService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -137,5 +138,17 @@ class ImageController(private val postService: ImageService) {
     fun getAllPosts(): ResponseEntity<List<Image>> {
         val posts = postService.getAllPosts()
         return ResponseEntity(posts, HttpStatus.OK)
+    }
+
+    // Delete a post
+    @DeleteMapping("/{id}")
+    fun deletePost(@PathVariable id: Long): ResponseEntity<Image> {
+        val post = postService.getPostById(id)
+        return if (post != null) {
+            postService.delete(post)
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 }

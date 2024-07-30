@@ -1,17 +1,15 @@
 package com.lookout.Lookout.services
 
 import com.lookout.Lookout.entity.*
-import com.lookout.Lookout.repository.ImageRepository
+import com.lookout.Lookout.repository.*
 import org.springframework.stereotype.Service
-import com.lookout.Lookout.repository.CategoryRepository
-import com.lookout.Lookout.repository.GroupRepository
-import com.lookout.Lookout.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 @Service
 class ImageService(private val imageRepository: ImageRepository, private val categoryRepository: CategoryRepository,
-                   private val userRepository: UserRepository, private val groupRepository: GroupRepository
+                   private val userRepository: UserRepository, private val groupRepository: GroupRepository,
+                   private val savedPostsRepository: SavedPostRepository
 ) {
     fun savePost(post: Image): Image {
         return imageRepository.save(post)
@@ -44,4 +42,15 @@ class ImageService(private val imageRepository: ImageRepository, private val cat
     fun findByUserId(userId: Long, pageable: Pageable): Page<Image>{
         return imageRepository.findByUser_Id(userId, pageable)
     }
+
+
+    fun delete(post: Image) {
+        // Delete related saved posts first
+        val savedPosts = savedPostsRepository.findByPost(post)
+        savedPosts.forEach { savedPostsRepository.delete(it) }
+
+        // Delete the post
+        imageRepository.delete(post)
+    }
+
 }

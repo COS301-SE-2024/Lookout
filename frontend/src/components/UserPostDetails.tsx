@@ -51,7 +51,7 @@ const UserPostDetails = () => {
   const handleDeleteClick = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/posts/${postId}`, {
+      const response = await fetch(`/api/image/${postId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -103,21 +103,13 @@ const UserPostDetails = () => {
     setIsLoading(true);
     try {
       const requestBody = {
-        id: postId,
-        userid: post.userid, 
-        groupid: post.groupid, 
-        categoryid: post.categoryid,
-        picture: post.picture,
-        latitude: post.latitude,
-        longitude: post.longitude,
         caption: editableCaption,
-        title: post.title
       };
   
       console.log('Request Body:', requestBody);
   
-      const response = await fetch('/api/posts/UpdatePost', {
-        method: 'POST',
+      const response = await fetch(`/api/image/update/${postId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
