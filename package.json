@@ -1,7 +1,12 @@
 {
   "dependencies": {
     "@heroicons/react": "^2.1.4",
+    "@react-oauth/google": "^0.12.1",
     "cors": "^2.8.5",
-    "daisyui": "^4.12.10"
+    "daisyui": "^4.12.10",
+    "js-cookie": "^3.0.5"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.6"
   }
 }

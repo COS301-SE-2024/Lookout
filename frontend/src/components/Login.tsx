@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
-
+import { GoogleLogin } from "@react-oauth/google";
+import Cookies from "js-cookie";
 function Login() {
 	const [token, setToken] = useState<string | null>(null);
 	const navigate = useNavigate();
 
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
 	useEffect(() => {
 		if (token !== "" && token !== null) {
@@ -19,28 +19,27 @@ function Login() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-		const response = await fetch('/api/auth/login', {
-			method: 'POST',
-			headers: {
-			'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-			email,
-			passcode: password,
-			}),
-		});
+			const response = await fetch("/api/auth/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					email,
+					passcode: password
+				})
+			});
 
-		if (!response.ok) {
-			throw new Error('Login failed!');
-		}
+			if (!response.ok) {
+				throw new Error("Login failed!");
+			}
 
-		const data = await response.json();
-		localStorage.setItem('authToken', data.token);
-		localStorage.setItem('userEmail', email);
-		setToken(data.token);
-		
+			const data = await response.json();
+			localStorage.setItem("authToken", data.token);
+			localStorage.setItem("userEmail", email);
+			setToken(data.token);
 		} catch (error) {
-		console.error('Error:', error);
+			console.error("Error:", error);
 		}
 	};
 
@@ -52,14 +51,24 @@ function Login() {
 				</div>
 				<div className="flex justify-center mb-2">
 					<div className="w-56 h-56 flex items-center justify-center">
-					<img src="/logo.png" alt="Logo" />
+						<img src="/logo.png" alt="Logo" />
 					</div>
 				</div>
 				<div className="flex justify-center mb-2">
-					<button className="w-full py-2 text-black bg-white-500 rounded-full hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300">
+					{/* <button className="w-full py-2 text-black bg-white-500 rounded-full hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300">
 						<FcGoogle size={20} style={{ marginRight: 10 }} />
 						Sign in with Google
-					</button>
+					</button> */}
+					<GoogleLogin
+						onSuccess={(credentialResponse) => {
+							const token: any = credentialResponse.credential;
+							Cookies.set("jwt", token, { expires: 7 });
+							navigate("/profile");
+						}}
+						onError={() => {
+							console.log("Login Failed");
+						}}
+					/>
 				</div>
 				<div className="flex items-center justify-center my-2">
 					<hr className="w-full border-gray-300" />
@@ -80,7 +89,7 @@ function Login() {
 							id="inputEmail"
 							placeholder="Enter email"
 							value={email}
-              				onChange={(e) => setEmail(e.target.value)}
+							onChange={(e) => setEmail(e.target.value)}
 							required
 						/>
 					</div>
@@ -97,7 +106,7 @@ function Login() {
 							id="inputPassword"
 							placeholder="Password"
 							value={password}
-              				onChange={(e) => setPassword(e.target.value)}
+							onChange={(e) => setPassword(e.target.value)}
 							required
 						/>
 					</div>

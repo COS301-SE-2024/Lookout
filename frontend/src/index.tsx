@@ -3,10 +3,10 @@ import ReactDOM from "react-dom/client";
 import "./assets/styles/index.css";
 import App from "./App";
 import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
+	Route,
+	RouterProvider,
+	createBrowserRouter,
+	createRoutesFromElements
 } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
 import GroupScreen from "./screens/GroupScreen";
@@ -22,76 +22,91 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CategoryPostsPage from "./screens/CategoryPostsPage";
 import ExploreGroups from "./components/ExploreGroups";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 function Main() {
-  useEffect(() => {
-    const currentTheme = localStorage.getItem("data-theme");
-    if (currentTheme) {
-      document.documentElement.setAttribute("data-theme", currentTheme);
-    } else {
-      localStorage.setItem("data-theme", "default");
-      document.documentElement.setAttribute("data-theme", "default");
-    }
-  }, []);
+	useEffect(() => {
+		const currentTheme = localStorage.getItem("data-theme");
+		if (currentTheme) {
+			document.documentElement.setAttribute("data-theme", currentTheme);
+		} else {
+			localStorage.setItem("data-theme", "default");
+			document.documentElement.setAttribute("data-theme", "default");
+		}
+	}, []);
 
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<App />}>
-        <Route
-          index={true}
-          path="/"
-          element={<ProtectedRoute element={HomeScreen} />}
-        />
-        <Route
-          path="/explore"
-          element={<ProtectedRoute element={ExploreScreen} />}
-        />
-        <Route
-          path="/groups"
-          element={<ProtectedRoute element={GroupScreen} />}
-        />
-        <Route path="/exploreGroups" element={<ProtectedRoute element={ExploreGroups} />} />
-        <Route path="/login" element={<LoginScreen />} />{" "}
-        <Route path="/signup" element={<SignUpScreen />} />{" "}
-        <Route
-          path="/group/:id"
-          element={<ProtectedRoute element={GroupDetail} />}
-        />
-        <Route
-          path="/post/:id"
-          element={<ProtectedRoute element={PinDetail} />}
-        />
-        <Route path="/profile" element={<ProtectedRoute element={Profile} />} />
-        <Route
-          path="/user_post/:id"
-          element={<ProtectedRoute element={UserPostDetails} />}
-        />
-        <Route
-          path="/saved_post/:id"
-          element={<ProtectedRoute element={SavedPostDetails} />}
-        />
-        <Route>
-          <Route path="/" element={<ExploreScreen />} />
-          <Route
-            path="/category/:categoryId"
-            element={<CategoryPostsPage />}
-          />{" "}
-          {/* Add this line */}
-        </Route>
-      </Route>
-    )
-  );
+	const router = createBrowserRouter(
+		createRoutesFromElements(
+			<Route path="/" element={<App />}>
+				<Route
+					index={true}
+					path="/"
+					element={<ProtectedRoute element={HomeScreen} />}
+				/>
+				<Route
+					path="/explore"
+					element={<ProtectedRoute element={ExploreScreen} />}
+				/>
+				<Route
+					path="/groups"
+					element={<ProtectedRoute element={GroupScreen} />}
+				/>
+				<Route
+					path="/exploreGroups"
+					element={<ProtectedRoute element={ExploreGroups} />}
+				/>
+				<Route path="/login" element={<LoginScreen />} />{" "}
+				<Route path="/signup" element={<SignUpScreen />} />{" "}
+				<Route
+					path="/group/:id"
+					element={<ProtectedRoute element={GroupDetail} />}
+				/>
+				<Route
+					path="/post/:id"
+					element={<ProtectedRoute element={PinDetail} />}
+				/>
+				<Route
+					path="/profile"
+					element={<ProtectedRoute element={Profile} />}
+				/>
+				<Route
+					path="/user_post/:id"
+					element={<ProtectedRoute element={UserPostDetails} />}
+				/>
+				<Route
+					path="/saved_post/:id"
+					element={<ProtectedRoute element={SavedPostDetails} />}
+				/>
+				<Route>
+					<Route path="/" element={<ExploreScreen />} />
+					<Route
+						path="/category/:categoryId"
+						element={<CategoryPostsPage />}
+					/>{" "}
+					{/* Add this line */}
+				</Route>
+			</Route>
+		)
+	);
 
-  return (
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
-  );
+	return (
+		<React.StrictMode>
+			<RouterProvider router={router} />
+		</React.StrictMode>
+	);
 }
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+	document.getElementById("root") as HTMLElement
 );
-root.render(<Main />);
+
+root.render(
+	<>
+		<GoogleOAuthProvider clientId="456933252122-r308hq3v8185kb9k4k9cma7q05afbejq.apps.googleusercontent.com">
+			<Main />
+		</GoogleOAuthProvider>
+	</>
+);
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js");
+	navigator.serviceWorker.register("/sw.js");
 }
