@@ -44,10 +44,6 @@ function Main() {
 					element={<ProtectedRoute element={HomeScreen} />}
 				/>
 				<Route
-					path="/explore"
-					element={<ProtectedRoute element={ExploreScreen} />}
-				/>
-				<Route
 					path="/groups"
 					element={<ProtectedRoute element={GroupScreen} />}
 				/>
@@ -78,7 +74,7 @@ function Main() {
 					element={<ProtectedRoute element={SavedPostDetails} />}
 				/>
 				<Route>
-					<Route path="/" element={<ExploreScreen />} />
+					<Route path="/explore" element={<ExploreScreen />} />
 					<Route
 						path="/category/:categoryId"
 						element={<CategoryPostsPage />}
