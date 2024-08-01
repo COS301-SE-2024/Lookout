@@ -3,7 +3,6 @@ package com.lookout.Lookout.controller
 
 import com.lookout.Lookout.dto.ImageRequest
 import com.lookout.Lookout.entity.Image
-import com.lookout.Lookout.entity.Posts
 import com.lookout.Lookout.services.ImageService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
