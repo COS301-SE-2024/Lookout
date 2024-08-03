@@ -89,12 +89,13 @@ Content-Type: application/json
 {
   "userid": 1,
   "groupid": 2,
-  "categoryid": 2,
-  "picture": "https://media.architecturaldigest.com/photos/648a00aa1fa1b6e12cc85f4f/master/w_1920%2Cc_limit/GettyImages-557995745.jpg",
-  "latitude": 37.297817,
-  "longitude": -113.02877,
-  "caption": "Who knew this existed in New Zealand.",
-  "title": "Mount Cook"
+  "categoryid": 5,
+  "picture": "https://bjornfree.com/travel/wp-content/uploads/2022/12/DSC01714KrugerParkRules.jpg",
+  "latitude": 23.9884,
+  "longitude": 31.5547,
+  "caption": "Things to be wary of when entering the Kruger",
+  "title": "Trans-Bhutan Trail",
+  "location": ""
 }
 ###
 
