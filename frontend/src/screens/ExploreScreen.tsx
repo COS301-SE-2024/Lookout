@@ -93,7 +93,7 @@ const ExploreScreen: React.FC = () => {
           setLoading(false);
         } else {
           // Fetch new data
-          const response = await fetch("/api/posts/category/3?page=0&size=10");
+          const response = await fetch("/api/posts/category/3?page=0&size=12");
           const animalResponse = await fetch("/api/posts/category/1?page=0&size=10");
           const campResponse = await fetch("/api/posts/category/2?page=0&size=10");
           const poiResponse = await fetch("/api/posts/category/4?page=0&size=10");

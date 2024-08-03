@@ -62,14 +62,6 @@ interface Post {
   createdAt: string;
 }
 
-const hexToString = (hex: string) => {
-  const cleanedHex = hex.replace(/\\x/g, "");
-  const str = cleanedHex
-    .match(/.{1,2}/g)
-    ?.map((byte) => String.fromCharCode(parseInt(byte, 16)))
-    .join("");
-  return str || "";
-};
 
 const PinDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -229,8 +221,6 @@ const PinDetail: React.FC = () => {
     return <p>Post not found.</p>;
   }
 
-  const decodedPictureUrl = hexToString(post.picture);
-
   return (
     <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
       <style>
@@ -290,7 +280,7 @@ const PinDetail: React.FC = () => {
 
       <div className="card bg-base-94 shadow-xl rounded-lg">
         <figure className="rounded-t-lg overflow-hidden">
-          <img src={decodedPictureUrl} alt={post.title} className="w-full h-full object-cover" />
+          <img src={post.picture} alt={post.title} className="w-full h-full object-cover" />
         </figure>
 
         <div className="card-body ml-4">
