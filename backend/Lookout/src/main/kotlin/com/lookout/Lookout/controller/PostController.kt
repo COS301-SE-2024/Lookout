@@ -40,6 +40,7 @@ class PostController(private val postService: PostsService) {
             picture = post.picture.toString(),
             latitude = post.latitude,
             longitude = post.longitude,
+            location = post.location.toString()
         )
     }
 

@@ -17,4 +17,5 @@ data class PostDto (
     val longitude: Double,
     val groupPicture: String,
     val admin: String,
+    val location: String,
 )

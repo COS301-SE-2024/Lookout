@@ -40,5 +40,8 @@ data class Posts(
     var caption: String? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: Instant? = Instant.now()
+    val createdAt: Instant? = Instant.now(),
+
+    @Column(name = "location", nullable = true)
+    val location: String,
 )
