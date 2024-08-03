@@ -25,7 +25,7 @@ data class Posts(
     val category: Categories? = null,
 
     @Column(name = "picture", nullable = false)
-    val picture: ByteArray,
+    val picture: String,
 
     @Column(name = "latitude", nullable = false)
     val latitude: Double,

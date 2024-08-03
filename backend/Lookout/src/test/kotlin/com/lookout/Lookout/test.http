@@ -89,12 +89,12 @@ Content-Type: application/json
 {
   "userid": 1,
   "groupid": 2,
-  "categoryid": 5,
-  "picture": "https://media.istockphoto.com/id/1427130990/photo/old-broken-withered-wooden-fence-around-private-property.jpg?s=612x612&w=0&k=20&c=QXSbJUcfW16oajIGvPNeTchIUfThhpUUdEMZ_kZRPqk=",
-  "latitude": "123.123",
-  "longitude": "123.123",
-  "caption": "Found this fence breach",
-  "title": "Security Concern"
+  "categoryid": 2,
+  "picture": "https://media.architecturaldigest.com/photos/648a00aa1fa1b6e12cc85f4f/master/w_1920%2Cc_limit/GettyImages-557995745.jpg",
+  "latitude": 37.297817,
+  "longitude": -113.02877,
+  "caption": "Who knew this existed in New Zealand.",
+  "title": "Mount Cook"
 }
 ###
 
