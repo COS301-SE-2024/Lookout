@@ -195,3 +195,8 @@ Content-Type: application/json
   "newProfilePicUrl": "https://i.pinimg.com/564x/8d/ff/49/8dff49985d0d8afa53751d9ba8907aed.jpg"
 }
 ###
+
+### Get User by ID
+GET http://localhost:8080/api/users/1
+Accept: application/json
+###
