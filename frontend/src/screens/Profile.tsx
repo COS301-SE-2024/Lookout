@@ -14,7 +14,7 @@ const Profile = () => {
   const { state } = location;
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [picture, setPicture] = useState("");
+  //const [profile, setPicture] = useState(""); // add profile picture
   
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -34,7 +34,7 @@ const Profile = () => {
     const file = event.target.files?.[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
-      setPicture(fileUrl);
+      //setPicture(fileUrl);
       console.log(fileUrl)
     }
   };

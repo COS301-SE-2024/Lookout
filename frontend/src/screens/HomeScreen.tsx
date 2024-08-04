@@ -101,7 +101,6 @@ const HomeScreen: React.FC = () => {
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [isPhotoOptionsModalOpen, setIsPhotoOptionsModalOpen] = useState(false);
   const [isCameraModalOpen, setIsCameraModalOpen] = useState(false); // New state for camera modal
-  const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
@@ -307,14 +306,6 @@ const HomeScreen: React.FC = () => {
 
   const closeMenuModal = () => {
     setIsMenuModalOpen(false);
-  };
-
-  const toggleGroup = (groupId: number) => {
-    setExpandedGroups((prevExpandedGroups) => ({
-      ...prevExpandedGroups,
-      [groupId]: !prevExpandedGroups[groupId],
-    }));
-    setSelectedGroup(selectedGroup === groupId ? null : groupId);
   };
 
 
