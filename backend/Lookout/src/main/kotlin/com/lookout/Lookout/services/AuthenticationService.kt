@@ -2,9 +2,7 @@ package com.lookout.Lookout.service
 
 import com.lookout.Lookout.constants.ResponseConstant
 import com.lookout.Lookout.dto.AuthenticationResponse
-import com.lookout.Lookout.entity.JwtToken
 import com.lookout.Lookout.entity.User
-import com.lookout.Lookout.repository.JwtTokenRepository
 import com.lookout.Lookout.repository.UserRepository
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service
 class AuthenticationService(private val userRepository: UserRepository,
     private val jwtService: JwtService,
     private val passwordEncoder: PasswordEncoder,
-    private val tokenRepository: JwtTokenRepository,
     private val authenticationManager: AuthenticationManager
 
 ) {
@@ -42,8 +39,6 @@ class AuthenticationService(private val userRepository: UserRepository,
 
         val jwt = jwtService.generateToken(savedUser)
 
-        saveUserToken(jwt, savedUser)
-
         return AuthenticationResponse(jwt, "User registration was successful")
 
     }
@@ -60,14 +55,6 @@ class AuthenticationService(private val userRepository: UserRepository,
         val user = userRepository.findByEmail(request.email!!).orElseThrow()
         val jwt = user?.let { jwtService.generateToken(it) }
 
-        if (user != null) {
-            revokeAllTokenByUser(user)
-        }
-        if (user != null) {
-            if (jwt != null) {
-                saveUserToken(jwt, user)
-            }
-        }
 
         return AuthenticationResponse(jwt, "User login was successful")
     }
@@ -78,28 +65,8 @@ class AuthenticationService(private val userRepository: UserRepository,
         if (user == null) {
             return AuthenticationResponse(null, "User not found")
         }
-        revokeAllTokenByUser(user)
         return AuthenticationResponse(null, "Logout Successful!")
     }
 
-
-    private fun revokeAllTokenByUser(user: User) {
-        val validTokens = user.id.let { tokenRepository.findAllTokensByUser(it) }
-        if (validTokens.isEmpty()) {
-            return
-        }
-
-        validTokens.forEach { it.loggedOut = true }
-
-        validTokens.let {
-            tokenRepository.saveAll(it)
-        }
-    }
-
-
-    private fun saveUserToken(jwt: String, user: User) {
-//        val token = JwtToken(token = jwt, loggedOut = false, user = user)
-//        tokenRepository.save(token)
-    }
 
 }

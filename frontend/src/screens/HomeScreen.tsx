@@ -19,48 +19,14 @@ import CameraComponent from '../components/CameraComponent'; // Ensure this path
 
 
 
-type Poi = { key: string, location: google.maps.LatLngLiteral, label: string, details: string }
-type myPin = { id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string }
+type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
+type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
+
 const legendItems = [
   { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' },
   { name: 'Personal Pins', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
 ];
 
-const filtergroups = [
-  {
-    id: 1,
-    name: 'Group 1',
-    pins: [
-      { id: 1, title: 'Pin 1' },
-      { id: 2, title: 'Pin 2' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Group 2',
-    pins: [
-      { id: 3, title: 'Pin 3' },
-      { id: 4, title: 'Pin 4' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Group 3',
-    pins: [
-      { id: 5, title: 'Pin 5' },
-      { id: 6, title: 'Pin 6' },
-      { id: 7, title: 'Pin 7' },
-      { id: 8, title: 'Pin 8' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'Group 4',
-    pins: [
-      { id: 9, title: 'Pin 9' },
-    ],
-  }
-];
 
 const locations: Poi[] = [
   {
@@ -136,7 +102,6 @@ const HomeScreen: React.FC = () => {
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [isPhotoOptionsModalOpen, setIsPhotoOptionsModalOpen] = useState(false);
   const [isCameraModalOpen, setIsCameraModalOpen] = useState(false); // New state for camera modal
-  const [expandedGroups, setExpandedGroups] = useState<{ [key: number]: boolean }>({});
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
@@ -146,6 +111,9 @@ const HomeScreen: React.FC = () => {
   const [picture, setPicture] = useState("");
   const [title, setTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectCategory, setSelectCategory] = useState(null);
+  const [filteredPins, setFilteredPins] = useState<myPin[]>([]);
+
   const navigate = useNavigate();
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -190,9 +158,11 @@ const HomeScreen: React.FC = () => {
           location: { lat: pin.latitude, lng: pin.longitude },
           caption: pin.caption,
           category: pin.category.description,
+          categoryId: pin.category.id,
           image: pin.picture,
         }));
         setPins(formattedPins);
+        setFilteredPins(formattedPins);
         console.log(data);
       } catch (error) {
         console.error('Error fetching pins:', error);
@@ -202,6 +172,19 @@ const HomeScreen: React.FC = () => {
     fetchPins();
 
   }, []);
+
+  useEffect(() => {
+    if (selectCategory === null) {
+      setFilteredPins(pins);
+    } else {
+      setFilteredPins(pins.filter(pin => pin.categoryId === selectCategory));
+    }
+  }, [selectCategory, pins]);
+
+  const handleCategoryClick = (categoryId:any) => {
+    setSelectCategory(categoryId);
+  };
+  
 
   // Function to convert blob URL to base64
   async function blobToBase64(blobUrl: string) {
@@ -326,14 +309,6 @@ const HomeScreen: React.FC = () => {
     setIsMenuModalOpen(false);
   };
 
-  const toggleGroup = (groupId: number) => {
-    setExpandedGroups((prevExpandedGroups) => ({
-      ...prevExpandedGroups,
-      [groupId]: !prevExpandedGroups[groupId],
-    }));
-    setSelectedGroup(selectedGroup === groupId ? null : groupId);
-  };
-
 
   useEffect(() => {
     fetch(`/api/groups/user/${id}`, {
@@ -362,16 +337,16 @@ const HomeScreen: React.FC = () => {
   return (
     <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
       <div className="map-container">
-        <Map
-          defaultZoom={5}
-          defaultCenter={{ lat: -28, lng: 23 }}
-          mapId='dde51c47799889c4'
-        >
-          <PoiMarkers pois={locations} />
-          <HomePins pin={pins} />
-        </Map>
-        <Legend items={legendItems} />
-
+          <Map
+              defaultZoom={5}
+              defaultCenter={ { lat: -28, lng: 23 } }
+              mapId='dde51c47799889c4'
+          >
+              <PoiMarkers pois={locations} />
+              <HomePins pin={filteredPins} />
+          </Map>
+          <Legend items={legendItems} />
+       
       </div>
       <div className="fixed top-12 left-4 z-10" id="menu">
         <IoMenu size={32} onClick={openMenuModal} />
@@ -588,29 +563,20 @@ const HomeScreen: React.FC = () => {
             <div className="mt-4">
               <h2 className="text-lg font-semibold">Pins Displaying</h2>
               <div className="mt-2">
-                <button
-                  className={`w-full text-left p-2 rounded mb-2 ${selectedGroup === null ? 'bg-gray-400' : 'bg-gray-200'}`}
-                  onClick={() => setSelectedGroup(null)}
-                >
-                  All Pins
-                </button>
-                {filtergroups.map((group) => (
-                  <div key={group.id}>
+              <button
+                className={`w-full text-left p-2 rounded mb-2 ${selectCategory === null ? 'bg-gray-400' : 'bg-gray-200'}`}
+                onClick={() => handleCategoryClick(null)}
+              >
+                All Pins
+              </button>
+                {categories.map((category) => (
+                  <div key={category.id}>
                     <button
-                      className={`w-full text-left p-2 rounded mb-2 ${selectedGroup === group.id ? 'bg-gray-400' : 'bg-gray-200'}`}
-                      onClick={() => toggleGroup(group.id)}
+                      className={`w-full text-left p-2 rounded mb-2 ${selectCategory === category.id ? 'bg-gray-400' : 'bg-gray-200'}`}
+                      onClick={() => handleCategoryClick(category.id)}
                     >
-                      {group.name}
+                      {category.name}
                     </button>
-                    {expandedGroups[group.id] && (
-                      <div className="pl-4 mt-2">
-                        {group.pins.map((pin) => (
-                          <div key={pin.id} className="p-2 bg-gray-100 rounded mb-2">
-                            {pin.title}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>

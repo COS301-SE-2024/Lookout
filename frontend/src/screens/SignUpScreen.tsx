@@ -30,8 +30,8 @@ const SignUpScreen = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email,
-          username:email,
+          email: email,
+          userName:email,
           passcode: password,
           role: "ADMIN"
         }),

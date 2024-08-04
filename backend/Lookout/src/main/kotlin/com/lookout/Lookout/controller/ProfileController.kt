@@ -1,26 +1,24 @@
 package com.lookout.Lookout.controller
 
 
-import com.lookout.Lookout.dto.ImageRequest
-import com.lookout.Lookout.entity.Image
-import com.lookout.Lookout.services.ImageService
+import com.lookout.Lookout.dto.ProfilePicRequest
+import com.lookout.Lookout.entity.ProfilePic
+import com.lookout.Lookout.services.ProfilePicServices
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-import java.io.IOException
 import java.net.URL
 import java.util.*
 
 @RestController
-@RequestMapping("/api/image")
-class ImageController(private val postService: ImageService) {
+@RequestMapping("/api/profile/pic")
+class ProfileController(private val picService: ProfilePicServices) {
 
     @PostMapping("/create")
-    fun createPost(@RequestBody imageRequest: ImageRequest): ResponseEntity<Image> {
+    fun createPost(@RequestBody imageRequest: ProfilePicRequest): ResponseEntity<ProfilePic> {
         return try {
             val imageContent = if ((imageRequest.image?.startsWith("http://") == true) || (imageRequest.image?.startsWith("https://") == true)) {
                 // Handle URL
@@ -31,23 +29,13 @@ class ImageController(private val postService: ImageService) {
                 Base64.getDecoder().decode(imageRequest.image)
             }
 
-            val category = postService.findCategoryById(imageRequest.categoryId)
+            val user = picService.findUserById(imageRequest.userId)
                 ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
 
-            val user = postService.findUserById(imageRequest.userId)
-                ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
-
-            val group = postService.findGroupById(imageRequest.groupId)
-                ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
-
-            val post = Image(caption = imageRequest.caption, title = imageRequest.title,
-                category = category,
+            val profilepicture = ProfilePic(
                 user = user,
-                group = group,
-                picture = imageContent,
-                latitude = imageRequest.latitude,
-                longitude = imageRequest.longitude)
-            val savedPost = postService.savePost(post)
+                picture = imageContent)
+            val savedPost = picService.savePic(profilepicture)
             ResponseEntity(savedPost, HttpStatus.CREATED)
         } catch (e: IllegalArgumentException) {
             ResponseEntity(HttpStatus.BAD_REQUEST)
@@ -57,9 +45,9 @@ class ImageController(private val postService: ImageService) {
     }
 
     @PutMapping("/update/{id}")
-    fun updateImage(@PathVariable id: Long, @RequestBody imageRequest: ImageRequest): ResponseEntity<Image> {
+    fun updateImage(@PathVariable id: Long, @RequestBody imageRequest: ProfilePicRequest): ResponseEntity<ProfilePic> {
         return try {
-            val existingImage = postService.getPostById(id)
+            val existingImage = picService.getPicById(id)
                 ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
             val imageContent = if (!imageRequest.image.isNullOrEmpty()) {
@@ -77,19 +65,13 @@ class ImageController(private val postService: ImageService) {
             }
 
             // Use existing values for the immutable fields
-            val updatedImage = Image(
+            val updatedImage = ProfilePic(
                 id = existingImage.id,
-                caption = imageRequest.caption ?: existingImage.caption,
-                title = imageRequest.title ?: existingImage.title,
-                category = existingImage.category,
                 user = existingImage.user,
-                group = existingImage.group,
                 picture = imageContent,
-                latitude = imageRequest.latitude ?: existingImage.latitude,
-                longitude = imageRequest.longitude ?: existingImage.longitude
             )
 
-            val savedImage = postService.savePost(updatedImage)
+            val savedImage = picService.savePic(updatedImage)
             ResponseEntity(savedImage, HttpStatus.OK)
         } catch (e: IllegalArgumentException) {
             ResponseEntity(HttpStatus.BAD_REQUEST)
@@ -100,8 +82,8 @@ class ImageController(private val postService: ImageService) {
 
 
     @GetMapping("/{id}")
-    fun getPostById(@PathVariable id: Long): ResponseEntity<Image> {
-        val post = postService.getPostById(id)
+    fun getPostById(@PathVariable id: Long): ResponseEntity<ProfilePic> {
+        val post = picService.getPicById(id)
         return if (post != null) {
             ResponseEntity(post, HttpStatus.OK)
         } else {
@@ -109,42 +91,30 @@ class ImageController(private val postService: ImageService) {
         }
     }
 
-    // Get posts by Category ID
-    @GetMapping("/category/{categoryId}")
-    fun getPostsByCategoryId(
-        @PathVariable categoryId: Long,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Image>> {
-        val pageable: Pageable = PageRequest.of(page, size)
-        val posts = postService.findByCategoryId(categoryId, pageable)
-        return ResponseEntity(posts, HttpStatus.OK)
-    }
-
-    // Get posts by User ID
+    // Get profile picture by User ID
     @GetMapping("/user/{userId}")
     fun getPostsByUserId(
         @PathVariable userId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Image>> {
+    ): ResponseEntity<Page<ProfilePic>> {
         val pageable: Pageable = PageRequest.of(page, size)
-        val posts = postService.findByUserId(userId, pageable)
+        val posts = picService.findByUserId(userId, pageable)
         return ResponseEntity.ok(posts)
     }
 
     @GetMapping("/all")
-    fun getAllPosts(): ResponseEntity<List<Image>> {
-        val posts = postService.getAllPosts()
+    fun getAllPosts(): ResponseEntity<List<ProfilePic>> {
+        val posts = picService.getAllPic()
         return ResponseEntity(posts, HttpStatus.OK)
     }
 
     // Delete a post
     @DeleteMapping("/{id}")
-    fun deletePost(@PathVariable id: Long): ResponseEntity<Image> {
-        val post = postService.getPostById(id)
+    fun deletePost(@PathVariable id: Long): ResponseEntity<ProfilePic> {
+        val post = picService.getPicById(id)
         return if (post != null) {
-            postService.delete(post)
+            picService.delete(post)
             ResponseEntity.noContent().build()
         } else {
             ResponseEntity.notFound().build()

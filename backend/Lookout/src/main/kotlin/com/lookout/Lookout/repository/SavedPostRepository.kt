@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository
 interface SavedPostRepository : JpaRepository<SavedPosts, Long> {
     fun findByUserAndPost(user: User, post: Image): SavedPosts?
     fun findAllByUser(user: User): List<SavedPosts>
+    fun findByPost(post: Image): List<SavedPosts>
 }

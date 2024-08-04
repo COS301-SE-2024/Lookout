@@ -9,11 +9,14 @@ import Modal from '../components/Modal';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(false); 
   const location = useLocation();
   const { state } = location;
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState('');
+  //const [profile, setPicture] = useState(""); // add profile picture
+  
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (state?.message) {
@@ -27,11 +30,36 @@ const Profile = () => {
     setMessage('');
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      //setPicture(fileUrl);
+      console.log(fileUrl)
+    }
+  };
+
+  const handleAddPhotoClick = () => {
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+      
+    }
+  };
+
   return (
     <div className="flex flex-col items-center">
       {/* Profile Picture and Username */}
       <div className="flex flex-col items-center">
-        <div className="w-24 h-24 rounded-full bg-gray-300 mb-2"></div>
+        <div className="w-24 h-24 rounded-full bg-gray-300 mb-2"
+        onClick={handleAddPhotoClick}></div>
+        <input
+                type="file"
+                accept="image/jpeg, image/png"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={handleFileChange}
+          />
         <h1 className="text-xl font-bold">Username</h1>
       </div>
 
