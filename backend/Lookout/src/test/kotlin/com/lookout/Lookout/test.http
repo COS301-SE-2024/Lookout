@@ -185,3 +185,13 @@ Host: localhost:8080
 GET /api/savedPosts/isPostSaved?userId=52&postId=20 HTTP/1.1
 Host: localhost:8080
 ###
+
+### Update a user's profile picture
+PUT http://localhost:8080/api/users/update-profile-pic
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "newProfilePicUrl": "https://i.pinimg.com/564x/8d/ff/49/8dff49985d0d8afa53751d9ba8907aed.jpg"
+}
+###
