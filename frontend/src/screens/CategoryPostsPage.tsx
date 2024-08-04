@@ -235,7 +235,7 @@ const CategoryPostsPage: React.FC = () => {
                 alt={post.title} 
                 className="w-full h-48 object-cover" />
               <div className="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white text-xs p-1">
-                {post.title}
+                {/* {post.title} */}
               </div>
             </div>
           ))}

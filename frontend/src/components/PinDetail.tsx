@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import CategoryPill from "./CategoryPill";
 import SkeletonPinDetail from "./PinDetailSkeleton";
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaBookmark, FaRegBookmark } from 'react-icons/fa';
+import HorizontalCarousel from "../components/HorizontalCarousel";
+import PinDetailPost from "./PinDetailPost";
 
 interface Post {
   id: number;
@@ -16,8 +17,9 @@ interface Post {
   title: string;
   groupPicture: string;
   admin: string;
+  userId: number;
   user: {
-    id: number;
+    userId: number;
     userName: string;
     email: string;
     passcode: string;
@@ -60,14 +62,6 @@ interface Post {
   createdAt: string;
 }
 
-const hexToString = (hex: string) => {
-  const cleanedHex = hex.replace(/\\x/g, "");
-  const str = cleanedHex
-    .match(/.{1,2}/g)
-    ?.map((byte) => String.fromCharCode(parseInt(byte, 16)))
-    .join("");
-  return str || "";
-};
 
 const PinDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -76,13 +70,10 @@ const PinDetail: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [saves, setSaves] = useState<number>(0);
   const [userId] = useState<number>(2);
-  const [activeTab, setActiveTab] = useState<"post" | "map">("post");
+  const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-
-  // const handleSaveToggle = (postId: any) => {
-  //   setIsSaved(!isSaved);
-  // };
 
   useEffect(() => {
     const localStoreTheme = localStorage.getItem("data-theme") || "default";
@@ -112,13 +103,19 @@ const PinDetail: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/image/${id}`);
+        const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
-        console.log(data);
         setPost(data);
         setLoading(false);
+
+        // Fetch related posts once the main post is fetched
+        const relatedResponse = await fetch(
+          `/api/posts/group/${data.groupId}?page=0&size=10`
+        );
+        const relatedData = await relatedResponse.json();
+        setRelatedPosts(relatedData.content);
       } catch (error) {
-        console.error("Error fetching post:", error);
+        console.error("Error fetching post or related posts:", error);
         setLoading(false);
       }
     };
@@ -135,52 +132,84 @@ const PinDetail: React.FC = () => {
       }
     };
 
+    const getCountSaves = async () => {
+      try {
+        const response = await fetch(`/api/savedPosts/countSaves?postId=${id}`);
+        const data = await response.json();
+        setSaves(data);
+      } catch (error) {
+        console.error("Error fetching saves count:", error);
+      }
+    }
+
     fetchPost();
     checkIfSaved();
+    getCountSaves();
   }, [id, userId]);
 
   const handleSaveClick = async () => {
+    const requestBody = {
+      userId,
+      postId: post?.id,
+    };
+  
+    console.log("Save request body:", requestBody);
+  
     try {
       const response = await fetch("/api/savedPosts/SavePost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          user: { id: userId },
-          post: { id: post?.id, picture: post?.picture },
-        }),
+        body: JSON.stringify(requestBody),
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to save post");
       }
-
+  
       setIsSaved(true);
-    } catch (error: any) {
+      setSaves((prevSaves) => prevSaves + 1); // Increase saves count
+    } catch (error) {
       console.error("Error saving post:", error);
     }
   };
-
+  
   const handleUnsaveClick = async () => {
+    const requestBody = {
+      userId,
+      postId: post?.id,
+    };
+  
+    console.log("Unsave request body:", requestBody);
+  
     try {
-      const response = await fetch(
-        `/api/savedPosts/UnsavePost?userId=${userId}&postId=${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      const response = await fetch("/api/savedPosts/UnsavePost", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+  
       if (!response.ok) {
         throw new Error("Failed to unsave post");
       }
-
+  
       setIsSaved(false);
-    } catch (error: any) {
+      setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
+    } catch (error) {
       console.error("Error unsaving post:", error);
+    }
+  };
+  
+
+  const handleSaveIconClick = () => {
+    console.log("Save icon clicked");
+    if (isSaved) {
+      handleUnsaveClick();
+    } else {
+      handleSaveClick();
     }
   };
 
@@ -192,14 +221,46 @@ const PinDetail: React.FC = () => {
     return <p>Post not found.</p>;
   }
 
-  const decodedPictureUrl = hexToString(post.picture);
-
   return (
-    <>
     <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
+      <style>
+        {`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .search-results-container {
+            display: grid;
+            gap: 16px;
+            justify-items: start;
+          }
+          .search-results-container .search-result-card {
+            width: 100%;
+            margin: 0;
+          }
+          @media (min-width: 768px) {
+            .search-results-container {
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+          }
+          @media (max-width: 767px) {
+            .search-results-container {
+              grid-template-columns: 1fr;
+            }
+            .search-bar {
+              width: 100%;
+            }
+          }
+        `}
+      </style>
+
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 text-green-700 hover:text-green-500"
+        className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2"
+        style={{ zIndex: 50 }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -217,166 +278,68 @@ const PinDetail: React.FC = () => {
         </svg>
       </button>
 
-    </div>
-      <div className="text-center mb-4">
-        <h1 className="text-2xl font-bold mb-2">{post.caption}</h1>
-        <img src={`data:image/png;base64,${post.picture}`} alt={post.caption} className="w-full rounded-lg mb-4" />
-        <p className="text-gray-700">{post.description}</p>
-        <p className="text-gray-500 text-sm mt-2">Posted by: {post.username}</p>
-        <p className="text-gray-500 text-sm mt-2">Group: {post.groupName}</p>
-        <p className="text-gray-500 text-sm mt-2">Group description: {post.groupDescription}</p>
-        <div className="mt-4">
-          
-      </div>
-    </div>
-      <h2>View it on the map below:</h2>
-     
-      <APIProvider apiKey={apicode || ''} onLoad={() => console.log('Maps API has loaded.')}>
-        <Map
-          defaultZoom={12}
-          defaultCenter={{ lat: post.latitude, lng: post.longitude }}
-          mapId="your-map-id"
-          style={{ height: '300px', width: '100%' }}
-        >
-          <Marker position={{ lat: post.latitude, lng: post.longitude }} />
-        </Map>
-      </APIProvider>
-      <br/>
-      <div className="flex justify-center">
+      <div className="card bg-base-94 shadow-xl rounded-lg">
+        <figure className="rounded-t-lg overflow-hidden">
+          <img src={post.picture} alt={post.title} className="w-full h-full object-cover" />
+        </figure>
 
-      <div className="mb-4 ml-16 mt-1">
-
-        <button
-          className={`mr-4 ${
-            activeTab === "post"
-              ? "active border-b-4 border-[#6A994E] font-bold"
-              : ""
-          }`}
-          onClick={() => setActiveTab("post")}
-        >
-          Post Details
-        </button>
-        <button
-          className={`${
-            activeTab === "map"
-              ? "active border-b-4 border-[#6A994E] font-bold"
-              : ""
-          }`}
-          onClick={() => setActiveTab("map")}
-        >
-          Map View
-        </button>
-      </div>
-
-      {activeTab === "post" && (
-      <div className="text-center mb-4">
-        {/* Post Section */}
-        <div className="relative bg-white p-4 rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
-          <img
-            src={decodedPictureUrl}
-            alt={post.title}
-            className="w-full md:w-1/2 lg:w-1/3 mx-auto rounded-lg mb-4"
-          />
-          <button
-            className="absolute top-4 right-4 text-2xl"
-            onClick={isSaved ? handleUnsaveClick : handleSaveClick}
-          >
-            {isSaved ? (
-              <FaHeart className="text-red-500" />
-            ) : (
-              <FaRegHeart className="text-gray-500" />
-            )}
-          </button>
-          <p className="text-gray-700 font-bold">{post.caption}</p>
-          <p className="text-gray-500 text-sm mt-2">
-            Posted by: {post.username}
-          </p>
-          <CategoryPill categoryId={post.categoryId} />
-        </div>
-
-        <div className="mt-8 mr-32">
-          <h1 className="text-xl font-bold">See more Posts like this:</h1>
-        </div>
-
-        {/* Group Information */}
-        <div
-          className="bg-white p-4 rounded-lg shadow-md mt-4 cursor-pointer mx-auto w-full md:w-3/4 lg:w-1/2"
-          onClick={() =>
-            navigate(`/group/${post.groupId}`, {
-              state: { group: post.group },
-            })
-          }
-        >
-          <img
-            src={post.groupPicture}
-            alt={post.groupName}
-            className="w-24 h-24 mx-auto rounded-full mb-4"
-          />
-          <h2 className="text-xl font-bold">{post.groupName}</h2>
-          <p className="text-gray-500 text-sm">
-            Admin: {post.admin || "No owner"}
-          </p>
-          <p className="text-gray-500 text-sm mt-2">
-            {post.groupDescription}
-          </p>
-          <div className="flex justify-around mt-4">
-            {/* <div>
-              <p className="text-gray-500 text-sm">Members: numMembers</p>
+        <div className="card-body ml-4">
+          <div className="flex items-center justify-between mt-2 mb-4">
+            <h1 className="text-2xl font-bold">{post.title}</h1>
+            <div className="flex items-center mr-4">
+              {isSaved ? (
+                <FaBookmark className="text-green-800 cursor-pointer" onClick={handleSaveIconClick} />
+              ) : (
+                <FaRegBookmark className="text-green-800 cursor-pointer" onClick={handleSaveIconClick} />
+              )}
+              <span className="ml-2">{saves} saves</span>
             </div>
-            <div>
-              <p className="text-gray-500 text-sm">Posts: numPosts</p>
-            </div> */}
           </div>
-        </div>
-      </div>
-    )}
-      {activeTab === "map" && (
-        <div className="mt-4">
-          <div className="flex justify-center mt-4">
-            <APIProvider
-              apiKey={apicode || ""}
-              onLoad={() => console.log("Maps API has loaded.")}
+
+          <div className="flex items-center mb-4 justify-between w-full">
+            <div className="flex items-center">
+              <img
+                src='https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg'
+                alt={post.username}
+                className="w-20 h-20 rounded-full mr-6"
+              />
+              <div>
+                <h2 className="text-lg font-bold">{post.username}</h2>
+                <p className="text-gray-600 text-sm">{post.caption}</p>
+                <CategoryPill categoryId={post.categoryId} />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center mt-4 space-x-2 mt-4">
+            <button
+              className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onClick={() => navigate(`/map`, { state: { post, apicode } })}
             >
-              <Map
-                defaultZoom={12}
-                defaultCenter={{ lat: post.latitude, lng: post.longitude }}
-                mapId="your-map-id"
-                style={{ height: "400px", width: "100%", maxWidth: "800px" }}
-              >
-                <Marker
-                  position={{ lat: post.latitude, lng: post.longitude }}
-                />
-              </Map>
-            </APIProvider>
+              View on Map
+            </button>
+            <button
+              className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onClick={() =>
+                navigate(`/group/${post.groupId}`)
+              }
+            >
+              View Group
+            </button>
           </div>
 
-          <div className="mt-8 bg-white p-4 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-2 text-center">
-              {post.title}
-            </h2>
-            <img
-              src={post.groupPicture}
-              alt={post.groupName}
-              className="w-24 h-24 mx-auto rounded-full mb-4"
-            />
-            <p className="text-gray-500 text-sm mb-2 text-center">
-              Posted by: {post.username}
-            </p>
-            <p className="text-gray-500 text-sm mb-2 text-center">
-              Group: {post.groupName}
-            </p>
-            {/* <p className="text-gray-500 text-sm mb-2 text-center">
-              Group Description: {post.groupDescription}
-            </p> */}
-            <div className="text-center">
-              <CategoryPill categoryId={post.categoryId} />
-            </div>
+          <div className="mt-4 mb-8">
+            <h1 className="text-lm font-semibold">See more posts like this:</h1>
+
+            <HorizontalCarousel>
+              {relatedPosts.map((relatedPost) => (
+                <PinDetailPost key={relatedPost.id} post={relatedPost} />
+              ))}
+            </HorizontalCarousel>
           </div>
         </div>
-      )}
+      </div>
     </div>
-    </>
   );
 };
 

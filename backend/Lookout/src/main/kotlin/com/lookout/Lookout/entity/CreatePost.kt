@@ -9,4 +9,5 @@ data class CreatePost(
     val longitude: Double,
     val caption: String,
     val title: String,
+    val location: String,
 )

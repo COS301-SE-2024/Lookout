@@ -1,16 +1,52 @@
 package com.lookout.Lookout.controller
 
+import com.lookout.Lookout.dto.GroupDto
+import com.lookout.Lookout.dto.UserDto
+import com.lookout.Lookout.entity.Groups
+import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.service.UserService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @RestController
-@RequestMapping("/")
-class UserController {
+@RequestMapping("/api/users")
+class UserController (private val userService: UserService){
+
+    fun convertToDto(user: User): UserDto {
+        return UserDto(
+            id = user.id,
+            userName = user.userName,
+            email = user.email,
+            profilePic = user.profilePic
+        )
+    }
+
     @GetMapping("user")
     fun getUser(): ResponseEntity<String>{
         return ResponseEntity.ok("User Login")
     }
+
+    @PutMapping("/update-profile-pic")
+    fun updateProfilePic(@RequestBody updateProfilePicRequest: UpdateProfilePicRequest): ResponseEntity<User> {
+        val updatedUser = userService.updateProfilePic(updateProfilePicRequest.userId, updateProfilePicRequest.newProfilePicUrl)
+        return ResponseEntity.ok(updatedUser)
+    }
+
+    @GetMapping("/{id}")
+    fun getUserByID(@PathVariable id: Long): ResponseEntity<UserDto> {
+        val user = userService.findById(id)
+        return if (user.isPresent) {
+            ResponseEntity.ok(convertToDto(user.get()))
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 }
+
+data class UpdateProfilePicRequest(
+    val userId: Long,
+    val newProfilePicUrl: String
+)
