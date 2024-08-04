@@ -24,8 +24,11 @@ data class User(
     var passcode: String? = null,
 
     @Enumerated(value = EnumType.STRING)
-    var role: UserRoles? = null
+    var role: UserRoles? = null,
 
+    @Column(name = "profilepic")
+    var profilePic: String? = null,
+    
 ) : UserDetails {
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
        return listOf(SimpleGrantedAuthority(role?.name))

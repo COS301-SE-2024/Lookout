@@ -52,7 +52,7 @@ class AuthenticationService(private val userRepository: UserRepository,
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 request.email,
-                request.password
+                request.passcode
             )
         )
 
