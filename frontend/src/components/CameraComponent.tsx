@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { FaCamera, FaSquare } from 'react-icons/fa'
 
 interface CameraComponentProps {
   onCapture: (url: string) => void;
@@ -53,19 +54,19 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ onCapture }) => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex justify-center mb-3">
-        <button
-          className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg mr-2"
+      <button
+          className="px-4 py-2 mr-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-1"
           onClick={isCameraOpen ? stopCamera : startCamera}
         >
-          {isCameraOpen ? 'STOP' : 'CAM'}
+          {isCameraOpen ? <FaSquare size={20} className="bg-gray-300" /> : <FaCamera size={20} className="bg-gray-300" />}
         </button>
         {isCameraOpen && (
           <button
-            className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-            onClick={takePhoto}
-          >
-            PHOTO
-          </button>
+          className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-1"
+          onClick={takePhoto}
+        >
+          <FaCamera size={20} className="bg-gray-300" />
+        </button>
         )}
       </div>
       {isCameraOpen && (
