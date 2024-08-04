@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "@heroicons/react": "^2.1.4",
+    "@types/universal-cookie": "^3.0.0",
+    "aws-sdk": "^2.1667.0",
     "cors": "^2.8.5",
-    "daisyui": "^4.12.10"
+    "daisyui": "^4.12.10",
+    "universal-cookie": "^7.2.0"
   }
 }

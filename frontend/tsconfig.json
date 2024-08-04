@@ -16,5 +16,6 @@
 		"noEmit": true,
 		"jsx": "react-jsx"
 	},
+	"types": ["universal-cookie"],
 	"include": ["src"]
 }
