@@ -2,17 +2,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
 import {
-    APIProvider,
-    Map,
-    AdvancedMarker,
-    useMap,
-    Pin
-  } from '@vis.gl/react-google-maps';
-  import {MarkerClusterer} from '@googlemaps/markerclusterer';
-  import type {Marker} from '@googlemaps/markerclusterer';
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  useMap,
+  Pin
+} from '@vis.gl/react-google-maps';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
+import type { Marker } from '@googlemaps/markerclusterer';
 import '../assets/styles/home.css'
 import HomePins from '../components/HomePins';
-import { FaPlus } from "react-icons/fa";
+import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
 import Legend from '../components/Legend';
 
 import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
@@ -21,6 +21,7 @@ import CameraComponent from '../components/CameraComponent'; // Ensure this path
 
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
 type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
+
 const legendItems = [
   { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' },
   { name: 'Personal Pins', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
@@ -28,66 +29,66 @@ const legendItems = [
 
 
 const locations: Poi[] = [
-	{
-        key: 'krugerNationalPark',
-        location: { lat: -23.9884, lng: 31.5547 },
-        label: 'Kruger National Park',
-        details: 'One of Africa\'s largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos.'
-    },
-    {
-        key: 'addoElephantPark',
-        location: { lat: -33.4468, lng: 25.7484 },
-        label: 'Addo Elephant Park',
-        details: 'Famous for its large population of elephants, as well as lions, hyenas, and various antelope species.'
-    },
-    {
-        key: 'tableMountainNationalPark',
-        location: { lat: -34.0104, lng: 18.3736 },
-        label: 'Table Mountain National Park',
-        details: 'Known for its rich biodiversity, including the unique fynbos vegetation and various bird species.'
-    },
-    {
-        key: 'iSimangalisoWetlandPark',
-        location: { lat: -28.3820, lng: 32.4143 },
-        label: 'iSimangaliso Wetland Park',
-        details: 'A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species.'
-    },
-    {
-        key: 'kgalagadiTransfrontierPark',
-        location: { lat: -26.2825, lng: 20.6150 },
-        label: 'Kgalagadi Transfrontier Park',
-        details: 'Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok.'
-    },
-    {
-        key: 'karooNationalPark',
-        location: { lat: -32.2968, lng: 22.5287 },
-        label: 'Karoo National Park',
-        details: 'Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life.'
-    },
-    {
-        key: 'hluhluweImfoloziPark',
-        location: { lat: -28.0493, lng: 31.9189 },
-        label: 'Hluhluwe-Imfolozi Park',
-        details: 'The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five.'
-    },
-    {
-        key: 'madikweGameReserve',
-        location: { lat: -24.7486, lng: 26.2418 },
-        label: 'Madikwe Game Reserve',
-        details: 'A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species.'
-    },
-    {
-        key: 'goldenGateHighlandsNationalPark',
-        location: { lat: -28.5145, lng: 28.6080 },
-        label: 'Golden Gate Highlands National Park',
-        details: 'Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures.'
-    },
-    {
-        key: 'bouldersBeachPenguinColony',
-        location: { lat: -34.1975, lng: 18.4510 },
-        label: 'Boulders Beach Penguin Colony',
-        details: 'A protected area known for its colony of African penguins, as well as scenic coastal views.'
-    }
+  {
+    key: 'krugerNationalPark',
+    location: { lat: -23.9884, lng: 31.5547 },
+    label: 'Kruger National Park',
+    details: 'One of Africa\'s largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos.'
+  },
+  {
+    key: 'addoElephantPark',
+    location: { lat: -33.4468, lng: 25.7484 },
+    label: 'Addo Elephant Park',
+    details: 'Famous for its large population of elephants, as well as lions, hyenas, and various antelope species.'
+  },
+  {
+    key: 'tableMountainNationalPark',
+    location: { lat: -34.0104, lng: 18.3736 },
+    label: 'Table Mountain National Park',
+    details: 'Known for its rich biodiversity, including the unique fynbos vegetation and various bird species.'
+  },
+  {
+    key: 'iSimangalisoWetlandPark',
+    location: { lat: -28.3820, lng: 32.4143 },
+    label: 'iSimangaliso Wetland Park',
+    details: 'A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species.'
+  },
+  {
+    key: 'kgalagadiTransfrontierPark',
+    location: { lat: -26.2825, lng: 20.6150 },
+    label: 'Kgalagadi Transfrontier Park',
+    details: 'Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok.'
+  },
+  {
+    key: 'karooNationalPark',
+    location: { lat: -32.2968, lng: 22.5287 },
+    label: 'Karoo National Park',
+    details: 'Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life.'
+  },
+  {
+    key: 'hluhluweImfoloziPark',
+    location: { lat: -28.0493, lng: 31.9189 },
+    label: 'Hluhluwe-Imfolozi Park',
+    details: 'The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five.'
+  },
+  {
+    key: 'madikweGameReserve',
+    location: { lat: -24.7486, lng: 26.2418 },
+    label: 'Madikwe Game Reserve',
+    details: 'A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species.'
+  },
+  {
+    key: 'goldenGateHighlandsNationalPark',
+    location: { lat: -28.5145, lng: 28.6080 },
+    label: 'Golden Gate Highlands National Park',
+    details: 'Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures.'
+  },
+  {
+    key: 'bouldersBeachPenguinColony',
+    location: { lat: -34.1975, lng: 18.4510 },
+    label: 'Boulders Beach Penguin Colony',
+    details: 'A protected area known for its colony of African penguins, as well as scenic coastal views.'
+  }
 ];
 
 
@@ -143,7 +144,7 @@ const HomeScreen: React.FC = () => {
         const response = await fetch('/api/image/all', {
           method: 'GET',
           headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
           },
         });
 
@@ -169,7 +170,7 @@ const HomeScreen: React.FC = () => {
     };
 
     fetchPins();
-    
+
   }, []);
 
   useEffect(() => {
@@ -186,21 +187,21 @@ const HomeScreen: React.FC = () => {
   
 
   // Function to convert blob URL to base64
-  async function blobToBase64(blobUrl:string) {
+  async function blobToBase64(blobUrl: string) {
     const response = await fetch(blobUrl);
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            if (typeof reader.result === 'string') {
-                resolve(reader.result.split(',')[1]); // Get the base64 string
-            }
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result.split(',')[1]); // Get the base64 string
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
     });
   }
-  
+
 
   const handleAddPinClick = async () => {
     if (selectedGroup === null) {
@@ -222,7 +223,7 @@ const HomeScreen: React.FC = () => {
     } else {
       Image = picture.split(',')[1];
     }
-    
+
 
     const raw = JSON.stringify({
       "caption": caption,
@@ -239,11 +240,11 @@ const HomeScreen: React.FC = () => {
       method: "POST",
       headers: myHeaders,
       body: raw
-  };
+    };
 
     try {
       const response = await fetch("/api/image/create", requestOptions);
-      
+
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -255,21 +256,21 @@ const HomeScreen: React.FC = () => {
       setSelectedGroup(null);
       setSelectedCategory(null);
       closeModal();
-      
+
       setIsSuccessModalOpen(true); // Open success modal
       // setIsModalOpen(false); // Close modal after successful pin addition
       // setIsSuccessModalOpen(true); // Open success modal
-      
+
     } catch (error) {
       console.error('Error creating post:', error);
     }
   };
 
   const handleAddPhotoClick = () => {
-    
+
     if (fileInputRef.current) {
       fileInputRef.current.click();
-      
+
     }
     setIsPhotoOptionsModalOpen(false);
   };
@@ -357,7 +358,7 @@ const HomeScreen: React.FC = () => {
         +
       </button>
 
-    
+
 
       {/* Add pin modal */}
       {isModalOpen && (
@@ -498,53 +499,58 @@ const HomeScreen: React.FC = () => {
         </div>
       )}
 
-{/* PhotoOptions modal */}
-{isPhotoOptionsModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto relative">
-      <h2 className="text-2xl font-bold mb-4 text-center">Photo</h2>
-      <div className="flex justify-between mb-4">
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onClick={handleAddPhotoClick}
-        >
-          Upload A Photo
-        </button>
-        <button
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-          onClick={handleTakePhotoClick}
-        >
-          Take A Photo
-        </button>
-      </div>
-      <button
-        className="absolute top-4 right-4 px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-        onClick={() => setIsPhotoOptionsModalOpen(false)}
-      >
-        x
-      </button>
-    </div>
-  </div>
-)}
+      {/* PhotoOptions modal */}
+      {isPhotoOptionsModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto relative">
+            <h2 className="text-2xl font-bold mb-4 text-center">Photo</h2>
+            <div className="flex justify-between mb-4">
+              <button
+                className="absolute top-4 right-4 px-2 py-1  focus:outline-none focus:ring-2 "
+                onClick={() => setIsPhotoOptionsModalOpen(false)}
+              >
+                <FaTimes />
+              </button>
+              <button
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
+                onClick={handleAddPhotoClick}
+              >
+                <FaFolder size={20} />
+                <span className="text-base">Upload A Photo</span>
+              </button>
 
-{/* Camera modal */}
-{isCameraModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="relative bg-white p-6 rounded-lg w-full max-w-sm mx-auto">
-      <button className="absolute top-2 right-2 text-xl" onClick={() => setIsCameraModalOpen(false)}>
-        &times;
-      </button>
-      <h2 className="text-2xl font-bold mb-4">Take A Photo</h2>
-      <CameraComponent
-        onCapture={(url) => {
-          // shortenURL(url);
-          setPicture(url);
-          setIsCameraModalOpen(false);
-        }}
-      />
-    </div>
-  </div>
-)}
+              <button
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
+                onClick={handleTakePhotoClick}
+              >
+                <FaCamera size={20} />
+                <span className="text-base">Take A Photo</span>
+              </button>
+            </div>
+
+
+          </div>
+        </div>
+      )}
+
+      {/* Camera modal */}
+      {isCameraModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative bg-white p-6 rounded-lg w-full max-w-sm mx-auto">
+            <button className="absolute top-2 right-2 text-xl" onClick={() => setIsCameraModalOpen(false)}>
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4">Take A Photo</h2>
+            <CameraComponent
+              onCapture={(url) => {
+                // shortenURL(url);
+                setPicture(url);
+                setIsCameraModalOpen(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
 
 
 
@@ -585,40 +591,40 @@ const HomeScreen: React.FC = () => {
   );
 };
 
-const PoiMarkers = (props: { pois: Poi[]}) => {
-	const map = useMap();
-	const [markers, setMarkers] = useState<{[key: string]: Marker}>({});
-	const clusterer = useRef<MarkerClusterer | null>(null);
-  
-	// Initialize MarkerClusterer, if the map has changed
-	useEffect(() => {
-	  if (!map) return;
-	  if (!clusterer.current) {
-		clusterer.current = new MarkerClusterer({map});
-	  }
-	}, [map]);
-	
-  
-	// Update markers, if the markers array has changed
-	useEffect(() => {
-	  clusterer.current?.clearMarkers();
-	  clusterer.current?.addMarkers(Object.values(markers));
-	}, [markers]);
-  
-	const setMarkerRef = (marker: Marker | null, key: string) => {
-	  if (marker && markers[key]) return;
-	  if (!marker && !markers[key]) return;
-  
-	  setMarkers(prev => {
-		if (marker) {
-		  return {...prev, [key]: marker};
-		} else {
-		  const newMarkers = {...prev};
-		  delete newMarkers[key];
-		  return newMarkers;
-		}
-	  });
-	};
+const PoiMarkers = (props: { pois: Poi[] }) => {
+  const map = useMap();
+  const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
+  const clusterer = useRef<MarkerClusterer | null>(null);
+
+  // Initialize MarkerClusterer, if the map has changed
+  useEffect(() => {
+    if (!map) return;
+    if (!clusterer.current) {
+      clusterer.current = new MarkerClusterer({ map });
+    }
+  }, [map]);
+
+
+  // Update markers, if the markers array has changed
+  useEffect(() => {
+    clusterer.current?.clearMarkers();
+    clusterer.current?.addMarkers(Object.values(markers));
+  }, [markers]);
+
+  const setMarkerRef = (marker: Marker | null, key: string) => {
+    if (marker && markers[key]) return;
+    if (!marker && !markers[key]) return;
+
+    setMarkers(prev => {
+      if (marker) {
+        return { ...prev, [key]: marker };
+      } else {
+        const newMarkers = { ...prev };
+        delete newMarkers[key];
+        return newMarkers;
+      }
+    });
+  };
 
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(null);
 
@@ -629,12 +635,12 @@ const PoiMarkers = (props: { pois: Poi[]}) => {
   }, [map]);
 
   const handleMarkerClick = useCallback((key: string) => {
-	const clickedMarker = markers[key];
-	if (clickedMarker && infoWindow) {
-	  const clickedPoi = locations.find((poi) => poi.key === key);
-	  if (clickedPoi) {
-		infoWindow.close();
-		const contentString = `
+    const clickedMarker = markers[key];
+    if (clickedMarker && infoWindow) {
+      const clickedPoi = locations.find((poi) => poi.key === key);
+      if (clickedPoi) {
+        infoWindow.close();
+        const contentString = `
         <div id="content">
           <div id="siteNotice" style="color: black;>
             <h1 id="firstHeading" class="firstHeading"><b>${clickedPoi.label}</b></h1>
@@ -643,31 +649,31 @@ const PoiMarkers = (props: { pois: Poi[]}) => {
         </div>
       `;
 
-    infoWindow.setContent(contentString);
-		infoWindow.setPosition(clickedPoi.location);
-		infoWindow.open(map, clickedMarker);
-	  }
-	}
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(clickedPoi.location);
+        infoWindow.open(map, clickedMarker);
+      }
+    }
   }, [markers, infoWindow, map]);
-	  
-	  
-  
-	return (
-	  <>
-		{props.pois.map( (poi: Poi) => (
-		  <AdvancedMarker
-			key={poi.key}
-			position={poi.location}
-			ref={marker => setMarkerRef(marker, poi.key)}
-			clickable={true}
-        onClick={() => handleMarkerClick(poi.key)}   	
-			>
-			  <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
-		  </AdvancedMarker>
-		))}
-	  </>
-	 );
-  };
+
+
+
+  return (
+    <>
+      {props.pois.map((poi: Poi) => (
+        <AdvancedMarker
+          key={poi.key}
+          position={poi.location}
+          ref={marker => setMarkerRef(marker, poi.key)}
+          clickable={true}
+          onClick={() => handleMarkerClick(poi.key)}
+        >
+          <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
+        </AdvancedMarker>
+      ))}
+    </>
+  );
+};
 
 
 export default HomeScreen;
