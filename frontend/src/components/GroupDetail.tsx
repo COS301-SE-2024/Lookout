@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface User {
   id: number;
@@ -41,14 +41,26 @@ interface Post {
 
 const GroupDetail: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { group } = location.state as { group: Group };
-
-
-  const [posts] = useState<Post[]>([]);
-
+  const { id } = useParams<{ id: string }>();
+  const [group, setGroup] = useState<Group | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 
+  useEffect(() => {
+    const fetchGroup = async () => {
+      try {
+        const response = await fetch(`/api/groups/${id}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setGroup(data);
+      } catch (error) {
+        console.error('Error fetching group details:', error);
+      }
+    };
+
+    fetchGroup();
+  }, [id]);
 
   useEffect(() => {
     const currentUserId = 2; // Placeholder user ID
@@ -61,13 +73,13 @@ const GroupDetail: React.FC = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const isUserInGroup = data.some((userGroup: { id: number }) => userGroup.id === group.id);
+        const isUserInGroup = data.some((userGroup: { id: number }) => userGroup.id === group?.id);
         if (isUserInGroup) {
-          setJoinedGroups((prevGroups) => [...prevGroups, group.id]);
+          setJoinedGroups((prevGroups) => [...prevGroups, group?.id || 0]);
         }
       })
       .catch((error) => console.error('Error checking group membership:', error));
-  }, [group.id]);
+  }, [group?.id]);
 
   const handleJoinClick = (id: number) => {
     const apiUrl = joinedGroups.includes(id)
@@ -76,7 +88,7 @@ const GroupDetail: React.FC = () => {
 
     const requestBody = {
       groupId: id,
-      userId: 2, // PLaceholder id
+      userId: 2, // Placeholder id
     };
 
     fetch(apiUrl, {
@@ -103,6 +115,10 @@ const GroupDetail: React.FC = () => {
       })
       .catch((error) => console.error('Error updating group membership:', error));
   };
+
+  if (!group) {
+    return <p>Loading group details...</p>;
+  }
 
   return (
     <div className="container mx-auto p-4 relative">
@@ -136,28 +152,7 @@ const GroupDetail: React.FC = () => {
           {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
         </button>
       </div>
-      <h2 className="text-xl font-bold mt-8 mb-4">Posts in this group</h2>
-      {posts.length === 0 ? (
-        <div className="text-center">
-          <img
-            src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
-            alt="No posts"
-            className="w-68 h-64 mx-auto mb-4"
-          />
-          <p className="text-gray-600">There are no posts in this group yet. Be the first to post!</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {posts.map((post) => (
-            <div key={post.id} className="p-4 border rounded-lg shadow-sm">
-              <h3 className="text-lg font-semibold mb-2">{post.caption}</h3>
-              {post.picture && <img src={post.picture} alt={post.caption} className="w-full h-auto mb-2 rounded" />}
-              <p className="text-gray-700">{post.description}</p>
-              <p className="text-gray-500 text-sm mt-2">Posted on: {new Date(post.createdAt).toLocaleDateString()}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      
     </div>
   );
 };

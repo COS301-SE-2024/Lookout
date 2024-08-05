@@ -80,7 +80,7 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
       onClick={() => handlePostClick(post)}
     >
       <img
-        src={`data:image/png;base64,${post.picture}`}
+        src={`${post.picture}`}
         alt={post.caption}
         className="w-full h-48 object-cover"
       />

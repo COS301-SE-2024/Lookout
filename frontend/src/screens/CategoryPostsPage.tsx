@@ -74,7 +74,7 @@ const CategoryPostsPage: React.FC = () => {
   const fetchPosts = useCallback(async (page: number) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/image/category/${categoryId}?page=${page}&size=12`);
+      const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=12`);
       const data = await response.json();
       if (page === 0) {
         setPosts(data.content);
@@ -212,7 +212,7 @@ const CategoryPostsPage: React.FC = () => {
               onClick={() => handleGroupClick(group)}
             >
               <img 
-                src={group.picture}
+                src={group.picture} 
                 alt={group.name} 
                 className="w-full h-48 object-cover" />
               <div className="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white text-xs p-1">
@@ -231,11 +231,11 @@ const CategoryPostsPage: React.FC = () => {
               onClick={() => handlePostClick(post)}
             >
               <img 
-                src={`data:image/png;base64,${post.picture}`}
+                src={post.picture} 
                 alt={post.title} 
                 className="w-full h-48 object-cover" />
               <div className="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white text-xs p-1">
-                {post.title}
+                {/* {post.title} */}
               </div>
             </div>
           ))}

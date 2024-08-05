@@ -21,6 +21,7 @@ import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CategoryPostsPage from "./screens/CategoryPostsPage";
 import ExploreGroups from "./components/ExploreGroups";
+import PinMap from "./components/PinMap";
 
 function Main() {
   useEffect(() => {
@@ -77,6 +78,9 @@ function Main() {
           />{" "}
           {/* Add this line */}
         </Route>
+        <Route path="/map"
+         element={<PinMap />} 
+        />
       </Route>
     )
   );
