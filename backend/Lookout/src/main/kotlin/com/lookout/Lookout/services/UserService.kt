@@ -1,5 +1,6 @@
 package com.lookout.Lookout.service
 
+import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,5 +29,31 @@ class UserService: UserDetailsService {
 
     fun findById(id: Long): Optional<User> {
         return userRepository.findById(id)
+    }
+
+    fun findByIdDto(id: Long): Optional<UserDto> {
+        val user = userRepository.findById(id)
+        return user.map { u ->
+            UserDto(
+                id = u.id,
+                userName = u.userName ?: "",
+                email = u.email ?: "",
+                role = u.role?.name ?: "",
+                isEnabled = u.isEnabled,
+                username = u.username ?: "",
+                authorities = u.authorities.map { it.authority },
+                isAccountNonLocked = u.isAccountNonLocked,
+                isCredentialsNonExpired = u.isCredentialsNonExpired,
+                isAccountNonExpired = u.isAccountNonExpired
+            )
+        }
+    }
+
+    fun getUserPostsCount(id: Long): Int {
+        return userRepository.getUserPostsCount(id)
+    }
+
+    fun getUserGroupsCount(id: Long): Int {
+        return userRepository.getUserGroupsCount(id)
     }
 }

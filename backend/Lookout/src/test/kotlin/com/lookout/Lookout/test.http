@@ -192,3 +192,18 @@ Host: localhost:8080
 GET /api/savedPosts/countSaves?postId=8 HTTP/1.1
 Host: localhost:8080
 ###
+
+### Get all the users in a group
+GET http://localhost:8080/api/groups/users/4
+Accept: application/json
+###
+
+### Get the count of how many posts a user has
+GET http://localhost:8080/api/user/postsCount/5
+Accept: application/json
+###
+
+### Get the count of how many groups a user is in
+GET http://localhost:8080/api/user/groupsCount/1
+Accept: application/json
+###
