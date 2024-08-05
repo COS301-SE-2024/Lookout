@@ -38,7 +38,7 @@ DELETE http://localhost:8080/api/groups/1
 ###
 
 ### Get a group by user id
-GET http://localhost:8080/api/groups/user/1
+GET http://localhost:8080/api/groups/user/2
 Accept: application/json
 ###
 
@@ -117,7 +117,7 @@ Content-Type: application/json
 
 ###
 ### Get posts by user ID
-GET http://localhost:8080/api/posts/user/52?page=0&size=10
+GET http://localhost:8080/api/posts/user/1?page=0&size=10
 Accept: application/json
 ###
 
@@ -127,9 +127,10 @@ Accept: application/json
 ###
 
 ### Get posts by group ID
-GET http://localhost:8080/api/posts/group/2?page=0&size=10
+GET http://localhost:8080/api/posts/group/1?page=0&size=10
 Accept: application/json
 ###
+
 
 ### Get posts by category ID
 GET http://localhost:8080/api/posts/category/3?page=0&size=10
@@ -154,33 +155,40 @@ Content-Type: application/json
 }
 ###
 
+
 ###Save a post
 POST /api/savedPosts/SavePost HTTP/1.1
 Host: localhost:8080
 Content-Type: application/json
 
 {
-  "user": {
-    "id": 2
-  },
-  "post": {
-    "id": 19,
-    "picture": ""
-  }
+  "userId": 2,
+  "postId": 8
 }
 ###
 
-### Unsave a post
-DELETE /api/savedPosts/UnsavePost?userId=1&postId=19 HTTP/1.1
+###Unsave a post
+DELETE /api/savedPosts/UnsavePost HTTP/1.1
 Host: localhost:8080
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "postId": 8
+}
 ###
 
 ### Get saved posts by user ID
-GET /api/savedPosts/user/2 HTTP/1.1
+GET /api/savedPosts/user/1 HTTP/1.1
 Host: localhost:8080
 ###
 
 ### Check if a post is saved by a user
-GET /api/savedPosts/isPostSaved?userId=52&postId=20 HTTP/1.1
+GET /api/savedPosts/isPostSaved?userId=2&postId=8 HTTP/1.1
+Host: localhost:8080
+###
+
+### Check how many saves a post has
+GET /api/savedPosts/countSaves?postId=8 HTTP/1.1
 Host: localhost:8080
 ###
