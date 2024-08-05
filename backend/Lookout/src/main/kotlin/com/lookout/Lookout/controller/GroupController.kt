@@ -1,9 +1,8 @@
 package com.lookout.Lookout.controller
 
 import com.lookout.Lookout.dto.GroupDto
-import com.lookout.Lookout.entity.AddOrRemoveMemberFromGroup
-import com.lookout.Lookout.entity.GroupMembers
-import com.lookout.Lookout.entity.Groups
+import com.lookout.Lookout.dto.UserDto
+import com.lookout.Lookout.entity.*
 import com.lookout.Lookout.service.GroupService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import com.lookout.Lookout.entity.UpdateGroup
 
 @RestController
 @RequestMapping("/api/groups")
@@ -30,6 +28,22 @@ class GroupController(private val groupService: GroupService) {
             role = group.user?.role.toString()
         )
     }
+
+    fun convertToUserDto(user: User): UserDto {
+        return UserDto(
+            id = user.id,
+            userName = user.userName ?: "",
+            email = user.email ?: "",
+            role = user.role?.name ?: "",
+            isEnabled = user.isEnabled,
+            username = user.username ?: "",
+            authorities = user.authorities.map { it.authority },
+            isAccountNonLocked = user.isAccountNonLocked,
+            isCredentialsNonExpired = user.isCredentialsNonExpired,
+            isAccountNonExpired = user.isAccountNonExpired
+        )
+    }
+
 
     @GetMapping
     fun getAllGroups(
@@ -132,6 +146,16 @@ class GroupController(private val groupService: GroupService) {
             ResponseEntity.ok(updatedGroup)
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+        }
+    }
+
+    @GetMapping("/users/{groupId}")
+    fun getGroupMembers(@PathVariable groupId: Long): ResponseEntity<List<UserDto>> {
+        val groupMembers = groupService.getGroupMembers(groupId).map { user -> convertToUserDto(user) }
+        return if (groupMembers.isNotEmpty()) {
+            ResponseEntity.ok(groupMembers)
+        } else {
+            ResponseEntity.noContent().build()
         }
     }
     

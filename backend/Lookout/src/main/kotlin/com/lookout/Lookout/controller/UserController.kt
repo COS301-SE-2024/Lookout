@@ -17,6 +17,18 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok("User Login")
     }
 
+
+    @GetMapping("api/user/postsCount/{id}")
+    fun getUserPostsCount(@PathVariable id: Long): ResponseEntity<Int> {
+        try {
+            userService.findById(id)
+        } catch (e: NoSuchElementException) {
+            return ResponseEntity.notFound().build()
+        }
+        val postsCount = userService.getUserPostsCount(id)
+        return ResponseEntity.ok(postsCount)
+    }
+
     @GetMapping("api/user/groupsCount/{id}")
     fun getUserGroupsCount(@PathVariable id: Long): ResponseEntity<Int> {
         try {

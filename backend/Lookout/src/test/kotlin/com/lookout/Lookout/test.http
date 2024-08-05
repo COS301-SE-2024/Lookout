@@ -199,7 +199,7 @@ Accept: application/json
 ###
 
 ### Get the count of how many posts a user has
-GET http://localhost:8080/api/user/postsCount/5
+GET http://localhost:8080/api/user/postsCount/1
 Accept: application/json
 ###
 

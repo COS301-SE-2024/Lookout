@@ -4,6 +4,7 @@ import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.repository.GroupRepository
 import com.lookout.Lookout.entity.UpdateGroup
+import com.lookout.Lookout.entity.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -68,6 +69,11 @@ class GroupService(private val groupRepository: GroupRepository, private val use
             return groupRepository.save(group)
         }
         return null
+    }
+
+    fun getGroupMembers(groupId: Long): List<User> {
+        val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
+        return groupRepository.findGroupMembers(groupId)
     }
 
 }
