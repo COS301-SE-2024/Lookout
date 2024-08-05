@@ -17,6 +17,16 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok("User Login")
     }
 
+    @GetMapping("api/user/{id}")
+    fun getUserById(@PathVariable id: Long): ResponseEntity<UserDto> {
+        val userDto = userService.findByIdDto(id)
+        return if (userDto.isPresent) {
+            ResponseEntity.ok(userDto.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
 
     @GetMapping("api/user/postsCount/{id}")
     fun getUserPostsCount(@PathVariable id: Long): ResponseEntity<Int> {

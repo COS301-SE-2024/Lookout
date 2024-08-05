@@ -131,6 +131,10 @@ GET http://localhost:8080/api/posts/group/1?page=0&size=10
 Accept: application/json
 ###
 
+### Get a user by ID
+GET http://localhost:8080/api/user/1
+Accept: application/json
+###
 
 ### Get posts by category ID
 GET http://localhost:8080/api/posts/category/3?page=0&size=10
