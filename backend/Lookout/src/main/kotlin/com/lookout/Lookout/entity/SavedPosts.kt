@@ -12,7 +12,7 @@ data class SavedPosts(
 
     @ManyToOne
     @JoinColumn(name = "postid")
-    var post: Image? = null,
+    var post: Posts? = null,
 
     @ManyToOne
     @JoinColumn(name = "userid")
