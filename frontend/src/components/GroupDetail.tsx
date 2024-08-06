@@ -8,6 +8,7 @@ interface User {
   id: number;
   userName: string;
   email: string;
+
   picture ?: string;
   role: string;
   isEnabled: boolean;
@@ -227,7 +228,7 @@ const GroupDetail: React.FC = () => {
         <div className="mt-4">
           <div className="flex items-center mb-4">
             <img
-              src="https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg"
+              src="https://i.pinimg.com/originals/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg"
               alt={owner.userName}
               className="w-20 h-20 rounded-full mr-6"
             />

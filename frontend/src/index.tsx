@@ -22,6 +22,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CategoryPostsPage from "./screens/CategoryPostsPage";
 import ExploreGroups from "./components/ExploreGroups";
 import PinMap from "./components/PinMap";
+import CreatedGroupDetail from "./components/CreatedGroupDetail";
 
 function Main() {
   useEffect(() => {
@@ -78,6 +79,10 @@ function Main() {
           />{" "}
           {/* Add this line */}
         </Route>
+        <Route
+          path="/createdGroup/:id"
+          element={<ProtectedRoute element={CreatedGroupDetail} />}
+        />
         <Route path="/map"
          element={<PinMap />} 
         />
