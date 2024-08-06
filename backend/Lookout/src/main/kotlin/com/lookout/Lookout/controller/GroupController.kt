@@ -1,5 +1,6 @@
 package com.lookout.Lookout.controller
 
+import com.lookout.Lookout.dto.CreateGroupDto
 import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.*
@@ -60,14 +61,15 @@ class GroupController(private val groupService: GroupService) {
     }
 
     @PostMapping
-    fun createGroup(@RequestBody group: Groups): ResponseEntity<GroupDto> {
+    fun createGroup(@RequestBody createGroupDto: CreateGroupDto): ResponseEntity<GroupDto> {
         try {
-            val savedGroup = groupService.save(group)
+            val savedGroup = groupService.savedto(createGroupDto)
             return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(savedGroup))
         } catch (e: IllegalArgumentException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
+
 
     @PutMapping("/{id}")
     fun updateGroup(@PathVariable id: Long, @RequestBody group: Groups): ResponseEntity<GroupDto> {

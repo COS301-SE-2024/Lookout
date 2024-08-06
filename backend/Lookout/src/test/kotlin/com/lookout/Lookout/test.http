@@ -16,10 +16,8 @@ Content-Type: application/json
 {
   "name": "Whale Squad",
   "description": "This is a group for people interested in Whale",
-  "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
-  "user": {
-    "id": 1
-  }
+  "picture": "blob:http://localhost:3000/487e9eec-3fd6-48e1-8ea2-097fe69bcf1c",
+  "userId" :  2
 }
 ###
 
@@ -38,7 +36,7 @@ Content-Type: application/json
 ###
 
 ### Delete a group
-DELETE http://localhost:8080/api/groups/1
+DELETE http://localhost:8080/api/groups/53
 ###
 
 ### Get a group by user id

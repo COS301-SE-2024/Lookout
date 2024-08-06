@@ -1,5 +1,6 @@
 package com.lookout.Lookout.service
 
+import com.lookout.Lookout.dto.CreateGroupDto
 import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.repository.GroupRepository
@@ -27,6 +28,22 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         }
         return groupRepository.save(group)
     }
+
+    fun savedto(createGroupDto: CreateGroupDto): Groups {
+        val user = userService.findById(createGroupDto.userId).orElseThrow {
+            IllegalArgumentException("User not found with id: ${createGroupDto.userId}")
+        }
+
+        val group = Groups(
+            name = createGroupDto.name,
+            description = createGroupDto.description,
+            picture = createGroupDto.picture,
+            user = user
+        )
+
+        return groupRepository.save(group)
+    }
+
 
     fun deleteById(groupId: Long) = groupRepository.deleteById(groupId)
 

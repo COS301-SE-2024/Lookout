@@ -63,7 +63,7 @@ const GroupsPost: React.FC<{ post: Post }> = ({ post }) => {
   const navigate = useNavigate();
   
   const handlePostClick = (post: Post) => {
-    navigate(`/posts/${post.id}`, { state: { post } });
+    navigate(`/post/${post.id}`, { state: { post } });
   };
 
 
