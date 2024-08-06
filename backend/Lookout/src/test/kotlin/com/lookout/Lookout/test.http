@@ -20,6 +20,14 @@ Content-Type: application/json
   "userId" :  2
 }
 ###
+PUT http://localhost:8080/api/users/update-profile-pic
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "newProfilePicUrl": "https://i.pinimg.com/564x/8d/ff/49/8dff49985d0d8afa53751d9ba8907aed.jpg"
+}
+
 
 ### Update a group
 PUT http://localhost:8080/api/groups/3
@@ -134,7 +142,7 @@ Accept: application/json
 ###
 
 ### Get a user by ID
-GET http://localhost:8080/api/user/1
+GET http://localhost:8080/api/users/1
 Accept: application/json
 ###
 
