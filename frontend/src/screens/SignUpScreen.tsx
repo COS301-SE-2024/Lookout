@@ -9,6 +9,17 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+
+  const handleLogin = async () => {
+	  try {
+		// Redirect to the backend to initiate Google OAuth
+		window.location.href = "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:8080/api/auth/signup/google&response_type=code&client_id=456933252122-r308hq3v8185kb9k4k9cma7q05afbejq.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&access_type=offline";
+	  } catch (error) {
+		navigate("/login");
+		console.error("Error during login:", error);
+	  }
+	};
+
   useEffect(() => {
 		if (token !== "" && token !== null) {
 			navigate("/");
@@ -59,12 +70,12 @@ const SignUpScreen = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <button className="w-full py-2 text-black bg-white-500 rounded-full hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300">
-		    <FcGoogle size={20} style={{marginRight: 10}} />
-          <a href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri={redirect_uri}&response_type=code&client_id={client_id}&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&access_type=offline">
-            Sign in with Google
-          </a>
-          </button>
+          <button className="w-full py-2 text-black bg-white-500 rounded-full hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300"
+						onClick={handleLogin}
+					>
+						<FcGoogle size={20} style={{ marginRight: 10 }} />
+							Sign in with Google
+					</button>
         </div>
         <div className="flex items-center justify-center my-4">
           <hr className="w-full border-gray-300" />
