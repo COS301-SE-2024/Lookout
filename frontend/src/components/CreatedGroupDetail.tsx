@@ -52,8 +52,6 @@ const CreatedGroupDetail: React.FC = () => {
   const [owner, setOwner] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [members, setMembers] = useState<User[]>([]);
-  const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
-  const currentUserId = 1;
   const [isEditing, setIsEditing] = useState(false);
   const [editableName, setEditableName] = useState("");
   const [editableDescription, setEditableDescription] = useState("");
@@ -89,16 +87,7 @@ const CreatedGroupDetail: React.FC = () => {
         const postsData = await postsResponse.json();
         setPosts(postsData.content);
   
-        const userGroupsResponse = await fetch(`/api/groups/user/${currentUserId}`, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-        });
-        const userGroupsData = await userGroupsResponse.json();
-        const isUserInGroup = userGroupsData.some((userGroup: { id: number }) => userGroup.id === Number(id));
-        if (isUserInGroup) {
-          setJoinedGroups((prevGroups) => [...prevGroups, Number(id)]);
-        }
-  
+       
         const memberResponse = await fetch(`/api/groups/users/${id}`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -113,35 +102,6 @@ const CreatedGroupDetail: React.FC = () => {
     fetchGroupDetails();
   }, [id]);
   
-
-  const handleJoinClick = (groupId: number) => {
-    const apiUrl = joinedGroups.includes(groupId)
-      ? '/api/groups/RemoveMemberFromGroup'
-      : '/api/groups/AddMemberToGroup';
-
-    const requestBody = {
-      groupId,
-      userId: currentUserId,
-    };
-
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody),
-    })
-      .then((response) => {
-        if (response.status === 204) {
-          setJoinedGroups((prevGroups) =>
-            joinedGroups.includes(groupId) ? prevGroups.filter((id) => id !== groupId) : [...prevGroups, groupId]
-          );
-        } else if (response.status === 400) {
-          response.text().then((errorMessage) => console.error(errorMessage));
-        } else {
-          throw new Error('Failed to update group membership');
-        }
-      })
-      .catch((error) => console.error('Error updating group membership:', error));
-  };
 
   const handleRemoveMember = (userId: number) => {
     const requestBody = {
@@ -266,7 +226,7 @@ const CreatedGroupDetail: React.FC = () => {
         <div className="text-center mb-4">
           {isEditing ? (
             <textarea
-              className="text-gray-600 text-sm w-full border border-green-800 rounded-full text-center"
+              className="text-white text-xl w-80 rounded-full text-center bg-transparent"
               style={{ paddingTop: "10px" }}
               value={editableName}
               onChange={(e) => setEditableName(e.target.value)}
@@ -283,7 +243,7 @@ const CreatedGroupDetail: React.FC = () => {
           />
           {isEditing ? (
             <textarea
-              className="text-gray-600 text-sm w-full border border-green-800 rounded-full text-center"
+              className="text-gray-600 text-sm w-80 rounded-full text-center bg-transparent"
               style={{ paddingTop: "10px" }}
               value={editableDescription}
               onChange={(e) => setEditableDescription(e.target.value)}

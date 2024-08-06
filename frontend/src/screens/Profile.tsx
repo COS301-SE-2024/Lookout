@@ -28,7 +28,7 @@ const Profile = () => {
 
   useEffect(() => {
     // Fetch user data
-    fetch("/api/user/1", {
+    fetch("/api/users/1", {
       headers: {
         "Accept": "application/json"
       }
