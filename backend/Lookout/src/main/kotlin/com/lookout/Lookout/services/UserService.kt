@@ -37,4 +37,12 @@ class UserService: UserDetailsService {
         user.profilePic = newProfilePicUrl
         return userRepository.save(user)
     }
+
+    fun getUserPostsCount(id: Long): Int {
+        return userRepository.getUserPostsCount(id)
+    }
+
+    fun getUserGroupsCount(id: Long): Int {
+        return userRepository.getUserGroupsCount(id)
+    }
 }

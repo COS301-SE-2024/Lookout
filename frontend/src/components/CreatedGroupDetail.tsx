@@ -48,13 +48,12 @@ interface Post {
 const CreatedGroupDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  console.log(id);
   const [group, setGroup] = useState<Group | null>(null);
   const [owner, setOwner] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [members, setMembers] = useState<User[]>([]);
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
-  const currentUserId = 2;
+  const currentUserId = 1;
   const [isEditing, setIsEditing] = useState(false);
   const [editableName, setEditableName] = useState("");
   const [editableDescription, setEditableDescription] = useState("");
@@ -67,22 +66,29 @@ const CreatedGroupDetail: React.FC = () => {
           headers: { Accept: 'application/json' },
         });
         const groupData = await groupResponse.json();
-        setGroup(groupData);
-
-        const userResponse = await fetch(`/api/user/${groupData.userId}`, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-        });
-        const userData = await userResponse.json();
-        setOwner(userData);
-
+        
+        // Assuming the groupData contains a userId but not a full user object
+        let user = null;
+        if (groupData.userId) {
+          const userResponse = await fetch(`/api/users/${groupData.userId}`, {
+            method: 'GET',
+            headers: { Accept: 'application/json' },
+          });
+          user = await userResponse.json();
+        }
+  
+        // Combine groupData with fetched user
+        const completeGroupData = { ...groupData, user };
+        setGroup(completeGroupData);
+        setOwner(user); // You can still set owner separately if needed
+  
         const postsResponse = await fetch(`/api/posts/group/${id}?page=0&size=10`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
         });
         const postsData = await postsResponse.json();
         setPosts(postsData.content);
-
+  
         const userGroupsResponse = await fetch(`/api/groups/user/${currentUserId}`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -92,7 +98,7 @@ const CreatedGroupDetail: React.FC = () => {
         if (isUserInGroup) {
           setJoinedGroups((prevGroups) => [...prevGroups, Number(id)]);
         }
-
+  
         const memberResponse = await fetch(`/api/groups/users/${id}`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -103,9 +109,10 @@ const CreatedGroupDetail: React.FC = () => {
         console.error('Error fetching group details:', error);
       }
     };
-
+  
     fetchGroupDetails();
   }, [id]);
+  
 
   const handleJoinClick = (groupId: number) => {
     const apiUrl = joinedGroups.includes(groupId)
@@ -171,8 +178,8 @@ const CreatedGroupDetail: React.FC = () => {
       // Create an updated post object with all required properties
       const updatedGroup: Group = {
         id: group.id,
-        name: editableName,
-        description: editableDescription,
+        name: editableName || group.name,
+        description: editableDescription || group.description,
         isPrivate: group.isPrivate,
         user: group.user,
         picture: group.picture,
@@ -180,13 +187,16 @@ const CreatedGroupDetail: React.FC = () => {
       };
 
       try {
+        console.log(updatedGroup)
         const response = await fetch(`/api/groups/${id}`, {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedGroup),
         });
+
+        console.log(response)
 
         if (!response.ok) {
           throw new Error("Failed to update group");
@@ -195,7 +205,7 @@ const CreatedGroupDetail: React.FC = () => {
         setGroup(updatedGroup);
         setIsEditing(false);
       } catch (error) {
-        console.error("Error updating post:", error);
+        console.error("Error updating group:", error);
       }
     }
 

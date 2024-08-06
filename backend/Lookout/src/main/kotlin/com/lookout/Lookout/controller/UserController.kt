@@ -44,6 +44,28 @@ class UserController (private val userService: UserService){
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("/postsCount/{id}")
+    fun getUserPostsCount(@PathVariable id: Long): ResponseEntity<Int> {
+        try {
+            userService.findById(id)
+        } catch (e: NoSuchElementException) {
+            return ResponseEntity.notFound().build()
+        }
+        val postsCount = userService.getUserPostsCount(id)
+        return ResponseEntity.ok(postsCount)
+    }
+
+    @GetMapping("/groupsCount/{id}")
+    fun getUserGroupsCount(@PathVariable id: Long): ResponseEntity<Int> {
+        try {
+            userService.findById(id)
+        } catch (e: NoSuchElementException) {
+            return ResponseEntity.notFound().build()
+        }
+        val groupsCount = userService.getUserGroupsCount(id)
+        return ResponseEntity.ok(groupsCount)
+    }
 }
 
 data class UpdateProfilePicRequest(

@@ -65,7 +65,7 @@ const GroupDetail: React.FC = () => {
         setGroup(groupData);
 
         // Fetch user details after fetching group details
-        const userResponse = await fetch(`/api/user/${groupData.userId}`, {
+        const userResponse = await fetch(`/api/users/${groupData.userId}`, {
           method: 'GET',
           headers: { 'Accept': 'application/json' },
         });

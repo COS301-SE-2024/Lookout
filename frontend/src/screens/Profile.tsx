@@ -44,7 +44,7 @@ const Profile = () => {
       });
 
     // Fetch posts count
-    fetch("/api/user/postsCount/1", {
+    fetch("/api/users/postsCount/1", {
       headers: {
         "Accept": "application/json"
       }
@@ -59,7 +59,7 @@ const Profile = () => {
       });
 
     // Fetch groups count
-    fetch("/api/user/groupsCount/1", {
+    fetch("/api/users/groupsCount/1", {
       headers: {
         "Accept": "application/json"
       }

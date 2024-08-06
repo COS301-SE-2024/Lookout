@@ -31,7 +31,8 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
           },
         });
         const data = await response.json();
-        const filteredGroups = data.content.filter((group: Group) => group.userId === 2);
+        console.log("data, ",data)
+        const filteredGroups = data.content.filter((group: Group) => group.userId === 1);
         setGroups(filteredGroups);
       } catch (error) {
         console.error('Error fetching groups:', error);

@@ -14,21 +14,21 @@ POST http://localhost:8080/api/groups
 Content-Type: application/json
 
 {
-  "name": "Whale Squad",
+  "name": "Whale Squad wow",
   "description": "This is a group for people interested in Whales",
   "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
   "user": {
-    "id": 1
+    "id": 2
   }
 }
 ###
 
 ### Update a group
-PUT http://localhost:8080/api/groups/3
+PUT http://localhost:8080/api/groups/1
 Content-Type: application/json
 
 {
-  "name": "Unit Test Updated Group",
+  "name": "Whalesss",
   "description": "This group has been updated",
   "user": {
     "id": 1
@@ -135,7 +135,7 @@ Accept: application/json
 ###
 
 ### Get a user by ID
-GET http://localhost:8080/api/user/1
+GET http://localhost:8080/api/users/2
 Accept: application/json
 ###
 
@@ -206,11 +206,11 @@ Accept: application/json
 ###
 
 ### Get the count of how many posts a user has
-GET http://localhost:8080/api/user/postsCount/1
+GET http://localhost:8080/api/users/postsCount/1
 Accept: application/json
 ###
 
 ### Get the count of how many groups a user is in
-GET http://localhost:8080/api/user/groupsCount/1
+GET http://localhost:8080/api/users/groupsCount/1
 Accept: application/json
 ###
