@@ -18,6 +18,9 @@ import Legend from '../components/Legend';
 import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
 
 
+//import { pinsData } from '../data/posts';
+
+
 
 type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
 type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
@@ -152,8 +155,8 @@ const HomeScreen: React.FC = () => {
           throw new Error('Failed to fetch pins');
         }
 
-        const data = await response.json();
-        const formattedPins = data.map((pin: any) => ({
+        const pinsData = await response.json();
+        const formattedPins = pinsData.map((pin: any) => ({
           id: pin.id,
           location: { lat: pin.latitude, lng: pin.longitude },
           caption: pin.caption,
@@ -163,7 +166,7 @@ const HomeScreen: React.FC = () => {
         }));
         setPins(formattedPins);
         setFilteredPins(formattedPins);
-        console.log(data);
+        //console.log(data);
       } catch (error) {
         console.error('Error fetching pins:', error);
       }
@@ -330,8 +333,8 @@ const HomeScreen: React.FC = () => {
     { id: 1, name: "Animal Sighting" },
     { id: 2, name: "Campsite" },
     { id: 3, name: "Hiking Trail" },
-    { id: 4, name: "Security Concern" },
-    { id: 5, name: "POI" },
+    { id: 4, name: "POI" },
+    { id: 5, name: "Security Concern" },
   ];
 
   return (

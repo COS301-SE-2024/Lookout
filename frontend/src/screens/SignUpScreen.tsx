@@ -61,7 +61,9 @@ const SignUpScreen = () => {
         <div className="flex justify-center">
           <button className="w-full py-2 text-black bg-white-500 rounded-full hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300">
 		    <FcGoogle size={20} style={{marginRight: 10}} />
-            Sign Up with Google
+          <a href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri={redirect_uri}&response_type=code&client_id={client_id}&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&access_type=offline">
+            Sign in with Google
+          </a>
           </button>
         </div>
         <div className="flex items-center justify-center my-4">
