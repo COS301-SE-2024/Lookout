@@ -34,13 +34,7 @@ class GroupController(private val groupService: GroupService) {
             id = user.id,
             userName = user.userName ?: "",
             email = user.email ?: "",
-            role = user.role?.name ?: "",
-            isEnabled = user.isEnabled,
-            username = user.username ?: "",
-            authorities = user.authorities.map { it.authority },
-            isAccountNonLocked = user.isAccountNonLocked,
-            isCredentialsNonExpired = user.isCredentialsNonExpired,
-            isAccountNonExpired = user.isAccountNonExpired
+            profilePic = user.profilePic ?: ""
         )
     }
 
