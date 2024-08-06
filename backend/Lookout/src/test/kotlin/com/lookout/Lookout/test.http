@@ -24,12 +24,16 @@ Content-Type: application/json
 ###
 
 ### Update a group
-PUT http://localhost:8080/api/groups/6
+PUT http://localhost:8080/api/groups/3
 Content-Type: application/json
 
 {
   "name": "Unit Test Updated Group",
-  "description": "This group has been updated"
+  "description": "This group has been updated",
+  "user": {
+    "id": 1
+  },
+  "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK0Au6KMF9u-vu2fnUAZZCNLYxOXpfP9SRBQ&s"
 }
 ###
 

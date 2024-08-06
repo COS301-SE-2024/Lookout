@@ -1,6 +1,5 @@
 package com.lookout.Lookout.service
 
-import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 
@@ -31,29 +31,10 @@ class UserService: UserDetailsService {
         return userRepository.findById(id)
     }
 
-    fun findByIdDto(id: Long): Optional<UserDto> {
-        val user = userRepository.findById(id)
-        return user.map { u ->
-            UserDto(
-                id = u.id,
-                userName = u.userName ?: "",
-                email = u.email ?: "",
-                role = u.role?.name ?: "",
-                isEnabled = u.isEnabled,
-                username = u.username ?: "",
-                authorities = u.authorities.map { it.authority },
-                isAccountNonLocked = u.isAccountNonLocked,
-                isCredentialsNonExpired = u.isCredentialsNonExpired,
-                isAccountNonExpired = u.isAccountNonExpired
-            )
-        }
-    }
-
-    fun getUserPostsCount(id: Long): Int {
-        return userRepository.getUserPostsCount(id)
-    }
-
-    fun getUserGroupsCount(id: Long): Int {
-        return userRepository.getUserGroupsCount(id)
+    @Transactional
+    fun updateProfilePic(userId: Long, newProfilePicUrl: String): User {
+        val user = userRepository.findById(userId).orElseThrow { Exception("User not found") }
+        user.profilePic = newProfilePicUrl
+        return userRepository.save(user)
     }
 }

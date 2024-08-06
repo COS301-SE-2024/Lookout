@@ -10,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails
 @Table(name="users")
 data class User(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
-    @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "userid")
     var id: Long = 0,
 
@@ -26,11 +24,14 @@ data class User(
     var passcode: String? = null,
 
     @Enumerated(value = EnumType.STRING)
-    var role: UserRoles? = null
+    var role: UserRoles? = null,
 
-) : UserDetails {
+    @Column(name = "profilepic")
+    var profilePic: String? = null,
+
+    ) : UserDetails {
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
-       return listOf(SimpleGrantedAuthority(role?.name))
+        return listOf(SimpleGrantedAuthority(role?.name))
     }
 
     override fun getPassword(): String? {
