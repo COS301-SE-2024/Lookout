@@ -4,13 +4,7 @@ self.addEventListener("install", (event) => {
 	event.waitUntil(
 		caches.open(CACHE_NAME).then((cache) => {
 			return cache.addAll([
-				"/HomeScreen.tsx",
-				"/ExploreScreen.tsx",
-				"/GroupScreen.tsx",
-				"/CategoryPostsPage.tsx",
-				"/LoginScreen.tsx",
-				"/Profile.tsx",
-				"/SignUpScreen.tsx"
+				"/"
 				//Will add more pages here when we need them
 			]);
 		})
@@ -18,6 +12,12 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+	const requestUrl = new URL(event.request.url);
+	const s3Domain = " capstone.s3";
+
+	if (requestUrl.hostname.contains(s3Domain)) {
+		return;
+	}
 	event.respondWith(
 		caches
 			.match(event.request)
