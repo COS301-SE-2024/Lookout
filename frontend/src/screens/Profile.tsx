@@ -31,53 +31,53 @@ const Profile = () => {
 	const [previewUrl, setPreviewUrl] = useState();
 	const previewURL = localStorage.getItem("previewUrl");
 
-  useEffect(() => {
-    // Fetch user data
-    fetch("/api/users/1", {
-      headers: {
-        "Accept": "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        setUsername(data.userName || "Unknown User");
-      })
-      .catch(error => {
-        console.error("Error fetching user data:", error);
-        setUsername("User");
-      });
+	useEffect(() => {
+		// Fetch user data
+		fetch("/api/users/1", {
+			headers: {
+				Accept: "application/json"
+			}
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+				setUsername(data.userName || "Unknown User");
+			})
+			.catch((error) => {
+				console.error("Error fetching user data:", error);
+				setUsername("User");
+			});
 
-    // Fetch posts count
-    fetch("/api/users/postsCount/1", {
-      headers: {
-        "Accept": "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        setPostsCount(data);
-      })
-      .catch(error => {
-        console.error("Error fetching posts count:", error);
-        setPostsCount(0);
-      });
+		// Fetch posts count
+		fetch("/api/users/postsCount/1", {
+			headers: {
+				Accept: "application/json"
+			}
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				setPostsCount(data);
+			})
+			.catch((error) => {
+				console.error("Error fetching posts count:", error);
+				setPostsCount(0);
+			});
 
-    // Fetch groups count
-    fetch("/api/users/groupsCount/1", {
-      headers: {
-        "Accept": "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        setGroupsCount(data);
-      })
-      .catch(error => {
-        console.error("Error fetching groups count:", error);
-        setGroupsCount(0);
-      });
-  }, []);
+		// Fetch groups count
+		fetch("/api/users/groupsCount/1", {
+			headers: {
+				Accept: "application/json"
+			}
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				setGroupsCount(data);
+			})
+			.catch((error) => {
+				console.error("Error fetching groups count:", error);
+				setGroupsCount(0);
+			});
+	}, []);
 
 	const closeModal = () => {
 		setModalOpen(false);
@@ -109,7 +109,7 @@ const Profile = () => {
 			}
 		};
 		fetchData();
-	});
+	}, []);
 
 	return (
 		<div className="relative flex flex-col items-center w-full min-h-screen">

@@ -291,7 +291,7 @@ const HomeScreen: React.FC = () => {
 		try {
 			//old way
 			// const response = await fetch("/api/image/create", requestOptions);
-
+			console.log("raw", raw);
 			const response = await fetch(
 				"/api/posts/CreatePost",
 				requestOptions
