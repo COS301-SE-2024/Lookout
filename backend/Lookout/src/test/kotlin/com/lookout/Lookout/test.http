@@ -102,7 +102,7 @@ Content-Type: application/json
 ###
 
 ### Get all posts
-GET http://localhost:8080/api/posts/user/1
+GET http://localhost:8080/api/posts/user/1?page=0&size=10
 Accept: application/json
 ###
 

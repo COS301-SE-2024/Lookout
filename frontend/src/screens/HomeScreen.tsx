@@ -144,7 +144,7 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
     const fetchPins = async () => {
       try {
-        const response = await fetch('/api/image/all', {
+        const response = await fetch('/api/posts', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -156,17 +156,17 @@ const HomeScreen: React.FC = () => {
         }
 
         const pinsData = await response.json();
-        const formattedPins = pinsData.map((pin: any) => ({
+        const formattedPins = pinsData.content.map((pin: any) => ({
           id: pin.id,
           location: { lat: pin.latitude, lng: pin.longitude },
           caption: pin.caption,
-          category: pin.category.description,
-          categoryId: pin.category.id,
+          category: pin.caption,
+          categoryId: pin.categoryId,
           image: pin.picture,
         }));
         setPins(formattedPins);
         setFilteredPins(formattedPins);
-        //console.log(data);
+        console.log(pinsData);
       } catch (error) {
         console.error('Error fetching pins:', error);
       }
