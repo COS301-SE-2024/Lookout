@@ -3,19 +3,27 @@ package com.lookout.Lookout.service
 import com.lookout.Lookout.constants.ResponseConstant
 import com.lookout.Lookout.dto.AuthenticationResponse
 import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.enums.UserRoles
 import com.lookout.Lookout.repository.UserRepository
+import io.github.cdimascio.dotenv.Dotenv
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 
 @Service
-class AuthenticationService(private val userRepository: UserRepository,
+class AuthenticationService(
+    private val userRepository: UserRepository,
     private val jwtService: JwtService,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager
 
 ) {
+
+
     fun addNewUser(request: User): AuthenticationResponse{
         // Check if user already exists. If exists then authenticate the user
         if (request.email?.let { userRepository.findByEmail(it).isPresent } == true) {
@@ -67,6 +75,79 @@ class AuthenticationService(private val userRepository: UserRepository,
         }
         return AuthenticationResponse(null, "Logout Successful!")
     }
+
+    fun processGrantCode(code: String?): ResponseEntity<Any> {
+
+        val dotenv = Dotenv.configure()
+            .directory("../backend/Lookout/.env")
+            .load()
+
+        val clientSecret = dotenv["GOOGLE_CLIENT_SECRET"]
+        val clientId = dotenv["GOOGLE_CLIENT_ID"]
+
+        val restTemplate = RestTemplate()
+        val params = mapOf(
+            "code" to code,
+            "client_id" to clientId,
+            "client_secret" to clientSecret,
+            "redirect_uri" to "http://localhost:8080/api/auth/signup/google",
+            "grant_type" to "authorization_code"
+        )
+        val response = restTemplate.postForObject(
+            "https://oauth2.googleapis.com/token",
+            params,
+            Map::class.java
+        )
+        val idToken = response?.get("id_token") as String
+        val accessToken = response["access_token"] as String
+
+        val userInfo = fetchUserInfo(accessToken)
+
+        val email = userInfo["email"] as String
+        val name = userInfo["name"] as String
+
+        val userOptional = userRepository.findByEmail(email)
+        val user = if (userOptional.isPresent) {
+            userOptional.get()
+        } else {
+            val newUser = User(
+                email = email,
+                userName = name,
+                role = UserRoles.ADMIN
+            )
+            userRepository.save(newUser)
+        }
+
+        // Generate JWT token
+        val jwt = jwtService.generateToken(user)
+
+        // Set JWT token as a cookie
+        val cookie: ResponseCookie = ResponseCookie.from("jwt", jwt)
+            .httpOnly(true)
+            .path("/")
+            .maxAge(60 * 60 * 10)
+            .build()
+
+        return ResponseEntity.status(HttpStatus.FOUND) 
+            .header(HttpHeaders.SET_COOKIE, cookie.toString()) 
+            .header(HttpHeaders.LOCATION, "http://localhost:3000/")
+            .build()
+    }
+
+    fun fetchUserInfo(accessToken: String): Map<String, Any> {
+        val restTemplate = RestTemplate()
+        val headers = HttpHeaders()
+        headers.set("Authorization", "Bearer $accessToken")
+        val entity = HttpEntity<String>(headers)
+        val response = restTemplate.exchange(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            HttpMethod.GET,
+            entity,
+            Map::class.java
+        )
+        return response.body as? Map<String, Any> ?: emptyMap()
+    }
+
 
 
 }

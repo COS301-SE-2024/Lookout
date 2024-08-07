@@ -75,7 +75,7 @@ const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
           <p className="text-gray-700">{group.description}</p>
           <CategoryPill categoryId={6} />
         </div>
-        <div className="mt-4 flex justify-end">
+        {/* <div className="mt-4 flex justify-end">
           <button
             className={`px-4 py-2 rounded-full ${
               joinedGroups.includes(group.id) ? 'bg-green-200 text-black border border-red-2' : 'bg-blue-500 text-white hover:bg-blue-600'
@@ -84,7 +84,7 @@ const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
           >
             {joinedGroups.includes(group.id) ? 'Joined' : 'Join'}
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

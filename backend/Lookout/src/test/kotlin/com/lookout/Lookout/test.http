@@ -38,7 +38,7 @@ Content-Type: application/json
 ###
 
 ### Delete a group
-DELETE http://localhost:8080/api/groups/1
+DELETE http://localhost:8080/api/groups/53
 ###
 
 ### Get a group by user id
