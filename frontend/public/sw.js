@@ -15,7 +15,7 @@ self.addEventListener("fetch", (event) => {
 	const requestUrl = new URL(event.request.url);
 	const s3Domain = " capstone.s3";
 
-	if (requestUrl.hostname.contains(s3Domain)) {
+	if (requestUrl.hostname.includes(s3Domain)) {
 		return;
 	}
 	event.respondWith(
