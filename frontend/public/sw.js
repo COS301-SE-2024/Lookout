@@ -9,7 +9,7 @@ self.addEventListener("install", (event) => {
 	// 		]);
 	// 	})
 	// );
-	console.log("installed", installed);
+	console.log("installed");
 });
 
 // self.addEventListener("fetch", (event) => {
