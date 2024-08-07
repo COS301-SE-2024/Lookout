@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import 'react-multi-carousel/lib/styles.css';
 import HorizontalCarousel from './HorizontalCarousel';
 import { FaEdit } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';

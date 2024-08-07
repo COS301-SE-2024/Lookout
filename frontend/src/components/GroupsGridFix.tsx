@@ -24,7 +24,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const joinedGroupsResponse = await fetch('/api/groups/user/2', {
+        const joinedGroupsResponse = await fetch('/api/groups/user/1', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -39,7 +39,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
           },
         });
         const allGroups = await createdGroupsResponse.json();
-        const createdGroups = allGroups.content.filter((group: Group) => group.userId === 2);
+        const createdGroups = allGroups.content.filter((group: Group) => group.userId === 1);
 
         setGroups([...joinedGroups, ...createdGroups]);
       } catch (error) {
