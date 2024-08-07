@@ -210,7 +210,7 @@ const HomeScreen: React.FC = () => {
 		};
 
 		fetchPins();
-	}, []);
+	});
 
 	useEffect(() => {
 		if (selectCategory === null) {
