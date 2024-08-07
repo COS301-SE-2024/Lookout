@@ -428,29 +428,18 @@ const HomeScreen: React.FC = () => {
 		}
 
 		try {
-			// Extract the base64 part of the image (remove the prefix)
 			const base64Data = base64Image.split(",")[1];
 			if (!base64Data) throw new Error("Invalid base64 image data.");
-
-			// Convert base64 to binary buffer
 			const binaryData = base64ToBuffer(base64Data);
-
-			// Generate a unique image name
 			const imageName = generateRandomString(16) + ".png";
-
-			// Generate the presigned URL for uploading
 			const uploadURL = await generateUploadURL64(imageName);
-
-			// Upload the binary data to S3
 			await fetch(uploadURL, {
 				method: "PUT",
 				headers: {
-					"Content-Type": "image/png" // Set the correct MIME type
+					"Content-Type": "image/png"
 				},
 				body: binaryData
 			});
-
-			// Store the profile picture URL without query parameters
 			await setPicture(uploadURL.split("?")[0]);
 			console.log(
 				"Image uploaded and profile picture updated successfully."
