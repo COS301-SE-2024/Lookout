@@ -8,5 +8,6 @@ data class UpdatePost(
     val picture: String,
     val latitude: Double,
     val longitude: Double,
-    var caption: String
+    var caption: String,
+    val title: String
 )

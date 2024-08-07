@@ -7,5 +7,6 @@ data class CreatePost(
     val picture: String,
     val latitude: Double,
     val longitude: Double,
-    val caption: String
+    val caption: String,
+    val title: String,
 )
