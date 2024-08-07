@@ -18,13 +18,15 @@ interface GroupsGridFixProps {
 }
 
 const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
+  // ADD IN FROM LOGIN LATER
+	const userId = 1;
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const joinedGroupsResponse = await fetch('/api/groups/user/1', {
+        const joinedGroupsResponse = await fetch(`/api/groups/user/${userId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -39,7 +41,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
           },
         });
         const allGroups = await createdGroupsResponse.json();
-        const createdGroups = allGroups.content.filter((group: Group) => group.userId === 1);
+        const createdGroups = allGroups.content.filter((group: Group) => group.userId === userId);
 
         setGroups([...joinedGroups, ...createdGroups]);
       } catch (error) {

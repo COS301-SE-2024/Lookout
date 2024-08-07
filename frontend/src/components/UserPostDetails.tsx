@@ -62,16 +62,9 @@ interface Post {
   createdAt: string;
 }
 
-const hexToString = (hex: string) => {
-  const cleanedHex = hex.replace(/\\x/g, "");
-  const str = cleanedHex
-    .match(/.{1,2}/g)
-    ?.map((byte) => String.fromCharCode(parseInt(byte, 16)))
-    .join("");
-  return str || "";
-};
-
 const PinDetail: React.FC = () => {
+  // ADD IN FROM LOGIN LATER
+	const userId = 1;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [theme, setTheme] = useState("default");
@@ -79,7 +72,6 @@ const PinDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [saves, setSaves] = useState<number>(0);
-  const [userId] = useState<number>(2);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
   const [isEditing, setIsEditing] = useState(false); // Edit mode state
   const [editableTitle, setEditableTitle] = useState("");
@@ -114,6 +106,7 @@ const PinDetail: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        // this is post ID not user ID
         const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
         setPost(data);
@@ -121,7 +114,6 @@ const PinDetail: React.FC = () => {
         setEditableCaption(data.caption);
         setLoading(false);
 
-        // Fetch related posts once the main post is fetched
         const relatedResponse = await fetch(
           `/api/posts/group/${data.groupId}?page=0&size=10`
         );
@@ -180,7 +172,7 @@ const PinDetail: React.FC = () => {
       }
 
       setIsSaved(true);
-      setSaves((prevSaves) => prevSaves + 1); // Increase saves count
+      setSaves((prevSaves) => prevSaves + 1); 
     } catch (error) {
       console.error("Error saving post:", error);
     }
@@ -206,7 +198,7 @@ const PinDetail: React.FC = () => {
       }
 
       setIsSaved(false);
-      setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
+      setSaves((prevSaves) => prevSaves - 1);
     } catch (error) {
       console.error("Error unsaving post:", error);
     }
@@ -226,12 +218,11 @@ const PinDetail: React.FC = () => {
 
   const handleDoneClick = async () => {
     if (post) {
-      // Create an updated post object with all required properties
       const updatedPost: Post = {
         ...post,
         title: editableTitle,
         caption: editableCaption,
-        id: post.id, // Ensure id is defined and correct
+        id: post.id, 
         username: post.username,
         description: post.description,
         groupName: post.groupName,
@@ -263,7 +254,7 @@ const PinDetail: React.FC = () => {
           throw new Error("Failed to update post");
         }
 
-        setPost(updatedPost); // Update the state with the complete post object
+        setPost(updatedPost);
         setIsEditing(false);
       } catch (error) {
         console.error("Error updating post:", error);
@@ -284,8 +275,6 @@ const PinDetail: React.FC = () => {
   if (!post) {
     return <p>Post not found.</p>;
   }
-
-  // const decodedPictureUrl = hexToString(post.picture);
 
   return (
     <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">

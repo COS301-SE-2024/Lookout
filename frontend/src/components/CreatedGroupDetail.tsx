@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import HorizontalCarousel from './HorizontalCarousel';
+import CreatedGroupDetailSkeleton from "../components/CreatedGroupSkeleton"; 
 import { FaEdit } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';
 
@@ -45,6 +46,8 @@ interface Post {
 }
 
 const CreatedGroupDetail: React.FC = () => {
+  // ADD IN FROM LOGIN LATER
+	const userId = 1;
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [group, setGroup] = useState<Group | null>(null);
@@ -58,6 +61,7 @@ const CreatedGroupDetail: React.FC = () => {
   useEffect(() => {
     const fetchGroupDetails = async () => {
       try {
+        // This is Group ID not User ID
         const groupResponse = await fetch(`/api/groups/${id}`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -178,7 +182,7 @@ const CreatedGroupDetail: React.FC = () => {
 
 
   if (!group || !owner) {
-    return <div>Loading...</div>;
+    return <CreatedGroupDetailSkeleton />;
   }
 
 
@@ -233,7 +237,7 @@ const CreatedGroupDetail: React.FC = () => {
           ) : (
             <h1 className="text-2xl text-white font-bold mb-4">{group.name}</h1>
           )}
-          {/* <h1 className="text-2xl text-white font-bold mb-4">{group.name}</h1> */}
+  
           <img
             src={group.picture}
             alt={`${group.name} logo`}
@@ -250,7 +254,6 @@ const CreatedGroupDetail: React.FC = () => {
 
           ) : (
             <p className="text-gray-600 text-sm mt-1">{group.description}</p>)}
-          {/* <p className="text-gray-600 text-sm mt-1">{group.description}</p> */}
         </div>
         <div className="flex justify-center gap-1 mb-4">
           <button

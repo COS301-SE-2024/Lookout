@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-// import 'react-multi-carousel/lib/styles.css';
+import GroupDetailSkeleton from "../components/GroupDetailSkeleton"; 
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import GroupsPost from "./GroupsPostFix";
 
@@ -46,17 +46,19 @@ interface Post {
 }
 
 const GroupDetail: React.FC = () => {
+	// ADD IN FROM LOGIN LATER
+	const userId = 1;
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 	const [group, setGroup] = useState<Group | null>(null);
 	const [owner, setOwner] = useState<User | null>(null);
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
-	const currentUserId = 2; // Placeholder user ID
 
 	useEffect(() => {
 		const fetchGroupDetails = async () => {
 			try {
+				// This is Group ID not User ID
 				const groupResponse = await fetch(`/api/groups/${id}`, {
 					method: "GET",
 					headers: { Accept: "application/json" }
@@ -85,7 +87,7 @@ const GroupDetail: React.FC = () => {
 
 				// Check if user is already in the group
 				const userGroupsResponse = await fetch(
-					`/api/groups/user/${currentUserId}`,
+					`/api/groups/user/${userId}`,
 					{
 						method: "GET",
 						headers: { Accept: "application/json" }
@@ -116,7 +118,7 @@ const GroupDetail: React.FC = () => {
 
 		const requestBody = {
 			groupId,
-			userId: currentUserId
+			userId: userId
 		};
 
 		fetch(apiUrl, {
@@ -148,17 +150,10 @@ const GroupDetail: React.FC = () => {
 		alert("View on the map button clicked!");
 	};
 
-	const responsive = {
-		superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
-		desktop: { breakpoint: { max: 3000, min: 1024 }, items: 3 },
-		tablet: { breakpoint: { max: 1024, min: 464 }, items: 2 },
-		mobile: { breakpoint: { max: 464, min: 0 }, items: 1 }
-	};
-
 	if (!group || !owner) {
-		return <div>Loading...</div>;
-	}
-
+		return <GroupDetailSkeleton />;
+	  }
+	  
 	return (
 		<div className="relative">
 			<div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-800 to-green-800 clip-path-custom-arch z-0"></div>

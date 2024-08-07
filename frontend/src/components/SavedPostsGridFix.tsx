@@ -45,13 +45,15 @@ interface SavedPostsGridFixProps {
 }
 
 const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) => {
+  // ADD IN FROM LOGIN LATER
+	const userId = 1;
   const navigate = useNavigate();
   const [savedPosts, setSavedPosts] = useState<SavedPost[]>([]);
 
   useEffect(() => {
     const fetchSavedPosts = async () => {
       try {
-        const response = await fetch('/api/savedPosts/user/2');
+        const response = await fetch(`/api/savedPost/${userId}`);
         const data: SavedPost[] = await response.json();
         // Filter out saved posts with null post field
         const validSavedPosts = data.filter(savedPost => savedPost.post !== null);
