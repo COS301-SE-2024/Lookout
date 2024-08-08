@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CategoryPill from "./CategoryPill";
 import SkeletonPinDetail from "./PinDetailSkeleton";
-import { FaBookmark, FaRegBookmark } from 'react-icons/fa';
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import PinDetailPost from "./PinDetailPost";
 
@@ -62,7 +62,6 @@ interface Post {
   createdAt: string;
 }
 
-
 const PinDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -87,7 +86,7 @@ const PinDetail: React.FC = () => {
         setTheme(newTheme);
         document.documentElement.setAttribute("data-theme", newTheme);
       }
-    }
+    };
 
     window.addEventListener("storage", handleStorageChange);
 
@@ -140,7 +139,7 @@ const PinDetail: React.FC = () => {
       } catch (error) {
         console.error("Error fetching saves count:", error);
       }
-    }
+    };
 
     fetchPost();
     checkIfSaved();
@@ -152,9 +151,9 @@ const PinDetail: React.FC = () => {
       userId,
       postId: post?.id,
     };
-  
+
     console.log("Save request body:", requestBody);
-  
+
     try {
       const response = await fetch("/api/savedPosts/SavePost", {
         method: "POST",
@@ -163,26 +162,26 @@ const PinDetail: React.FC = () => {
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to save post");
       }
-  
+
       setIsSaved(true);
       setSaves((prevSaves) => prevSaves + 1); // Increase saves count
     } catch (error) {
       console.error("Error saving post:", error);
     }
   };
-  
+
   const handleUnsaveClick = async () => {
     const requestBody = {
       userId,
       postId: post?.id,
     };
-  
+
     console.log("Unsave request body:", requestBody);
-  
+
     try {
       const response = await fetch("/api/savedPosts/UnsavePost", {
         method: "DELETE",
@@ -191,18 +190,17 @@ const PinDetail: React.FC = () => {
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to unsave post");
       }
-  
+
       setIsSaved(false);
       setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
     } catch (error) {
       console.error("Error unsaving post:", error);
     }
   };
-  
 
   const handleSaveIconClick = () => {
     console.log("Save icon clicked");
@@ -222,7 +220,33 @@ const PinDetail: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
+    <>
+      
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
+        style={{ zIndex: 50 }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+      
+    
+    
+    <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto mt-16">
+    
       <style>
         {`
           .scrollbar-hide::-webkit-scrollbar {
@@ -257,30 +281,13 @@ const PinDetail: React.FC = () => {
         `}
       </style>
 
-      <button
-        onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2"
-        style={{ zIndex: 50 }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-8 w-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </button>
-
       <div className="card bg-base-94 shadow-xl rounded-lg">
         <figure className="rounded-t-lg overflow-hidden">
-          <img src={post.picture} alt={post.title} className="w-full h-full object-cover" />
+          <img
+            src={post.picture}
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
         </figure>
 
         <div className="card-body ml-4">
@@ -288,9 +295,15 @@ const PinDetail: React.FC = () => {
             <h1 className="text-2xl font-bold">{post.title}</h1>
             <div className="flex items-center mr-4">
               {isSaved ? (
-                <FaBookmark className="text-green-800 cursor-pointer" onClick={handleSaveIconClick} />
+                <FaBookmark
+                  className="text-green-800 cursor-pointer"
+                  onClick={handleSaveIconClick}
+                />
               ) : (
-                <FaRegBookmark className="text-green-800 cursor-pointer" onClick={handleSaveIconClick} />
+                <FaRegBookmark
+                  className="text-green-800 cursor-pointer"
+                  onClick={handleSaveIconClick}
+                />
               )}
               <span className="ml-2">{saves} saves</span>
             </div>
@@ -299,7 +312,7 @@ const PinDetail: React.FC = () => {
           <div className="flex items-center mb-4 justify-between w-full">
             <div className="flex items-center">
               <img
-                src='https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg'
+                src="https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg"
                 alt={post.username}
                 className="w-20 h-20 rounded-full mr-6"
               />
@@ -342,6 +355,7 @@ const PinDetail: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
