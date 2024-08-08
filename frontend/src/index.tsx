@@ -15,6 +15,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import GroupDetail from "./components/GroupDetail";
 import PinDetail from "./components/PinDetail";
 import Profile from "./screens/Profile";
+import GroupsMap from "./components/GroupsMap";
 import ExploreScreen from "./screens/ExploreScreen";
 import UserPostDetails from "./components/UserPostDetails";
 import SavedPostDetails from "./components/SavedPostDetails";
@@ -50,6 +51,10 @@ function Main() {
         <Route
           path="/groups"
           element={<ProtectedRoute element={GroupScreen} />}
+        />
+        <Route
+          path="/groupMap/:id"
+          element={<ProtectedRoute element={GroupsMap} />}
         />
         <Route path="/exploreGroups" element={<ProtectedRoute element={ExploreGroups} />} />
         <Route path="/login" element={<LoginScreen />} />{" "}

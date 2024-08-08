@@ -133,8 +133,13 @@ const CreatedGroupDetail: React.FC = () => {
   };
 
   const handleEditClick = () => {
+    if (group) {
+      setEditableName(group.name);
+      setEditableDescription(group.description);
+    }
     setIsEditing(true);
   };
+  
 
   const handleDoneClick = async () => {
     if (group) {
@@ -246,7 +251,7 @@ const CreatedGroupDetail: React.FC = () => {
           />
           {isEditing ? (
             <textarea
-              className="text-gray-600 text-sm w-80 rounded-full text-center bg-transparent"
+              className="text-black text-sm w-80 rounded-full text-center bg-transparent"
               style={{ paddingTop: "10px" }}
               value={editableDescription}
               onChange={(e) => setEditableDescription(e.target.value)}

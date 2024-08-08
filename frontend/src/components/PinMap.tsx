@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
-const FullScreenMap: React.FC = () => {
+const PinMap: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { post, apicode } = location.state as { post: any, apicode: string };
@@ -43,4 +43,4 @@ const FullScreenMap: React.FC = () => {
   );
 };
 
-export default FullScreenMap;
+export default PinMap;
