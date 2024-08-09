@@ -1,0 +1,40 @@
+###
+### Get saved posts by user ID
+GET /api/savedPosts/user/1 HTTP/1.1
+Host: localhost:8080
+###
+
+### Check if a post is saved by a user
+GET /api/savedPosts/isPostSaved?userId=2&postId=8 HTTP/1.1
+Host: localhost:8080
+###
+###
+
+### Check how many saves a post has
+GET /api/savedPosts/countSaves?postId=8 HTTP/1.1
+Host: localhost:8080
+###
+
+
+###Save a post
+POST /api/savedPosts/SavePost HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "postId": 8
+}
+
+###
+
+###Unsave a post
+DELETE /api/savedPosts/UnsavePost HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "postId": 8
+}
+###

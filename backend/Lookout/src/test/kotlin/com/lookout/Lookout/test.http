@@ -17,9 +17,7 @@ Content-Type: application/json
   "name": "Whale Squad wow",
   "description": "This is a group for people interested in Whales",
   "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
-  "user": {
-    "id": 2
-  }
+  "userId": 2
 }
 ###
 
@@ -38,7 +36,7 @@ Content-Type: application/json
 ###
 
 ### Delete a group
-DELETE http://localhost:8080/api/groups/53
+DELETE http://localhost:8080/api/groups/252
 ###
 
 ### Get a group by user id
@@ -194,6 +192,7 @@ Host: localhost:8080
 ### Check if a post is saved by a user
 GET /api/savedPosts/isPostSaved?userId=2&postId=8 HTTP/1.1
 Host: localhost:8080
+###
 ###
 
 ### Check how many saves a post has

@@ -1,0 +1,14 @@
+### Get the count of how many posts a user has
+GET http://localhost:8080/api/users/postsCount/1
+Accept: application/json
+###
+
+### Get the count of how many groups a user is in
+GET http://localhost:8080/api/users/groupsCount/1
+Accept: application/json
+###
+
+### Get a user by ID
+GET http://localhost:8080/api/users/2
+Accept: application/json
+###
