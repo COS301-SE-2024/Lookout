@@ -220,33 +220,7 @@ const PinDetail: React.FC = () => {
   }
 
   return (
-    <>
-      
-      <button
-        onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
-        style={{ zIndex: 50 }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-8 w-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </button>
-      
-    
-    
-    <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto mt-16">
-    
+    <div className="p-4 scrollbar-hide">
       <style>
         {`
           .scrollbar-hide::-webkit-scrollbar {
@@ -280,41 +254,61 @@ const PinDetail: React.FC = () => {
           }
         `}
       </style>
-
-      <div className="card bg-base-94 shadow-xl rounded-lg">
-        <figure className="rounded-t-lg overflow-hidden">
-          <img
-            src={post.picture}
-            alt={post.title}
-            className="w-full h-full object-cover"
+      <button
+        onClick={() => navigate(-1)}
+        className="fixed top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
+        style={{ zIndex: 50 }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
           />
-        </figure>
+        </svg>
+      </button>
 
-        <div className="card-body ml-4">
-          <div className="flex items-center justify-between mt-2 mb-4">
-            <h1 className="text-2xl font-bold">{post.title}</h1>
-            <div className="flex items-center mr-4">
-              {isSaved ? (
-                <FaBookmark
-                  className="text-green-800 cursor-pointer"
-                  onClick={handleSaveIconClick}
-                />
-              ) : (
-                <FaRegBookmark
-                  className="text-green-800 cursor-pointer"
-                  onClick={handleSaveIconClick}
-                />
-              )}
-              <span className="ml-2">{saves} saves</span>
+      <div className="container mx-auto p-4 mt-16">
+        <div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row">
+          <figure className="rounded-t-lg overflow-hidden md:w-1/2">
+            <img
+              src={post.picture}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
+          </figure>
+
+          <div className="card-body p-4 md:w-1/2">
+            <div className="flex items-center justify-between mt-2 mb-4">
+              <h1 className="text-2xl font-bold">{post.title}</h1>
+              <div className="flex items-center">
+                {isSaved ? (
+                  <FaBookmark
+                    className="text-green-800 cursor-pointer"
+                    onClick={handleSaveIconClick}
+                  />
+                ) : (
+                  <FaRegBookmark
+                    className="text-green-800 cursor-pointer"
+                    onClick={handleSaveIconClick}
+                  />
+                )}
+                <span className="ml-2">{saves} saves</span>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center mb-4 justify-between w-full">
-            <div className="flex items-center">
+            <div className="flex items-center mb-4">
               <img
                 src="https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg"
                 alt={post.username}
-                className="w-20 h-20 rounded-full mr-6"
+                className="w-16 h-16 rounded-full mr-4"
               />
               <div>
                 <h2 className="text-lg font-bold">{post.username}</h2>
@@ -322,40 +316,41 @@ const PinDetail: React.FC = () => {
                 <CategoryPill categoryId={post.categoryId} />
               </div>
             </div>
-          </div>
 
-          <div className="flex justify-center mt-4 space-x-2 mt-4">
-            <button
-              className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              onClick={() => navigate(`/map`, { state: { post, apicode } })}
-            >
-              View on Map
-            </button>
-            <button
-              className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              onClick={() =>
-                navigate(`/group/${post.groupId}`, {
-                  state: { group: post.group },
-                })
-              }
-            >
-              View Group
-            </button>
-          </div>
+            <div className="flex justify-start mt-4 space-x-4">
+              <button
+                className="px-4 py-2 rounded-full bg-green-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+                onClick={() => navigate(`/map`, { state: { post, apicode } })}
+              >
+                View on Map
+              </button>
+              <button
+                className="px-4 py-2 rounded-full bg-green-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+                onClick={() =>
+                  navigate(`/group/${post.groupId}`, {
+                    state: { group: post.group },
+                  })
+                }
+              >
+                View Group
+              </button>
+            </div>
 
-          <div className="mt-4 mb-8">
-            <h1 className="text-lm font-semibold">See more posts like this:</h1>
+            <div className="mt-8">
+              <h1 className="text-lg font-semibold">
+                See more posts like this:
+              </h1>
 
-            <HorizontalCarousel>
-              {relatedPosts.map((relatedPost) => (
-                <PinDetailPost key={relatedPost.id} post={relatedPost} />
-              ))}
-            </HorizontalCarousel>
+              <HorizontalCarousel>
+                {relatedPosts.map((relatedPost) => (
+                  <PinDetailPost key={relatedPost.id} post={relatedPost} />
+                ))}
+              </HorizontalCarousel>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </>
   );
 };
 
