@@ -23,7 +23,7 @@ const GroupDetailSkeleton: React.FC = () => {
 
         {/* Group Name */}
         <div className="text-center mb-4">
-          <div className="w-1/2 mx-auto h-8 bg-gray-300 rounded-lg animate-pulse mb-4"></div>
+          <div className="w-1/2 mx-auto h-8 bg-gray-300 rounded-lg animate-pulse mb-4 mt-4"></div>
           <div className="w-32 h-32 mx-auto bg-gray-300 rounded-full animate-pulse mb-4"></div>
           <div className="w-3/4 mx-auto h-6 bg-gray-300 rounded-lg animate-pulse"></div>
         </div>

@@ -53,18 +53,59 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
   useEffect(() => {
     const fetchSavedPosts = async () => {
       try {
-        const response = await fetch(`/api/savedPost/${userId}`);
-        const data: SavedPost[] = await response.json();
-        // Filter out saved posts with null post field
-        const validSavedPosts = data.filter(savedPost => savedPost.post !== null);
-        setSavedPosts(validSavedPosts);
+        const response = await fetch(`/api/savedPosts/user/${userId}`);
+        const data = await response.json();
+  
+        // Transform the data into the expected structure
+        const transformedData = data.map((item: any) => ({
+          id: item.savedPostId,
+          post: {
+            id: item.postId,
+            title: item.postTitle,
+            caption: item.postCaption,
+            latitude: item.postLatitude,
+            longitude: item.postLongitude,
+            picture: item.postPicture,
+            createdAt: item.postCreatedAt,
+            category: {
+              id: item.postCategoryId, // Assuming you have postCategoryId in your backend response
+              description: item.postCategoryDescription,
+            },
+            group: {
+              id: item.groupId,
+              name: item.groupName,
+              description: item.groupDescription,
+              isPrivate: item.groupIsPrivate,
+              picture: item.groupPicture,
+              createdAt: item.groupCreatedAt,
+              user: {
+                id: item.groupUserId,
+                userName: item.groupUsername,
+                email: item.groupUserEmail,
+              },
+            },
+            user: {
+              id: item.userId,
+              userName: item.username,
+              email: item.userEmail,
+            },
+          },
+          user: {
+            id: item.userId,
+            userName: item.username,
+            email: item.userEmail,
+          },
+        }));
+  
+        setSavedPosts(transformedData);
       } catch (error) {
         console.error('Error fetching saved posts:', error);
       }
     };
-
+  
     fetchSavedPosts();
-  }, []);
+  }, [userId]);
+  
 
   const handlePostClick = (post: Post) => {
     navigate(`/saved_post/${post.id}`, { state: { post } });

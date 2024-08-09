@@ -1,8 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
+import {useLocation } from 'react-router-dom';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
 type myPin = {
+  longitude: number;
+  latitude: number;
   id: string;
   location: google.maps.LatLngLiteral;
   caption: string;
@@ -13,17 +16,19 @@ type myPin = {
 
 const GroupsMap: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const [pins, setPins] = useState<myPin[]>([]);
+  const { group, apicode } = location.state as { group: any, apicode: string };
 
-  const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-  console.log("Google Maps API Key:", apicode); // Log API key
+  // const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
 
   useEffect(() => {
     const fetchPins = async () => {
       try {
-        const response = await fetch(`/api/posts/group/${id}?page=0&size=10`, {
+        const response = await fetch(`/api/posts/group/${group.id}?page=0&size=10`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json"
@@ -41,11 +46,13 @@ const GroupsMap: React.FC = () => {
           caption: pin.caption,
           category: pin.caption,
           categoryId: pin.categoryId,
+          latitude: pin.latitude,
+          longitude: pin.longitude,
           image: pin.picture
         }));
         setPins(formattedPins);
       
-        console.log("Fetched Pins:", pinsData); // Log fetched pins data
+        console.log("Fetched Pins:", formattedPins); // Log fetched pins data
       } catch (error) {
         console.error("Error fetching pins:", error);
       }
@@ -54,7 +61,7 @@ const GroupsMap: React.FC = () => {
     fetchPins();
   }, [id]);
 
-  console.log("Pins State:", pins); // Log pins state
+  // console.log("Pins State:", pins); // Log pins state
 
   return (
     <div className="h-screen w-screen relative">
@@ -85,8 +92,8 @@ const GroupsMap: React.FC = () => {
           style={{ height: "100%", width: "100%" }}
         >
           {pins.map((pin) => (
-            <Marker key={pin.id} position={pin.location} />
-          ))}
+          <Marker position={{ lat: pin.latitude, lng: pin.longitude }} />
+        ))}
         </Map>
       </APIProvider>
     </div>

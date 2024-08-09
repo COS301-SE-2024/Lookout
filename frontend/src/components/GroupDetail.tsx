@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import GroupDetailSkeleton from "../components/GroupDetailSkeleton"; 
+import GroupDetailSkeleton from "../components/GroupDetailSkeleton";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import GroupsPost from "./GroupsPostFix";
 
 interface User {
-  id: number;
-  userName: string;
-  email: string;
-  picture ?: string;
-  role: string;
-  isEnabled: boolean;
-  username: string;
-  authorities: { authority: string }[];
-  isAccountNonLocked: boolean;
-  isCredentialsNonExpired: boolean;
-  isAccountNonExpired: boolean;
+	id: number;
+	userName: string;
+	email: string;
+	picture?: string;
+	role: string;
+	isEnabled: boolean;
+	username: string;
+	authorities: { authority: string }[];
+	isAccountNonLocked: boolean;
+	isCredentialsNonExpired: boolean;
+	isAccountNonExpired: boolean;
 }
 
 interface Group {
@@ -52,8 +52,11 @@ const GroupDetail: React.FC = () => {
 	const [owner, setOwner] = useState<User | null>(null);
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
+	const [groupLoaded, setGroupLoaded] = useState(false);
+	const [ownerLoaded, setOwnerLoaded] = useState(false);
+	const [postsLoaded, setPostsLoaded] = useState(false);
+	const [groupsLoaded, setGroupsLoaded] = useState(false);
 	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-
 
 	useEffect(() => {
 		const fetchGroupDetails = async () => {
@@ -71,6 +74,7 @@ const GroupDetail: React.FC = () => {
 				});
 				const userData = await userResponse.json();
 				setOwner(userData);
+				setOwnerLoaded(true);
 
 				const postsResponse = await fetch(`/api/posts/group/${id}?page=0&size=10`, {
 					method: "GET",
@@ -78,6 +82,7 @@ const GroupDetail: React.FC = () => {
 				});
 				const postsData = await postsResponse.json();
 				setPosts(postsData.content);
+				setPostsLoaded(true);
 
 				const userGroupsResponse = await fetch(`/api/groups/user/${userId}`, {
 					method: "GET",
@@ -88,8 +93,14 @@ const GroupDetail: React.FC = () => {
 				if (isUserInGroup) {
 					setJoinedGroups((prevGroups: any) => [...prevGroups, Number(id)]);
 				}
+				setGroupsLoaded(true);
+				setGroupLoaded(true);
 			} catch (error) {
 				console.error("Error fetching group details:", error);
+				setGroupLoaded(true);
+				setOwnerLoaded(true);
+				setPostsLoaded(true);
+				setGroupsLoaded(true);
 			}
 		};
 
@@ -129,13 +140,12 @@ const GroupDetail: React.FC = () => {
 
 	const handleViewOnMapClick = () => {
 		navigate(`/groupMap/${id}`);
-	  };
-	  
+	};
 
-	if (!group || !owner) {
+	if (!(groupLoaded && ownerLoaded && postsLoaded && groupsLoaded)) {
 		return <GroupDetailSkeleton />;
 	}
-	  
+
 	return (
 		<div className="relative">
 			<div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-800 to-green-800 clip-path-custom-arch z-0"></div>
@@ -146,15 +156,15 @@ const GroupDetail: React.FC = () => {
 					</svg>
 				</button>
 				<div className="text-center mb-4">
-					<h1 className="text-2xl text-white font-bold mb-4">{group.name}</h1>
-					<img src={group.picture} alt={`${group.name} logo`} className="rounded-full mx-auto mb-4" style={{ width: "130px", height: "130px" }} />
-					<p className="text-gray-600 text-sm mt-1">{group.description}</p>
+					<h1 className="text-2xl text-white font-bold mb-4">{group?.name}</h1>
+					<img src={group?.picture} alt={`${group?.name} logo`} className="rounded-full mx-auto mb-4" style={{ width: "130px", height: "130px" }} />
+					<p className="text-gray-600 text-sm mt-1">{group?.description}</p>
 				</div>
 				<div className="flex justify-center gap-1 mb-4">
-					<button className={`px-4 py-2 rounded-full ${joinedGroups.includes(group.id) ? "bg-gray-200 text-black border border-black-2" : "bg-green-800 text-white hover:bg-gray-700"} focus:outline-none focus:ring-2 focus:ring-gray-400`} onClick={() => handleJoinClick(group.id)}>
-						{joinedGroups.includes(group.id) ? "Leave this Group" : "Join this Group"}
+					<button className={`px-4 py-2 rounded-full ${joinedGroups.includes(group?.id ?? 0) ? "bg-gray-200 text-black border border-black-2" : "bg-green-800 text-white hover:bg-gray-700"} focus:outline-none focus:ring-2 focus:ring-gray-400`} onClick={() => handleJoinClick(group?.id ?? 0)}>
+						{joinedGroups.includes(group?.id ?? 0) ? "Leave this Group" : "Join this Group"}
 					</button>
-					<button onClick={handleViewOnMapClick} className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400">
+					<button onClick={() => navigate(`/groupMap`, { state: { group, apicode } })} className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400">
 						View on Map
 					</button>
 				</div>
@@ -171,7 +181,7 @@ const GroupDetail: React.FC = () => {
 
 				<div className="flex justify-between items-center mb-4">
 					<h1 className="text-xl font-bold">Posts in this group</h1>
-					<Link to="/" className="text-sm text-black-200 underline">View All</Link>
+					<Link to={`/group/${id}/posts`} className="text-sm text-black-200 underline">View All</Link>
 				</div>
 
 				{posts.length === 0 ? (
@@ -187,15 +197,17 @@ const GroupDetail: React.FC = () => {
 
 				<div className="flex justify-between items-center mb-4 mt-4">
 					<h1 className="text-xl font-bold">About the owner</h1>
-					<Link to="/" className="text-sm text-black-200 underline">View their profile</Link>
+					<Link to={`/profileView/${owner?.id}`} className="text-sm text-black-200 underline">
+						View their profile
+					</Link>
 				</div>
 				<div className="mt-4">
 					<div className="flex items-center mb-4">
-						<img src="https://i.pinimg.com/originals/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt={owner.userName} className="w-20 h-20 rounded-full mr-6" />
+						<img src="https://i.pinimg.com/originals/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt={owner?.userName} className="w-20 h-20 rounded-full mr-6" />
 						<div>
-							<h2 className="text-lm font-bold">{owner.userName || 'No Name'}</h2>
-							<p className="text-gray-600 text-sm">{owner.email || 'No Email'}</p>
-							<p className="text-gray-600 text-sm">{owner.role || 'No Role'}</p>
+							<h2 className="text-lm font-bold">{owner?.userName || 'No Name'}</h2>
+							<p className="text-gray-600 text-sm">{owner?.email || 'No Email'}</p>
+							<p className="text-gray-600 text-sm">{owner?.role || 'No Role'}</p>
 						</div>
 					</div>
 				</div>

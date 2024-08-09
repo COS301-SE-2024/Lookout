@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CategoryPill from "./CategoryPill";
@@ -63,13 +64,15 @@ interface Post {
 }
 
 const PinDetail: React.FC = () => {
-  // ADD IN FROM LOGIN LATER
-	const userId = 1;
+  const userId = 1; // ADD IN FROM LOGIN LATER
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [theme, setTheme] = useState("default");
   const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingPost, setLoadingPost] = useState(true);
+  const [loadingRelatedPost, setLoadingRelatedPost] = useState(true);
+  const [loadingSaved, setLoadingSaved] = useState(true);
+  const [loadingSaves, setLoadingSaves] = useState(true);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [saves, setSaves] = useState<number>(0);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
@@ -87,7 +90,7 @@ const PinDetail: React.FC = () => {
         setTheme(newTheme);
         document.documentElement.setAttribute("data-theme", newTheme);
       }
-    }
+    };
 
     window.addEventListener("storage", handleStorageChange);
 
@@ -103,21 +106,20 @@ const PinDetail: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        // This is Post ID not User ID
         const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
         setPost(data);
-        setLoading(false);
+        setLoadingPost(false);
 
-        // related posts
         const relatedResponse = await fetch(
           `/api/posts/group/${data.groupId}?page=0&size=10`
         );
         const relatedData = await relatedResponse.json();
         setRelatedPosts(relatedData.content);
+        setLoadingRelatedPost(false);
       } catch (error) {
         console.error("Error fetching post or related posts:", error);
-        setLoading(false);
+        setLoadingPost(false);
       }
     };
 
@@ -128,8 +130,10 @@ const PinDetail: React.FC = () => {
         );
         const data = await response.json();
         setIsSaved(data);
+        setLoadingSaved(false);
       } catch (error) {
         console.error("Error checking saved status:", error);
+        setLoadingSaved(false);
       }
     };
 
@@ -138,10 +142,12 @@ const PinDetail: React.FC = () => {
         const response = await fetch(`/api/savedPosts/countSaves?postId=${id}`);
         const data = await response.json();
         setSaves(data);
+        setLoadingSaves(false);
       } catch (error) {
         console.error("Error fetching saves count:", error);
+        setLoadingSaves(false);
       }
-    }
+    };
 
     fetchPost();
     checkIfSaved();
@@ -153,9 +159,9 @@ const PinDetail: React.FC = () => {
       userId,
       postId: post?.id,
     };
-  
+
     console.log("Save request body:", requestBody);
-  
+
     try {
       const response = await fetch("/api/savedPosts/SavePost", {
         method: "POST",
@@ -164,26 +170,26 @@ const PinDetail: React.FC = () => {
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to save post");
       }
-  
+
       setIsSaved(true);
-      setSaves((prevSaves) => prevSaves + 1); 
+      setSaves((prevSaves) => prevSaves + 1);
     } catch (error) {
       console.error("Error saving post:", error);
     }
   };
-  
+
   const handleUnsaveClick = async () => {
     const requestBody = {
       userId,
       postId: post?.id,
     };
-  
+
     console.log("Unsave request body:", requestBody);
-  
+
     try {
       const response = await fetch("/api/savedPosts/UnsavePost", {
         method: "DELETE",
@@ -192,18 +198,17 @@ const PinDetail: React.FC = () => {
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to unsave post");
       }
-  
+
       setIsSaved(false);
-      setSaves((prevSaves) => prevSaves - 1); 
+      setSaves((prevSaves) => prevSaves - 1);
     } catch (error) {
       console.error("Error unsaving post:", error);
     }
   };
-  
 
   const handleSaveIconClick = () => {
     console.log("Save icon clicked");
@@ -214,12 +219,10 @@ const PinDetail: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <SkeletonPinDetail />;
-  }
+  const allDataLoaded = !loadingPost && !loadingSaved && !loadingSaves && !loadingRelatedPost;
 
-  if (!post) {
-    return <p>Post not found.</p>;
+  if (!allDataLoaded) {
+    return <SkeletonPinDetail />;
   }
 
   return (
@@ -281,12 +284,12 @@ const PinDetail: React.FC = () => {
 
       <div className="card bg-base-94 shadow-xl rounded-lg">
         <figure className="rounded-t-lg overflow-hidden">
-          <img src={post.picture} alt={post.title} className="w-full h-full object-cover" />
+          <img src={post?.picture} alt={post?.title} className="w-full h-full object-cover" />
         </figure>
 
         <div className="card-body ml-4">
           <div className="flex items-center justify-between mt-2 mb-4">
-            <h1 className="text-2xl font-bold">{post.title}</h1>
+            <h1 className="text-2xl font-bold">{post?.title}</h1>
             <div className="flex items-center mr-4">
               {isSaved ? (
                 <FaBookmark className="text-green-800 cursor-pointer" onClick={handleSaveIconClick} />
@@ -301,13 +304,13 @@ const PinDetail: React.FC = () => {
             <div className="flex items-center">
               <img
                 src='https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg'
-                alt={post.username}
+                alt={post?.username}
                 className="w-20 h-20 rounded-full mr-6"
               />
               <div>
-                <h2 className="text-lg font-bold">{post.username}</h2>
-                <p className="text-gray-600 text-sm">{post.caption}</p>
-                <CategoryPill categoryId={post.categoryId} />
+                <h2 className="text-lg font-bold">{post?.username}</h2>
+                <p className="text-gray-600 text-sm">{post?.caption}</p>
+                <CategoryPill categoryId={post?.categoryId} />
               </div>
             </div>
           </div>
@@ -322,8 +325,8 @@ const PinDetail: React.FC = () => {
             <button
               className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
               onClick={() =>
-                navigate(`/group/${post.groupId}`, {
-                  state: { group: post.group },
+                navigate(`/group/${post?.groupId}`, {
+                  state: { group: post?.group },
                 })
               }
             >
