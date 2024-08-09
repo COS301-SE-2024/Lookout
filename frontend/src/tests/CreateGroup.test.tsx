@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import CreateGroups from './../components/CreateGroups';
 
-// Mocking the onCreateGroup function and fetch call
 const mockOnCreateGroup = jest.fn();
 
 const mockCreateObjectURL = jest.fn();
@@ -50,7 +49,6 @@ describe('CreateGroups', () => {
   test('handles toggle switch', () => {
     render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
 
-    // Use Testing Library queries to interact with elements
     const toggleSwitch = screen.getByRole('switch', { name: /visibility - set your group to private:/i });
     fireEvent.click(toggleSwitch);
     expect(toggleSwitch).toBeChecked();
