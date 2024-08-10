@@ -128,77 +128,47 @@ export const EditProfile = () => {
 	return (
 		<>
 			<h2 className={modalStyles.settingsTitle}>Edit Profile</h2>
-			<div className="flex items-center">
-				<ul>
-					<li className="flex flex-col py-2 border-t border-b">
-						<div className="flex justify-center mb-3">
-							<button
-								className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-								onClick={handleAddPhotoClick}
-								data-testid="add-photo-button"
-							>
-								<FaPlus />
-							</button>
-						</div>
-
-						<div className="text-center mb-3">
-							<span className="text-lg">Change Profile Pic</span>
-							<input
-								type="file"
-								accept="image/jpeg, image/png"
-								style={{ display: "none" }}
-								ref={fileInputRef}
-								data-testid="file-input"
-								onChange={handleFileChange}
-							/>
-							{picture && (
-								<img
-									src={picture}
-									alt="Selected"
-									className="w-32 h-32 mt-2 mx-auto"
-								/>
-							)}
-						</div>
-					</li>
-
+			<div className="flex flex-col items-center">
+				<ul className="w-full">
 					<li className="flex flex-col py-2 border-t border-b">
 						<label
-							htmlFor="name"
+							htmlFor="username"
 							className="block text-gray-700 font-bold mb-2"
 						>
 							Change Username
 						</label>
 						<input
 							type="text"
-							id="name"
-							name="name"
+							id="username"
+							name="username"
 							placeholder="change your username"
 							value={inputUsernameValue}
 							onChange={handleInputUsernameChange}
-							className="border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							className="border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
 						/>
 					</li>
 
 					<li className="flex flex-col py-2 border-t border-b">
 						<label
-							htmlFor="name"
+							htmlFor="email"
 							className="block text-gray-700 font-bold mb-2"
 						>
 							Change Email
 						</label>
 						<input
 							type="text"
-							id="name"
-							name="name"
-							placeholder="change your username"
+							id="email"
+							name="email"
+							placeholder="change your email"
 							value={inputEmailValue}
 							onChange={handleInputEmailChange}
-							className="border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							className="border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
 						/>
 					</li>
+
 					<li className="flex flex-col py-2 border-t border-b">
 						<button
-							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
+							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
 							onClick={alertUnimplemented}
 						>
 							Reset Password
@@ -207,7 +177,7 @@ export const EditProfile = () => {
 
 					<li className="flex flex-col py-2 border-t border-b">
 						<button
-							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
+							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
 							onClick={saveAndExit}
 						>
 							Save and Exit
