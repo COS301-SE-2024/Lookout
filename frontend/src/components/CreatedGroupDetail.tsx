@@ -223,6 +223,8 @@ const CreatedGroupDetail: React.FC = () => {
           <FaEdit
             className="absolute top-4 right-4 text-xl text-green-700 cursor-pointer mr-3"
             onClick={handleEditClick}
+            color='white'
+            size={24}
           />
         )}
         <div className="text-center mb-4">
