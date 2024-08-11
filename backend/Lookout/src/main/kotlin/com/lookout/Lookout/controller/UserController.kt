@@ -1,6 +1,8 @@
 package com.lookout.Lookout.controller
 
 import com.lookout.Lookout.dto.GroupDto
+import com.lookout.Lookout.dto.UpdateEmailRequest
+import com.lookout.Lookout.dto.UpdateUsernameRequest
 import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.entity.User
@@ -35,6 +37,18 @@ class UserController (private val userService: UserService){
         return ResponseEntity.ok(updatedUser)
     }
 
+    @PutMapping("/{id}/update-username")
+    fun updateUsername(@PathVariable id: Long, @RequestBody updateRequest: UpdateUsernameRequest): ResponseEntity<User> {
+        val updatedUser = userService.updateUsername(id, updateRequest.newUsername)
+        return ResponseEntity.ok(updatedUser)
+    }
+
+    @PutMapping("/{id}/update-email")
+    fun updateEmail(@PathVariable id: Long, @RequestBody updateRequest: UpdateEmailRequest): ResponseEntity<User> {
+        val updatedUser = userService.updateEmail(id, updateRequest.newEmail)
+        return ResponseEntity.ok(updatedUser)
+    }
+
     @GetMapping("/{id}")
     fun getUserByID(@PathVariable id: Long): ResponseEntity<UserDto> {
         val user = userService.findById(id)
@@ -55,6 +69,8 @@ class UserController (private val userService: UserService){
         val postsCount = userService.getUserPostsCount(id)
         return ResponseEntity.ok(postsCount)
     }
+
+
 
     @GetMapping("/groupsCount/{id}")
     fun getUserGroupsCount(@PathVariable id: Long): ResponseEntity<Int> {

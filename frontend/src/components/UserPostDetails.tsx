@@ -243,10 +243,10 @@ const PinDetail: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
-      <div className="flex items-center z-50" style={{ zIndex: 50 }}>
+      <div className="flex items-center z-50">
         <button
           onClick={() => navigate('/profile')}
-          className="absolute top-4 left-4 text-green-700 hover:text-green-500 mr-4"
+          className="absolute top-4 left-4 text-green-700 hover:text-green-500"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -272,7 +272,7 @@ const PinDetail: React.FC = () => {
               Done
             </button>
             <button
-              className="absolute top-4 left-6 text-green-800 bg-white border border-green-800 hover:bg-green-800 hover:text-white rounded-full px-4 py-2 cursor-pointer"
+              className="absolute top-4 left-12 text-green-800 bg-white border border-green-800 hover:bg-green-800 hover:text-white rounded-full px-4 py-2 cursor-pointer"
               onClick={handleCancelClick}
             >
               Cancel
@@ -280,74 +280,84 @@ const PinDetail: React.FC = () => {
           </>
         ) : (
           <FaEdit
-            className="absolute top-4 right-4 text-xl text-green-700 cursor-pointer mr-3"
+            className="absolute top-4 right-4 text-xl text-green-700 cursor-pointer"
             onClick={handleEditClick}
+            size={30}
           />
         )}
       </div>
-
-      <div className="card bg-base-94 shadow-xl rounded-lg">
-        <figure className="rounded-t-lg overflow-hidden">
-          <img src={post.picture} alt={post.title} className="w-full h-full object-cover" />
+  
+      <div className="bg-white shadow-xl rounded-lg overflow-hidden mt-12">
+        <figure className="w-full h-60 md:h-96 overflow-hidden">
+          <img
+            src={post.picture}
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
         </figure>
-
-        <div className="card-body ml-4">
-          <div className="flex items-center justify-between mt-2 mb-4">
+  
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
             {isEditing ? (
               <input
                 type="text"
-                className="text-2xl font-bold border border-green-800 rounded-full text-center"
+                className="text-2xl md:text-3xl font-bold border border-green-800 rounded-full text-center w-full md:w-auto"
                 value={editableTitle}
                 onChange={(e) => setEditableTitle(e.target.value)}
               />
             ) : (
-              <h1 className="text-2xl font-bold">{post.title}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">{post.title}</h1>
             )}
-            <div className="flex items-center mr-4">
+            <div className="flex items-center">
               {isSaved ? (
-                <FaBookmark className="text-green-800 cursor-pointer" onClick={handleSaveIconClick} />
+                <FaBookmark
+                  className="text-green-800 cursor-pointer"
+                  onClick={handleSaveIconClick}
+                  size={24}
+                />
               ) : (
-                <FaRegBookmark className="text-green-800 cursor-pointer" onClick={handleSaveIconClick} />
+                <FaRegBookmark
+                  className="text-green-800 cursor-pointer"
+                  onClick={handleSaveIconClick}
+                  size={24}
+                />
               )}
               <span className="ml-2">{saves} saves</span>
             </div>
           </div>
-
-          <div className="flex items-center mb-4 justify-between w-full">
-            <div className="flex items-center">
-              <img
-                src='https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg'
-                alt={post.username}
-                className="w-20 h-20 rounded-full mr-6"
-              />
-              <div>
-                <h2 className="text-lg font-bold">{post.username}</h2>
-                {isEditing ? (
-                  <textarea
-                    className="text-gray-600 text-sm w-full border border-green-800 rounded-full text-center"
-                    style={{ paddingTop: "10px" }}
-                    value={editableCaption}
-                    onChange={(e) => setEditableCaption(e.target.value)}
-                  />
-                ) : (
-                  <p className="text-gray-600 text-sm">{post.caption}</p>
-                )}
-                <div className="mt-2">
-                  <CategoryPill categoryId={post.categoryId} />
-                </div>
+  
+          <div className="flex items-center mb-4">
+            <img
+              src='https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg'
+              alt={post.username}
+              className="w-16 h-16 md:w-20 md:h-20 rounded-full mr-4"
+            />
+            <div>
+              <h2 className="text-lg font-bold">{post.username}</h2>
+              {isEditing ? (
+                <textarea
+                  className="text-gray-600 text-sm w-full border border-green-800 rounded-lg mt-2 p-2"
+                  value={editableCaption}
+                  onChange={(e) => setEditableCaption(e.target.value)}
+                />
+              ) : (
+                <p className="text-gray-600 text-sm">{post.caption}</p>
+              )}
+              <div className="mt-2">
+                <CategoryPill categoryId={post.categoryId} />
               </div>
             </div>
           </div>
-
-          <div className="flex justify-center mt-4 space-x-2 mt-4">
+  
+          <div className="flex justify-center mt-4 space-x-2">
             <button
-              className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="px-4 py-1 rounded-full bg-green-800 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
               onClick={() => navigate(`/map`, { state: { post, apicode } })}
             >
               View on Map
             </button>
             <button
-              className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="px-4 py-1 rounded-full bg-green-800 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
               onClick={() =>
                 navigate(`/group/${post.groupId}`, {
                   state: { group: post.group },
@@ -357,10 +367,10 @@ const PinDetail: React.FC = () => {
               View Group
             </button>
           </div>
-
-          <div className="mt-4 mb-8">
-            <h1 className="text-lm font-semibold">See more posts like this:</h1>
-
+  
+          <div className="mt-8">
+            <h1 className="text-lg font-semibold">See more posts like this:</h1>
+  
             <HorizontalCarousel>
               {relatedPosts.map((relatedPost) => (
                 <PinDetailPost key={relatedPost.id} post={relatedPost} />
@@ -371,6 +381,7 @@ const PinDetail: React.FC = () => {
       </div>
     </div>
   );
+  
 };
 
 export default PinDetail;

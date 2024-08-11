@@ -193,11 +193,12 @@ const HomeScreen: React.FC = () => {
 				}
 
 				const pinsData = await response.json();
+				console.log(pinsData)
 				const formattedPins = pinsData.content.map((pin: any) => ({
 					id: pin.id,
 					location: { lat: pin.latitude, lng: pin.longitude },
 					caption: pin.caption,
-					category: pin.caption,
+					category: pin.title,
 					categoryId: pin.categoryId,
 					image: pin.picture
 				}));
@@ -210,7 +211,7 @@ const HomeScreen: React.FC = () => {
 		};
 
 		fetchPins();
-	});
+	}, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
@@ -297,10 +298,10 @@ const HomeScreen: React.FC = () => {
 				requestOptions
 			);
 
-			if (!response.ok) {
-				throw new Error("Error");
-			}
-
+			// if (!response.ok) {
+			// 	throw new Error("Error");
+			// }
+			console.log("title", title);
 			setCaption("");
 			setTitle("");
 			setPicture("");

@@ -37,6 +37,20 @@ class UserService: UserDetailsService {
         user.profilePic = newProfilePicUrl
         return userRepository.save(user)
     }
+    @Transactional
+    fun updateUsername(id: Long, newUsername: String): User {
+        val user = userRepository.findById(id)
+            .orElseThrow { UsernameNotFoundException("User not found with that id") }
+        user.userName = newUsername
+        return userRepository.save(user)
+    }
+    @Transactional
+    fun updateEmail(id: Long, newEmail: String): User {
+        val user = userRepository.findById(id)
+            .orElseThrow { UsernameNotFoundException("User not found with that id") }
+        user.email = newEmail
+        return userRepository.save(user)
+    }
 
     fun getUserPostsCount(id: Long): Int {
         return userRepository.getUserPostsCount(id)
