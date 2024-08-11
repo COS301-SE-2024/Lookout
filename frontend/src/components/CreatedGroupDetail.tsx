@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import HorizontalCarousel from './HorizontalCarousel';
+import CreatedGroupDetailSkeleton from '../components/CreatedGroupSkeleton';
 import { FaEdit } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';
 
@@ -45,6 +46,7 @@ interface Post {
 }
 
 const CreatedGroupDetail: React.FC = () => {
+  const userId = 1; // Placeholder for user ID
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [group, setGroup] = useState<Group | null>(null);
@@ -52,8 +54,10 @@ const CreatedGroupDetail: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [members, setMembers] = useState<User[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [editableName, setEditableName] = useState("");
-  const [editableDescription, setEditableDescription] = useState("");
+  const [postsLoaded, setPostsLoaded] = useState(false);
+  const [groupLoaded, setGroupLoaded] = useState(false);
+  const [editableName, setEditableName] = useState('');
+  const [editableDescription, setEditableDescription] = useState('');
 
   useEffect(() => {
     const fetchGroupDetails = async () => {
@@ -63,30 +67,28 @@ const CreatedGroupDetail: React.FC = () => {
           headers: { Accept: 'application/json' },
         });
         const groupData = await groupResponse.json();
-        
-        // Assuming the groupData contains a userId but not a full user object
-        let user = null;
+
         if (groupData.userId) {
           const userResponse = await fetch(`/api/users/${groupData.userId}`, {
             method: 'GET',
             headers: { Accept: 'application/json' },
           });
-          user = await userResponse.json();
+          const user = await userResponse.json();
+          groupData.user = user;
+          setOwner(user);
         }
-  
-        // Combine groupData with fetched user
-        const completeGroupData = { ...groupData, user };
-        setGroup(completeGroupData);
-        setOwner(user); // You can still set owner separately if needed
-  
+
+        setGroup(groupData);
+        setGroupLoaded(true);
+
         const postsResponse = await fetch(`/api/posts/group/${id}?page=0&size=10`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
         });
         const postsData = await postsResponse.json();
         setPosts(postsData.content);
-  
-       
+        setPostsLoaded(true);
+
         const memberResponse = await fetch(`/api/groups/users/${id}`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -95,46 +97,52 @@ const CreatedGroupDetail: React.FC = () => {
         setMembers(memberData);
       } catch (error) {
         console.error('Error fetching group details:', error);
+        setGroupLoaded(true);
+        setPostsLoaded(true);
+
       }
     };
-  
+
     fetchGroupDetails();
   }, [id]);
-  
 
   const handleRemoveMember = (userId: number) => {
-    const requestBody = {
-      groupId: group?.id,
-      userId: userId,
-    };
+    if (group) {
+      const requestBody = {
+        groupId: group.id,
+        userId: userId,
+      };
 
-    fetch('/api/groups/RemoveMemberFromGroup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody),
-    })
-      .then((response) => {
-        if (response.ok) {
-          setMembers((prevMembers) => prevMembers.filter((member) => member.id !== userId));
-        } else {
-          response.text().then((errorMessage) => console.error(errorMessage));
-        }
+      fetch('/api/groups/RemoveMemberFromGroup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
       })
-      .catch((error) => console.error('Error removing member:', error));
+        .then((response) => {
+          if (response.ok) {
+            setMembers((prevMembers) => prevMembers.filter((member) => member.id !== userId));
+          } else {
+            response.text().then((errorMessage) => console.error(errorMessage));
+          }
+        })
+        .catch((error) => console.error('Error removing member:', error));
+    }
   };
 
-
   const handleViewOnMapClick = () => {
-    alert('View on the map button clicked!');
+    navigate(`/groupMap/${id}`);
   };
 
   const handleEditClick = () => {
+    if (group) {
+      setEditableName(group.name);
+      setEditableDescription(group.description);
+    }
     setIsEditing(true);
   };
 
   const handleDoneClick = async () => {
     if (group) {
-      // Create an updated post object with all required properties
       const updatedGroup: Group = {
         id: group.id,
         name: editableName || group.name,
@@ -146,41 +154,37 @@ const CreatedGroupDetail: React.FC = () => {
       };
 
       try {
-        console.log(updatedGroup)
-        const response = await fetch(`/api/groups/${id}`, {
-          method: "PUT",
+        const response = await fetch(`/api/groups/${group.id}`, {
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(updatedGroup),
         });
 
-        console.log(response)
-
         if (!response.ok) {
-          throw new Error("Failed to update group");
+          throw new Error('Failed to update group');
         }
 
         setGroup(updatedGroup);
         setIsEditing(false);
       } catch (error) {
-        console.error("Error updating group:", error);
+        console.error('Error updating group:', error);
       }
     }
-
   };
 
   const handleCancelClick = () => {
-    setEditableName(group?.name || "");
-    setEditableDescription(group?.description || "");
+    if (group) {
+      setEditableName(group.name);
+      setEditableDescription(group.description);
+    }
     setIsEditing(false);
   };
 
-
-  if (!group || !owner) {
-    return <div>Loading...</div>;
+  if (!group || !owner || !groupLoaded || !postsLoaded ) {
+    return <CreatedGroupDetailSkeleton />;
   }
-
 
   return (
     <div className="relative">
@@ -203,7 +207,7 @@ const CreatedGroupDetail: React.FC = () => {
         {isEditing ? (
           <>
             <button
-              className="absolute top-4 right-6 text-white bg-green-800 hover:bg-white hover:text-green-800  border border-green-800 rounded-full px-4 py-2 cursor-pointer"
+              className="absolute top-4 right-6 text-white bg-green-800 hover:bg-white hover:text-green-800 border border-green-800 rounded-full px-4 py-2 cursor-pointer"
               onClick={handleDoneClick}
             >
               Done
@@ -214,7 +218,6 @@ const CreatedGroupDetail: React.FC = () => {
             >
               Cancel
             </button>
-
           </>
         ) : (
           <FaEdit
@@ -226,14 +229,13 @@ const CreatedGroupDetail: React.FC = () => {
           {isEditing ? (
             <textarea
               className="text-white text-xl w-80 rounded-full text-center bg-transparent"
-              style={{ paddingTop: "10px" }}
+              style={{ paddingTop: '10px' }}
               value={editableName}
               onChange={(e) => setEditableName(e.target.value)}
             />
           ) : (
             <h1 className="text-2xl text-white font-bold mb-4">{group.name}</h1>
           )}
-          {/* <h1 className="text-2xl text-white font-bold mb-4">{group.name}</h1> */}
           <img
             src={group.picture}
             alt={`${group.name} logo`}
@@ -242,15 +244,14 @@ const CreatedGroupDetail: React.FC = () => {
           />
           {isEditing ? (
             <textarea
-              className="text-gray-600 text-sm w-80 rounded-full text-center bg-transparent"
-              style={{ paddingTop: "10px" }}
+              className="text-black text-sm w-80 rounded-full text-center bg-transparent"
+              style={{ paddingTop: '10px' }}
               value={editableDescription}
               onChange={(e) => setEditableDescription(e.target.value)}
             />
-
           ) : (
-            <p className="text-gray-600 text-sm mt-1">{group.description}</p>)}
-          {/* <p className="text-gray-600 text-sm mt-1">{group.description}</p> */}
+            <p className="text-gray-600 text-sm mt-1">{group.description}</p>
+          )}
         </div>
         <div className="flex justify-center gap-1 mb-4">
           <button
@@ -260,7 +261,6 @@ const CreatedGroupDetail: React.FC = () => {
             View on Map
           </button>
         </div>
-
         <div className="flex justify-center items-center mb-8">
           <div className="flex flex-col items-center">
             <span className="text-gray-600">{posts.length} Posts</span>
@@ -270,83 +270,20 @@ const CreatedGroupDetail: React.FC = () => {
             <span className="text-gray-600">7 Followers</span>
           </div>
         </div>
-
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Posts in this group</h1>
-          <Link to="/" className="text-sm text-black-200 underline">
-            View All
+          <Link to="/" className="text-green-800 hover:text-gray-600">
+            View all
           </Link>
         </div>
-
-        {posts.length === 0 ? (
-          <div className="text-center">
-            <img
-              src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
-              alt="No posts"
-              className="w-68 h-64 mx-auto mb-4"
+        <HorizontalCarousel>
+          {posts.map((post) => (
+            <GroupsPost
+              key={post.id}
+              post={post}
             />
-            <p className="text-gray-600">There are no posts in this group yet. Be the first to post!</p>
-          </div>
-        ) : (
-          <HorizontalCarousel>
-            {posts.map((post) => (
-              <GroupsPost key={post.id} post={post} />
-            ))}
-          </HorizontalCarousel>
-        )}
-
-        <div className="flex justify-between items-center mb-4 mt-4">
-          <h1 className="text-xl font-bold">Members in this group</h1>
-          <Link to="/" className="text-sm text-black-200 underline">
-            View all members
-          </Link>
-        </div>
-
-        {/* Members Section */}
-        {members && members.length > 0 ? (
-          <div className="container mx-auto p-4">
-            <div className="space-y-3">
-              {members.map((member) => (
-                <div
-                  className="flex items-center p-2 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-100"
-                // onClick={() => handleMemberClick(member.id)}
-                >
-                  <div className="flex-shrink-0 w-12 h-full">
-                    <img
-                      src="https://i.pinimg.com/originals/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg"
-                      alt={`${group.name} logo`}
-                      className="rounded-full w-12 h-12 mr-4" // Add mr-4 to add some space
-                    />
-                  </div>
-                  <div className="flex-1 ml-3">
-                    <div className="text-lg font-semibold">{member.userName || 'User'}</div>
-                    {/* <p className="text-gray-600 text-xs mt-1">{member.email}</p> */}
-                    <p className="text-gray-600 text-xs mt-1">A user about will be added soon</p>
-
-                  </div>
-                  <div className="flex items-center px-4 py-2 justify-center bg-green-800 text-white rounded-full hover:bg-green-600"
-                    onClick={() => handleRemoveMember(member.id)}
-                  >
-                    Remove this Member
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-
-        ) : (
-          <div className="text-center">
-            <img
-              src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
-              alt="No members"
-              className="w-68 h-64 mx-auto mb-4"
-            />
-            <p className="text-gray-600">There are no members in this group yet.</p>
-          </div>
-        )}
-
-
+          ))}
+        </HorizontalCarousel>
       </div>
     </div>
   );

@@ -62,16 +62,8 @@ interface Post {
   createdAt: string;
 }
 
-const hexToString = (hex: string) => {
-  const cleanedHex = hex.replace(/\\x/g, "");
-  const str = cleanedHex
-    .match(/.{1,2}/g)
-    ?.map((byte) => String.fromCharCode(parseInt(byte, 16)))
-    .join("");
-  return str || "";
-};
-
 const PinDetail: React.FC = () => {
+  const userId = 1;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [theme, setTheme] = useState("default");
@@ -79,9 +71,8 @@ const PinDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [saves, setSaves] = useState<number>(0);
-  const [userId] = useState<number>(2);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
-  const [isEditing, setIsEditing] = useState(false); // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
   const [editableTitle, setEditableTitle] = useState("");
   const [editableCaption, setEditableCaption] = useState("");
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -119,25 +110,20 @@ const PinDetail: React.FC = () => {
         setPost(data);
         setEditableTitle(data.title);
         setEditableCaption(data.caption);
-        setLoading(false);
 
-        // Fetch related posts once the main post is fetched
-        const relatedResponse = await fetch(
-          `/api/posts/group/${data.groupId}?page=0&size=10`
-        );
+        const relatedResponse = await fetch(`/api/posts/group/${data.groupId}?page=0&size=10`);
         const relatedData = await relatedResponse.json();
         setRelatedPosts(relatedData.content);
       } catch (error) {
         console.error("Error fetching post or related posts:", error);
+      } finally {
         setLoading(false);
       }
     };
 
     const checkIfSaved = async () => {
       try {
-        const response = await fetch(
-          `/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`
-        );
+        const response = await fetch(`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`);
         const data = await response.json();
         setIsSaved(data);
       } catch (error) {
@@ -161,17 +147,12 @@ const PinDetail: React.FC = () => {
   }, [id, userId]);
 
   const handleSaveClick = async () => {
-    const requestBody = {
-      userId,
-      postId: post?.id,
-    };
+    const requestBody = { userId, postId: post?.id };
 
     try {
       const response = await fetch("/api/savedPosts/SavePost", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
 
@@ -180,24 +161,19 @@ const PinDetail: React.FC = () => {
       }
 
       setIsSaved(true);
-      setSaves((prevSaves) => prevSaves + 1); // Increase saves count
+      setSaves(prevSaves => prevSaves + 1);
     } catch (error) {
       console.error("Error saving post:", error);
     }
   };
 
   const handleUnsaveClick = async () => {
-    const requestBody = {
-      userId,
-      postId: post?.id,
-    };
+    const requestBody = { userId, postId: post?.id };
 
     try {
       const response = await fetch("/api/savedPosts/UnsavePost", {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
 
@@ -206,7 +182,7 @@ const PinDetail: React.FC = () => {
       }
 
       setIsSaved(false);
-      setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
+      setSaves(prevSaves => prevSaves - 1);
     } catch (error) {
       console.error("Error unsaving post:", error);
     }
@@ -226,36 +202,16 @@ const PinDetail: React.FC = () => {
 
   const handleDoneClick = async () => {
     if (post) {
-      // Create an updated post object with all required properties
       const updatedPost: Post = {
         ...post,
         title: editableTitle,
         caption: editableCaption,
-        id: post.id, // Ensure id is defined and correct
-        username: post.username,
-        description: post.description,
-        groupName: post.groupName,
-        groupDescription: post.groupDescription,
-        categoryId: post.categoryId,
-        groupId: post.groupId,
-        groupPicture: post.groupPicture,
-        admin: post.admin,
-        userId: post.userId,
-        user: post.user,
-        group: post.group,
-        category: post.category,
-        picture: post.picture,
-        latitude: post.latitude,
-        longitude: post.longitude,
-        createdAt: post.createdAt,
       };
 
       try {
         const response = await fetch("/api/posts/UpdatePost", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedPost),
         });
 
@@ -263,7 +219,7 @@ const PinDetail: React.FC = () => {
           throw new Error("Failed to update post");
         }
 
-        setPost(updatedPost); // Update the state with the complete post object
+        setPost(updatedPost);
         setIsEditing(false);
       } catch (error) {
         console.error("Error updating post:", error);
@@ -284,8 +240,6 @@ const PinDetail: React.FC = () => {
   if (!post) {
     return <p>Post not found.</p>;
   }
-
-  // const decodedPictureUrl = hexToString(post.picture);
 
   return (
     <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
@@ -312,7 +266,7 @@ const PinDetail: React.FC = () => {
         {isEditing ? (
           <>
             <button
-              className="absolute top-4 right-6 text-white bg-green-800 hover:bg-white hover:text-green-800  border border-green-800 rounded-full px-4 py-2 cursor-pointer"
+              className="absolute top-4 right-6 text-white bg-green-800 hover:bg-white hover:text-green-800 border border-green-800 rounded-full px-4 py-2 cursor-pointer"
               onClick={handleDoneClick}
             >
               Done
@@ -323,7 +277,6 @@ const PinDetail: React.FC = () => {
             >
               Cancel
             </button>
-
           </>
         ) : (
           <FaEdit
@@ -384,9 +337,7 @@ const PinDetail: React.FC = () => {
                 </div>
               </div>
             </div>
-
           </div>
-
 
           <div className="flex justify-center mt-4 space-x-2 mt-4">
             <button

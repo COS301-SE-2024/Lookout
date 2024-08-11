@@ -82,7 +82,7 @@ class PostController(private val postService: PostsService) {
     @GetMapping
     fun getAllPosts(
         @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
+        @RequestParam(defaultValue = "100") size: Int
     ): ResponseEntity<Page<PostDto>> {
         val pageable: Pageable = PageRequest.of(page, size)
         val posts = postService.findAll(pageable).map { post -> convertToDto(post)}

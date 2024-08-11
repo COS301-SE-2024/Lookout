@@ -18,6 +18,8 @@ interface CreatedGroupsGridFixProps {
 }
 
 const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery }) => {
+  // ADD IN FROM LOGIN LATER
+	const userId = 1;
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
 
@@ -32,7 +34,7 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
         });
         const data = await response.json();
         console.log("data, ",data)
-        const filteredGroups = data.content.filter((group: Group) => group.userId === 1);
+        const filteredGroups = data.content.filter((group: Group) => group.userId === userId);
         setGroups(filteredGroups);
       } catch (error) {
         console.error('Error fetching groups:', error);

@@ -19,6 +19,8 @@ interface PostsGridFixProps {
 }
 
 const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
+  // ADD IN FROM LOGIN LATER
+	const userId = 1;
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/api/posts/user/1', {
+        const response = await fetch(`/api/posts/user/${userId}`, {
           headers: {
             'Accept': 'application/json',
           },

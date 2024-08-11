@@ -14,7 +14,10 @@ import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import GroupDetail from "./components/GroupDetail";
 import PinDetail from "./components/PinDetail";
+import GroupPosts from "./components/GroupPosts"; 
 import Profile from "./screens/Profile";
+import ProfileDetail from './components/ProfileDetail'; 
+import GroupsMap from "./components/GroupsMap";
 import ExploreScreen from "./screens/ExploreScreen";
 import UserPostDetails from "./components/UserPostDetails";
 import SavedPostDetails from "./components/SavedPostDetails";
@@ -51,6 +54,10 @@ function Main() {
           path="/groups"
           element={<ProtectedRoute element={GroupScreen} />}
         />
+        <Route
+          path="/groupMap"
+          element={<ProtectedRoute element={GroupsMap} />}
+        />
         <Route path="/exploreGroups" element={<ProtectedRoute element={ExploreGroups} />} />
         <Route path="/login" element={<LoginScreen />} />{" "}
         <Route path="/signup" element={<SignUpScreen />} />{" "}
@@ -58,6 +65,7 @@ function Main() {
           path="/group/:id"
           element={<ProtectedRoute element={GroupDetail} />}
         />
+        <Route path="/group/:id/posts" element={<GroupPosts />} />
         <Route
           path="/post/:id"
           element={<ProtectedRoute element={PinDetail} />}
@@ -83,6 +91,8 @@ function Main() {
           path="/createdGroup/:id"
           element={<ProtectedRoute element={CreatedGroupDetail} />}
         />
+          <Route path="/profileView/:id" element={<ProfileDetail />} /> {/* Define route for profile detail */}
+        
         <Route path="/map"
          element={<PinMap />} 
         />
