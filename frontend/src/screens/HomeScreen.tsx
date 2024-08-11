@@ -16,6 +16,11 @@ import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
 import Legend from '../components/Legend';
 
 import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
+import campIcon from '../assets/icons/camping-zone.png';
+import AnimalIcon from '../assets/icons/zoo.png';
+import HikingIcon from '../assets/icons/mountain.png';
+import POIIcon from '../assets/icons/point-of-interest.png';
+import SecurityIcon from '../assets/icons/danger.png';
 
 
 //import { pinsData } from '../data/posts';
@@ -27,7 +32,11 @@ type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, 
 
 const legendItems = [
   { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' },
-  { name: 'Personal Pins', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
+  { name: 'Camp Sites', icon: campIcon },
+  { name: 'Animal', icon: AnimalIcon },
+  { name: 'Hiking', icon: HikingIcon },
+  { name: 'POI', icon: POIIcon },
+  { name: 'Security Risk', icon: SecurityIcon },
 ];
 
 
@@ -177,13 +186,16 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    console.log("selectCategory changed:", selectCategory);
+    console.log("pins length:", pins.length);
+  
     if (selectCategory === null) {
       setFilteredPins(pins);
     } else {
       setFilteredPins(pins.filter(pin => pin.categoryId === selectCategory));
     }
   }, [selectCategory, pins]);
-
+  
   const handleCategoryClick = (categoryId:any) => {
     setSelectCategory(categoryId);
   };

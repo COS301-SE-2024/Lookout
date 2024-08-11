@@ -3,12 +3,14 @@ import { FaChevronRight, FaTimes } from "react-icons/fa";
 import ToggleButton from "./ThemeToggleButton";
 import { getEmailFromLocalStorage } from '../utils/auth';
 import HelpCentreModal from './HelpModal';
+import { useNavigate } from "react-router-dom";
 
 interface SettingsModalProps {
 	onClose: () => void;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
+	const navigate = useNavigate();
 	const modalStyles = {
 		modalContainer:
 			"fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
@@ -49,6 +51,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
 			localStorage.setItem("authToken", "");
 			localStorage.removeItem("userEmail");
+			navigate("/login");
 			window.location.reload();
 		} catch (error) {
 			console.error("Error:", error);

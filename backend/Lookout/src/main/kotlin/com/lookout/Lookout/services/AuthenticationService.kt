@@ -128,9 +128,11 @@ class AuthenticationService(
             .maxAge(60 * 60 * 10)
             .build()
 
+        val redirectUrl = "http://localhost:3000/?email=$email"
+
         return ResponseEntity.status(HttpStatus.FOUND) 
             .header(HttpHeaders.SET_COOKIE, cookie.toString()) 
-            .header(HttpHeaders.LOCATION, "http://localhost:3000/")
+            .header(HttpHeaders.LOCATION, redirectUrl)
             .build()
     }
 
