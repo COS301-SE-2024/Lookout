@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 //import '../assets/styles/nav.css'
 //import { FaSignInAlt } from "react-icons/fa";
 import { FaQuestion } from "react-icons/fa";
-import HelpCentreModal from "./HelpCentreModal";
 import HelpModal from "./HelpModal";
 const Navigationbar = () => {
 	const [isAuthed, setIsAuthed] = useState(

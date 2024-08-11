@@ -15,9 +15,9 @@ interface TutorialsModalProps {
 const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
 	const modalStyles = {
 		modalContainer:
-			"fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
+			"fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
 		modalContent:
-			"bg-white text-black rounded-lg p-8 relative w-11/12 md:w-96 h-full md:h-auto overflow-y-auto", // Ensures good contrast between background and text
+			"bg-white text-black rounded-lg p-8 relative w-11/12 md:w-96 max-h-screen h-[80vh] overflow-y-auto", // Adjusted text and background colors
 		closeButton: "absolute top-2 left-2 cursor-pointer",
 		closeIcon: "text-gray-500 hover:text-gray-700",
 		helpTitle: "text-xl font-semibold mb-4 text-center text-black", // Ensures text is visible
