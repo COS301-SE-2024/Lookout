@@ -210,7 +210,7 @@ const HomeScreen: React.FC = () => {
 		};
 
 		fetchPins();
-	});
+	}, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
@@ -297,10 +297,10 @@ const HomeScreen: React.FC = () => {
 				requestOptions
 			);
 
-			if (!response.ok) {
-				throw new Error("Error");
-			}
-
+			// if (!response.ok) {
+			// 	throw new Error("Error");
+			// }
+			console.log("title", title);
 			setCaption("");
 			setTitle("");
 			setPicture("");
