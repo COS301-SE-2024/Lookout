@@ -43,6 +43,10 @@ jobs:
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
 
+      - name: Print environment variables
+        run: env
+
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         working-directory: backend/Lookout
