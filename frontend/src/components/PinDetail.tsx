@@ -293,11 +293,13 @@ const PinDetail: React.FC = () => {
                   <FaBookmark
                     className="text-green-800 cursor-pointer"
                     onClick={handleSaveIconClick}
+                    size={24}
                   />
                 ) : (
                   <FaRegBookmark
                     className="text-green-800 cursor-pointer"
                     onClick={handleSaveIconClick}
+                    size={24}
                   />
                 )}
                 <span className="ml-2">{saves} saves</span>

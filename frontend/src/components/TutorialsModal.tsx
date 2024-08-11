@@ -49,7 +49,7 @@ const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
 		{
 			question: "How to find pins on the Explore Page?",
 			image: images.explore,
-			answer: "This pin's caption is “Early Risers”, the category is “Hiking Trail”, and it shows the posting date. \n Click the pin to view details like who posted it and their group."
+			answer: "You can search for posts and groups by simply clicking on this field and then typing \n To navigate between posts you can click on the arrows to scroll between posts.\n If you click on a post you will be brought to a page like this. There is also a back button to take you back to the explore page. \nIf you want to view this post on a map then simply click on this View on Map button. \n If you want to see which group this post belongs to click on the View Group button. You can also see more posts from the group in the carousel below."
 		},
 		{
 			question: "How to find groups on the Explore Page?",
@@ -79,7 +79,12 @@ const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
 		{
 			question: "How to edit a post on the profile page?",
 			image: images.profileEditPost,
-			answer: "Click on the edit button.\nYou can now make changes to your caption.After editing, click Save to update your post. If you decide not to make any changes, click Cancel.\nThis demonstrates how the caption was successfully updated."
+			answer: "If you would like to edit your post then click on the edit button. \n If you would like to cancel the editing process click on the cancel button.\n If you would like to edit your post's title then you can type the updated title in this text area.\n If you would like to edit your post's caption then you can type your updated caption in this text area.\n If you are satisfied with the updated post then you can click on the Done button."
+		},
+		{
+			question: "How to edit a group on the profile page?",
+			image: images.editGroup,
+			answer: "If you would like to edit a group then simply click on the pencil icon. \nAs a group admin you also have the ability to remove a member from your group and if you would like to do so then simply click on this button to remove that member.\nIf you would like to cancel the editing process then simply click on the Cancel button.\nIf you would like to edit your group’s title then simply click on the text area below this blue dot and then start typing your new title. \nIf you would like to edit your group’s description then simply click on the text area to the left of this blue dot and start typing the new description. \nIf you are happy with the changes you have made then you can click on the Done button and all changes made to your group will be saved."
 		},
 		{
 			question: "How to use settings?",
