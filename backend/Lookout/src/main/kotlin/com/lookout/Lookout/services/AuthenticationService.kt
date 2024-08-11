@@ -101,19 +101,15 @@ class AuthenticationService(
         val idToken = response?.get("id_token") as String
         val accessToken = response["access_token"] as String
 
-        // Fetch user information from Google
         val userInfo = fetchUserInfo(accessToken)
 
-        // Extract user details
         val email = userInfo["email"] as String
         val name = userInfo["name"] as String
 
-        // Check if user exists or create a new user
         val userOptional = userRepository.findByEmail(email)
         val user = if (userOptional.isPresent) {
             userOptional.get()
         } else {
-            // Create new user
             val newUser = User(
                 email = email,
                 userName = name,
@@ -132,9 +128,9 @@ class AuthenticationService(
             .maxAge(60 * 60 * 10)
             .build()
 
-        return ResponseEntity.status(HttpStatus.FOUND) // 302 status code for redirection
-            .header(HttpHeaders.SET_COOKIE, cookie.toString()) // Set the cookie
-            .header(HttpHeaders.LOCATION, "http://localhost:3000/") // Redirect URL
+        return ResponseEntity.status(HttpStatus.FOUND) 
+            .header(HttpHeaders.SET_COOKIE, cookie.toString()) 
+            .header(HttpHeaders.LOCATION, "http://localhost:3000/")
             .build()
     }
 
