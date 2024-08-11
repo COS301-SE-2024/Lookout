@@ -193,7 +193,7 @@ const HomeScreen: React.FC = () => {
 				}
 
 				const pinsData = await response.json();
-				console.log(pinsData)
+				console.log(pinsData);
 				const formattedPins = pinsData.content.map((pin: any) => ({
 					id: pin.id,
 					location: { lat: pin.latitude, lng: pin.longitude },
@@ -273,14 +273,14 @@ const HomeScreen: React.FC = () => {
 			// image: "https://h5p.org/sites/default/files/h5p/content/1209180/images/file-6113d5f8845dc.jpeg",
 			// latitude: latitude,
 			// longitude: longitude
+			caption: caption,
+			title: title,
+			categoryid: selectedCategory,
 			userid: 112,
 			groupid: selectedGroup,
-			categoryid: selectedCategory,
 			picture: picture,
 			latitude: latitude,
-			longitude: longitude,
-			caption: caption,
-			title: title
+			longitude: longitude
 		});
 
 		const requestOptions = {
@@ -298,9 +298,9 @@ const HomeScreen: React.FC = () => {
 				requestOptions
 			);
 
-			// if (!response.ok) {
-			// 	throw new Error("Error");
-			// }
+			if (!response.ok) {
+				throw new Error("Error");
+			}
 			console.log("title", title);
 			setCaption("");
 			setTitle("");
@@ -680,7 +680,8 @@ const HomeScreen: React.FC = () => {
 							className="block mx-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
 							onClick={() => {
 								setIsSuccessModalOpen(false);
-								navigate("/"); // Redirect or navigate as needed
+
+								navigate("/");
 							}}
 						>
 							Okay
@@ -745,7 +746,7 @@ const HomeScreen: React.FC = () => {
 								// shortenURL(url);
 
 								// setPicture(url);
-
+								setPicture(url);
 								uploadBase64ImageToS3(url);
 								setIsCameraModalOpen(false);
 							}}
