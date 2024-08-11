@@ -8,11 +8,13 @@ on:
     branches:
       - main
       - dev
+      - devV2
 
   pull_request:
     branches:
       - main
       - dev
+      - devV2
       
 
 jobs:
