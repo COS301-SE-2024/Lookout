@@ -46,13 +46,12 @@ interface Post {
 }
 
 const CreatedGroupDetail: React.FC = () => {
-  const userId = 1; // Placeholder for user ID
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [group, setGroup] = useState<Group | null>(null);
   const [owner, setOwner] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [members, setMembers] = useState<User[]>([]);
+  const [, setMembers] = useState<User[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [postsLoaded, setPostsLoaded] = useState(false);
   const [groupLoaded, setGroupLoaded] = useState(false);
@@ -106,28 +105,28 @@ const CreatedGroupDetail: React.FC = () => {
     fetchGroupDetails();
   }, [id]);
 
-  const handleRemoveMember = (userId: number) => {
-    if (group) {
-      const requestBody = {
-        groupId: group.id,
-        userId: userId,
-      };
+  // const handleRemoveMember = (userId: number) => {
+  //   if (group) {
+  //     const requestBody = {
+  //       groupId: group.id,
+  //       userId: userId,
+  //     };
 
-      fetch('/api/groups/RemoveMemberFromGroup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      })
-        .then((response) => {
-          if (response.ok) {
-            setMembers((prevMembers) => prevMembers.filter((member) => member.id !== userId));
-          } else {
-            response.text().then((errorMessage) => console.error(errorMessage));
-          }
-        })
-        .catch((error) => console.error('Error removing member:', error));
-    }
-  };
+  //     fetch('/api/groups/RemoveMemberFromGroup', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(requestBody),
+  //     })
+  //       .then((response) => {
+  //         if (response.ok) {
+  //           setMembers((prevMembers) => prevMembers.filter((member) => member.id !== userId));
+  //         } else {
+  //           response.text().then((errorMessage) => console.error(errorMessage));
+  //         }
+  //       })
+  //       .catch((error) => console.error('Error removing member:', error));
+  //   }
+  // };
 
   const handleViewOnMapClick = () => {
     navigate(`/groupMap/${id}`);

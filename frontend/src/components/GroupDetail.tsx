@@ -138,9 +138,9 @@ const GroupDetail: React.FC = () => {
 			.catch((error) => console.error("Error updating group membership:", error));
 	};
 
-	const handleViewOnMapClick = () => {
-		navigate(`/groupMap/${id}`);
-	};
+	// const handleViewOnMapClick = () => {
+	// 	navigate(`/groupMap/${id}`);
+	// };
 
 	if (!(groupLoaded && ownerLoaded && postsLoaded && groupsLoaded)) {
 		return <GroupDetailSkeleton />;

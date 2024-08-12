@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ProfileSkeleton from "../components/ProfileSkeleton";
-import { FaCog } from "react-icons/fa";
 import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
 import PostsGridFix from "../components/PostsGridFix";
 import GroupsGridFix from "../components/GroupsGridFix";

@@ -1,21 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import React, { useState } from "react";
 export const EditProfile = () => {
-	const [picture, setPicture] = useState("");
-
-	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			const fileUrl = URL.createObjectURL(file);
-			setPicture(fileUrl);
-		}
-	};
-	const handleAddPhotoClick = () => {
-		if (fileInputRef.current) {
-			fileInputRef.current.click();
-		}
-	};
+	//const [, setPicture] = useState("");
 
 	const modalStyles = {
 		modalContainer:

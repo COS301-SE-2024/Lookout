@@ -13,7 +13,6 @@ const Profile = () => {
 	const userId = 1;
 	const [activeTab, setActiveTab] = useState("posts");
 	const [showSettings, setShowSettings] = useState(false);
-	const [showEditProfile, setShowEditProfile] = useState(false);
 	const [username, setUsername] = useState("Loading...");
 	const [postsCount, setPostsCount] = useState(0);
 	const [groupsCount, setGroupsCount] = useState(0);
@@ -31,7 +30,7 @@ const Profile = () => {
 	}, [state]);
 
 	const [open, setOpen] = useState<boolean>(false);
-	const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
+	const [, setPreviewUrl] = useState<string | undefined>(undefined);
 	const previewURL = localStorage.getItem("previewUrl");
 
 	useEffect(() => {

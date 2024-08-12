@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import AWS from "aws-sdk";
-import Cookies from "universal-cookie";
 
 const generateRandomString = (length: number) => {
 	const array = new Uint8Array(length / 2);

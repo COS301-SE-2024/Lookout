@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { IoLocationOutline } from "react-icons/io5";
-import CategoryPill from "./CategoryPill";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 interface Post {

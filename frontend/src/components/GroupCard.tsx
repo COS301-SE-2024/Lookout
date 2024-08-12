@@ -13,41 +13,41 @@ interface Group {
 }
 
 const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
-  const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
+  const [, setJoinedGroups] = useState<number[]>([]);
   const navigate = useNavigate();
 
   const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });
   };
 
-  const handleJoinClick = (e: React.MouseEvent, id: number) => {
-    e.stopPropagation();
-    const url = joinedGroups.includes(id) ? '/api/groups/RemoveMemberFromGroup' : '/api/groups/AddMemberToGroup';
-    const body = JSON.stringify({ groupId: id, userId: 2 }); // Assuming userId is 2 for this example
+  // const handleJoinClick = (e: React.MouseEvent, id: number) => {
+  //   e.stopPropagation();
+  //   const url = joinedGroups.includes(id) ? '/api/groups/RemoveMemberFromGroup' : '/api/groups/AddMemberToGroup';
+  //   const body = JSON.stringify({ groupId: id, userId: 2 }); // Assuming userId is 2 for this example
 
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: body
-    }).then(response => {
-      if (response.status === 204) {
-        if (joinedGroups.includes(id)) {
-          setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
-        } else {
-          setJoinedGroups([...joinedGroups, id]);
-        }
-      } else if (response.status === 400) {
-        response.text().then(errorMessage => {
-          console.error(errorMessage);
-          // alert(errorMessage);
-        });
-      } else {
-        throw new Error('Unexpected response status');
-      }
-    }).catch(error => console.error('Error:', error));
-  };
+  //   fetch(url, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: body
+  //   }).then(response => {
+  //     if (response.status === 204) {
+  //       if (joinedGroups.includes(id)) {
+  //         setJoinedGroups(joinedGroups.filter(groupId => groupId !== id));
+  //       } else {
+  //         setJoinedGroups([...joinedGroups, id]);
+  //       }
+  //     } else if (response.status === 400) {
+  //       response.text().then(errorMessage => {
+  //         console.error(errorMessage);
+  //         // alert(errorMessage);
+  //       });
+  //     } else {
+  //       throw new Error('Unexpected response status');
+  //     }
+  //   }).catch(error => console.error('Error:', error));
+  // };
 
   useEffect(() => {
     fetch('/api/groups/user/2') // Assuming userId is 2 for this example

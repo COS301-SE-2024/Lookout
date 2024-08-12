@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import GroupPost from "./GroupsPostFix"; // Assuming you have a component to display individual posts
 
 interface User {

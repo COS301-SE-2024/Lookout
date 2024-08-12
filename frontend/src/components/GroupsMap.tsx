@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import {useLocation } from 'react-router-dom';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
@@ -17,7 +17,7 @@ type myPin = {
 const GroupsMap: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = useParams<{ id: string }>();
+  //const { id } = useParams<{ id: string }>();
   const [pins, setPins] = useState<myPin[]>([]);
   const { group, apicode } = location.state as { group: any, apicode: string };
 
@@ -59,7 +59,7 @@ const GroupsMap: React.FC = () => {
     };
 
     fetchPins();
-  }, [id]);
+  }, [group.id]);
 
   // console.log("Pins State:", pins); // Log pins state
 

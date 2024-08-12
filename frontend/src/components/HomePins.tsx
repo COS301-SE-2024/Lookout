@@ -3,7 +3,6 @@ import { AdvancedMarker, useMap, Pin } from "@vis.gl/react-google-maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import type { Marker } from "@googlemaps/markerclusterer";
 import { useNavigate } from "react-router-dom";
-import { IoLocationOutline } from "react-icons/io5";
 
 type myPin = {
   id: string;
