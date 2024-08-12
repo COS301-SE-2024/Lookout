@@ -598,6 +598,8 @@ companion object {
                 .load()
 
             dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
+	    println("DB_URL: ${System.getProperty("DB_URL")}")
+
             //dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
             //dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
         }
