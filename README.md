@@ -20,7 +20,7 @@ Lookout is a user-friendly, modern Progressive Web Application that revolutionis
 
 ### Demo 3 
 #### Video
-[Click here to watch the video](https://drive.google.com/file/d/1ke1Cc8HQrgy8RDIZbnRfla-eKqWlUK3R/view?usp=sharing)
+[Click here to watch the video](https://drive.google.com/file/d/1co8hBUpEPaTawZOc3JQq2FwDFK4809wF/view?usp=sharing)
 #### Presentation 
 [Presentation Slides](https://www.canva.com/design/DAGKABGFk48/fqltoTp0-f2x2oLVuJNkGw/edit?utm_content=DAGKABGFk48&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
@@ -46,7 +46,7 @@ Lookout is a user-friendly, modern Progressive Web Application that revolutionis
 
 
 ## Project Board
-[Click here to go to the project board](https://github.com/orgs/COS301-SE-2024/projects/81/views/1)
+[Click here to go to the project board](https://github.com/orgs/COS301-SE-2024/projects/81)
 
 ## Meet the team
 
