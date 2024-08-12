@@ -36,6 +36,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Print environment variables
+        run: printenv | grep 'DB_URL\|DB_USER\|DB_PASS\|JWT_SECRET_KEY'
+
       - name: Set environment variables
         run: |
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
