@@ -39,9 +39,9 @@ const GroupScreen = () => {
 			<ul className="flex border-b mb-4">
 				<li className="mr-1">
 					<button
-						className={`px-4 py-2 ${
+						className={`px-4 py-2 focus:outline-none ${
 							activeTab === "your-groups"
-								? "border-b-2 border-blue-500 text-blue-500"
+								? "border-b-4 border-[#6A994E] font-bold"
 								: "text-gray-500"
 						}`}
 						onClick={() => setActiveTab("your-groups")}
@@ -51,9 +51,9 @@ const GroupScreen = () => {
 				</li>
 				<li className="mr-1">
 					<button
-						className={`px-4 py-2 ${
+						className={`px-4 py-2 focus:outline-none${
 							activeTab === "search"
-								? "border-b-2 border-blue-500 text-blue-500"
+								? "border-b-4 border-[#6A994E] font-bold"
 								: "text-gray-500"
 						}`}
 						onClick={() => setActiveTab("search")}
@@ -63,9 +63,9 @@ const GroupScreen = () => {
 				</li>
 				<li className="mr-1">
 					<button
-						className={`px-4 py-2 ${
+						className={`px-4 py-2 focus:outline-none ${
 							activeTab === "create"
-								? "border-b-2 border-blue-500 text-blue-500"
+								? "border-b-4 border-[#6A994E] font-bold"
 								: "text-gray-500"
 						}`}
 						onClick={() => setActiveTab("create")}

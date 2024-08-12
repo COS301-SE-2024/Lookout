@@ -5,11 +5,13 @@ on:
     branches:
       - main
       - dev
+      - devV2
 
   pull_request:
     branches:
       - main
       - dev
+      - devV2
       
 
 jobs:
@@ -34,10 +36,20 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Set environment variables
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
+        working-directory: backend/Lookout
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         working-directory: backend/Lookout
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
+      - name: Build and Test with Gradle
+        run: ./gradlew test
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
         working-directory: backend/Lookout

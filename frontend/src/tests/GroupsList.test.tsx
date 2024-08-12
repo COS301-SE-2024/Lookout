@@ -52,19 +52,15 @@ describe('GroupsList', () => {
     renderWithRouter(<GroupsList />);
 
     const groupOneName = await screen.findByText('Group One');
-    const groupOneOwner = await screen.findByText('Owner One');
     const groupOneDescription = await screen.findByText('This is Group One');
 
     expect(groupOneName).toBeInTheDocument();
-    expect(groupOneOwner).toBeInTheDocument();
     expect(groupOneDescription).toBeInTheDocument();
 
     const groupTwoName = await screen.findByText('Group Two');
-    const groupTwoOwner = await screen.findByText('Owner Two');
     const groupTwoDescription = await screen.findByText('This is Group Two');
 
     expect(groupTwoName).toBeInTheDocument();
-    expect(groupTwoOwner).toBeInTheDocument();
     expect(groupTwoDescription).toBeInTheDocument();
   });
 

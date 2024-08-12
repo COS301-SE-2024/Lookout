@@ -8,12 +8,12 @@ import org.springframework.boot.runApplication
 class LookoutApplication
 
 fun main(args: Array<String>) {
-	val dotenv = Dotenv.configure()
-		.directory("../backend/Lookout/.env")
-		.load()
-	dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
-	dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
-	dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
+	 val dotenv = Dotenv.configure()
+	 	.directory("../backend/Lookout/.env")
+	 	.load()
+	 dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
+//	dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
+//	dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
 	runApplication<LookoutApplication>(*args)
 }
 

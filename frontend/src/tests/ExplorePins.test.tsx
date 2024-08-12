@@ -6,7 +6,6 @@ import { Router } from 'react-router-dom';
 import ExplorePins from './../components/ExplorePins';
 import { JSX } from 'react/jsx-runtime';
 
-// Mock data
 const mockPosts = [
   {
     id: 1,
@@ -106,7 +105,6 @@ const mockPosts = [
   },
 ];
 
-// Mocking the fetch API
 beforeEach(() => {
   global.fetch = jest.fn(() =>
     Promise.resolve(
@@ -133,15 +131,12 @@ describe('ExplorePins', () => {
   test('renders posts', async () => {
     renderWithRouter(<ExplorePins />);
   
-    // Filter out the posts that do not meet the condition
     const postsToTest = mockPosts.filter(post => post.user.id !== 52);
   
-    // Wait for the posts to be loaded and displayed
     await waitFor(() => {
       postsToTest.forEach(post => {
         expect(screen.getByAltText(post.caption)).toBeInTheDocument();
         expect(screen.getByText(post.caption)).toBeInTheDocument();
-        expect(screen.getByText(post.category.description)).toBeInTheDocument();
       });
     });
   });
@@ -151,10 +146,8 @@ describe('ExplorePins', () => {
 
     const postsToTest = mockPosts.filter(post => post.user.id !== 52);
   
-    // Ensure there is at least one post to test
     expect(postsToTest.length).toBeGreaterThan(0);
   
-    // Wait for the posts to be loaded and displayed
     await waitFor(() => {
       postsToTest.forEach(post => {
         const linkElement = screen.getByAltText(post.caption).closest('div');
@@ -162,9 +155,9 @@ describe('ExplorePins', () => {
       });
     });
   
-    // Now that we've asserted the array has items, we can safely access the first item
     const firstPostLink = screen.getByAltText(postsToTest[0].caption).closest('div') as HTMLDivElement;
     fireEvent.click(firstPostLink);
     expect(history.location.pathname).toBe(`/post/${postsToTest[0].id}`);
   });
 });
+

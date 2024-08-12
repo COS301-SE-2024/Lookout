@@ -1,0 +1,71 @@
+###
+### Get a post by ID
+GET http://localhost:8080/api/posts/1
+Accept: application/json
+
+###
+
+###Create a post
+POST /api/posts/CreatePost HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "userid": 1,
+  "groupid": 2,
+  "categoryid": 5,
+  "picture": "https://media.istockphoto.com/id/1427130990/photo/old-broken-withered-wooden-fence-around-private-property.jpg?s=612x612&w=0&k=20&c=QXSbJUcfW16oajIGvPNeTchIUfThhpUUdEMZ_kZRPqk=",
+  "latitude": "123.123",
+  "longitude": "123.123",
+  "caption": "Found this fence breach",
+  "title": "Security Concern"
+}
+###
+
+### Delete a post
+DELETE /api/posts/3 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+###
+
+### Get all posts by user id
+GET http://localhost:8080/api/posts/user/1?page=0&size=10
+Accept: application/json
+###
+
+### Get all posts
+GET http://localhost:8080/api/posts
+Accept: application/json
+###
+
+### Get posts by group ID
+GET http://localhost:8080/api/posts/group/2?page=0&size=10
+Accept: application/json
+###
+
+### Get posts by category ID
+GET http://localhost:8080/api/posts/category/3?page=0&size=10
+Accept: application/json
+###
+
+### Update a post
+POST /api/posts/UpdatePost HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "id": 1,
+  "userId": 1,
+  "groupId": 2,
+  "categoryId": 3,
+  "picture": "https://newpicturelink.com/updated.png",
+  "latitude": 124.124,
+  "longitude": 124.124,
+  "caption": "Found this new campsite xxx",
+  "title": "this is a test update"
+}
+###
+
+
+

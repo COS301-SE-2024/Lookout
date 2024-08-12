@@ -3,82 +3,124 @@ import ReactDOM from "react-dom/client";
 import "./assets/styles/index.css";
 import App from "./App";
 import {
-    Route,
-    RouterProvider,
-    createBrowserRouter,
-    createRoutesFromElements,
+	Route,
+	RouterProvider,
+	createBrowserRouter,
+	createRoutesFromElements
 } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
-import ExploreScreen from "./screens/ExploreScreen";
 import GroupScreen from "./screens/GroupScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import GroupDetail from "./components/GroupDetail";
 import PinDetail from "./components/PinDetail";
+import GroupPosts from "./components/GroupPosts";
 import Profile from "./screens/Profile";
+import ProfileDetail from "./components/ProfileDetail";
+import GroupsMap from "./components/GroupsMap";
+import ExploreScreen from "./screens/ExploreScreen";
 import UserPostDetails from "./components/UserPostDetails";
+import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CategoryPostsPage from "./screens/CategoryPostsPage";
+import ExploreGroups from "./components/ExploreGroups";
+import PinMap from "./components/PinMap";
+import CreatedGroupDetail from "./components/CreatedGroupDetail";
 
 function Main() {
-    useEffect(() => {
-        const currentTheme = localStorage.getItem("data-theme");
-        if (currentTheme) {
-            document.documentElement.setAttribute("data-theme", currentTheme);
-        } else {
-            localStorage.setItem("data-theme", "default");
-            document.documentElement.setAttribute("data-theme", "default");
-        }
-    }, []);
+	useEffect(() => {
+		const currentTheme = localStorage.getItem("data-theme");
+		if (currentTheme) {
+			document.documentElement.setAttribute("data-theme", currentTheme);
+		} else {
+			localStorage.setItem("data-theme", "default");
+			document.documentElement.setAttribute("data-theme", "default");
+		}
+	}, []);
 
-    const router = createBrowserRouter(
-        createRoutesFromElements(
-            <Route path="/" element={<App />}>
-                <Route
-                    index={true}
-                    path="/"
-                    element={<ProtectedRoute element={HomeScreen} />}
-                />
-                <Route
-                    path="/explore"
-                    element={<ProtectedRoute element={ExploreScreen} />}
-                />
-                <Route
-                    path="/groups"
-                    element={<ProtectedRoute element={GroupScreen} />}
-                />
-                <Route path="/login" element={<LoginScreen />} />{" "}
-                <Route path="/signup" element={<SignUpScreen />} />{" "}
-                <Route
-                    path="/group/:id"
-                    element={<ProtectedRoute element={GroupDetail} />}
-                />
-                <Route
-                    path="/post/:id"
-                    element={<ProtectedRoute element={PinDetail} />}
-                />
-                <Route
-                    path="/profile"
-                    element={<ProtectedRoute element={Profile} />}
-                />
-                <Route
-                    path="/user_post/:id"
-                    element={<ProtectedRoute element={UserPostDetails} />}
-                />
-            </Route>
-        )
-    );
+	const router = createBrowserRouter(
+		createRoutesFromElements(
+			<Route path="/" element={<App />}>
+				<Route
+					index={true}
+					path="/"
+					element={<ProtectedRoute element={HomeScreen} />}
+				/>
+				<Route
+					path="/explore"
+					element={<ProtectedRoute element={ExploreScreen} />}
+				/>
+				<Route
+					path="/groups"
+					element={<ProtectedRoute element={GroupScreen} />}
+				/>
+				<Route
+					path="/groupMap"
+					element={<ProtectedRoute element={GroupsMap} />}
+				/>
+				<Route
+					path="/exploreGroups"
+					element={<ProtectedRoute element={ExploreGroups} />}
+				/>
+				<Route path="/login" element={<LoginScreen />} />{" "}
+				<Route path="/signup" element={<SignUpScreen />} />{" "}
+				<Route
+					path="/group/:id"
+					element={<ProtectedRoute element={GroupDetail} />}
+				/>
+				<Route path="/group/:id/posts" element={<GroupPosts />} />
+				<Route
+					path="/post/:id"
+					element={<ProtectedRoute element={PinDetail} />}
+				/>
+				<Route
+					path="/profile"
+					element={<ProtectedRoute element={Profile} />}
+				/>
+				<Route
+					path="/user_post/:id"
+					element={<ProtectedRoute element={UserPostDetails} />}
+				/>
+				<Route
+					path="/saved_post/:id"
+					element={<ProtectedRoute element={SavedPostDetails} />}
+				/>
+				<Route>
+					<Route path="/" element={<ExploreScreen />} />
+					<Route
+						path="/category/:categoryId"
+						element={<CategoryPostsPage />}
+					/>{" "}
+					{/* Add this line */}
+				</Route>
+				<Route
+					path="/createdGroup/:id"
+					element={<ProtectedRoute element={CreatedGroupDetail} />}
+				/>
+				<Route path="/profileView/:id" element={<ProfileDetail />} />{" "}
+				{/* Define route for profile detail */}
+				<Route path="/map" element={<PinMap />} />
+			</Route>
+		)
+	);
 
-    return (
-        <React.StrictMode>
-            <RouterProvider router={router} />
-        </React.StrictMode>
-    );
+	return <RouterProvider router={router} />;
 }
 
 const root = ReactDOM.createRoot(
-    document.getElementById("root") as HTMLElement
+	document.getElementById("root") as HTMLElement
 );
 root.render(<Main />);
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/sw.js");
+	navigator.serviceWorker
+		.register("/sw.js")
+		.then((registration) => {
+			console.log(
+				"Service Worker registered with scope:",
+				registration.scope
+			);
+		})
+		.catch((error) => {
+			console.log("Service Worker registration failed:", error);
+		});
 }

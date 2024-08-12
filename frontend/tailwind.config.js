@@ -7,8 +7,13 @@ module.exports = {
 				bkg: "rgb(var(--color-bkg) / <alpha-value>)",
 				content: "rgb(var(--color-content) / <alpha-value>)",
 				navBkg: "rgb(var(--color-nav-bkg) / <alpha-value>)"
+			},
+			clipPath: {
+				'custom-arch': 'ellipse(75% 40% at 50% 0%)',
 			}
 		}
 	},
-	plugins: []
+	plugins: [
+		require('tailwind-clip-path'),
+	]
 };

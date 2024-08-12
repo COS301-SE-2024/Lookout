@@ -1,8 +1,9 @@
 package com.lookout.Lookout.controller
 
-import com.lookout.Lookout.entity.AddOrRemoveMemberFromGroup
-import com.lookout.Lookout.entity.GroupMembers
-import com.lookout.Lookout.entity.Groups
+import com.lookout.Lookout.dto.CreateGroupDto
+import com.lookout.Lookout.dto.GroupDto
+import com.lookout.Lookout.dto.UserDto
+import com.lookout.Lookout.entity.*
 import com.lookout.Lookout.service.GroupService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,49 +11,73 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import com.lookout.Lookout.entity.UpdateGroup
 
 @RestController
 @RequestMapping("/api/groups")
 class GroupController(private val groupService: GroupService) {
 
+    fun convertToDto(group: Groups): GroupDto {
+        return GroupDto(
+            id = group.id,
+            name = group.name,
+            description = group.description,
+            isPrivate = group.isPrivate,
+            picture = group.picture.toString(),
+            createdAt = group.createdAt.toString(),
+            userId = group.user?.id ?: 0,
+            username = group.user?.username.toString(),
+            role = group.user?.role.toString()
+        )
+    }
+
+    fun convertToUserDto(user: User): UserDto {
+        return UserDto(
+            id = user.id,
+            userName = user.userName ?: "",
+            email = user.email ?: "",
+            profilePic = user.profilePic ?: ""
+        )
+    }
+
+
     @GetMapping
     fun getAllGroups(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<Page<Groups>> {
+    ): ResponseEntity<Page<GroupDto>> {
         val pageable: Pageable = PageRequest.of(page, size)
-        val groups = groupService.findAll(pageable)
+        val groups = groupService.findAll(pageable).map { group -> convertToDto(group) }
         return ResponseEntity.ok(groups)
     }
 
     @GetMapping("/{id}")
-    fun getGroupById(@PathVariable id: Long): ResponseEntity<Groups> {
+    fun getGroupById(@PathVariable id: Long): ResponseEntity<GroupDto> {
         val group = groupService.findById(id)
         return if (group != null) {
-            ResponseEntity.ok(group)
+            ResponseEntity.ok(convertToDto(group))
         } else {
             ResponseEntity.notFound().build()
         }
     }
 
     @PostMapping
-    fun createGroup(@RequestBody group: Groups): ResponseEntity<Groups> {
+    fun createGroup(@RequestBody createGroupDto: CreateGroupDto): ResponseEntity<GroupDto> {
         try {
-            val savedGroup = groupService.save(group)
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedGroup)
+            val savedGroup = groupService.savedto(createGroupDto)
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(savedGroup))
         } catch (e: IllegalArgumentException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
 
+
     @PutMapping("/{id}")
-    fun updateGroup(@PathVariable id: Long, @RequestBody group: Groups): ResponseEntity<Groups> {
+    fun updateGroup(@PathVariable id: Long, @RequestBody group: Groups): ResponseEntity<GroupDto> {
         val updatedGroup = groupService.findById(id)?.let {
             groupService.save(group.copy(id = it.id))
         }
         return if (updatedGroup != null) {
-            ResponseEntity.ok(updatedGroup)
+            ResponseEntity.ok(convertToDto(updatedGroup))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -69,8 +94,8 @@ class GroupController(private val groupService: GroupService) {
     }
 
     @GetMapping("/user/{userid}")
-    fun getGroupsByUserId(@PathVariable userid: Long): ResponseEntity<List<Groups>> {
-        val groups = groupService.findGroupsByUserId(userid)
+    fun getGroupsByUserId(@PathVariable userid: Long): ResponseEntity<List<GroupDto>> {
+        val groups = groupService.findGroupsByUserId(userid).map { group -> convertToDto(group)}
         return if (groups.isNotEmpty()) {
             ResponseEntity.ok(groups)
         } else {
@@ -79,7 +104,7 @@ class GroupController(private val groupService: GroupService) {
     }
 
     @PostMapping("/AddMemberToGroup")
-    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<String> {
         return try {
             val groupId = request.groupId
             val userId = request.userId
@@ -87,15 +112,15 @@ class GroupController(private val groupService: GroupService) {
                 groupService.addMember(groupId, userId)
                 ResponseEntity.noContent().build()
             } else {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Group ID or User ID is null")
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
     @PostMapping("/RemoveMemberFromGroup")
-    fun RemoveMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<Void> {
+    fun removeMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<String> {
         return try {
             val groupId = request.groupId
             val userId = request.userId
@@ -103,10 +128,10 @@ class GroupController(private val groupService: GroupService) {
                 groupService.removeMember(groupId, userId)
                 ResponseEntity.noContent().build()
             } else {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Group ID or User ID is null")
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
@@ -117,6 +142,16 @@ class GroupController(private val groupService: GroupService) {
             ResponseEntity.ok(updatedGroup)
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+        }
+    }
+
+    @GetMapping("/users/{groupId}")
+    fun getGroupMembers(@PathVariable groupId: Long): ResponseEntity<List<UserDto>> {
+        val groupMembers = groupService.getGroupMembers(groupId).map { user -> convertToUserDto(user) }
+        return if (groupMembers.isNotEmpty()) {
+            ResponseEntity.ok(groupMembers)
+        } else {
+            ResponseEntity.noContent().build()
         }
     }
     

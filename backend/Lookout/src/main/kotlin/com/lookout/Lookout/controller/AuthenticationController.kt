@@ -4,13 +4,9 @@ import com.lookout.Lookout.dto.AuthenticationResponse
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.service.AuthenticationService
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpHeaders
-import org.springframework.http.ResponseCookie
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.*
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.RestTemplate
 
 
 @RestController
@@ -28,7 +24,7 @@ class AuthenticationController(private val authService: AuthenticationService, r
             val cookie: ResponseCookie = ResponseCookie.from("jwt", authResponse.token)
                 .httpOnly(true)
                 .path("/")
-                .maxAge(60*60*10)
+                .maxAge(60*60*1000)
                 .build()
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString())
         }
@@ -61,4 +57,24 @@ class AuthenticationController(private val authService: AuthenticationService, r
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString())
         return ResponseEntity.ok(authResponse)
     }
+
+
+    @GetMapping("/signup/google")
+    fun grantCode(
+        @RequestParam("code") code: String?,
+        @RequestParam("scope") scope: String?,
+        @RequestParam("authuser") authUser: String?,
+        @RequestParam("prompt") prompt: String?,
+        @RequestParam("error") error: String?
+    ): ResponseEntity<Any> {
+        if (error != null) {
+
+            return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.LOCATION, "http://localhost:3000/login")
+                .build()
+        }
+        return authService.processGrantCode(code)
+    }
+
+
 }

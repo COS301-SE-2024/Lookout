@@ -5,7 +5,6 @@ import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import SearchGroups from './../components/SearchGroups';
 
-// Mocking the API response with some test data
 const mockGroups = [
   {
     id: 1,
@@ -73,6 +72,14 @@ describe('SearchGroups', () => {
     await screen.findByText('Bird Watchers');
   });
 
+  
+  test('displays no groups found message if no match', async () => {
+    renderWithRouter(<SearchGroups />);
+    fireEvent.change(screen.getByPlaceholderText('Search...'), { target: { value: 'NonExistentGroup' } });
+    
+    await screen.findByText('No groups found.');
+  });
+  
   test('filters groups based on search query', async () => {
     renderWithRouter(<SearchGroups />);
     fireEvent.change(screen.getByPlaceholderText('Search...'), { target: { value: 'Mountain' } });
@@ -80,13 +87,6 @@ describe('SearchGroups', () => {
     await screen.findByText('Mountain Climbers');
     expect(screen.queryByText('Ocean Explorers')).not.toBeInTheDocument();
     expect(screen.queryByText('Bird Watchers')).not.toBeInTheDocument();
-  });
-
-  test('displays no groups found message if no match', async () => {
-    renderWithRouter(<SearchGroups />);
-    fireEvent.change(screen.getByPlaceholderText('Search...'), { target: { value: 'NonExistentGroup' } });
-
-    await screen.findByText('No groups found.');
   });
 
 });

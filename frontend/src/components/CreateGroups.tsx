@@ -33,8 +33,12 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
       description: description,
       picture: picture || "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
       isPrivate: isToggled,
-      user: { id: 1 } // Replace with the actual user ID
+      userId: 2 // Replace with the actual user ID
     };
+
+    console.log(newGroup);
+
+
 
     try {
       const response = await fetch('/api/groups', {

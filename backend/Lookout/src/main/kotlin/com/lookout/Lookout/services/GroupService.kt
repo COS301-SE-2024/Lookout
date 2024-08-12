@@ -1,8 +1,11 @@
 package com.lookout.Lookout.service
 
+import com.lookout.Lookout.dto.CreateGroupDto
+import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.repository.GroupRepository
 import com.lookout.Lookout.entity.UpdateGroup
+import com.lookout.Lookout.entity.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -26,6 +29,22 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         return groupRepository.save(group)
     }
 
+    fun savedto(createGroupDto: CreateGroupDto): Groups {
+        val user = userService.findById(createGroupDto.userId).orElseThrow {
+            IllegalArgumentException("User not found with id: ${createGroupDto.userId}")
+        }
+
+        val group = Groups(
+            name = createGroupDto.name,
+            description = createGroupDto.description,
+            picture = createGroupDto.picture,
+            user = user
+        )
+
+        return groupRepository.save(group)
+    }
+
+
     fun deleteById(groupId: Long) = groupRepository.deleteById(groupId)
 
     fun findGroupsByUserId(userid: Long): List<Groups> = groupRepository.findGroupsByUserId(userid)
@@ -35,6 +54,11 @@ class GroupService(private val groupRepository: GroupRepository, private val use
     fun addMember(groupId: Long, userId: Long) {
         val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
         val user = userService.findById(userId).orElseThrow { IllegalArgumentException("User not found with id: $userId") }
+
+        if (groupRepository.countMembersInGroup(group.id, user.id) > 0) {
+            throw IllegalArgumentException("User is already in the group")
+        }
+
         groupRepository.addMemberToGroup(group.id, user.id)
     }
 
@@ -42,6 +66,11 @@ class GroupService(private val groupRepository: GroupRepository, private val use
     fun removeMember(groupId: Long, userId: Long) {
         val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
         val user = userService.findById(userId).orElseThrow { IllegalArgumentException("User not found with id: $userId") }
+
+        if (groupRepository.countMembersInGroup(group.id, user.id).toInt() == 0) {
+            throw IllegalArgumentException("User is not in the group")
+        }
+
         groupRepository.removeMemberFromGroup(group.id, user.id)
     }
 
@@ -58,4 +87,10 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         }
         return null
     }
+
+    fun getGroupMembers(groupId: Long): List<User> {
+        val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
+        return groupRepository.findGroupMembers(groupId)
+    }
+
 }
