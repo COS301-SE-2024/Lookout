@@ -52,4 +52,6 @@ jobs:
 
       - name: Build and Test with Gradle
         run: ./gradlew test
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
         working-directory: backend/Lookout
