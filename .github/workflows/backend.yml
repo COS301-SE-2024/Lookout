@@ -36,15 +36,15 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Print environment variables
-        run: printenv | grep 'DB_URL\|DB_USER\|DB_PASS\|JWT_SECRET_KEY'
-
       - name: Set environment variables
         run: |
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
           echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
+
+      - name: Print environment variables
+        run: printenv | grep 'DB_URL\'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
