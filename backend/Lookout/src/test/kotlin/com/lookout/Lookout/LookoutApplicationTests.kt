@@ -588,21 +588,22 @@ class LookoutApplicationTests {
 
 
 companion object {
-     @JvmStatic
-     @BeforeAll
-     fun setup(): Unit {
-         if (System.getenv("GITHUB_ACTIONS") == null) {
-             val dotenv = Dotenv.configure()
-                 .directory("./.env")
-                 .ignoreIfMalformed()
-                 .ignoreIfMissing()
-                 .load()
-             dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
-             dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
-             dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
-         }
-     }
- }
+    @JvmStatic
+    @BeforeAll
+    fun setup(): Unit {
+        if (System.getenv("GITHUB_ACTIONS") == null) {
+            val dotenv = Dotenv.configure()
+                .ignoreIfMalformed()
+                .ignoreIfMissing()
+                .load()
+
+            dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
+            //dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
+            //dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
+        }
+    }
+}
+
 
 
 
