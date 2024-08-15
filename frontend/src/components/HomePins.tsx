@@ -2,8 +2,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
     AdvancedMarker,
-    useMap,
-    Pin  
+    useMap 
   } from '@vis.gl/react-google-maps';
   import {MarkerClusterer} from '@googlemaps/markerclusterer';
   import type {Marker} from '@googlemaps/markerclusterer';
