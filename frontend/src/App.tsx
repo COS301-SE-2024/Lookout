@@ -1,6 +1,9 @@
 import Navigationbar from "./components/Navigationbar";
 import { Outlet } from "react-router-dom";
-import "./assets/styles/nav.css";
+
+import './assets/styles/nav.css'
+import EmailHandler from "./components/EmailHandler";
+
 
 const App = () => {
 	return (
@@ -9,6 +12,7 @@ const App = () => {
 			<main className="bg-bkg text-content">
 				<div className="container mx-0">
 					<Outlet />
+					<EmailHandler />
 				</div>
 			</main>
 		</>

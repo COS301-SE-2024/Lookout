@@ -2,48 +2,42 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
 import {
-	APIProvider,
-	Map,
-	AdvancedMarker,
-	useMap,
-	Pin
-} from "@vis.gl/react-google-maps";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import type { Marker } from "@googlemaps/markerclusterer";
-import "../assets/styles/home.css";
-import HomePins from "../components/HomePins";
-import { FaFolder, FaCamera, FaTimes, FaPlus } from "react-icons/fa";
-import Legend from "../components/Legend";
-import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
+
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  useMap,
+  Pin
+} from '@vis.gl/react-google-maps';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
+import type { Marker } from '@googlemaps/markerclusterer';
+import '../assets/styles/home.css'
+import HomePins from '../components/HomePins';
+import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
+import Legend from '../components/Legend';
+
+import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
+import campIcon from '../assets/icons/camping-zone.png';
+import AnimalIcon from '../assets/icons/zoo.png';
+import HikingIcon from '../assets/icons/mountain.png';
+import POIIcon from '../assets/icons/point-of-interest.png';
+import SecurityIcon from '../assets/icons/danger.png';
 // import { url } from "inspector";
 import AWS from "aws-sdk";
 
-//import { pinsData } from '../data/posts';
 
-type Poi = {
-	key: string;
-	location: google.maps.LatLngLiteral;
-	label: string;
-	details: string;
-};
-type myPin = {
-	id: string;
-	location: google.maps.LatLngLiteral;
-	caption: string;
-	category: string;
-	image: string;
-	categoryId: number;
-};
+
+
+type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
+type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
 
 const legendItems = [
-	{
-		name: "Nature Reserves",
-		icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-	},
-	{
-		name: "Personal Pins",
-		icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-	}
+  { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' },
+  { name: 'Camp Sites', icon: campIcon },
+  { name: 'Animal', icon: AnimalIcon },
+  { name: 'Hiking', icon: HikingIcon },
+  { name: 'POI', icon: POIIcon },
+  { name: 'Security Risk', icon: SecurityIcon },
 ];
 
 const locations: Poi[] = [
@@ -128,6 +122,7 @@ type Group = {
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC = () => {
+
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
@@ -818,6 +813,7 @@ const HomeScreen: React.FC = () => {
 			)}
 		</APIProvider>
 	);
+
 };
 
 const PoiMarkers = (props: { pois: Poi[] }) => {

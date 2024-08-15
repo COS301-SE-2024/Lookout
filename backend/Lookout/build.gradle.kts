@@ -38,6 +38,7 @@ dependencies {
 	implementation("io.github.cdimascio:dotenv-kotlin:6.2.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+	implementation("org.springframework.boot:spring-boot-configuration-processor")
 
 }
 

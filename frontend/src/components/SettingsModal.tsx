@@ -1,15 +1,18 @@
 import React, { useMemo, useState } from "react";
 import { FaChevronRight, FaTimes, FaChevronLeft } from "react-icons/fa";
 import ToggleButton from "./ThemeToggleButton";
+import { useNavigate } from "react-router-dom";
 import { getEmailFromLocalStorage } from "../utils/auth";
 import HelpCentreModal from "./HelpModal";
 import EditProfile from "./EditProfile";
+
 
 interface SettingsModalProps {
 	onClose: () => void;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
+	const navigate = useNavigate();
 	const modalStyles = {
 		modalContainer:
 			"fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
@@ -50,6 +53,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
 			localStorage.setItem("authToken", "");
 			localStorage.removeItem("userEmail");
+			navigate("/login");
 			window.location.reload();
 		} catch (error) {
 			console.error("Error:", error);

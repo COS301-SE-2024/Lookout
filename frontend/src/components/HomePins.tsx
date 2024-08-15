@@ -1,8 +1,19 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { AdvancedMarker, useMap, Pin } from "@vis.gl/react-google-maps";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import type { Marker } from "@googlemaps/markerclusterer";
-import { useNavigate } from "react-router-dom";
+
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import {
+    AdvancedMarker,
+    useMap,
+    Pin  
+  } from '@vis.gl/react-google-maps';
+  import {MarkerClusterer} from '@googlemaps/markerclusterer';
+  import type {Marker} from '@googlemaps/markerclusterer';
+  import campIcon from '../assets/icons/camping-zonepin.png';
+  import AnimalIcon from '../assets/icons/zoopin.png';
+  import HikingIcon from '../assets/icons/mountainpin.png';
+  import POIIcon from '../assets/icons/point-of-interestpin.png';
+  import SecurityIcon from '../assets/icons/dangerpin.png';
+  import { useNavigate } from "react-router-dom";
+
 
 type myPin = {
   id: string;
@@ -12,11 +23,60 @@ type myPin = {
   image: string;
 };
 
-const HomePins = (props: { pin: myPin[] }) => {
-  const map = useMap();
-  const navigate = useNavigate(); // Use navigate for navigation
-  const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
-  const clusterer = useRef<MarkerClusterer | null>(null);
+
+const HomePins = (props: { pin: myPin[]}) => {
+	const map = useMap();
+  const navigate = useNavigate();
+	const [markers, setMarkers] = useState<{[key: string]: Marker}>({});
+	const clusterer = useRef<MarkerClusterer | null>(null);
+  
+	// Initialize MarkerClusterer, if the map has changed
+	useEffect(() => {
+	  if (!map) return;
+	  if (!clusterer.current) {
+		clusterer.current = new MarkerClusterer({map});
+	  }
+	}, [map]);
+
+	const getIconUrl = (category: string) => {
+		switch (category) {
+			case 'Campsite':
+				return campIcon;
+			case 'Animal Sighting':
+				return AnimalIcon;
+			case 'Hiking Trail':
+				return HikingIcon;
+			case 'POI':
+				return POIIcon;
+			case 'Security Concern':
+				return SecurityIcon;
+			default:
+				return POIIcon; 
+		}
+	};
+	
+  
+	// Update markers, if the markers array has changed
+	useEffect(() => {
+	  clusterer.current?.clearMarkers();
+	  clusterer.current?.addMarkers(Object.values(markers));
+	}, [markers]);
+  
+	const setMarkerRef = (marker: Marker | null, key: string) => {
+	  if (marker && markers[key]) return;
+	  if (!marker && !markers[key]) return;
+  
+	  setMarkers(prev => {
+		if (marker) {
+		  return {...prev, [key]: marker};
+		} else {
+		  const newMarkers = {...prev};
+		  delete newMarkers[key];
+		  return newMarkers;
+		}
+	  });
+	};
+
 
   // Initialize MarkerClusterer, if the map has changed
   useEffect(() => {
@@ -96,26 +156,25 @@ const HomePins = (props: { pin: myPin[] }) => {
     },
     [markers, infoWindow, map, props.pin, navigate]
   );
+	  
+	  
+  
+	return (
+	  <>
+		{props.pin.map( (poi: myPin) => (
+		  <AdvancedMarker
+			key={poi.id}
+			position={poi.location}
+			ref={marker => setMarkerRef(marker, poi.id)}
+			clickable={true}
+            onClick={() => handleMarkerClick(poi.id)}   	
+			>
+			  <img src={getIconUrl(poi.category)} width={45} height={45} alt={poi.category} />
+		  </AdvancedMarker>
+		))}
+	  </>
+	 );
+  };
 
-  return (
-    <>
-      {props.pin.map((poi: myPin) => (
-        <AdvancedMarker
-          key={poi.id}
-          position={poi.location}
-          ref={(marker) => setMarkerRef(marker, poi.id)}
-          clickable={true}
-          onClick={() => handleMarkerClick(poi.id)}
-        >
-          <Pin
-            background={"#FA0606"}
-            glyphColor={"#000"}
-            borderColor={"#000"}
-          />
-        </AdvancedMarker>
-      ))}
-    </>
-  );
-};
 
 export default HomePins;
