@@ -14,27 +14,29 @@ POST http://localhost:8080/api/groups
 Content-Type: application/json
 
 {
-  "name": "Whale Squad",
-  "description": "This is a group for people interested in Whale",
+  "name": "Whale Squad wow",
+  "description": "This is a group for people interested in Whales",
   "picture": "https://static.vecteezy.com/system/resources/thumbnails/021/790/965/small_2x/shark-and-water-icon-cute-sea-animal-illustration-treasure-island-hunter-picture-funny-pirate-party-element-for-kids-scary-fish-picture-with-toothy-opened-jaws-vector.jpg",
-  "user": {
-    "id": 1
-  }
+  "userId": 2
 }
 ###
 
 ### Update a group
-PUT http://localhost:8080/api/groups/6
+PUT http://localhost:8080/api/groups/1
 Content-Type: application/json
 
 {
-  "name": "Unit Test Updated Group",
-  "description": "This group has been updated"
+  "name": "Whalesss",
+  "description": "This group has been updated",
+  "user": {
+    "id": 1
+  },
+  "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK0Au6KMF9u-vu2fnUAZZCNLYxOXpfP9SRBQ&s"
 }
 ###
 
 ### Delete a group
-DELETE http://localhost:8080/api/groups/1
+DELETE http://localhost:8080/api/groups/252
 ###
 
 ### Get a group by user id
@@ -58,7 +60,6 @@ Accept: application/json
 ###
 
 ###Add member to a group
-
 POST /api/groups/AddMemberToGroup HTTP/1.1
 Host: localhost:8080
 Content-Type: application/json
@@ -99,7 +100,7 @@ Content-Type: application/json
 ###
 
 ### Get all posts
-GET http://localhost:8080/api/posts/user/1
+GET http://localhost:8080/api/posts/user/1?page=0&size=10
 Accept: application/json
 ###
 
@@ -117,7 +118,7 @@ Content-Type: application/json
 
 ###
 ### Get posts by user ID
-GET http://localhost:8080/api/posts/user/52?page=0&size=10
+GET http://localhost:8080/api/posts/user/1?page=0&size=10
 Accept: application/json
 ###
 
@@ -128,6 +129,11 @@ Accept: application/json
 
 ### Get posts by group ID
 GET http://localhost:8080/api/posts/group/2?page=0&size=10
+Accept: application/json
+###
+
+### Get a user by ID
+GET http://localhost:8080/api/users/2
 Accept: application/json
 ###
 
@@ -154,33 +160,57 @@ Content-Type: application/json
 }
 ###
 
+
 ###Save a post
 POST /api/savedPosts/SavePost HTTP/1.1
 Host: localhost:8080
 Content-Type: application/json
 
 {
-  "user": {
-    "id": 2
-  },
-  "post": {
-    "id": 19,
-    "picture": ""
-  }
+  "userId": 2,
+  "postId": 8
+}
+
+###
+
+###Unsave a post
+DELETE /api/savedPosts/UnsavePost HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "postId": 8
 }
 ###
 
-### Unsave a post
-DELETE /api/savedPosts/UnsavePost?userId=1&postId=19 HTTP/1.1
-Host: localhost:8080
-###
-
 ### Get saved posts by user ID
-GET /api/savedPosts/user/2 HTTP/1.1
+GET /api/savedPosts/user/1 HTTP/1.1
 Host: localhost:8080
 ###
 
 ### Check if a post is saved by a user
-GET /api/savedPosts/isPostSaved?userId=52&postId=20 HTTP/1.1
+GET /api/savedPosts/isPostSaved?userId=2&postId=8 HTTP/1.1
 Host: localhost:8080
+###
+###
+
+### Check how many saves a post has
+GET /api/savedPosts/countSaves?postId=8 HTTP/1.1
+Host: localhost:8080
+###
+
+### Get all the users in a group
+GET http://localhost:8080/api/groups/users/4
+Accept: application/json
+###
+
+### Get the count of how many posts a user has
+GET http://localhost:8080/api/users/postsCount/1
+Accept: application/json
+###
+
+### Get the count of how many groups a user is in
+GET http://localhost:8080/api/users/groupsCount/1
+Accept: application/json
 ###

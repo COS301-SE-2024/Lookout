@@ -1,5 +1,7 @@
 package com.lookout.Lookout.controller
 
+import com.lookout.Lookout.dto.SavePostRequest
+import com.lookout.Lookout.dto.SavedPostDto
 import com.lookout.Lookout.entity.SavedPosts
 import com.lookout.Lookout.service.SavedPostsService
 import org.springframework.http.HttpStatus
@@ -10,38 +12,76 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/savedPosts")
 class SavedPostController(private val savedPostsService: SavedPostsService) {
 
+
     @PostMapping("/SavePost")
-    fun addPost(@RequestBody post: SavedPosts): ResponseEntity<SavedPosts> {
+    fun savePost(@RequestBody reqPost: SavePostRequest): ResponseEntity<String> {
         return try {
-            val savedPost = savedPostsService.savePost(post)
-            ResponseEntity.status(HttpStatus.CREATED).body(savedPost)
+            val savedPost = savedPostsService.savePost(reqPost.userId, reqPost.postId)
+            ResponseEntity.status(HttpStatus.CREATED).body("Successfully saved post")
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString())
         }
     }
 
     @DeleteMapping("/UnsavePost")
-    fun unsavePost(@RequestParam userId: Long, @RequestParam postId: Long): ResponseEntity<Void> {
+    fun unsavePost(@RequestBody reqPost: SavePostRequest): ResponseEntity<String> {
         return try {
-            val result = savedPostsService.unsavePost(userId, postId)
+            val result = savedPostsService.unsavePost(reqPost.userId, reqPost.postId)
             if (result) {
-                ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully unsaved post")
             } else {
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post is not saved by user")
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString())
         }
     }
 
+//    @GetMapping("/user/{userId}")
+//    fun getSavedPostsByUser(@PathVariable userId: Long): ResponseEntity<List<SavedPosts>> {
+//        return try {
+//            val savedPosts = savedPostsService.getSavedPostsByUser(userId)
+//            ResponseEntity.ok(savedPosts)
+//        } catch (e: IllegalArgumentException) {
+//            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+//        }
+//    }
+
     @GetMapping("/user/{userId}")
-    fun getSavedPostsByUser(@PathVariable userId: Long): ResponseEntity<List<SavedPosts>> {
+    fun getSavedPostsByUser(@PathVariable userId: Long): ResponseEntity<List<SavedPostDto>> {
         return try {
             val savedPosts = savedPostsService.getSavedPostsByUser(userId)
-            ResponseEntity.ok(savedPosts)
+            val savedPostDtos = savedPosts.map { convertToDto(it) }
+            ResponseEntity.ok(savedPostDtos)
         } catch (e: IllegalArgumentException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
         }
+    }
+
+    fun convertToDto(savedPost: SavedPosts): SavedPostDto {
+        return SavedPostDto(
+            savedPostId = savedPost.id,
+            postId = savedPost.post?.id,
+            postTitle = savedPost.post?.title,
+            postCaption = savedPost.post?.caption,
+            postLatitude = savedPost.post?.latitude,
+            postLongitude = savedPost.post?.longitude,
+            postPicture = savedPost.post?.picture,
+            postCreatedAt = savedPost.post?.createdAt?.toString(),
+            postCategoryDescription = savedPost.post?.category?.description,
+            groupId = savedPost.post?.group?.id,
+            groupName = savedPost.post?.group?.name,
+            groupDescription = savedPost.post?.group?.description,
+            groupIsPrivate = savedPost.post?.group?.isPrivate,
+            groupPicture = savedPost.post?.group?.picture,
+            groupCreatedAt = savedPost.post?.group?.createdAt?.toString(),
+            groupUserId = savedPost.post?.group?.user?.id,
+            groupUsername = savedPost.post?.group?.user?.username,
+            groupUserEmail = savedPost.post?.group?.user?.email,
+            userId = savedPost.user?.id,
+            username = savedPost.user?.username,
+            userEmail = savedPost.user?.email
+        )
     }
 
 
@@ -54,4 +94,15 @@ class SavedPostController(private val savedPostsService: SavedPostsService) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
+
+    @GetMapping("/countSaves")
+    fun countSavesByPostId(@RequestParam postId: Long): ResponseEntity<Long> {
+        return try {
+            val saveCount = savedPostsService.countSavesByPostId(postId)
+            ResponseEntity.ok(saveCount)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+        }
+    }
+
 }

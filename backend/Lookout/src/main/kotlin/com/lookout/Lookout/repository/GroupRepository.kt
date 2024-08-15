@@ -2,6 +2,7 @@ package com.lookout.Lookout.repository
 import com.lookout.Lookout.entity.GroupMembers
 
 import com.lookout.Lookout.entity.Groups
+import com.lookout.Lookout.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -27,5 +28,8 @@ interface GroupRepository : JpaRepository<Groups, Long> {
     @Modifying
     @Query("DELETE FROM Group_Members WHERE groupid = :groupId AND userid = :userId", nativeQuery = true)
     fun removeMemberFromGroup(@Param("groupId") groupId: Long, @Param("userId") userId: Long)
+
+    @Query("SELECT gm.user FROM GroupMembers gm WHERE gm.group.id = :groupId")
+    fun findGroupMembers(@Param("groupId") groupId: Long): List<User>
 
 }

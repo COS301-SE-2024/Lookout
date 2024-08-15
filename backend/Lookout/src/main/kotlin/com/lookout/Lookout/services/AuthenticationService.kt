@@ -128,6 +128,7 @@ class AuthenticationService(
             .maxAge(60 * 60 * 10)
             .build()
 
+
         val redirectUrl = "http://localhost:3000/?email=$email"
 
         return ResponseEntity.status(HttpStatus.FOUND) 

@@ -33,7 +33,6 @@ interface Group {
 interface Post {
   id: number;
   userId: number;
-  groupId: number;
   user: User;
   group: Group;
   description: String;
@@ -56,49 +55,93 @@ const ExploreScreen: React.FC = () => {
   const [groupPosts, setGroupPosts] = useState<Group[]>([]);
   const [, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-
-        const response = await fetch('/api/image/category/3?page=0&size=10');
-        const animalResponse =  await fetch('/api/image/category/1?page=0&size=10')
-        const campResponse =  await fetch('/api/image/category/2?page=0&size=10')
-        const poiResponse = await fetch('/api/image/category/4?page=0&size=10')
-        const securityResponse = await fetch('/api/image/category/5?page=0&size=10')
-
-        const groupResponse = await fetch("/api/groups");
-        const userGroupResponse = await fetch(`/api/groups/user/2`);
-
-
-        const data = await response.json();
-        const animalData = await animalResponse.json();
-        const campData = await campResponse.json();
-        const poiData = await poiResponse.json();
-        const securityData = await securityResponse.json();
-
-        const groupData = await groupResponse.json();
-        const userGroupData = await userGroupResponse.json();
-
-
-        setPosts(data.content);
-        setAnimalPosts(animalData.content);
-        setCampingPosts(campData.content);
-        setPoiPosts(poiData.content);
-        setSecurityPosts(securityData.content);
-        setGroupPosts(groupData.content);
-        setUserGroups(userGroupData);
-
-        setLoading(false);
+        // Check for cached data
+        const cachedPosts = localStorage.getItem("posts");
+        const cachedAnimalPosts = localStorage.getItem("animalPosts");
+        const cachedCampingPosts = localStorage.getItem("campingPosts");
+        const cachedPoiPosts = localStorage.getItem("poiPosts");
+        const cachedSecurityPosts = localStorage.getItem("securityPosts");
+        const cachedGroupPosts = localStorage.getItem("groupPosts");
+        const cachedTimestamp = localStorage.getItem("postsTimestamp");
+  
+        // Set expiration time (e.g., 1 hour)
+        const expirationTime = 60 * 60 * 1000;
+        const now = Date.now();
+  
+        if (
+          cachedPosts &&
+          cachedAnimalPosts &&
+          cachedCampingPosts &&
+          cachedPoiPosts &&
+          cachedSecurityPosts &&
+          cachedGroupPosts &&
+          cachedTimestamp &&
+          now - parseInt(cachedTimestamp) < expirationTime
+        ) {
+          // Use cached data
+          setPosts(JSON.parse(cachedPosts));
+          setAnimalPosts(JSON.parse(cachedAnimalPosts));
+          setCampingPosts(JSON.parse(cachedCampingPosts));
+          setPoiPosts(JSON.parse(cachedPoiPosts));
+          setSecurityPosts(JSON.parse(cachedSecurityPosts));
+          setGroupPosts(JSON.parse(cachedGroupPosts));
+          setLoading(false);
+        } else {
+          // Fetch new data
+          const response = await fetch("/api/posts/category/3?page=0&size=12");
+          const animalResponse = await fetch("/api/posts/category/1?page=0&size=10");
+          const campResponse = await fetch("/api/posts/category/2?page=0&size=10");
+          const poiResponse = await fetch("/api/posts/category/4?page=0&size=10");
+          const securityResponse = await fetch("/api/posts/category/5?page=0&size=10");
+          const groupResponse = await fetch("/api/groups");
+          const userGroupResponse = await fetch(`/api/groups/user/2`);
+  
+          const data = await response.json();
+          const animalData = await animalResponse.json();
+          const campData = await campResponse.json();
+          const poiData = await poiResponse.json();
+          const securityData = await securityResponse.json();
+          const groupData = await groupResponse.json();
+          const userGroupData = await userGroupResponse.json();
+  
+          setPosts(data.content);
+          setAnimalPosts(animalData.content);
+          setCampingPosts(campData.content);
+          setPoiPosts(poiData.content);
+          setSecurityPosts(securityData.content);
+          setGroupPosts(groupData.content);
+          setUserGroups(userGroupData);
+  
+          // Save to local storage
+          localStorage.setItem("posts", JSON.stringify(data.content));
+          localStorage.setItem("animalPosts", JSON.stringify(animalData.content));
+          localStorage.setItem("campingPosts", JSON.stringify(campData.content));
+          localStorage.setItem("poiPosts", JSON.stringify(poiData.content));
+          localStorage.setItem("securityPosts", JSON.stringify(securityData.content));
+          localStorage.setItem("groupPosts", JSON.stringify(groupData.content));
+          localStorage.setItem("postsTimestamp", now.toString());
+  
+          setLoading(false);
+        }
       } catch (error) {
         console.error("Error fetching posts:", error);
         setLoading(false);
       }
     };
-
+  
     fetchPosts();
   }, []);
+  
+
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
 
   const filteredPosts = posts.filter((post) =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -120,7 +163,6 @@ const ExploreScreen: React.FC = () => {
   );
 
   return (
-    <>
     <div className="p-4 scrollbar-hide">
       <style>
         {`
@@ -155,6 +197,17 @@ const ExploreScreen: React.FC = () => {
           }
         `}
       </style>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for Posts or Groups"
+          className="border p-2 rounded w-full search-bar bg-gray-200"
+        />
+      </div>
+
       {loading && <ExploreSkeletonScreen />}
 
       {!loading && searchQuery === "" && (
@@ -234,7 +287,6 @@ const ExploreScreen: React.FC = () => {
           <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
           <div className="">
             <ExploreArticles />
-
           </div>
         </>
       )}
@@ -274,7 +326,6 @@ const ExploreScreen: React.FC = () => {
         </div>
       )}
     </div>
-    </>
   );
 };
 

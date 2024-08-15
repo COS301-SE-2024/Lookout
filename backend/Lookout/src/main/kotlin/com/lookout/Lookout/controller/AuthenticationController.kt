@@ -24,7 +24,7 @@ class AuthenticationController(private val authService: AuthenticationService, r
             val cookie: ResponseCookie = ResponseCookie.from("jwt", authResponse.token)
                 .httpOnly(true)
                 .path("/")
-                .maxAge(60*60*10)
+                .maxAge(60*60*1000)
                 .build()
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString())
         }

@@ -81,12 +81,14 @@ const SearchGroups: React.FC = () => {
     }, []);
 
     useEffect(() => {
+
+        const lowercasedQuery = searchQuery.toLowerCase();
         setFilteredGroups(
             groups.filter(group =>
-                group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                group.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                group.description.toLowerCase().includes(searchQuery.toLowerCase())
-            )
+    (group.name?.toLowerCase().includes(lowercasedQuery) ?? false) ||
+    (group.username?.toLowerCase().includes(lowercasedQuery) ?? false) ||
+    (group.description?.toLowerCase().includes(lowercasedQuery) ?? false)
+  )
         );
     }, [searchQuery, groups]);
 

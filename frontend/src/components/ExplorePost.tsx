@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import CategoryPill from "../components/CategoryPill";
 import { useNavigate } from "react-router-dom";
@@ -45,30 +44,7 @@ interface Post {
 
 
 const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
-  const [location, setLocation] = useState<string>("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchLocation = async () => {
-      const apiKey = process.env.LOCATION_APP_API_KEY; // Replace with your actual API key
-      const lat = post.latitude;
-      const lon = post.longitude;
-
-      try {
-        const response = await fetch(
-          `https://us1.locationiq.com/v1/reverse?key=${apiKey}&lat=${lat}&lon=${lon}&format=json`
-        );
-        const data = await response.json();
-
-        // Assuming 'display_name' contains the desired formatted location
-        setLocation(data.display_name);
-      } catch (error) {
-        console.error("Error fetching location:", error);
-      }
-    };
-
-    fetchLocation();
-  }, [post.latitude, post.longitude]);
 
   const handlePostClick = (post: Post) => {
     navigate(`/post/${post.id}`, { state: { post } });
@@ -80,7 +56,7 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
       onClick={() => handlePostClick(post)}
     >
       <img
-        src={`data:image/png;base64,${post.picture}`}
+        src={`${post.picture}`}
         alt={post.caption}
         className="w-full h-48 object-cover"
       />
@@ -89,7 +65,7 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
         <p className="text-gray-700">{post.caption}</p>
         <p className="text-gray-500 text-sm flex items-center">
           <IoLocationOutline className="h-4 w-4 mr-1" />
-          {location || "Loading location..."} {/* Displaying the formatted location */}
+          <p className="text-gray-700">{post.latitude}, {post.longitude}</p>
         </p>
         <CategoryPill categoryId={post.categoryId} />
       </div>
