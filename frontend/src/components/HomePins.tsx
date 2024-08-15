@@ -20,6 +20,7 @@ type myPin = {
   location: google.maps.LatLngLiteral;
   caption: string;
   category: string;
+  categoryId: number,
   image: string;
 };
 
@@ -38,17 +39,17 @@ const HomePins = (props: { pin: myPin[]}) => {
 	  }
 	}, [map]);
 
-	const getIconUrl = (category: string) => {
+	const getIconUrl = (category: number) => {
 		switch (category) {
-			case 'Campsite':
+			case 2:
 				return campIcon;
-			case 'Animal Sighting':
+			case 1:
 				return AnimalIcon;
-			case 'Hiking Trail':
+			case 3:
 				return HikingIcon;
-			case 'POI':
+			case 4:
 				return POIIcon;
-			case 'Security Concern':
+			case 5:
 				return SecurityIcon;
 			default:
 				return POIIcon; 
@@ -92,20 +93,7 @@ const HomePins = (props: { pin: myPin[]}) => {
     clusterer.current?.addMarkers(Object.values(markers));
   }, [markers]);
 
-  const setMarkerRef = (marker: Marker | null, key: string) => {
-    if (marker && markers[key]) return;
-    if (!marker && !markers[key]) return;
 
-    setMarkers((prev) => {
-      if (marker) {
-        return { ...prev, [key]: marker };
-      } else {
-        const newMarkers = { ...prev };
-        delete newMarkers[key];
-        return newMarkers;
-      }
-    });
-  };
 
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
     null
@@ -169,7 +157,7 @@ const HomePins = (props: { pin: myPin[]}) => {
 			clickable={true}
             onClick={() => handleMarkerClick(poi.id)}   	
 			>
-			  <img src={getIconUrl(poi.category)} width={45} height={45} alt={poi.category} />
+			  <img src={getIconUrl(poi.categoryId)} width={45} height={45} alt={poi.category} />
 		  </AdvancedMarker>
 		))}
 	  </>

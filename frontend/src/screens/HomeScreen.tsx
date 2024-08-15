@@ -199,7 +199,7 @@ const HomeScreen: React.FC = () => {
 				}));
 				setPins(formattedPins);
 				setFilteredPins(formattedPins);
-				console.log(pinsData);
+				console.log(formattedPins);
 			} catch (error) {
 				console.error("Error fetching pins:", error);
 			}
