@@ -212,8 +212,10 @@ const HomeScreen: React.FC = () => {
 		if (selectCategory === null) {
 			setFilteredPins(pins);
 		} else {
+			const categoryId = typeof selectCategory === 'number' ? selectCategory : Number(selectCategory);
+	
 			setFilteredPins(
-				pins.filter((pin) => pin.categoryId === selectCategory)
+				pins.filter((pin) => pin.categoryId === categoryId)
 			);
 		}
 	}, [selectCategory, pins]);
