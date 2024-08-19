@@ -12,59 +12,59 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
+import jakarta.servlet.http.Cookie
 import org.springframework.web.filter.OncePerRequestFilter
-import java.io.IOException
+
+import org.slf4j.LoggerFactory
 
 @Component
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
-    private val userDetailsService: UserService
+    private val userService: UserService
+) : OncePerRequestFilter() {
 
-): OncePerRequestFilter() {
-    @Throws(ServletException::class, IOException::class)
-    override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
-    ) {
+    private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
 
-        var token: String? = null
-        var username: String? = null
-
-        if (request.cookies != null) {
-            for (cookie in request.cookies) {
-                if (cookie.name.equals("jwt")) {
-                    token = cookie.value
+    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
+        val jwt = extractJwtFromCookies(request.cookies)
+        if (jwt != null) {
+            logger.info("JWT Token found in cookie: $jwt")
+            val username = jwtService.extractUserEmail(jwt)
+            if (username != null && SecurityContextHolder.getContext().authentication == null) {
+                logger.info("Username extracted from token: $username")
+                val userDetails: UserDetails
+                try {
+                    userDetails = userService.loadUserByUsername(username)
+                } catch (e: UsernameNotFoundException) {
+                    logger.error("User not found: $username", e)
+                    filterChain.doFilter(request, response)
+                    return
                 }
-            }
-        }
-
-        if(token == null){
-            filterChain.doFilter(request, response)
-            return;
-        }
-
-        username = jwtService.extractUserEmail(token)
-
-        if (username != null) {
-            try {
-                val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
-
-                if (jwtService.isValid(token, userDetails)) {
-                    val authToken = UsernamePasswordAuthenticationToken(
+                if (jwtService.validateToken(jwt, userDetails)) {
+                    logger.info("JWT Token is valid for user: $username")
+                    val newAuthToken = UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.authorities
-                    )
-
-                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-
-                    SecurityContextHolder.getContext().authentication = authToken
-
+                    ).apply {
+                        details = WebAuthenticationDetailsSource().buildDetails(request)
+                    }
+                    SecurityContextHolder.getContext().authentication = newAuthToken
+                } else {
+                    logger.warn("Invalid JWT Token for user: $username")
                 }
-            } catch (e: UsernameNotFoundException) {
-                logger.error("User not found: $username")
+            } else {
+                logger.warn("Username is null or authentication is already set")
             }
+        } else {
+            logger.warn("No JWT Token found in cookies")
         }
         filterChain.doFilter(request, response)
     }
 
+    private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
+        return cookies?.firstOrNull { it.name == "jwt" }?.value
+    }
 }
+
+
+
+

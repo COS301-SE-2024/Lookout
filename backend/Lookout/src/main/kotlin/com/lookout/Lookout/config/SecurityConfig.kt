@@ -21,25 +21,28 @@ class SecurityConfig {
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
     @Autowired lateinit var userService: UserService
+
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/api/**", "/api/auth/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated()
-
-            }.userDetailsService(userService)
+                    .requestMatchers(
+                        "/api/auth/**", "/login",
+                        "/sw.js", "/static/**", "/resources/**",
+                        "/webjars/**", "/css/**", "/js/**", "/images/**",
+                        "/index.html", "/", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js",
+                        "/logo.png", "/manifest.json", "/logo512.png", "/ios/*.png", "/ios/144.png").permitAll() // Permit specific paths
+                    .anyRequest().authenticated() // All other paths require authentication
+            }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder{
+    fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
 
@@ -48,5 +51,5 @@ class SecurityConfig {
     fun authenticationManager(configuration: AuthenticationConfiguration): AuthenticationManager {
         return configuration.authenticationManager
     }
-
 }
+

@@ -26,6 +26,8 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+src/main/resources/static/*
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -36,6 +38,7 @@ out/
 ### VS Code ###
 .vscode/
 .env
+
 
 ### Kotlin ###
 .kotlin
