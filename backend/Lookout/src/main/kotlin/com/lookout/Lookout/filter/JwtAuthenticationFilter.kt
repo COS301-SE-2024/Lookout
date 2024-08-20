@@ -26,6 +26,12 @@ class JwtAuthenticationFilter(
     private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
+
+        if (request.requestURI == "/login") {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         val jwt = extractJwtFromCookies(request.cookies)
         if (jwt != null) {
             logger.info("JWT Token found in cookie: $jwt")
@@ -50,6 +56,8 @@ class JwtAuthenticationFilter(
                     SecurityContextHolder.getContext().authentication = newAuthToken
                 } else {
                     logger.warn("Invalid JWT Token for user: $username")
+//                    redirectToLogin(response)
+//                    return
                 }
             } else {
                 logger.warn("Username is null or authentication is already set")
@@ -63,6 +71,17 @@ class JwtAuthenticationFilter(
     private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
         return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
+
+    private fun redirectToLogin(response: HttpServletResponse) {
+        // Check if the request is for an actual page rather than a resource
+        val requestUri = response.encodeRedirectURL(response.toString())
+        if (!requestUri.endsWith(".js") && !requestUri.endsWith(".css") && !requestUri.endsWith(".json")) {
+            response.sendRedirect("/login")
+        } else {
+            response.status = HttpServletResponse.SC_UNAUTHORIZED
+        }
+    }
+
 }
 
 

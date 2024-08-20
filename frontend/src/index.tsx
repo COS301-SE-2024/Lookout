@@ -26,6 +26,7 @@ import CategoryPostsPage from "./screens/CategoryPostsPage";
 import ExploreGroups from "./components/ExploreGroups";
 import PinMap from "./components/PinMap";
 import CreatedGroupDetail from "./components/CreatedGroupDetail";
+import EmailHandler from "./components/EmailHandler";
 
 function Main() {
 	useEffect(() => {
@@ -64,11 +65,15 @@ function Main() {
 				/>
 				<Route path="/login" element={<LoginScreen />} />{" "}
 				<Route path="/signup" element={<SignUpScreen />} />{" "}
+				<Route path="/email-handler" element={<EmailHandler />} />
 				<Route
 					path="/group/:id"
 					element={<ProtectedRoute element={GroupDetail} />}
 				/>
-				<Route path="/group/:id/posts" element={<GroupPosts />} />
+				<Route 
+					path="/group/:id/posts" 
+					element={<ProtectedRoute element={GroupPosts} />} 
+				/>
 				<Route
 					path="/post/:id"
 					element={<ProtectedRoute element={PinDetail} />}
@@ -85,21 +90,25 @@ function Main() {
 					path="/saved_post/:id"
 					element={<ProtectedRoute element={SavedPostDetails} />}
 				/>
-				<Route>
-					<Route path="/" element={<ExploreScreen />} />
+					{/* <Route 
+						path="/" 
+						element={<ProtectedRoute element={ExploreScreen} />} /> */}
 					<Route
 						path="/category/:categoryId"
-						element={<CategoryPostsPage />}
-					/>{" "}
-					{/* Add this line */}
-				</Route>
+						element={<ProtectedRoute element={CategoryPostsPage} />}
+					/>
 				<Route
 					path="/createdGroup/:id"
 					element={<ProtectedRoute element={CreatedGroupDetail} />}
 				/>
-				<Route path="/profileView/:id" element={<ProfileDetail />} />{" "}
-				{/* Define route for profile detail */}
-				<Route path="/map" element={<PinMap />} />
+				<Route 
+					path="/profileView/:id" 
+					element={<ProtectedRoute element={ProfileDetail} />} 
+				/>
+				<Route 
+					path="/map" 
+					element={<ProtectedRoute element={PinMap} />} 
+				/>
 			</Route>
 		)
 	);

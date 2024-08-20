@@ -116,11 +116,12 @@ class AuthenticationService(
 
         val cookie: ResponseCookie = ResponseCookie.from("jwt", jwt)
             .httpOnly(true)
+            //.secure(true)
             .path("/")
             .maxAge(60 * 60 * 10)
             .build()
 
-        val redirectUrl = "http://localhost:8080/?email=$email"
+        val redirectUrl = "http://localhost:8080/email-handler?email=$email"
 
         return ResponseEntity.status(HttpStatus.FOUND)
             .header(HttpHeaders.SET_COOKIE, cookie.toString())

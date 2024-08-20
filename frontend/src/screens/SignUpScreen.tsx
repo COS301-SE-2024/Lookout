@@ -14,6 +14,10 @@ const SignUpScreen = () => {
 	  try {
 		// Redirect to the backend to initiate Google OAuth
 		window.location.href = "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:8080/api/auth/signup/google&response_type=code&client_id=456933252122-r308hq3v8185kb9k4k9cma7q05afbejq.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&access_type=offline";
+
+		localStorage.setItem('authToken', "Google Signup");
+		
+
 	  } catch (error) {
 		navigate("/login");
 		console.error("Error during login:", error);

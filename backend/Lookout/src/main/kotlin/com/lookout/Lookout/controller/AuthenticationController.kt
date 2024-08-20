@@ -70,7 +70,7 @@ class AuthenticationController(private val authService: AuthenticationService, r
         if (error != null) {
 
             return ResponseEntity.status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, "http://localhost:3000/login")
+                .header(HttpHeaders.LOCATION, "http://localhost:8080/login")
                 .build()
         }
         return authService.processGrantCode(code)
