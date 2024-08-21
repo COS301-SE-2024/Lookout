@@ -84,7 +84,7 @@ class AuthenticationService(
             "code" to code,
             "client_id" to clientId,
             "client_secret" to clientSecret,
-            "redirect_uri" to "http://localhost:8080/api/auth/signup/google",
+            "redirect_uri" to "https://lookoutcapstone.xyz/api/auth/signup/google",
             "grant_type" to "authorization_code"
         )
         val response = restTemplate.postForObject(
@@ -116,12 +116,12 @@ class AuthenticationService(
 
         val cookie: ResponseCookie = ResponseCookie.from("jwt", jwt)
             .httpOnly(true)
-            //.secure(true)
+            .secure(true)
             .path("/")
             .maxAge(60 * 60 * 10)
             .build()
 
-        val redirectUrl = "http://localhost:8080/email-handler?email=$email"
+        val redirectUrl = "https://lookoutcapstone.xyz/email-handler?email=$email"
 
         return ResponseEntity.status(HttpStatus.FOUND)
             .header(HttpHeaders.SET_COOKIE, cookie.toString())
