@@ -67,18 +67,34 @@ function MapContent() {
     <>
       <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
       <Control position={google.maps.ControlPosition.TOP_CENTER}>
-        <div id='floating-panel'>
-          <button id='toggle-heatmap' onClick={toggleHeatmap}>
+        <div id='floating-panel' className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg">
+          <button
+            id='toggle-heatmap'
+            onClick={toggleHeatmap}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
             Toggle Heatmap
           </button>
-          <button id='change-gradient' onClick={changeGradient}>
-            Change gradient
+          <button
+            id='change-gradient'
+            onClick={changeGradient}
+            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+          >
+            Change Gradient
           </button>
-          <button id='change-radius' onClick={changeRadius}>
-            Change radius
+          <button
+            id='change-radius'
+            onClick={changeRadius}
+            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          >
+            Change Radius
           </button>
-          <button id='change-opacity' onClick={changeOpacity}>
-            Change opacity
+          <button
+            id='change-opacity'
+            onClick={changeOpacity}
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          >
+            Change Opacity
           </button>
         </div>
       </Control>
