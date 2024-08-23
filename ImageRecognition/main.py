@@ -5,8 +5,9 @@ import imghdr
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
 from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
+from tensorflow.keras.metrics import SparseCategoricalAccuracy
 
 #############################################################################################################
 # cleaning up our images
@@ -49,101 +50,112 @@ scaled_iterator = data.as_numpy_iterator()
 
 batch = scaled_iterator.next()
 # Display scaled images (normalized to [0, 1])
-fig, ax = plt.subplots(ncols=4, figsize=(20, 20))
-for idx, img in enumerate(batch[0][:4]):
-    ax[idx].imshow(img) 
-    ax[idx].title.set_text(batch[1][idx])
+# fig, ax = plt.subplots(ncols=4, figsize=(20, 20))
+# for idx, img in enumerate(batch[0][:4]):
+#     ax[idx].imshow(img) 
+#     ax[idx].title.set_text(batch[1][idx])
 #plt.show()
 
 #############################################################################################################
 #Splitting our data into training, testing and validation sets
-print(f"Length of Data: {len(data)}")
-train_size = int(len(data)*.7)
-val_size = int(len(data)*.2) + 1
-test_size = int(len(data)*.1) + 1
+# print(f"Length of Data: {len(data)}")
+# train_size = int(len(data)*.7)
+# val_size = int(len(data)*.2) + 1
+# test_size = int(len(data)*.1) + 1
 
-print(f" Training size: {train_size} , validation size: {val_size}, test size: {test_size} \nThe total number of our training size: {train_size+val_size+test_size}")
+# print(f" Training size: {train_size} , validation size: {val_size}, test size: {test_size} \nThe total number of our training size: {train_size+val_size+test_size}")
 
-train = data.take(train_size)
-val = data.skip(train_size).take(val_size)
-test = data.skip(train_size+val_size).take(test_size)
+# train = data.take(train_size)
+# val = data.skip(train_size).take(val_size)
+# test = data.skip(train_size+val_size).take(test_size)
 
 #############################################################################################################
 # Deep learning model
-model = Sequential()
+# Update model for multi-class classification
+# model = Sequential()
 
-model.add(Conv2D(16, (3,3), 1, activation='relu', input_shape=(256,256,3)))
-model.add(MaxPooling2D())
-model.add(Conv2D(32, (3,3), 1, activation='relu'))
-model.add(MaxPooling2D())
-model.add(Conv2D(16, (3,3), 1, activation='relu'))
-model.add(MaxPooling2D())
-model.add(Flatten())
-model.add(Dense(256, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
+# model.add(Conv2D(16, (3,3), 1, activation='relu', input_shape=(256,256,3)))
+# model.add(MaxPooling2D())
+# model.add(Conv2D(32, (3,3), 1, activation='relu'))
+# model.add(MaxPooling2D())
+# model.add(Conv2D(16, (3,3), 1, activation='relu'))
+# model.add(MaxPooling2D())
+# model.add(Flatten())
+# model.add(Dense(256, activation='relu'))
+# # Change the output layer to have 5 neurons for 5 classes and softmax activation
+# model.add(Dense(5, activation='softmax'))
 
-model.compile('adam', loss=tf.losses.BinaryCrossentropy(), metrics=['accuracy'])
+# # Compile the model with categorical crossentropy loss
+# model.compile(optimizer='adam', loss=tf.losses.SparseCategoricalCrossentropy(), metrics=['accuracy'])
 
-model.summary()
+# model.summary()
 
 #############################################################################################################
 # Training the model
-logdir='logs'
-tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
-hist = model.fit(train, epochs=20, validation_data=val, callbacks=[tensorboard_callback])
+# logdir='logs'
+# tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
+# hist = model.fit(train, epochs=20, validation_data=val, callbacks=[tensorboard_callback])
+# model.save(os.path.join('models','image_classifier.keras'))
 
 #############################################################################################################
 #Plotting our performance
 # Plotting our loss
-fig = plt.figure()
-plt.plot(hist.history['loss'], color='teal', label='loss')
-plt.plot(hist.history['val_loss'], color='orange', label='val_loss')
-fig.suptitle('Loss', fontsize=20)
-plt.legend(loc="upper left")
-plt.show()
+# fig = plt.figure()
+# plt.plot(hist.history['loss'], color='teal', label='loss')
+# plt.plot(hist.history['val_loss'], color='orange', label='val_loss')
+# fig.suptitle('Loss', fontsize=20)
+# plt.legend(loc="upper left")
+# plt.show()
 
-# Plotting our accuracy
-fig = plt.figure()
-plt.plot(hist.history['accuracy'], color='teal', label='accuracy')
-plt.plot(hist.history['val_accuracy'], color='orange', label='val_accuracy')
-fig.suptitle('Accuracy', fontsize=20)
-plt.legend(loc="upper left")
-plt.show()
+# # Plotting our accuracy
+# fig = plt.figure()
+# plt.plot(hist.history['accuracy'], color='teal', label='accuracy')
+# plt.plot(hist.history['val_accuracy'], color='orange', label='val_accuracy')
+# fig.suptitle('Accuracy', fontsize=20)
+# plt.legend(loc="upper left")
+# plt.show()
 
 #############################################################################################################
 # Evaluating the model
-pre = Precision()
-re = Recall()
-acc = BinaryAccuracy()
-for batch in test.as_numpy_iterator(): 
-    X, y = batch
-    yhat = model.predict(X)
-    pre.update_state(y, yhat)
-    re.update_state(y, yhat)
-    acc.update_state(y, yhat)
-    
-print(pre.result(), re.result(), acc.result())
+# acc = SparseCategoricalAccuracy()
+# for batch in test.as_numpy_iterator(): 
+#     X, y = batch
+#     yhat = model.predict(X)
+#     acc.update_state(y, yhat)
+
+# print("Sparse Categorical Accuracy:", acc.result().numpy())
 
 #############################################################################################################
 # Testing our model works now
 
-# img = cv2.imread('154006829.jpg')
-# plt.imshow(img)
-# plt.show()
+saved_model = load_model('models/image_classifier.keras')
 
-# resize = tf.image.resize(img, (256,256))
-# plt.imshow(resize.numpy().astype(int))
-# plt.show()
+# Load and preprocess the test image
+img = cv2.imread('54605103.JPG.jpg')
+img = tf.image.resize(img, (256, 256))  # Resize to model input size
+img = img / 255.0  # Normalize to [0, 1]
 
-# yhat = model.predict(np.expand_dims(resize/255, 0))
+# Predict class probabilities
+yhat = saved_model.predict(np.expand_dims(img, 0))
 
-# if yhat > 0.5: 
-#     print(f'Predicted class is Sad')
-# else:
-#     print(f'Predicted class is Happy')
+# Determine predicted class
+class_names = ['buffalo', 'elephant', 'leopard', 'lion', 'rhino']
+predicted_class_index = np.argmax(yhat)
+predicted_class_name = class_names[predicted_class_index]
+
+# Get the probability of the predicted class
+predicted_probability = yhat[0][predicted_class_index]
+
+# Define the threshold
+threshold = 0.60
+
+print(f'Probabilities: {yhat}')
+
+# Check if the prediction is conclusive
+if predicted_probability >= threshold:
+    print(f'Predicted class: {predicted_class_name} with probability {predicted_probability:.2f}')
+else:
+    print('Prediction not conclusive. The highest probability is below the threshold.')
+    print(f'Highest probability class: {class_names[predicted_class_index]} with probability {predicted_probability:.2f}')
     
 #############################################################################################################
-# Saving the model
-# model.save(os.path.join('models','imageclassifier.h5'))
-# new_model = load_model('imageclassifier.h5')
-# new_model.predict(np.expand_dims(resize/255, 0))
