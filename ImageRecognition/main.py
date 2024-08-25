@@ -74,20 +74,17 @@ test = data.skip(train_size+val_size).take(test_size)
 # Deep learning model
 # Update model for multi-class classification
 model = Sequential()
-
-model.add(Conv2D(16, (3,3), 1, activation='relu', input_shape=(256,256,3)))
-model.add(MaxPooling2D())
-model.add(Conv2D(32, (3,3), 1, activation='relu'))
-model.add(MaxPooling2D())
-model.add(Conv2D(16, (3,3), 1, activation='relu'))
-model.add(MaxPooling2D())
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(256,256,3)))
+model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(Flatten())
-model.add(Dense(256, activation='relu'))
-# Change the output layer to have 5 neurons for 5 classes and softmax activation
-model.add(Dense(5, activation='softmax'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(5, activation='softmax'))  # 5 classes for the 5 different animals
 
 # Compile the model with categorical crossentropy loss
-model.compile(optimizer='adam', loss=tf.losses.SparseCategoricalCrossentropy(), metrics=['accuracy'])
+model.compile(optimizer='RMSprop', loss=tf.losses.SparseCategoricalCrossentropy(), metrics=['accuracy'])
 
 model.summary()
 
@@ -95,7 +92,7 @@ model.summary()
 # Training the model
 logdir='logs'
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
-hist = model.fit(train, epochs=20, validation_data=val, callbacks=[tensorboard_callback])
+hist = model.fit(train, epochs= 20, validation_data=val, callbacks=[tensorboard_callback])
 model.save(os.path.join(r'ImageRecognition/models','image_classifier.keras'))
 
 #############################################################################################################
