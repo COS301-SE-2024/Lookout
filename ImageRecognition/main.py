@@ -8,9 +8,12 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
 from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
 from tensorflow.keras.metrics import SparseCategoricalAccuracy
+import time
 
 #############################################################################################################
 # cleaning up our images
+start_time = time.time()
+
 data_dir = r'ImageRecognition\data' 
 
 image_exts = ['jpeg','jpg', 'bmp', 'png']
@@ -155,5 +158,7 @@ if predicted_probability >= threshold:
 else:
     print('Prediction not conclusive. The highest probability is below the threshold.')
     print(f'Highest probability class: {class_names[predicted_class_index]} with probability {predicted_probability:.2f}')
+
+print("--- %s minutes ---" % ((time.time() - start_time) / 60))
     
 #############################################################################################################
