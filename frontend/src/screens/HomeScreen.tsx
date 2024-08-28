@@ -2,42 +2,53 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
 import {
+	APIProvider,
+	Map,
+	AdvancedMarker,
+	useMap,
+	Pin
+} from "@vis.gl/react-google-maps";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import type { Marker } from "@googlemaps/markerclusterer";
+import "../assets/styles/home.css";
+import HomePins from "../components/HomePins";
+import { FaFolder, FaCamera, FaTimes, FaPlus } from "react-icons/fa";
+import Legend from "../components/Legend";
 
-  APIProvider,
-  Map,
-  AdvancedMarker,
-  useMap,
-  Pin
-} from '@vis.gl/react-google-maps';
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import type { Marker } from '@googlemaps/markerclusterer';
-import '../assets/styles/home.css'
-import HomePins from '../components/HomePins';
-import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
-import Legend from '../components/Legend';
-
-import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
-import campIcon from '../assets/icons/camping-zone.png';
-import AnimalIcon from '../assets/icons/zoo.png';
-import HikingIcon from '../assets/icons/mountain.png';
-import POIIcon from '../assets/icons/point-of-interest.png';
-import SecurityIcon from '../assets/icons/danger.png';
+import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
+import campIcon from "../assets/icons/camping-zone.png";
+import AnimalIcon from "../assets/icons/zoo.png";
+import HikingIcon from "../assets/icons/mountain.png";
+import POIIcon from "../assets/icons/point-of-interest.png";
+import SecurityIcon from "../assets/icons/danger.png";
 // import { url } from "inspector";
 import AWS from "aws-sdk";
 
-
-
-
-type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
-type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
+type Poi = {
+	key: string;
+	location: google.maps.LatLngLiteral;
+	label: string;
+	details: string;
+};
+type myPin = {
+	id: string;
+	location: google.maps.LatLngLiteral;
+	caption: string;
+	category: string;
+	image: string;
+	categoryId: number;
+};
 
 const legendItems = [
-  { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' },
-  { name: 'Camp Sites', icon: campIcon },
-  { name: 'Animal', icon: AnimalIcon },
-  { name: 'Hiking', icon: HikingIcon },
-  { name: 'POI', icon: POIIcon },
-  { name: 'Security Risk', icon: SecurityIcon },
+	{
+		name: "Nature Reserves",
+		icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+	},
+	{ name: "Camp Sites", icon: campIcon },
+	{ name: "Animal", icon: AnimalIcon },
+	{ name: "Hiking", icon: HikingIcon },
+	{ name: "POI", icon: POIIcon },
+	{ name: "Security Risk", icon: SecurityIcon }
 ];
 
 const locations: Poi[] = [
@@ -122,7 +133,6 @@ type Group = {
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC = () => {
-
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
@@ -142,6 +152,9 @@ const HomeScreen: React.FC = () => {
 	);
 	const [selectCategory, setSelectCategory] = useState(null);
 	const [filteredPins, setFilteredPins] = useState<myPin[]>([]);
+
+	const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
+	const [newNumberPins, setNewNumberPins] = useState<number>(0);
 
 	const navigate = useNavigate();
 
@@ -172,48 +185,65 @@ const HomeScreen: React.FC = () => {
 	};
 
 	const [pins, setPins] = useState<myPin[]>([]);
-
-	useEffect(() => {
-		const fetchPins = async () => {
-			try {
-				const response = await fetch("/api/posts", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json"
-					}
-				});
-
-				if (!response.ok) {
-					throw new Error("Failed to fetch pins");
+	const fetchPins = async () => {
+		try {
+			const response = await fetch("/api/posts", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json"
 				}
+			});
 
-				const pinsData = await response.json();
-				console.log(pinsData);
-				const formattedPins = pinsData.content.map((pin: any) => ({
-					id: pin.id,
-					location: { lat: pin.latitude, lng: pin.longitude },
-					caption: pin.caption,
-					category: pin.title,
-					categoryId: pin.categoryId,
-					image: pin.picture
-				}));
-				setPins(formattedPins);
-				setFilteredPins(formattedPins);
-				console.log(formattedPins);
-			} catch (error) {
-				console.error("Error fetching pins:", error);
+			if (!response.ok) {
+				throw new Error("Failed to fetch pins");
 			}
-		};
 
+			const pinsData = await response.json();
+
+			const formattedPins = pinsData.content.map((pin: any) => ({
+				id: pin.id,
+				location: { lat: pin.latitude, lng: pin.longitude },
+				caption: pin.caption,
+				category: pin.title,
+				categoryId: pin.categoryId,
+				image: pin.picture
+			}));
+
+			setPins(formattedPins);
+			setFilteredPins(formattedPins);
+			setCurrentNumberPins(formattedPins.length);
+		} catch (error) {
+			console.error("Error fetching pins:", error);
+		}
+	};
+	useEffect(() => {
 		fetchPins();
 	}, []);
+
+	useEffect(() => {
+		if (newNumberPins > currentNumberPins) {
+			setCurrentNumberPins(newNumberPins);
+			fetchPins();
+		}
+	}, [newNumberPins]);
+
+	// useEffect(() => {
+	// 	const intervalId = setInterval(() => {
+	// 		fetchPins();
+	// 	}, 15000);
+
+	// 	return () => clearInterval(intervalId);
+	// }, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
 			setFilteredPins(pins);
 		} else {
-			const categoryId = typeof selectCategory === 'number' ? selectCategory : Number(selectCategory);
-	
+			const categoryId =
+				typeof selectCategory === "number"
+					? selectCategory
+					: Number(selectCategory);
+
 			setFilteredPins(
 				pins.filter((pin) => pin.categoryId === categoryId)
 			);
@@ -307,6 +337,7 @@ const HomeScreen: React.FC = () => {
 			closeModal();
 
 			setIsSuccessModalOpen(true); // Open success modal
+			setNewNumberPins(newNumberPins + 1);
 			// setIsModalOpen(false); // Close modal after successful pin addition
 			// setIsSuccessModalOpen(true); // Open success modal
 		} catch (error) {
@@ -815,7 +846,6 @@ const HomeScreen: React.FC = () => {
 			)}
 		</APIProvider>
 	);
-
 };
 
 const PoiMarkers = (props: { pois: Poi[] }) => {
