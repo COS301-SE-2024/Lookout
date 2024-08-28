@@ -227,13 +227,13 @@ const HomeScreen: React.FC = () => {
 		}
 	}, [newNumberPins]);
 
-	// useEffect(() => {
-	// 	const intervalId = setInterval(() => {
-	// 		fetchPins();
-	// 	}, 15000);
+	useEffect(() => {
+		const intervalId = setInterval(() => {
+			fetchPins();
+		}, 15000);
 
-	// 	return () => clearInterval(intervalId);
-	// }, []);
+		return () => clearInterval(intervalId);
+	}, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
