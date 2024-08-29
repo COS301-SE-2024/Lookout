@@ -317,7 +317,7 @@ const HomeScreen: React.FC = () => {
 			setCurrentNumberPins(newNumberPins);
 			fetchPins();
 		}
-	}, [newNumberPins]);
+	}, [newNumberPins, currentNumberPins]);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
