@@ -114,6 +114,8 @@ const legendItems = [
   { name: 'Hiking', icon: HikingIcon },
   { name: 'POI', icon: POIIcon },
   { name: 'Security Risk', icon: SecurityIcon },
+
+
 ];
 
 const locations: Poi[] = [
@@ -222,6 +224,9 @@ const HomeScreen: React.FC = () => {
 	const [selectCategory, setSelectCategory] = useState(null);
 	const [filteredPins, setFilteredPins] = useState<myPin[]>([]);
 
+	const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
+	const [newNumberPins, setNewNumberPins] = useState<number>(0);
+
 	const navigate = useNavigate();
 
 	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -272,48 +277,65 @@ const HomeScreen: React.FC = () => {
 	};
 
 	const [pins, setPins] = useState<myPin[]>([]);
+	const fetchPins = async () => {
+		try {
+			const response = await fetch("/api/posts", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch pins");
+			}
+
+			const pinsData = await response.json();
+
+			const formattedPins = pinsData.content.map((pin: any) => ({
+				id: pin.id,
+				location: { lat: pin.latitude, lng: pin.longitude },
+				caption: pin.caption,
+				category: pin.title,
+				categoryId: pin.categoryId,
+				image: pin.picture
+			}));
+
+			setPins(formattedPins);
+			setFilteredPins(formattedPins);
+			setCurrentNumberPins(formattedPins.length);
+		} catch (error) {
+			console.error("Error fetching pins:", error);
+		}
+	};
+	useEffect(() => {
+		fetchPins();
+	}, []);
 
 	useEffect(() => {
-		const fetchPins = async () => {
-			try {
-				const response = await fetch("/api/posts", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json"
-					}
-				});
+		if (newNumberPins > currentNumberPins) {
+			setCurrentNumberPins(newNumberPins);
+			fetchPins();
+		}
+	}, [newNumberPins]);
 
-				if (!response.ok) {
-					throw new Error("Failed to fetch pins");
-				}
+	useEffect(() => {
+		const intervalId = setInterval(() => {
+			fetchPins();
+		}, 15000);
 
-				const pinsData = await response.json();
-				console.log(pinsData);
-				const formattedPins = pinsData.content.map((pin: any) => ({
-					id: pin.id,
-					location: { lat: pin.latitude, lng: pin.longitude },
-					caption: pin.caption,
-					category: pin.title,
-					categoryId: pin.categoryId,
-					image: pin.picture
-				}));
-				setPins(formattedPins);
-				setFilteredPins(formattedPins);
-				console.log(formattedPins);
-			} catch (error) {
-				console.error("Error fetching pins:", error);
-			}
-		};
-
-		fetchPins();
+		return () => clearInterval(intervalId);
 	}, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
 			setFilteredPins(pins);
 		} else {
-			const categoryId = typeof selectCategory === 'number' ? selectCategory : Number(selectCategory);
-	
+			const categoryId =
+				typeof selectCategory === "number"
+					? selectCategory
+					: Number(selectCategory);
+
 			setFilteredPins(
 				pins.filter((pin) => pin.categoryId === categoryId)
 			);
@@ -407,6 +429,7 @@ const HomeScreen: React.FC = () => {
 			closeModal();
 
 			setIsSuccessModalOpen(true); // Open success modal
+			setNewNumberPins(newNumberPins + 1);
 			// setIsModalOpen(false); // Close modal after successful pin addition
 			// setIsSuccessModalOpen(true); // Open success modal
 		} catch (error) {
@@ -922,7 +945,6 @@ const HomeScreen: React.FC = () => {
 			)}
 		</GoogleMapApiLoader>
 	);
-
 };
 
 const PoiMarkers = (props: { pois: Poi[] }) => {
