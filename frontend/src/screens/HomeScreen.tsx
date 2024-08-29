@@ -1,54 +1,121 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
-import {
-	APIProvider,
-	Map,
-	AdvancedMarker,
-	useMap,
-	Pin
-} from "@vis.gl/react-google-maps";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import type { Marker } from "@googlemaps/markerclusterer";
-import "../assets/styles/home.css";
-import HomePins from "../components/HomePins";
-import { FaFolder, FaCamera, FaTimes, FaPlus } from "react-icons/fa";
-import Legend from "../components/Legend";
-
-import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
-import campIcon from "../assets/icons/camping-zone.png";
-import AnimalIcon from "../assets/icons/zoo.png";
-import HikingIcon from "../assets/icons/mountain.png";
-import POIIcon from "../assets/icons/point-of-interest.png";
-import SecurityIcon from "../assets/icons/danger.png";
+import { 
+	HeatmapLayer, 
+	Control , 
+	GoogleMap, 
+	GoogleMapApiLoader, 
+	MarkerClusterer,
+	Marker
+} from 'react-google-map-wrapper';
+import '../assets/styles/home.css'
+import HomePins from '../components/HomePins';
+import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
+import Legend from '../components/Legend';
+import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
+import campIcon from '../assets/icons/camping-zone.png';
+import AnimalIcon from '../assets/icons/zoo.png';
+import HikingIcon from '../assets/icons/mountain.png';
+import POIIcon from '../assets/icons/point-of-interest.png';
+import SecurityIcon from '../assets/icons/danger.png';
 // import { url } from "inspector";
 import AWS from "aws-sdk";
 
-type Poi = {
-	key: string;
-	location: google.maps.LatLngLiteral;
-	label: string;
-	details: string;
-};
-type myPin = {
-	id: string;
-	location: google.maps.LatLngLiteral;
-	caption: string;
-	category: string;
-	image: string;
-	categoryId: number;
-};
+
+// ##############################  HEAT MAP STUFF!!
+const getData = () => [
+	new google.maps.LatLng(-27.782551, 22.445368),
+	new google.maps.LatLng(-27.782745, 22.444586),
+	new google.maps.LatLng(-27.752986, 22.403112),
+	new google.maps.LatLng(-27.751266, 22.403355),
+  ];
+
+
+const customGradient = [
+  'rgba(0, 255, 255, 0)',
+  'rgba(0, 255, 255, 1)',
+  'rgba(191, 0, 31, 1)',
+  'rgba(255, 0, 0, 1)',
+];
+
+function MapContent() {
+  const [show, setShow] = useState(true);
+  const [gradient, setGradient] = useState<string[] | null>(null);
+  const [radius, setRadius] = useState<number | null>(null);
+  const [opacity, setOpacity] = useState<number | null>(null);
+
+  const data = useMemo(getData, []);
+
+  const toggleHeatmap = () => {
+    setShow(!show);
+  };
+
+  const changeGradient = () => {
+    setGradient((prev) => (prev ? null : customGradient));
+  };
+
+  const changeRadius = () => {
+    setRadius(radius ? null : 20);
+  };
+
+  const changeOpacity = () => {
+    setOpacity(opacity ? null : 0.2);
+  };
+
+  return (
+    <>
+      <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
+      <Control position={google.maps.ControlPosition.TOP_CENTER}>
+        <div id='floating-panel' className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg">
+          <button
+            id='toggle-heatmap'
+            onClick={toggleHeatmap}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            Toggle Heatmap
+          </button>
+          <button
+            id='change-gradient'
+            onClick={changeGradient}
+            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+          >
+            Change Gradient
+          </button>
+          <button
+            id='change-radius'
+            onClick={changeRadius}
+            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          >
+            Change Radius
+          </button>
+          <button
+            id='change-opacity'
+            onClick={changeOpacity}
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          >
+            Change Opacity
+          </button>
+        </div>
+      </Control>
+    </>
+  );
+}
+
+// #################### END OF HEAT MAP STUFF
+
+type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
+type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
 
 const legendItems = [
-	{
-		name: "Nature Reserves",
-		icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-	},
-	{ name: "Camp Sites", icon: campIcon },
-	{ name: "Animal", icon: AnimalIcon },
-	{ name: "Hiking", icon: HikingIcon },
-	{ name: "POI", icon: POIIcon },
-	{ name: "Security Risk", icon: SecurityIcon }
+  { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
+  { name: 'Camp Sites', icon: campIcon },
+  { name: 'Animal', icon: AnimalIcon },
+  { name: 'Hiking', icon: HikingIcon },
+  { name: 'POI', icon: POIIcon },
+  { name: 'Security Risk', icon: SecurityIcon },
+
+
 ];
 
 const locations: Poi[] = [
@@ -133,6 +200,10 @@ type Group = {
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC = () => {
+
+	const defaultCenter = { lat: -28, lng: 23 };
+  const [center, setCenter] = useState(defaultCenter);
+
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
@@ -160,6 +231,27 @@ const HomeScreen: React.FC = () => {
 
 	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
+	// get curretn for map
+
+	useEffect(() => {
+		if (navigator.geolocation) {
+		  navigator.geolocation.getCurrentPosition(
+			(position) => {
+			  setCenter({
+				lat: position.coords.latitude,
+				lng: position.coords.longitude,
+			  });
+			},
+			(error) => {
+			  console.error("Error getting user's location:", error);
+			  // If user denies location access or an error occurs, retain the default center
+			}
+		  );
+		}
+	  }, []);
+
+
+	  // get for posts
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
@@ -225,7 +317,7 @@ const HomeScreen: React.FC = () => {
 			setCurrentNumberPins(newNumberPins);
 			fetchPins();
 		}
-	}, [newNumberPins]);
+	}, [newNumberPins, currentNumberPins]);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -528,19 +620,26 @@ const HomeScreen: React.FC = () => {
 	];
 
 	return (
-		<APIProvider
+		<GoogleMapApiLoader
 			apiKey={apicode || ""}
-			onLoad={() => console.log("Maps API has loaded.")}
-		>
+			suspense>
 			<div className="map-container">
-				<Map
-					defaultZoom={5}
-					defaultCenter={{ lat: -28, lng: 23 }}
-					mapId="dde51c47799889c4"
+				<GoogleMap
+					className='h-full w-full'
+					zoom={5}
+					center={center}
+ 
+					mapOptions={{
+						disableDefaultUI: true,
+						zoomControl: true,
+						mapId: 'dde51c47799889c4'
+					  }}
 				>
-					<PoiMarkers pois={locations} />
-					<HomePins pin={filteredPins} />
-				</Map>
+					
+						<PoiMarkers pois={locations} />
+						<HomePins pin={filteredPins} />
+					<MapContent />
+				</GoogleMap>
 				<Legend items={legendItems} />
 			</div>
 			<div className="fixed top-12 left-4 z-10" id="menu">
@@ -844,98 +943,24 @@ const HomeScreen: React.FC = () => {
 					</div>
 				</div>
 			)}
-		</APIProvider>
+		</GoogleMapApiLoader>
 	);
 };
 
 const PoiMarkers = (props: { pois: Poi[] }) => {
-	const map = useMap();
-	const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
-	const clusterer = useRef<MarkerClusterer | null>(null);
-
-	// Initialize MarkerClusterer, if the map has changed
-	useEffect(() => {
-		if (!map) return;
-		if (!clusterer.current) {
-			clusterer.current = new MarkerClusterer({ map });
-		}
-	}, [map]);
-
-	// Update markers, if the markers array has changed
-	useEffect(() => {
-		clusterer.current?.clearMarkers();
-		clusterer.current?.addMarkers(Object.values(markers));
-	}, [markers]);
-
-	const setMarkerRef = (marker: Marker | null, key: string) => {
-		if (marker && markers[key]) return;
-		if (!marker && !markers[key]) return;
-
-		setMarkers((prev) => {
-			if (marker) {
-				return { ...prev, [key]: marker };
-			} else {
-				const newMarkers = { ...prev };
-				delete newMarkers[key];
-				return newMarkers;
-			}
-		});
-	};
-
-	const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
-		null
-	);
-
-	useEffect(() => {
-		if (map) {
-			setInfoWindow(new google.maps.InfoWindow());
-		}
-	}, [map]);
-
-	const handleMarkerClick = useCallback(
-		(key: string) => {
-			const clickedMarker = markers[key];
-			if (clickedMarker && infoWindow) {
-				const clickedPoi = locations.find((poi) => poi.key === key);
-				if (clickedPoi) {
-					infoWindow.close();
-					const contentString = `
-        <div id="content">
-          <div id="siteNotice" style="color: black;>
-            <h1 id="firstHeading" class="firstHeading"><b>${clickedPoi.label}</b></h1>
-            <p>${clickedPoi.details}</p>
-          </div>
-        </div>
-      `;
-
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(clickedPoi.location);
-					infoWindow.open(map, clickedMarker);
-				}
-			}
-		},
-		[markers, infoWindow, map]
-	);
 
 	return (
-		<>
-			{props.pois.map((poi: Poi) => (
-				<AdvancedMarker
-					key={poi.key}
-					position={poi.location}
-					ref={(marker) => setMarkerRef(marker, poi.key)}
-					clickable={true}
-					onClick={() => handleMarkerClick(poi.key)}
-				>
-					<Pin
-						background={"#FBBC04"}
-						glyphColor={"#000"}
-						borderColor={"#000"}
-					/>
-				</AdvancedMarker>
+		  <MarkerClusterer>
+			{props.pois.map((poi, i) => (
+			  <Marker
+				key={poi.key}
+				lat={poi.location.lat}
+				lng={poi.location.lng}
+			  ></Marker>
 			))}
-		</>
-	);
+			</MarkerClusterer>
+	  );
+
 };
 
 export default HomeScreen;
