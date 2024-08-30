@@ -46,7 +46,7 @@ start_time = time.time()
 # plt.show()  # If you want to see random batches from our classes then include this line
 
 # #############################################################################################################
-# # Scale the data
+# # # Scale the data
 # data = data.map(lambda x, y: (x / 255.0, y))
 
 # # Fetch a new batch after scaling
@@ -61,7 +61,7 @@ start_time = time.time()
 # # plt.show()
 
 # #############################################################################################################
-# #Splitting our data into training, testing and validation sets
+#Splitting our data into training, testing and validation sets
 # print(f"Length of Data: {len(data)}")
 # train_size = int(len(data)*.7)
 # val_size = int(len(data)*.2) + 1
@@ -74,8 +74,8 @@ start_time = time.time()
 # test = data.skip(train_size+val_size).take(test_size)
 
 # #############################################################################################################
-# # Deep learning model
-# # Update model for multi-class classification
+# Deep learning model
+# Update model for multi-class classification
 # model = Sequential()
 # model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(256,256,3)))
 # model.add(MaxPooling2D((2, 2)))
@@ -99,8 +99,8 @@ start_time = time.time()
 # model.save(os.path.join(r'ImageRecognition/models','image_classifier.keras'))
 
 # #############################################################################################################
-# # Plotting our performance
-# # Plotting our loss
+# Plotting our performance
+# Plotting our loss
 # fig = plt.figure()
 # plt.plot(hist.history['loss'], color='teal', label='loss')
 # plt.plot(hist.history['val_loss'], color='orange', label='val_loss')
@@ -117,7 +117,7 @@ start_time = time.time()
 # # plt.show()
 
 # # #############################################################################################################
-# # Evaluating the model
+# Evaluating the model
 # acc = SparseCategoricalAccuracy()
 # for batch in test.as_numpy_iterator(): 
 #     X, y = batch

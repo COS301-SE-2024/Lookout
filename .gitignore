@@ -20,6 +20,7 @@ models
 .env.development.local
 .env.test.local
 .env.production.local
+.venv
 
 npm-debug.log*
 yarn-debug.log*
