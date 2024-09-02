@@ -11,8 +11,8 @@ const App = () => {
 			<Navigationbar />
 			<main className="bg-bkg text-content">
 				<div className="container mx-0">
+					
 					<Outlet />
-					<EmailHandler />
 				</div>
 			</main>
 		</>
