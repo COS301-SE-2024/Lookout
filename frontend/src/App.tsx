@@ -2,7 +2,6 @@ import Navigationbar from "./components/Navigationbar";
 import { Outlet } from "react-router-dom";
 
 import './assets/styles/nav.css'
-import EmailHandler from "./components/EmailHandler";
 
 
 const App = () => {

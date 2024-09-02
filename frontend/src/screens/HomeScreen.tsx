@@ -212,6 +212,8 @@ const HomeScreen: React.FC = () => {
 	const [isCameraModalOpen, setIsCameraModalOpen] = useState(false); // New state for camera modal
 	const [latitude, setLatitude] = useState(0);
 	const [longitude, setLongitude] = useState(0);
+	const [dragpinlatitude, setdragpinLatitude] = useState(latitude);
+	const [dragpinlongitude, setdragpinLongitude] = useState(longitude);
 	const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
 	const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 	const [groups, setGroups] = useState<Group[]>([]);
@@ -398,8 +400,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude: latitude,
-			longitude: longitude
+			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
+  			longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
 		});
 
 		const requestOptions = {
@@ -653,148 +655,189 @@ const HomeScreen: React.FC = () => {
 			</button>
 
 			{/* Add pin modal */}
-			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
-						<button
-							className="absolute top-2 right-2 text-xl"
-							onClick={closeModal}
-						>
-							&times;
-						</button>
-						<h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
+{isModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="relative bg-white p-6 rounded-lg w-full max-w-md h-[35rem] overflow-y-auto">
+      <button
+        className="absolute top-2 right-2 text-xl"
+        onClick={closeModal}
+      >
+        &times;
+      </button>
+      <h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
 
-						<div className="flex justify-center mb-3">
-							<button
-								className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-								onClick={openPhotoModal}
-							>
-								<FaPlus />
-							</button>
-						</div>
+      <div className="flex justify-center mb-3">
+        <button
+          className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+          onClick={openPhotoModal}
+        >
+          <FaPlus />
+        </button>
+      </div>
 
-						<div className="text-center mb-3">
-							<span className="text-lg">Add a photo</span>
-							<input
-								type="file"
-								accept="image/jpeg, image/png"
-								style={{ display: "none" }}
-								ref={fileInputRef}
-								onChange={handleFileChange}
-							/>
-							{picture && (
-								<img
-									src={picture}
-									alt="Selected"
-									className="w-32 h-32 mt-2 mx-auto"
-								/>
-							)}
-						</div>
+      <div className="text-center mb-3">
+        <span className="text-lg">Add a photo</span>
+        <input
+          type="file"
+          accept="image/jpeg, image/png"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={handleFileChange}
+        />
+        {picture && (
+          <img
+            src={picture}
+            alt="Selected"
+            className="w-32 h-32 mt-2 mx-auto"
+          />
+        )}
+      </div>
 
-						<form>
-							<div className="mb-3">
-								<label
-									htmlFor="groupSelect"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Select Group:
-								</label>
-								<select
-									id="groupSelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedGroup ?? ""}
-									onChange={(e) =>
-										setSelectedGroup(Number(e.target.value))
-									}
-								>
-									<option value="" disabled>
-										Select a group
-									</option>
-									{groups.map((group) => (
-										<option key={group.id} value={group.id}>
-											{group.name}
-										</option>
-									))}
-								</select>
-							</div>
+      <form>
+        <div className="mb-3">
+          <label
+            htmlFor="groupSelect"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Select Group:
+          </label>
+          <select
+            id="groupSelect"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={selectedGroup ?? ""}
+            onChange={(e) => setSelectedGroup(Number(e.target.value))}
+          >
+            <option value="" disabled>
+              Select a group
+            </option>
+            {groups.map((group) => (
+              <option key={group.id} value={group.id}>
+                {group.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-							<div className="mb-3">
-								<label
-									htmlFor="categorySelect"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Select Category:
-								</label>
-								<select
-									id="categorySelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedCategory ?? ""}
-									onChange={(e) =>
-										setSelectedCategory(
-											Number(e.target.value)
-										)
-									}
-								>
-									<option value="" disabled>
-										Select a category
-									</option>
-									{categories.map((category) => (
-										<option
-											key={category.id}
-											value={category.id}
-										>
-											{category.name}
-										</option>
-									))}
-								</select>
-							</div>
+        <div className="mb-3">
+          <label
+            htmlFor="categorySelect"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Select Category:
+          </label>
+          <select
+            id="categorySelect"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={selectedCategory ?? ""}
+            onChange={(e) => setSelectedCategory(Number(e.target.value))}
+          >
+            <option value="" disabled>
+              Select a category
+            </option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-							<div className="mb-3">
-								<label
-									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Caption:
-								</label>
-								<textarea
-									id="formDescription"
-									rows={4}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
-									value={caption}
-									onChange={(e) => setCaption(e.target.value)}
-								></textarea>
-							</div>
+        <div className="mb-3" id="sightlocation">
+          <label
+            htmlFor="formDescription"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Sighting Location:
+          </label>
+          <GoogleMapApiLoader apiKey={apicode || ""} suspense>
+            <GoogleMap
+              className="h-full w-full"
+              zoom={15}
+              center={center}
+              mapOptions={{
+                disableDefaultUI: true,
+                zoomControl: true,
+                mapId: "dde51c47799889c4",
+              }}
+            >
+              {/* draggable */}
+              <Marker
+                lat={latitude}
+                lng={longitude}
+                title={"Sighting Location"}
+                draggable
+                onDragEnd={(event) => {
+                  const newPosition = event.getPosition();
+                  const newLat = newPosition?.lat();
+                  const newLng = newPosition?.lng();
 
-							<div className="mb-3">
-								<label
-									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Title:
-								</label>
-								<textarea
-									id="formDescription"
-									rows={2}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
-									value={title}
-									onChange={(e) => setTitle(e.target.value)}
-								></textarea>
-							</div>
-						</form>
+                  setdragpinLatitude(
+                    newLat !== null && newLat !== undefined
+                      ? newLat
+                      : latitude
+                  );
+                  setdragpinLongitude(
+                    newLng !== null && newLng !== undefined
+                      ? newLng
+                      : longitude
+                  );
 
-						<div>
-							<button
-								className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-								onClick={handleAddPinClick}
-							>
-								Add Pin
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
+                  console.log(
+                    `Marker dropped at: Latitude ${newLat}, Longitude ${newLng}`
+                  );
+                }}
+              />
+            </GoogleMap>
+          </GoogleMapApiLoader>
+        </div>
+
+        <div className="mb-3">
+          <label
+            htmlFor="formDescription"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Caption:
+          </label>
+          <textarea
+            id="formDescription"
+            rows={4}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter description"
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+          ></textarea>
+        </div>
+
+        <div className="mb-3">
+          <label
+            htmlFor="formDescription"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Title:
+          </label>
+          <textarea
+            id="formDescription"
+            rows={1}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter description"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          ></textarea>
+        </div>
+      </form>
+
+      <div>
+        <button
+          className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onClick={handleAddPinClick}
+        >
+          Add Pin
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
 			{/* Success modal */}
 			{isSuccessModalOpen && (
