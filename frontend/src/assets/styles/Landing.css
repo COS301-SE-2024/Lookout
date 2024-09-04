@@ -30,3 +30,23 @@
 	width: 50vw;
 	height: auto;
 }
+
+.heroH1 {
+	display: flex;
+	flex-direction: column;
+}
+
+.GetStartedButton {
+	margin-top: 1rem;
+	background-color: #15803d;
+	color: white;
+	border: 1px solid #000;
+	transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+	transform-origin: center;
+}
+
+.GetStartedButton:hover {
+	background-color: #15803d;
+	cursor: pointer;
+	transform: scale(1.05);
+}
