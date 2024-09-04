@@ -26,6 +26,7 @@ import CategoryPostsPage from "./screens/CategoryPostsPage";
 import ExploreGroups from "./components/ExploreGroups";
 import PinMap from "./components/PinMap";
 import CreatedGroupDetail from "./components/CreatedGroupDetail";
+import Landing from "./screens/Landing";
 
 function Main() {
 	useEffect(() => {
@@ -97,7 +98,11 @@ function Main() {
 					path="/createdGroup/:id"
 					element={<ProtectedRoute element={CreatedGroupDetail} />}
 				/>
-				<Route path="/profileView/:id" element={<ProfileDetail />} />{" "}
+				<Route path="/Landing" element={<Landing />} />
+				<Route
+					path="/profileView/:id"
+					element={<ProfileDetail />}
+				/>{" "}
 				{/* Define route for profile detail */}
 				<Route path="/map" element={<PinMap />} />
 			</Route>
