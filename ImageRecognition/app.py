@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
 import cv2
 
 app = Flask(__name__)
+
+CORS(app)
 
 # Load your pre-trained model
 saved_model = tf.keras.models.load_model('models/image_classifier.keras')
