@@ -1,0 +1,151 @@
+id,name,description,isPrivate,picture,createdAt,userId
+1,Photography Cluub,A club for photography enthusiasts,false,photography.jpg,2023-01-01,1
+2,Cooking Ggroup,For sharing and discovering new recipes,false,cooking.jpg,2023-02-15,2
+3,Tech Innovatorss,Discuss the latest in technology,true,tech.jpg,2023-03-10,3
+4,Book Loverss,A group for book lovers,false,books.jpg,2023-04-12,4
+5,Hiking Clubb,Join us for some outdoor adventures,false,hiking.jpg,2023-05-20,5
+6,Photography Club,A club for photography enthusiasts,false,photography.jpg,2023-01-01,1
+7,Cooking Group,For sharing and discovering new recipes,false,cooking.jpg,2023-02-15,2
+8,Tech Innovators,Discuss the latest in technology,true,tech.jpg,2023-03-10,3
+9,Book Lovers,A group for book lovers,false,books.jpg,2023-04-12,4
+10,Hiking Club,Join us for some outdoor adventures,false,hiking.jpg,2023-05-20,5
+11,Mountain Bikers,Share trails and tips for mountain biking,false,mountain_bikers.jpg,2023-09-20,11
+12,Wildlife Art,Showcase and discuss wildlife-themed art,false,wildlife_art.jpg,2023-09-25,12
+13,Forest Hikers,Explore and share experiences from forest hikes,false,forest_hikers.jpg,2023-10-01,13
+14,Camping Gear Reviews,Discuss and review camping gear,false,gear_reviews.jpg,2023-10-05,14
+15,Outdoor Cooking,Share recipes and tips for cooking outdoors,false,outdoor_cooking.jpg,2023-10-10,15
+16,Animal Tracks Identification,Learn and share animal track identification,false,animal_tracks.jpg,2023-10-15,16
+17,River Rafting,Discuss river rafting spots and techniques,false,river_rafting.jpg,2023-10-20,17
+18,Backpacking Adventures,Share experiences and tips for backpacking trips,false,backpacking_adventures.jpg,2023-10-25,18
+19,Outdoor Photography Tips,Share tips and techniques for outdoor photography,false,outdoor_photography_tips.jpg,2023-11-01,19
+20,Wildlife Rescue,Discuss and share information about wildlife rescue,false,wildlife_rescue.jpg,2023-11-05,20
+21,Mountain Climbing,Share experiences and tips for mountain climbing,false,mountain_climbing.jpg,2023-11-10,21
+22,Kayaking Adventures,Discuss kayaking spots and experiences,false,kayaking_adventures.jpg,2023-11-15,22
+23,Trail Running,Share tips and experiences for trail running,false,trail_running.jpg,2023-11-20,23
+24,Night Sky Observation,Discuss and share tips on observing the night sky,false,night_sky_observation.jpg,2023-12-01,24
+25,Desert Explorers,Share experiences and tips for exploring deserts,false,desert_explorers.jpg,2023-12-05,25
+26,Wilderness Survival Gear,Discuss and review survival gear for wilderness,false,wilderness_survival_gear.jpg,2023-12-10,26
+27,Mountain Photography,Showcase and discuss mountain photography,false,mountain_photography.jpg,2023-12-15,27
+28,Wildlife Behavior,Discuss and learn about wildlife behavior,false,wildlife_behavior.jpg,2023-12-20,28
+29,Canoeing Trails,Share tips and experiences for canoeing trails,false,canoeing_trails.jpg,2023-12-25,29
+30,Outdoor Fitness,Share fitness routines and tips for outdoor workouts,false,outdoor_fitness.jpg,2024-01-01,30
+31,Wildlife Sounds,Share and discuss wildlife sounds and calls,false,wildlife_sounds.jpg,2024-01-05,31
+32,Coastal Adventures,Share experiences and tips for coastal activities,false,coastal_adventures.jpg,2024-01-10,32
+33,Hiking with Dogs,Discuss tips and share experiences for hiking with dogs,false,hiking_with_dogs.jpg,2024-01-15,33
+34,Primitive Skills,Learn and share primitive outdoor skills,false,primitive_skills.jpg,2024-01-20,34
+35,Wildlife Tracking,Share techniques and experiences in wildlife tracking,false,wildlife_tracking.jpg,2024-01-25,35
+36,Outdoor Survival Challenges,Participate in and discuss outdoor survival challenges,false,survival_challenges.jpg,2024-02-01,36
+37,Glamping Experiences,Share tips and experiences for glamorous camping,false,glamping_experiences.jpg,2024-02-05,37
+38,Rock Climbing,Discuss techniques and share experiences in rock climbing,false,rock_climbing.jpg,2024-02-10,38
+39,Wildlife Observation,Discuss and share tips on wildlife observation,false,wildlife_observation.jpg,2024-02-15,39
+40,Winter Hiking,Share tips and experiences for hiking in winter conditions,false,winter_hiking.jpg,2024-02-20,40
+41,Nature Conservation,Discuss and promote nature conservation efforts,false,nature_conservation.jpg,2024-02-25,41
+42,Adventure Photography,Showcase and discuss photography from adventure activities,false,adventure_photography.jpg,2024-03-01,42
+43,Outdoor First Aid,Learn and share first aid tips for outdoor situations,false,outdoor_first_aid.jpg,2024-03-05,43
+44,Wildlife Encounters,Share and discuss personal wildlife encounters,false,wildlife_encounters.jpg,2024-03-10,44
+45,Wildflower Identification,Discuss and share tips on identifying wildflowers,false,wildflower_identification.jpg,2024-03-15,45
+46,Outdoor Yoga,Share tips and experiences for practicing yoga outdoors,false,outdoor_yoga.jpg,2024-03-20,46
+47,Desert Hiking,Share experiences and tips for hiking in desert environments,false,desert_hiking.jpg,2024-03-25,47
+48,Mountain Biking Trails,Discuss and share mountain biking trails,false,mountain_biking_trails.jpg,2024-04-01,48
+49,Wildlife Photography Techniques,Learn and discuss techniques for wildlife photography,false,wildlife_photography_techniques.jpg,2024-04-05,49
+50,Outdoor Adventures for Kids,Share tips and experiences for outdoor activities suitable for children,false,outdoor_adventures_for_kids.jpg,2024-04-10,50
+51,Urban Wildlife,Discuss and share experiences with wildlife in urban settings,false,urban_wildlife.jpg,2024-04-15,51
+52,Extreme Weather Hiking,Share tips and experiences for hiking in extreme weather conditions,false,extreme_weather_hiking.jpg,2024-04-20,52
+53,Camping in National Parks,Discuss and share tips for camping in national parks,false,Camping_in_National_Parks.jpg,2024-04-25,53
+54,Wildlife Sketching,Share and discuss wildlife sketches and drawings,false,wildlife_sketching.jpg,2024-05-01,54
+55,Adventure Planning,Discuss and plan adventurous trips and expeditions,false,adventure_planning.jpg,2024-05-05,55
+56,Camping Hacks,Share tips and tricks for a better camping experience,false,Camping_Hacks.jpg,2024-05-10,56
+57,Forest Foraging,Discuss and share tips on foraging in forests,false,forest_foraging.jpg,2024-05-15,57
+58,Survival Training,Participate in and discuss survival training exercises,false,survival_training.jpg,2024-05-20,58
+59,Mountain Weather Forecasting,Discuss and share tips for forecasting mountain weather,false,mountain_weather_forecasting.jpg,2024-05-25,59
+60,Kayak Fishing,Share experiences and tips for fishing from a kayak,false,kayak_fishing.jpg,2024-06-01,60
+61,Wildlife Health,Discuss and learn about wildlife health and diseases,false,wildlife_health.jpg,2024-06-05,61
+62,Trail Maintenance,Discuss and organize trail maintenance activities,false,trail_maintenance.jpg,2024-06-10,62
+63,Outdoor Adventure Travel,Share tips and experiences for adventure travel,false,outdoor_adventure_travel.jpg,2024-06-15,63
+64,Rock Hounding,Discuss and share tips on rock hounding and mineral collecting,false,rock_hounding.jpg,2024-06-20,64
+65,Mountain Photography Tips,Learn and discuss tips for photographing mountains,false,mountain_photography_tips.jpg,2024-06-25,65
+66,Wildlife Spotting Techniques,Share and discuss techniques for spotting wildlife,false,wildlife_spotting_techniques.jpg,2024-07-01,66
+67,Camping with Kids,Discuss and share tips for camping with children,false,Camping_with_Kids.jpg,2024-07-05,67
+68,Outdoor Music Events,Share and discuss outdoor music events and festivals,false,outdoor_music_events.jpg,2024-07-10,68
+69,Remote Wilderness,Share experiences and tips for traveling to remote wilderness areas,false,remote_wilderness.jpg,2024-07-15,69
+70,Forest Bathing,Discuss and share experiences with forest bathing and mindfulness,false,forest_bathing.jpg,2024-07-20,70
+71,Wildlife Tracking Tools,Discuss and review tools for wildlife tracking,false,wildlife_tracking_tools.jpg,2024-07-25,71
+72,Camping Under the Stars,Share tips and experiences for stargazing while camping,false,Camping_Under_the_Stars.jpg,2024-08-01,72
+73,Adventure Films,Discuss and share recommendations for adventure films and documentaries,false,adventure_films.jpg,2024-08-05,73
+74,Wildlife Rescue Stories,Share stories and experiences from wildlife rescue efforts,false,wildlife_rescue_stories.jpg,2024-08-10,74
+75,Mountain Wildlife,Discuss and share experiences with wildlife in mountainous regions,false,mountain_wildlife.jpg,2024-08-15,75
+76,Outdoor Technology,Discuss and review technology for outdoor activities,false,outdoor_technology.jpg,2024-08-20,76
+77,Night Hiking,Share tips and experiences for hiking at night,false,night_hiking.jpg,2024-08-25,77
+78,Backyard Wildlife,Discuss and share experiences with wildlife in backyards,false,backyard_wildlife.jpg,2024-09-01,78
+79,Desert Survival,Share and learn survival techniques for desert environments,false,desert_survival.jpg,2024-09-05,79
+80,Wilderness Camping,Discuss and share tips for camping in wilderness areas,false,wilderness_camping.jpg,2024-09-10,80
+81,Mountain Adventures,Share and discuss experiences from various mountain adventures,false,mountain_adventures.jpg,2024-09-15,81
+82,Outdoor Fitness Challenges,Participate in and discuss outdoor fitness challenges,false,outdoor_fitness_challenges.jpg,2024-09-20,82
+83,Wildlife Photography Gear,Discuss and review gear for wildlife photography,false,wildlife_photography_gear.jpg,2024-09-25,83
+84,Camping Cooking Techniques,Share techniques and recipes for cooking while camping,false,Camping_Cooking_Techniques.jpg,2024-10-01,84
+85,Survival Skills Workshops,Discuss and organize survival skills workshops,false,survival_skills_workshops.jpg,2024-10-05,85
+86,Wildlife Observation Techniques,Share and discuss techniques for observing wildlife,false,wildlife_observation_techniques.jpg,2024-10-10,86
+87,Mountain Expeditions,Share and discuss mountain expeditions and climbing trips,false,mountain_expeditions.jpg,2024-10-15,87
+88,Outdoor Fitness Equipment,Discuss and review fitness equipment for outdoor workouts,false,outdoor_fitness_equipment.jpg,2024-10-20,88
+89,Wildlife Adventure Tours,Discuss and share experiences with wildlife adventure tours,false,wildlife_adventure_tours.jpg,2024-10-25,89
+90,Glacier Hiking,Share tips and experiences for hiking on glaciers,false,glacier_hiking.jpg,2024-11-01,90
+91,Outdoor Camping Etiquette,Discuss and share tips on camping etiquette and best practices,false,outdoor_camping_etiquette.jpg,2024-11-05,91
+92,Mountain Weather Safety,Share tips and experiences for staying safe in mountain weather,false,mountain_weather_safety.jpg,2024-11-10,92
+93,Wildlife Tracking Adventures,Share and discuss adventures related to wildlife tracking,false,wildlife_tracking_adventures.jpg,2024-11-15,93
+94,Camping for Beginners,Share tips and experiences for beginner campers,false,Camping_for_Beginners.jpg,2024-11-20,94
+95,Desert Wildlife,Discuss and share experiences with wildlife in desert environments,false,desert_wildlife.jpg,2024-11-25,95
+96,Outdoor DIY Projects,Share and discuss DIY projects for outdoor adventures,false,outdoor_diy_projects.jpg,2024-12-01,96
+97,Wildlife Observation Gear,Discuss and review gear for observing wildlife,false,wildlife_observation_gear.jpg,2024-12-05,97
+98,Mountain Adventure Photography,Share tips and showcase photographs from mountain adventures,false,mountain_adventure_photography.jpg,2024-12-10,98
+99,Camping Techniques,Discuss and share advanced camping techniques,false,Camping_Techniques.jpg,2024-12-15,99
+100,Wildlife Habitats,Discuss and learn about different wildlife habitats,false,wildlife_habitats.jpg,2024-12-20,100
+101,Outdoor Activities for Seniors,Share tips and experiences for outdoor activities suitable for seniors,false,outdoor_activities_for_seniors.jpg,2025-01-01,101
+102,Mountain Photography Challenges,Participate in and discuss mountain photography challenges,false,mountain_photography_challenges.jpg,2025-01-05,102
+103,Camping Safety,Discuss and share tips for staying safe while camping,false,Camping_Safety.jpg,2025-01-10,103
+104,Wildlife Education,Discuss and share information about wildlife education programs,false,wildlife_education.jpg,2025-01-15,104
+105,Extreme Outdoor Sports,Share experiences and tips for extreme outdoor sports,false,extreme_outdoor_sports.jpg,2025-01-20,105
+106,Forest Camping,Discuss and share tips for camping in forested areas,false,forest_camping.jpg,2025-01-25,106
+107,Outdoor Photography Gear Reviews,Discuss and review gear for outdoor photography,false,outdoor_photography_gear_reviews.jpg,2025-02-01,107
+108,Mountain Hiking Safety,Share tips and experiences for staying safe while mountain hiking,false,mountain_hiking_safety.jpg,2025-02-05,108
+109,Camping Recipes,Share and discuss recipes for cooking while camping,false,Camping_Recipes.jpg,2025-02-10,109
+110,Desert Adventures,Share experiences and tips for exploring desert environments,false,desert_adventures.jpg,2025-02-15,110
+111,Wildlife Watching Ethics,Discuss and promote ethical practices for wildlife watching,false,wildlife_watching_ethics.jpg,2025-02-20,111
+112,Outdoor Survival Kits,Discuss and review survival kits for outdoor adventures,false,outdoor_survival_kits.jpg,2025-02-25,112
+113,Mountain Biking Safety,Share tips and experiences for staying safe while mountain biking,false,mountain_biking_safety.jpg,2025-03-01,113
+114,Camping Essentials,Discuss and share tips on essential camping gear and supplies,false,Camping_Essentials.jpg,2025-03-05,114
+115,Wildlife Tracking Equipment,Discuss and review equipment for tracking wildlife,false,wildlife_tracking_equipment.jpg,2025-03-10,115
+116,Outdoor Adventure Photography Tips,Share tips and techniques for adventure photography,false,outdoor_adventure_photography_tips.jpg,2025-03-15,116
+117,Mountain Wildlife Conservation,Discuss and promote conservation efforts for mountain wildlife,false,mountain_wildlife_conservation.jpg,2025-03-20,117
+118,Camping Experiences Around the World,Share and discuss camping experiences from around the globe,false,Camping_Experiences_Around_the_World.jpg,2025-03-25,118
+119,Survival Skill Workshops,Participate in and discuss workshops on various survival skills,false,survival_skill_workshops.jpg,2025-04-01,119
+120,Wildlife Photography Locations,Share and discuss the best locations for wildlife photography,false,wildlife_photography_locations.jpg,2025-04-05,120
+121,Outdoor Fitness Routines,Share and discuss fitness routines designed for outdoor environments,false,outdoor_fitness_routines.jpg,2025-04-10,121
+122,Desert Survival Gear,Discuss and review gear for survival in desert environments,false,desert_survival_gear.jpg,2025-04-15,122
+123,Mountain Adventures for Families,Share tips and experiences for family-friendly mountain adventures,false,mountain_adventures_for_families.jpg,2025-04-20,123
+124,Camping Gear Innovations,Discuss and review innovative camping gear and technologies,false,Camping_Gear_Innovations.jpg,2025-04-25,124
+125,Wildlife Conservation Success Stories,Share and discuss success stories in wildlife conservation,false,wildlife_conservation_success_stories.jpg,2025-05-01,125
+126,Outdoor Photography Workshops,Participate in and discuss workshops on outdoor photography,false,outdoor_photography_workshops.jpg,2025-05-05,126
+127,Mountain Hiking Trails,Share and discuss hiking trails in mountainous regions,false,mountain_hiking_trails.jpg,2025-05-10,127
+128,Camping with Pets,Discuss and share tips for camping with pets,false,Camping_with_Pets.jpg,2025-05-15,128
+129,Survival Skills Resources,Share and review resources for learning survival skills,false,survival_skills_resources.jpg,2025-05-20,129
+130,Wildlife Habitat Restoration,Discuss and participate in habitat restoration efforts for wildlife,false,wildlife_habitat_restoration.jpg,2025-05-25,130
+131,Outdoor Cooking Recipes,Share and discuss recipes for outdoor cooking,false,Outdoor_Cooking_Recipes.jpg,2025-06-01,131
+132,Mountain Climbing Gear Reviews,Discuss and review gear for mountain climbing,false,mountain_climbing_gear_reviews.jpg,2025-06-05,132
+133,Wildlife Migration Patterns,Discuss and learn about wildlife migration patterns,false,wildlife_migration_patterns.jpg,2025-06-10,133
+134,Camping Strategies,Share and discuss strategies for a successful camping experience,false,Camping_Strategies.jpg,2025-06-15,134
+135,Desert Wildlife Conservation,Discuss and promote conservation efforts for desert wildlife,false,desert_wildlife_conservation.jpg,2025-06-20,135
+136,Outdoor Adventure Safety,Share and discuss safety tips for outdoor adventures,false,outdoor_adventure_safety.jpg,2025-06-25,136
+137,Mountain Wildlife Observation,Share and discuss techniques for observing wildlife in mountains,false,mountain_wildlife_observation.jpg,2025-07-01,137
+138,Camping Gear Innovations,Discuss and review innovative camping gear and technologies,false,Camping_Gear_Innovations.jpg,2025-07-05,138
+139,Wildlife Conservation Education,Discuss and share educational resources about wildlife conservation,false,wildlife_conservation_education.jpg,2025-07-10,139
+140,Outdoor Fitness Challenges for Beginners,Share and discuss beginner-friendly outdoor fitness challenges,false,outdoor_fitness_challenges_for_beginners.jpg,2025-07-15,140
+141,Mountain Adventure Planning,Discuss and share tips for planning mountain adventures,false,mountain_adventure_planning.jpg,2025-07-20,141
+142,Camping Safety Tips,Share and discuss safety tips for camping in various environments,false,Camping_Safety_Tips.jpg,2025-07-25,142
+143,Wildlife Observation Techniques for Beginners,Share and discuss beginner-friendly techniques for observing wildlife,false,wildlife_observation_techniques_for_beginners.jpg,2025-08-01,143
+144,Outdoor Adventure Gear Reviews,Discuss and review gear for various outdoor adventures,false,outdoor_adventure_gear_reviews.jpg,2025-08-05,144
+145,Mountain Wildlife Photography,Share and discuss photography tips and techniques for capturing mountain wildlife,false,mountain_wildlife_photography.jpg,2025-08-10,145
+146,Camping for Families,Discuss and share tips for family-friendly camping experiences,false,Camping_for_Families.jpg,2025-08-15,146
+147,Wildlife Conservation Strategies,Share and discuss strategies for wildlife conservation efforts,false,wildlife_conservation_strategies.jpg,2025-08-20,147
+148,Outdoor Adventure Planning,Share and discuss tips for planning various outdoor adventures,false,outdoor_adventure_planning.jpg,2025-08-25,148
+149,Mountain Wildlife Experiences,Share and discuss personal experiences with mountain wildlife,false,mountain_wildlife_experiences.jpg,2025-09-01,149
+150,Camping Essentials for Families,Share and discuss essential camping gear and tips for families,false,Camping_Essentials_for_Families.jpg,2025-09-05,150
