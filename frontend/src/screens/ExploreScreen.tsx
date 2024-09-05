@@ -82,7 +82,7 @@ const ExploreScreen: React.FC = () => {
 
         const cacheData = fetchFromCache();
         const now = Date.now();
-        const expirationTime = 60 * 60 * 1000; // 1 hour
+        const expirationTime = 60 * 1000; 
 
         if (
           cacheData.posts &&
@@ -166,7 +166,7 @@ const ExploreScreen: React.FC = () => {
 
     fetchPosts();
   }, []);
-  
+
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
