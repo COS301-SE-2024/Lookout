@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { Link } from "react-router-dom";
 import ExplorePost from "../components/ExplorePost";
 import ExploreGroup from "../components/ExploreGroup";
@@ -60,55 +60,85 @@ const ExploreScreen: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // Check for cached data
-        const cachedPosts = localStorage.getItem("posts");
-        const cachedAnimalPosts = localStorage.getItem("animalPosts");
-        const cachedCampingPosts = localStorage.getItem("campingPosts");
-        const cachedPoiPosts = localStorage.getItem("poiPosts");
-        const cachedSecurityPosts = localStorage.getItem("securityPosts");
-        const cachedGroupPosts = localStorage.getItem("groupPosts");
-        const cachedTimestamp = localStorage.getItem("postsTimestamp");
-  
-        // Set expiration time (e.g., 1 hour)
-        const expirationTime = 60 * 60 * 1000;
+        const fetchFromCache = () => {
+          const cachedPosts = localStorage.getItem("posts");
+          const cachedAnimalPosts = localStorage.getItem("animalPosts");
+          const cachedCampingPosts = localStorage.getItem("campingPosts");
+          const cachedPoiPosts = localStorage.getItem("poiPosts");
+          const cachedSecurityPosts = localStorage.getItem("securityPosts");
+          const cachedGroupPosts = localStorage.getItem("groupPosts");
+          const cachedTimestamp = localStorage.getItem("postsTimestamp");
+
+          return {
+            posts: cachedPosts ? JSON.parse(cachedPosts) : null,
+            animalPosts: cachedAnimalPosts ? JSON.parse(cachedAnimalPosts) : null,
+            campingPosts: cachedCampingPosts ? JSON.parse(cachedCampingPosts) : null,
+            poiPosts: cachedPoiPosts ? JSON.parse(cachedPoiPosts) : null,
+            securityPosts: cachedSecurityPosts ? JSON.parse(cachedSecurityPosts) : null,
+            groupPosts: cachedGroupPosts ? JSON.parse(cachedGroupPosts) : null,
+            cachedTimestamp: cachedTimestamp ? parseInt(cachedTimestamp) : null,
+          };
+        };
+
+        const cacheData = fetchFromCache();
         const now = Date.now();
-  
+        const expirationTime = 60 * 60 * 1000; // 1 hour
+
         if (
-          cachedPosts &&
-          cachedAnimalPosts &&
-          cachedCampingPosts &&
-          cachedPoiPosts &&
-          cachedSecurityPosts &&
-          cachedGroupPosts &&
-          cachedTimestamp &&
-          now - parseInt(cachedTimestamp) < expirationTime
+          cacheData.posts &&
+          cacheData.animalPosts &&
+          cacheData.campingPosts &&
+          cacheData.poiPosts &&
+          cacheData.securityPosts &&
+          cacheData.groupPosts &&
+          cacheData.cachedTimestamp &&
+          now - cacheData.cachedTimestamp < expirationTime
         ) {
-          // Use cached data
-          setPosts(JSON.parse(cachedPosts));
-          setAnimalPosts(JSON.parse(cachedAnimalPosts));
-          setCampingPosts(JSON.parse(cachedCampingPosts));
-          setPoiPosts(JSON.parse(cachedPoiPosts));
-          setSecurityPosts(JSON.parse(cachedSecurityPosts));
-          setGroupPosts(JSON.parse(cachedGroupPosts));
+          setPosts(cacheData.posts);
+          setAnimalPosts(cacheData.animalPosts);
+          setCampingPosts(cacheData.campingPosts);
+          setPoiPosts(cacheData.poiPosts);
+          setSecurityPosts(cacheData.securityPosts);
+          setGroupPosts(cacheData.groupPosts);
           setLoading(false);
         } else {
-          // Fetch new data
-          const response = await fetch("/api/posts/category/3?page=0&size=12");
-          const animalResponse = await fetch("/api/posts/category/1?page=0&size=10");
-          const campResponse = await fetch("/api/posts/category/2?page=0&size=10");
-          const poiResponse = await fetch("/api/posts/category/4?page=0&size=10");
-          const securityResponse = await fetch("/api/posts/category/5?page=0&size=10");
-          const groupResponse = await fetch("/api/groups");
-          const userGroupResponse = await fetch(`/api/groups/user/2`);
-  
-          const data = await response.json();
-          const animalData = await animalResponse.json();
-          const campData = await campResponse.json();
-          const poiData = await poiResponse.json();
-          const securityData = await securityResponse.json();
-          const groupData = await groupResponse.json();
-          const userGroupData = await userGroupResponse.json();
-  
+          // Fetch data in parallel
+          const [
+            response,
+            animalResponse,
+            campResponse,
+            poiResponse,
+            securityResponse,
+            groupResponse,
+            userGroupResponse,
+          ] = await Promise.all([
+            fetch("/api/posts/category/3?page=0&size=12"),
+            fetch("/api/posts/category/1?page=0&size=10"),
+            fetch("/api/posts/category/2?page=0&size=10"),
+            fetch("/api/posts/category/4?page=0&size=10"),
+            fetch("/api/posts/category/5?page=0&size=10"),
+            fetch("/api/groups"),
+            fetch(`/api/groups/user/2`),
+          ]);
+
+          const [
+            data,
+            animalData,
+            campData,
+            poiData,
+            securityData,
+            groupData,
+            userGroupData,
+          ] = await Promise.all([
+            response.json(),
+            animalResponse.json(),
+            campResponse.json(),
+            poiResponse.json(),
+            securityResponse.json(),
+            groupResponse.json(),
+            userGroupResponse.json(),
+          ]);
+
           setPosts(data.content);
           setAnimalPosts(animalData.content);
           setCampingPosts(campData.content);
@@ -116,7 +146,7 @@ const ExploreScreen: React.FC = () => {
           setSecurityPosts(securityData.content);
           setGroupPosts(groupData.content);
           setUserGroups(userGroupData);
-  
+
           // Save to local storage
           localStorage.setItem("posts", JSON.stringify(data.content));
           localStorage.setItem("animalPosts", JSON.stringify(animalData.content));
@@ -125,7 +155,7 @@ const ExploreScreen: React.FC = () => {
           localStorage.setItem("securityPosts", JSON.stringify(securityData.content));
           localStorage.setItem("groupPosts", JSON.stringify(groupData.content));
           localStorage.setItem("postsTimestamp", now.toString());
-  
+
           setLoading(false);
         }
       } catch (error) {
@@ -133,14 +163,17 @@ const ExploreScreen: React.FC = () => {
         setLoading(false);
       }
     };
-  
+
     fetchPosts();
   }, []);
   
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    const query = event.target.value;
+    startTransition(() => {
+      setSearchQuery(query);
+    });
   };
 
   const filteredPosts = posts.filter((post) =>
