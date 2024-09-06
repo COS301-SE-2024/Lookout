@@ -50,15 +50,10 @@ class GroupController(private val groupService: GroupService) {
         val groups = groupService.findAll(pageable).map { group -> convertToDto(group) }
         return ResponseEntity.ok(groups)
     }
-
     @GetMapping("/all", produces = [MediaType.TEXT_PLAIN_VALUE])
-    fun getAllGroupsCsv(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<String> {
-        val pageable: Pageable = PageRequest.of(page, size)
-        val groupPage = groupService.findAll(pageable)
-        val groups = groupPage.content.map { group -> convertToDto(group) }
+    fun getAllGroupsCsv(): ResponseEntity<String> {
+        val groups = groupService.findAll()  // Assuming findAll() returns all groups without pagination.
+            .map { group -> convertToDto(group) }
 
         // Create CSV content
         val csvBuilder = StringBuilder()

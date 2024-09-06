@@ -17,6 +17,8 @@ class GroupService(private val groupRepository: GroupRepository, private val use
 
     fun findAll(pageable: Pageable): Page<Groups> = groupRepository.findAll(pageable)
 
+    fun findAll(): Page<Groups> = groupRepository.findAll(Pageable.unpaged())
+
     fun findById(groupId: Long): Groups? = groupRepository.findById(groupId).orElse(null)
 
     fun save(group: Groups): Groups {
