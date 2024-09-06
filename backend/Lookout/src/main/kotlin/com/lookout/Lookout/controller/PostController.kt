@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.MediaType
 
 @RestController
 @RequestMapping("/api/posts")
@@ -87,6 +88,28 @@ class PostController(private val postService: PostsService) {
         val pageable: Pageable = PageRequest.of(page, size)
         val posts = postService.findAll(pageable).map { post -> convertToDto(post)}
         return ResponseEntity.ok(posts)
+    }
+
+    // Get all posts in csv format
+    @GetMapping("/all", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun getAllPostsCsv(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "100") size: Int
+    ): ResponseEntity<String> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        val postPage = postService.findAll(pageable)
+        val posts = postPage.content.map { post -> convertToDto(post) }
+
+        // Create CSV content
+        val csvBuilder = StringBuilder()
+        csvBuilder.append("id,userid,groupId,categoryId,title,caption,picture,latitude,longitude,createdAt\n")
+        posts.forEach { dto ->
+            csvBuilder.append("${dto.id},${dto.userId},${dto.groupId},${dto.categoryId},${dto.title},${dto.caption},${dto.picture},${dto.latitude},${dto.longitude},${dto.createdAt}\n")
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            .body(csvBuilder.toString())
     }
 
     // Get posts by User ID

@@ -93,4 +93,13 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         return groupRepository.findGroupMembers(groupId)
     }
 
+    fun getAllGroupMembers(): List<Pair<Long, Long>> {
+        val groupMembersArray = groupRepository.findAllGroupMembers()
+        return groupMembersArray.map { array ->
+            val groupId = (array[0] as Number).toLong()
+            val userId = (array[1] as Number).toLong()
+            Pair(groupId, userId)
+        }
+    }
+
 }

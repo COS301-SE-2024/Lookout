@@ -74,6 +74,11 @@ class SavedPostsService(
         return savedPostRepository.countByPost(post)
     }
 
+    fun getAllSavedPostsWithUsers(): List<SavedPosts> {
+        return savedPostRepository.findAll()
+    }
+
+
 
 
 }
