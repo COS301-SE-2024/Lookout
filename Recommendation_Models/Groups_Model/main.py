@@ -8,12 +8,10 @@ from tensorflow.keras import layers, Model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import io
+import os
 
 ############################################# LOADING, LABELLING & SPLITTING DATA ##########################################
-import requests
-import pandas as pd
-import io
-import os
+
 
 # Define the endpoints
 endpoints = {
@@ -188,61 +186,52 @@ print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
 def recommend_groups(user_id, top_n=10):
     # Get the internal user ID
     internal_user_id = user_encoder.transform([user_id])[0]
-    # print(f"Internal User ID: {internal_user_id}")
     
     # Get the groups that the user has already joined
     joined_group_ids = joined_groups_df[joined_groups_df['userid'] == user_id]['groupid'].values
-    # print(f"Joined Group IDs: {joined_group_ids}")
     
     # Get the internal group IDs for the joined groups
     joined_internal_group_ids = group_encoder.transform(joined_group_ids)
-    # print(f"Joined Internal Group IDs: {joined_internal_group_ids}")
-
+    
     # Get the groups that the user has created
     user_created_group_ids = groups_df[groups_df['userId'] == user_id]['id'].values
-    # print(f"User Created Group IDs: {user_created_group_ids}")
     
     # Get the internal group IDs for the created groups
     user_created_internal_group_ids = group_encoder.transform(user_created_group_ids)
-    # print(f"User Created Internal Group IDs: {user_created_internal_group_ids}")
     
     # Exclude the joined groups and the groups created by the user from the recommendation process
     all_internal_group_ids = np.arange(num_groups)
     unjoined_and_uncreated_internal_group_ids = np.setdiff1d(all_internal_group_ids, np.union1d(joined_internal_group_ids, user_created_internal_group_ids))
-    # print(f"Unjoined and Uncreated Internal Group IDs: {unjoined_and_uncreated_internal_group_ids}")
     
     # Get the corresponding text sequences for the unjoined and uncreated groups
     unjoined_and_uncreated_group_texts = group_text_sequences[unjoined_and_uncreated_internal_group_ids]
-    # print(f"Unjoined and Uncreated Group Texts (sequences): {unjoined_and_uncreated_group_texts[:5]}")  # Print first 5 sequences
     
     # Predict scores for the unjoined and uncreated groups for the given user
     user_data = np.array([internal_user_id] * len(unjoined_and_uncreated_internal_group_ids))
     group_data = unjoined_and_uncreated_internal_group_ids
-    # print(f"User Data for Prediction: {user_data[:5]}")
-    # print(f"Group Data for Prediction: {group_data[:5]}")
 
     predicted_scores = model.predict([user_data, group_data, unjoined_and_uncreated_group_texts]).flatten()
-    # print(f"Predicted Scores: {predicted_scores[:5]}")
     
     # Get top N groups
-    top_indices = np.argsort(predicted_scores)[::-1][:top_n]
-    # print(f"Top Indices: {top_indices}")
-    
+    top_indices = np.argsort(predicted_scores)[::-1]
     top_internal_group_ids = unjoined_and_uncreated_internal_group_ids[top_indices]
-    # print(f"Top Internal Group IDs: {top_internal_group_ids}")
     
-    # Filter out any unseen labels
+    # Filter out unseen labels
     seen_labels = set(group_encoder.classes_)
-    # print("Seen labels: ")
-    print(seen_labels)
     valid_group_ids = [group_id for group_id in top_internal_group_ids if group_id in seen_labels]
-    # print(f"Valid Group IDs after filtering unseen labels: {valid_group_ids}")
 
-    # If there are valid group IDs, inverse transform them to get actual group IDs
-    if valid_group_ids:
-        recommended_groups = groups_df.loc[groups_df['id'].isin(group_encoder.inverse_transform(valid_group_ids))]
-    else:
-        recommended_groups = pd.DataFrame()  # or handle as per your logic
+    # Ensure we have at least 'top_n' groups by adding more from the remaining list
+    if len(valid_group_ids) < top_n:
+        # Add more from the unfiltered top groups if not enough valid groups found
+        additional_groups_needed = top_n - len(valid_group_ids)
+        additional_group_ids = top_internal_group_ids[:additional_groups_needed]
+        valid_group_ids.extend(additional_group_ids)
+
+    # Inverse transform to get actual group IDs for the valid groups
+    recommended_group_ids = group_encoder.inverse_transform(valid_group_ids[:top_n])
+
+    # Retrieve the recommended groups' data
+    recommended_groups = groups_df.loc[groups_df['id'].isin(recommended_group_ids)]
 
     print("\nGroups created by the user:")
     created_groups = groups_df.loc[groups_df['id'].isin(user_created_group_ids)]
