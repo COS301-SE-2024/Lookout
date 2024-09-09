@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.MediaType
 
 @RestController
 @RequestMapping("/api/groups")
@@ -49,6 +50,23 @@ class GroupController(private val groupService: GroupService) {
         val groups = groupService.findAll(pageable).map { group -> convertToDto(group) }
         return ResponseEntity.ok(groups)
     }
+    @GetMapping("/all", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun getAllGroupsCsv(): ResponseEntity<String> {
+        val groups = groupService.findAll()  // Assuming findAll() returns all groups without pagination.
+            .map { group -> convertToDto(group) }
+
+        // Create CSV content
+        val csvBuilder = StringBuilder()
+        csvBuilder.append("id,name,description,isPrivate,picture,createdAt,userId\n")
+        groups.forEach { dto ->
+            csvBuilder.append("${dto.id},${dto.name},${dto.description},${dto.isPrivate},${dto.picture},${dto.createdAt},${dto.userId}\n")
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            .body(csvBuilder.toString())
+    }
+
 
     @GetMapping("/{id}")
     fun getGroupById(@PathVariable id: Long): ResponseEntity<GroupDto> {
@@ -154,5 +172,27 @@ class GroupController(private val groupService: GroupService) {
             ResponseEntity.noContent().build()
         }
     }
+
+    @GetMapping("/joinedGroups/all", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun getAllGroupMembersCsv(): ResponseEntity<String> {
+        return try {
+            val groupMembers = groupService.getAllGroupMembers()
+
+            // Create CSV content
+            val csvBuilder = StringBuilder()
+            csvBuilder.append("id,groupid,userid\n")
+            groupMembers.forEachIndexed { index, (groupId, userId) ->
+                csvBuilder.append("${index + 1},$groupId,$userId\n")
+            }
+
+            ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(csvBuilder.toString())
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
+        }
+    }
+
+
     
 }
