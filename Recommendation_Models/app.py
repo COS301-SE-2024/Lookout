@@ -5,8 +5,11 @@ from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
 
 ############################################# LOADING DATA ##########################################
 
@@ -75,7 +78,7 @@ def recommend_posts(user_id, top_n=10):
     top_indices = np.argsort(predicted_scores)[::-1][:top_n]
     top_internal_post_ids = unsaved_internal_post_ids[top_indices]
     recommended_posts = posts_df.loc[posts_df['id'].isin(post_encoder.inverse_transform(top_internal_post_ids))]
-    return recommended_posts[['id', 'title', 'caption']].to_dict(orient='records')
+    return recommended_posts[['id','userid','groupId','categoryId','title','caption','picture','latitude','longitude']].to_dict(orient='records')
 
 @app.route('/recommend_posts', methods=['GET'])
 def recommend():
