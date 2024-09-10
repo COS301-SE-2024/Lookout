@@ -14,9 +14,9 @@ import time
 # cleaning up our images
 start_time = time.time()
 
-# data_dir = r'ImageRecognition\data' 
+data_dir = r'ImageRecognition\data' 
 
-# image_exts = ['jpeg','jpg', 'bmp', 'png']
+image_exts = ['jpeg','jpg', 'bmp', 'png']
 
 # for image_class in os.listdir(data_dir):
 #     print(image_class)
@@ -33,7 +33,7 @@ start_time = time.time()
 #         except Exception as e: 
 #             print('Issue with image {}'.format(image_path))
 
-# #############################################################################################################
+#############################################################################################################
 # # Load our data
 # data = tf.keras.utils.image_dataset_from_directory(r'ImageRecognition\data')
 # data_iterator = data.as_numpy_iterator()
@@ -61,7 +61,7 @@ start_time = time.time()
 # # plt.show()
 
 # #############################################################################################################
-#Splitting our data into training, testing and validation sets
+# # Splitting our data into training, testing and validation sets
 # print(f"Length of Data: {len(data)}")
 # train_size = int(len(data)*.7)
 # val_size = int(len(data)*.2) + 1
@@ -74,8 +74,8 @@ start_time = time.time()
 # test = data.skip(train_size+val_size).take(test_size)
 
 # #############################################################################################################
-# Deep learning model
-# Update model for multi-class classification
+# # Deep learning model
+# # Update model for multi-class classification
 # model = Sequential()
 # model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(256,256,3)))
 # model.add(MaxPooling2D((2, 2)))
@@ -99,8 +99,8 @@ start_time = time.time()
 # model.save(os.path.join(r'ImageRecognition/models','image_classifier.keras'))
 
 # #############################################################################################################
-# Plotting our performance
-# Plotting our loss
+# # Plotting our performance
+# # Plotting our loss
 # fig = plt.figure()
 # plt.plot(hist.history['loss'], color='teal', label='loss')
 # plt.plot(hist.history['val_loss'], color='orange', label='val_loss')
@@ -117,7 +117,7 @@ start_time = time.time()
 # # plt.show()
 
 # # #############################################################################################################
-# Evaluating the model
+# # Evaluating the model
 # acc = SparseCategoricalAccuracy()
 # for batch in test.as_numpy_iterator(): 
 #     X, y = batch
@@ -126,13 +126,15 @@ start_time = time.time()
 
 # print("Sparse Categorical Accuracy:", acc.result().numpy())
 
-# #############################################################################################################
-# # Testing our model works now
+#############################################################################################################
+# Testing our model works now
 
-saved_model = load_model(r'ImageRecognition/models/image_classifier.keras')
+saved_model = load_model(r'models/image_classifier.keras')
+
+print(os.getcwd())
 
 # Load and preprocess the test image
-img = cv2.imread(r'ImageRecognition/Rhino.jpg')
+img = cv2.imread(r'Lion.jpg')
 img = tf.image.resize(img, (256, 256))  # Resize to model input size
 img = img / 255.0  # Normalize to [0, 1]
 
