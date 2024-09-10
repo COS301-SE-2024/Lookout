@@ -23,6 +23,7 @@ import UserPostDetails from "./components/UserPostDetails";
 import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CategoryPostsPage from "./screens/CategoryPostsPage";
+import ExploreRecommend from "./screens/RecommendScreen";
 import ExploreGroups from "./components/ExploreGroups";
 import PinMap from "./components/PinMap";
 import CreatedGroupDetail from "./components/CreatedGroupDetail";
@@ -92,7 +93,15 @@ function Main() {
 						path="/category/:categoryId"
 						element={<CategoryPostsPage />}
 					/>{" "}
-					{/* Add this line */}
+					<Route
+						path="/recommend/posts"
+						element={<ExploreRecommend />}
+					/>{" "}
+					<Route
+						path="/recommend/groups"
+						element={<ExploreRecommend />}
+					/>{" "}
+					
 				</Route>
 				<Route
 					path="/createdGroup/:id"
