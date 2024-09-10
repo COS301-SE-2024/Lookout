@@ -498,6 +498,7 @@ const HomeScreen: React.FC = () => {
 		
 			  }
 			console.log(uploadURL.split("?")[0]);
+			console.log(picture);
 			console.log(
 				"Image uploaded and profile picture updated successfully."
 			);
@@ -731,6 +732,31 @@ const HomeScreen: React.FC = () => {
 				  } catch (error) {
 					console.error("Error during prediction:", error);
 				  }
+				} else if (newShowRecommendedTitle && !predictResult){
+					const myHeaders = new Headers();
+					myHeaders.append("Content-Type", "application/json");
+
+					const raw = JSON.stringify({
+						"image_url": picture
+					});
+			
+			
+					const requestOptions = {
+						method: "POST",
+						headers: myHeaders,
+						body: raw
+					};
+
+					try {
+						const response = await fetch("http://localhost:5000/predict", requestOptions);
+						const result = await response.json();
+						setPredictResult(result.predicted_class); 
+						setTitle(result.predicted_class);
+						console.log(result)
+					} catch (error) {
+							console.error(error);
+					};
+
 				} else if (!newShowRecommendedTitle) {
 				  // If the checkbox is unchecked, clear the title
 				  setTitle('');
