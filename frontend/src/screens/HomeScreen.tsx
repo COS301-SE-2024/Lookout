@@ -470,6 +470,34 @@ const HomeScreen: React.FC = () => {
 				body: binaryData
 			});
 			await setPicture(uploadURL.split("?")[0]);
+
+			if (showRecommendedTitle) {
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+
+				const raw = JSON.stringify({
+					"image_url": uploadURL.split("?")[0]
+				});
+		  
+		  
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw
+				};
+
+				try {
+					const response = await fetch("http://localhost:5000/predict", requestOptions);
+					const result = await response.json();
+					setPredictResult(result.predicted_class); 
+    			  	setTitle(result.predicted_class);
+					console.log(result)
+				} catch (error) {
+						console.error(error);
+				};
+		
+			  }
+			console.log(uploadURL.split("?")[0]);
 			console.log(
 				"Image uploaded and profile picture updated successfully."
 			);

@@ -3,6 +3,8 @@ from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
 import cv2
+import requests
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -14,18 +16,35 @@ saved_model = tf.keras.models.load_model('models/image_classifier.keras')
 # Define the class names
 class_names = ['buffalo', 'elephant', 'leopard', 'lion', 'rhino']
 
+def load_and_preprocess_image(image_data):
+    # Convert the image to an OpenCV format, resize and normalize
+    img = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
+    img = cv2.resize(img, (256, 256))  # Resize to model input size
+    img = img / 255.0  # Normalize to [0, 1]
+    return img
+
 @app.route('/predict', methods=['POST'])
 def predict():
     # Check if an image is in the request
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image uploaded'}), 400
+    if 'image' in request.files:
+        # Process uploaded image file
+        file = request.files['image']
+        image_data = file.read()
+    elif 'image_url' in request.json:
+        # Process image from URL
+        image_url = request.json['image_url']
+        try:
+            response = requests.get(image_url)
+            if response.status_code != 200:
+                return jsonify({'error': 'Failed to download image from URL'}), 400
+            image_data = response.content
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+    else:
+        return jsonify({'error': 'No image uploaded or URL provided'}), 400
 
-    file = request.files['image']
-
-    # Convert the file to an OpenCV image
-    img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
-    img = cv2.resize(img, (256, 256))  # Resize to model input size
-    img = img / 255.0  # Normalize to [0, 1]
+    # Load and preprocess image
+    img = load_and_preprocess_image(image_data)
 
     # Predict class probabilities
     yhat = saved_model.predict(np.expand_dims(img, 0))
