@@ -514,6 +514,7 @@ const HomeScreen: React.FC = () => {
 
 				setIsSuccessModalOpen(true); // Open success modal
 				setNewNumberPins(newNumberPins + 1);
+				await fetchPins();
 				// setIsModalOpen(false); // Close modal after successful pin addition
 				// setIsSuccessModalOpen(true); // Open success modal
 			} catch (error) {
