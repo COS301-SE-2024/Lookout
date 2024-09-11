@@ -1,121 +1,141 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
-import { 
-	HeatmapLayer, 
-	Control , 
-	GoogleMap, 
-	GoogleMapApiLoader, 
+import {
+	HeatmapLayer,
+	Control,
+	GoogleMap,
+	GoogleMapApiLoader,
 	MarkerClusterer,
 	Marker
-} from 'react-google-map-wrapper';
-import '../assets/styles/home.css'
-import HomePins from '../components/HomePins';
-import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
-import Legend from '../components/Legend';
-import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
-import campIcon from '../assets/icons/camping-zone.png';
-import AnimalIcon from '../assets/icons/zoo.png';
-import HikingIcon from '../assets/icons/mountain.png';
-import POIIcon from '../assets/icons/point-of-interest.png';
-import SecurityIcon from '../assets/icons/danger.png';
+} from "react-google-map-wrapper";
+import "../assets/styles/home.css";
+import HomePins from "../components/HomePins";
+import { FaFolder, FaCamera, FaTimes, FaPlus } from "react-icons/fa";
+import Legend from "../components/Legend";
+import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
+import campIcon from "../assets/icons/camping-zone.png";
+import AnimalIcon from "../assets/icons/zoo.png";
+import HikingIcon from "../assets/icons/mountain.png";
+import POIIcon from "../assets/icons/point-of-interest.png";
+import SecurityIcon from "../assets/icons/danger.png";
 // import { url } from "inspector";
 import AWS from "aws-sdk";
-
 
 // ##############################  HEAT MAP STUFF!!
 const getData = () => [
 	new google.maps.LatLng(-27.782551, 22.445368),
 	new google.maps.LatLng(-27.782745, 22.444586),
 	new google.maps.LatLng(-27.752986, 22.403112),
-	new google.maps.LatLng(-27.751266, 22.403355),
-  ];
-
+	new google.maps.LatLng(-27.751266, 22.403355)
+];
 
 const customGradient = [
-  'rgba(0, 255, 255, 0)',
-  'rgba(0, 255, 255, 1)',
-  'rgba(191, 0, 31, 1)',
-  'rgba(255, 0, 0, 1)',
+	"rgba(0, 255, 255, 0)",
+	"rgba(0, 255, 255, 1)",
+	"rgba(191, 0, 31, 1)",
+	"rgba(255, 0, 0, 1)"
 ];
 
 function MapContent() {
-  const [show, setShow] = useState(true);
-  const [gradient, setGradient] = useState<string[] | null>(null);
-  const [radius, setRadius] = useState<number | null>(null);
-  const [opacity, setOpacity] = useState<number | null>(null);
+	const [show, setShow] = useState(true);
+	const [gradient, setGradient] = useState<string[] | null>(null);
+	const [radius, setRadius] = useState<number | null>(null);
+	const [opacity, setOpacity] = useState<number | null>(null);
 
-  const data = useMemo(getData, []);
+	const data = useMemo(getData, []);
 
-  const toggleHeatmap = () => {
-    setShow(!show);
-  };
+	const toggleHeatmap = () => {
+		setShow(!show);
+	};
 
-  const changeGradient = () => {
-    setGradient((prev) => (prev ? null : customGradient));
-  };
+	const changeGradient = () => {
+		setGradient((prev) => (prev ? null : customGradient));
+	};
 
-  const changeRadius = () => {
-    setRadius(radius ? null : 20);
-  };
+	const changeRadius = () => {
+		setRadius(radius ? null : 20);
+	};
 
-  const changeOpacity = () => {
-    setOpacity(opacity ? null : 0.2);
-  };
+	const changeOpacity = () => {
+		setOpacity(opacity ? null : 0.2);
+	};
 
-  return (
-    <>
-      <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
-      <Control position={google.maps.ControlPosition.TOP_CENTER}>
-        <div id='floating-panel' className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg">
-          <button
-            id='toggle-heatmap'
-            onClick={toggleHeatmap}
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            Toggle Heatmap
-          </button>
-          <button
-            id='change-gradient'
-            onClick={changeGradient}
-            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
-          >
-            Change Gradient
-          </button>
-          <button
-            id='change-radius'
-            onClick={changeRadius}
-            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          >
-            Change Radius
-          </button>
-          <button
-            id='change-opacity'
-            onClick={changeOpacity}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
-          >
-            Change Opacity
-          </button>
-        </div>
-      </Control>
-    </>
-  );
+	return (
+		<>
+			<HeatmapLayer
+				data={data}
+				gradient={gradient}
+				radius={radius}
+				opacity={opacity}
+				hidden={!show}
+			/>
+			<Control position={google.maps.ControlPosition.TOP_CENTER}>
+				<div
+					id="floating-panel"
+					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
+				>
+					<button
+						id="toggle-heatmap"
+						onClick={toggleHeatmap}
+						className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+					>
+						Toggle Heatmap
+					</button>
+					<button
+						id="change-gradient"
+						onClick={changeGradient}
+						className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+					>
+						Change Gradient
+					</button>
+					<button
+						id="change-radius"
+						onClick={changeRadius}
+						className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+					>
+						Change Radius
+					</button>
+					<button
+						id="change-opacity"
+						onClick={changeOpacity}
+						className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+					>
+						Change Opacity
+					</button>
+				</div>
+			</Control>
+		</>
+	);
 }
 
 // #################### END OF HEAT MAP STUFF
 
-type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
-type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
+type Poi = {
+	key: string;
+	location: google.maps.LatLngLiteral;
+	label: string;
+	details: string;
+};
+type myPin = {
+	id: string;
+	location: google.maps.LatLngLiteral;
+	caption: string;
+	category: string;
+	image: string;
+	categoryId: number;
+};
 
 const legendItems = [
-  { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
-  { name: 'Camp Sites', icon: campIcon },
-  { name: 'Animal', icon: AnimalIcon },
-  { name: 'Hiking', icon: HikingIcon },
-  { name: 'POI', icon: POIIcon },
-  { name: 'Security Risk', icon: SecurityIcon },
-
-
+	{
+		name: "Nature Reserves",
+		icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+	},
+	{ name: "Camp Sites", icon: campIcon },
+	{ name: "Animal", icon: AnimalIcon },
+	{ name: "Hiking", icon: HikingIcon },
+	{ name: "POI", icon: POIIcon },
+	{ name: "Security Risk", icon: SecurityIcon }
 ];
 
 const locations: Poi[] = [
@@ -200,9 +220,8 @@ type Group = {
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC = () => {
-
 	const defaultCenter = { lat: -28, lng: 23 };
-  const [center, setCenter] = useState(defaultCenter);
+	const [center, setCenter] = useState(defaultCenter);
 
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -231,16 +250,13 @@ const HomeScreen: React.FC = () => {
 	const [captionExpanded, setCaptionExpanded] = useState(false);
 	const [dragpinExpanded, setDragPinExpanded] = useState(false);
 	const [showRecommendedTitle, setShowRecommendedTitle] = useState(false);
-	const [predictResult, setPredictResult] = useState('');
-
+	const [predictResult, setPredictResult] = useState("");
 
 	const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
 	const [newNumberPins, setNewNumberPins] = useState<number>(0);
 
-	
 	const [dragpinlatitude, setdragpinLatitude] = useState(latitude);
 	const [dragpinlongitude, setdragpinLongitude] = useState(longitude);
-
 
 	const navigate = useNavigate();
 
@@ -250,23 +266,22 @@ const HomeScreen: React.FC = () => {
 
 	useEffect(() => {
 		if (navigator.geolocation) {
-		  navigator.geolocation.getCurrentPosition(
-			(position) => {
-			  setCenter({
-				lat: position.coords.latitude,
-				lng: position.coords.longitude,
-			  });
-			},
-			(error) => {
-			  console.error("Error getting user's location:", error);
-			  // If user denies location access or an error occurs, retain the default center
-			}
-		  );
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					setCenter({
+						lat: position.coords.latitude,
+						lng: position.coords.longitude
+					});
+				},
+				(error) => {
+					console.error("Error getting user's location:", error);
+					// If user denies location access or an error occurs, retain the default center
+				}
+			);
 		}
-	  }, []);
+	}, []);
 
-
-	  // get for posts
+	// get for posts
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
@@ -413,8 +428,18 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
-			longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
+			latitude:
+				dragpinlatitude !== null &&
+				dragpinlatitude !== undefined &&
+				dragpinlatitude !== 0
+					? dragpinlatitude
+					: latitude,
+			longitude:
+				dragpinlongitude !== null &&
+				dragpinlongitude !== undefined &&
+				dragpinlongitude !== 0
+					? dragpinlongitude
+					: longitude
 		});
 
 		const requestOptions = {
@@ -528,26 +553,29 @@ const HomeScreen: React.FC = () => {
 			setPicture(uploadURL.split("?")[0]);
 			if (showRecommendedTitle) {
 				const formdata = new FormData();
-		  
+
 				// Append file to FormData, ensuring the file is present
 				formdata.append("image", file);
-		  
-				const requestOptions = {
-				  method: "POST",
-				  body: formdata
-				};
-		  
-				try {
-				  const response = await fetch("http://localhost:5000/predict", requestOptions);
-				  const result = await response.json();
 
-				  setPredictResult(result.predicted_class); 
-    			  setTitle(result.predicted_class);
-				  console.log(result);
+				const requestOptions = {
+					method: "POST",
+					body: formdata
+				};
+
+				try {
+					const response = await fetch(
+						"http://localhost:5000/predict",
+						requestOptions
+					);
+					const result = await response.json();
+
+					setPredictResult(result.predicted_class);
+					setTitle(result.predicted_class);
+					console.log(result);
 				} catch (error) {
-				  console.error("Error during prediction:", error);
+					console.error("Error during prediction:", error);
 				}
-			  }
+			}
 			console.log(
 				"Image uploaded and profile picture updated successfully.",
 				uploadURL.split("?")[0]
@@ -605,10 +633,9 @@ const HomeScreen: React.FC = () => {
 				myHeaders.append("Content-Type", "application/json");
 
 				const raw = JSON.stringify({
-					"image_url": uploadURL.split("?")[0]
+					image_url: uploadURL.split("?")[0]
 				});
-		  
-		  
+
 				const requestOptions = {
 					method: "POST",
 					headers: myHeaders,
@@ -616,16 +643,18 @@ const HomeScreen: React.FC = () => {
 				};
 
 				try {
-					const response = await fetch("http://localhost:5000/predict", requestOptions);
+					const response = await fetch(
+						"http://localhost:5000/predict",
+						requestOptions
+					);
 					const result = await response.json();
-					setPredictResult(result.predicted_class); 
-    			  	setTitle(result.predicted_class);
-					console.log(result)
+					setPredictResult(result.predicted_class);
+					setTitle(result.predicted_class);
+					console.log(result);
 				} catch (error) {
-						console.error(error);
-				};
-		
-			  }
+					console.error(error);
+				}
+			}
 			console.log(uploadURL.split("?")[0]);
 			console.log(picture);
 			console.log(
@@ -686,24 +715,20 @@ const HomeScreen: React.FC = () => {
 	];
 
 	return (
-		<GoogleMapApiLoader
-			apiKey={apicode || ""}
-			suspense>
+		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
 			<div className="map-container">
 				<GoogleMap
-					className='h-full w-full'
+					className="h-full w-full"
 					zoom={5}
 					center={center}
- 
 					mapOptions={{
 						disableDefaultUI: true,
 						zoomControl: true,
-						mapId: 'dde51c47799889c4'
-					  }}
+						mapId: "dde51c47799889c4"
+					}}
 				>
-					
-						<PoiMarkers pois={locations} />
-						<HomePins pin={filteredPins} />
+					<PoiMarkers pois={locations} />
+					<HomePins pin={filteredPins} />
 					<MapContent />
 				</GoogleMap>
 				<Legend items={legendItems} />
@@ -720,305 +745,419 @@ const HomeScreen: React.FC = () => {
 
 			{/* Add pin modal */}
 			{isModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
-      <button className="absolute top-2 right-2 text-xl" onClick={closeModal}>
-        &times;
-      </button>
-      <h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+					<div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+						<button
+							className="absolute top-2 right-2 text-xl"
+							onClick={closeModal}
+						>
+							&times;
+						</button>
+						<h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
 
-      <form>
-        {/* Collapsible Category Section */}
-        <div className="mb-3 border-2 border-black rounded-md p-3">
-          <label
-            htmlFor="categorySelect"
-            className="block text-sm font-medium text-gray-700 cursor-pointer"
-            onClick={() => setCategoryExpanded(!categoryExpanded)}
-          >
-            Select Category:
-          </label>
-          {categoryExpanded && (
-            <select
-              id="categorySelect"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={selectedCategory ?? ""}
-              onChange={(e) => setSelectedCategory(Number(e.target.value))}
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
+						<form>
+							{/* Collapsible Category Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<label
+									htmlFor="categorySelect"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									onClick={() =>
+										setCategoryExpanded(!categoryExpanded)
+									}
+								>
+									Select Category:
+								</label>
+								{categoryExpanded && (
+									<select
+										id="categorySelect"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										value={selectedCategory ?? ""}
+										onChange={(e) =>
+											setSelectedCategory(
+												Number(e.target.value)
+											)
+										}
+									>
+										<option value="" disabled>
+											Select a category
+										</option>
+										{categories.map((category) => (
+											<option
+												key={category.id}
+												value={category.id}
+											>
+												{category.name}
+											</option>
+										))}
+									</select>
+								)}
+							</div>
 
-        {/* Collapsible Group Section */}
-        <div className="mb-3 border-2 border-black rounded-md p-3">
-          <label
-            htmlFor="groupSelect"
-            className="block text-sm font-medium text-gray-700 cursor-pointer"
-            onClick={() => setGroupExpanded(!groupExpanded)}
-          >
-            Select Group:
-          </label>
-          {groupExpanded && (
-            <select
-              id="groupSelect"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={selectedGroup ?? ""}
-              onChange={(e) => setSelectedGroup(Number(e.target.value))}
-            >
-              <option value="" disabled>
-                Select a group
-              </option>
-              {groups.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.name}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-						
-        {/* Collapsible Image Section */}
-        <div className="mb-3 border-2 border-black rounded-md p-3">
-          <label
-            className="block text-sm font-medium text-gray-700 cursor-pointer"
-            onClick={() => setImageExpanded(!imageExpanded)}
-          >
-            Add Image:
-          </label>
-          {imageExpanded && (
+							{/* Collapsible Group Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<label
+									htmlFor="groupSelect"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									onClick={() =>
+										setGroupExpanded(!groupExpanded)
+									}
+								>
+									Select Group:
+								</label>
+								{groupExpanded && (
+									<select
+										id="groupSelect"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										value={selectedGroup ?? ""}
+										onChange={(e) =>
+											setSelectedGroup(
+												Number(e.target.value)
+											)
+										}
+									>
+										<option value="" disabled>
+											Select a group
+										</option>
+										{groups.map((group) => (
+											<option
+												key={group.id}
+												value={group.id}
+											>
+												{group.name}
+											</option>
+										))}
+									</select>
+								)}
+							</div>
 
-			<div className="flex justify-center mb-3">
-				{!picture && (<button
-					type="button"
-					className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-					onClick={openPhotoModal}
-					>
-					<FaPlus />
-				</button>)}
-				<input
-					type="file"
-					accept="image/jpeg, image/png"
-					style={{ display: "none" }}
-					ref={fileInputRef}
-					onChange={handleFileChange}
-					/>
-				{picture && (
-					<img
-						src={picture}
-						alt="Selected"
-						className="w-32 h-32 mt-2 mx-auto"
-					/>
-				)}
-			</div>
-          )}
-        </div>
+							{/* Collapsible Image Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<label
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									onClick={() =>
+										setImageExpanded(!imageExpanded)
+									}
+								>
+									Add Image:
+								</label>
+								{imageExpanded && (
+									<div className="flex justify-center mb-3">
+										{!picture && (
+											<button
+												type="button"
+												className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+												onClick={openPhotoModal}
+											>
+												<FaPlus />
+											</button>
+										)}
+										<input
+											type="file"
+											accept="image/jpeg, image/png"
+											style={{ display: "none" }}
+											ref={fileInputRef}
+											onChange={handleFileChange}
+										/>
+										{picture && (
+											<img
+												src={picture}
+												alt="Selected"
+												className="w-32 h-32 mt-2 mx-auto"
+											/>
+										)}
+									</div>
+								)}
+							</div>
 
-      {/* Title Section with Slider */}
-<div className="mb-3 border-2 border-black rounded-md p-3">
-  <div className="flex items-center justify-between">
-    <label
-      htmlFor="formTitle"
-      className="block text-sm font-medium text-gray-700 cursor-pointer"
-	  onClick={() => setTitleExpanded(!titleExpanded)}
-    >
-      Title:
-    </label>
+							{/* Title Section with Slider */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<div className="flex items-center justify-between">
+									<label
+										htmlFor="formTitle"
+										className="block text-sm font-medium text-gray-700 cursor-pointer"
+										onClick={() =>
+											setTitleExpanded(!titleExpanded)
+										}
+									>
+										Title:
+									</label>
 
-    {/* Slider for Recommended Title */}
-    {selectedCategory === 1 && (
-		<div className="flex items-center">
-		<span className="text-sm mr-2">Recommended</span>
-		<label className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
-			<input
-			type="checkbox"
-			className="toggle-checkbox"
-			checked={showRecommendedTitle}
-			onChange={async () => {
-				// Toggle the checkbox state
-				const newShowRecommendedTitle = !showRecommendedTitle;
-				setShowRecommendedTitle(newShowRecommendedTitle);
-			
-				if (newShowRecommendedTitle && !predictResult && fileInputRef.current?.files && fileInputRef.current.files[0]) {
-				  
-				  const formdata = new FormData();
-				  const file = fileInputRef.current.files[0];
-				  formdata.append("image", file);
-			
-				  const requestOptions = {
-					method: "POST",
-					body: formdata,
-				  };
-			
-				  try {
-					const response = await fetch("http://localhost:5000/predict", requestOptions);
-					const result = await response.json();
-			
-					setPredictResult(result.predicted_class);
-			
-					setTitle(result.predicted_class);
-			
-					console.log(result);
-				  } catch (error) {
-					console.error("Error during prediction:", error);
-				  }
-				} else if (newShowRecommendedTitle && !predictResult){
-					const myHeaders = new Headers();
-					myHeaders.append("Content-Type", "application/json");
+									{/* Slider for Recommended Title */}
+									{selectedCategory === 1 && (
+										<div className="flex items-center">
+											<span className="text-sm mr-2">
+												Recommended
+											</span>
+											<label className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+												<input
+													type="checkbox"
+													className="toggle-checkbox"
+													checked={
+														showRecommendedTitle
+													}
+													onChange={async () => {
+														// Toggle the checkbox state
+														const newShowRecommendedTitle =
+															!showRecommendedTitle;
+														setShowRecommendedTitle(
+															newShowRecommendedTitle
+														);
 
-					const raw = JSON.stringify({
-						"image_url": picture
-					});
-			
-			
-					const requestOptions = {
-						method: "POST",
-						headers: myHeaders,
-						body: raw
-					};
+														if (
+															newShowRecommendedTitle &&
+															!predictResult &&
+															fileInputRef.current
+																?.files &&
+															fileInputRef.current
+																.files[0]
+														) {
+															const formdata =
+																new FormData();
+															const file =
+																fileInputRef
+																	.current
+																	.files[0];
+															formdata.append(
+																"image",
+																file
+															);
 
-					try {
-						const response = await fetch("http://localhost:5000/predict", requestOptions);
-						const result = await response.json();
-						setPredictResult(result.predicted_class); 
-						setTitle(result.predicted_class);
-						console.log(result)
-					} catch (error) {
-							console.error(error);
-					};
+															const requestOptions =
+																{
+																	method: "POST",
+																	body: formdata
+																};
 
-				} else if (!newShowRecommendedTitle) {
-				  // If the checkbox is unchecked, clear the title
-				  setTitle('');
-				} else if (newShowRecommendedTitle){
-					setTitle(predictResult);
-				}
-			  }}
-			/>
-			<span className="toggle-label"></span>
-		</label>
-		</div>
-    )}
-  </div>
+															try {
+																const response =
+																	await fetch(
+																		"http://localhost:5000/predict",
+																		requestOptions
+																	);
+																const result =
+																	await response.json();
 
-  {/* Expandable Text Area for Title */}
-  {titleExpanded && (
-	<div className="mt-2">
-    <textarea
-      id="formTitle"
-      rows={2}
-      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      placeholder="Enter title"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-    ></textarea>
-  </div>
-)}
-</div>
+																setPredictResult(
+																	result.predicted_class
+																);
 
+																setTitle(
+																	result.predicted_class
+																);
 
+																console.log(
+																	result
+																);
+															} catch (error) {
+																console.error(
+																	"Error during prediction:",
+																	error
+																);
+															}
+														} else if (
+															newShowRecommendedTitle &&
+															!predictResult
+														) {
+															const myHeaders =
+																new Headers();
+															myHeaders.append(
+																"Content-Type",
+																"application/json"
+															);
 
-        {/* Collapsible Caption Section */}
-        <div className="mb-3 border-2 border-black rounded-md p-3">
-          <label
-            htmlFor="formCaption"
-            className="block text-sm font-medium text-gray-700 cursor-pointer"
-            onClick={() => setCaptionExpanded(!captionExpanded)}
-          >
-            Caption:
-          </label>
-          {captionExpanded && (
-            <textarea
-              id="formCaption"
-              rows={4}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter description"
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-            ></textarea>
-          )}
-        </div>
+															const raw =
+																JSON.stringify({
+																	image_url:
+																		picture
+																});
 
-		<div className="mb-3 border-2 border-black rounded-md p-3" >
-          <label
-            htmlFor="formDescription"
-            className="block text-sm font-medium text-gray-700 cursor-pointer"
-			onClick={() => setDragPinExpanded(!dragpinExpanded)}
-          >
-            Sighting Location:
-          </label>
-		  {dragpinExpanded && (
-			<div id="sightlocation">
-          <GoogleMapApiLoader apiKey={apicode || ""} suspense>
-            <GoogleMap
-              className="h-full w-full"
-              zoom={15}
-              center={center}
-              mapOptions={{
-                disableDefaultUI: true,
-                zoomControl: true,
-                mapId: "dde51c47799889c4",
-              }}
-            > {/* draggable */}
-			<Marker
-			  lat={latitude}
-			  lng={longitude}
-			  title={"Sighting Location"}
-			  draggable
-			  onDragEnd={(event) => {
-				const newPosition = event.getPosition();
-				const newLat = newPosition?.lat();
-				const newLng = newPosition?.lng();
+															const requestOptions =
+																{
+																	method: "POST",
+																	headers:
+																		myHeaders,
+																	body: raw
+																};
 
-				setdragpinLatitude(
-				  newLat !== null && newLat !== undefined
-					? newLat
-					: latitude
-				);
-				setdragpinLongitude(
-				  newLng !== null && newLng !== undefined
-					? newLng
-					: longitude
-				);
+															try {
+																const response =
+																	await fetch(
+																		"http://localhost:5000/predict",
+																		requestOptions
+																	);
+																const result =
+																	await response.json();
+																setPredictResult(
+																	result.predicted_class
+																);
+																setTitle(
+																	result.predicted_class
+																);
+																console.log(
+																	result
+																);
+															} catch (error) {
+																console.error(
+																	error
+																);
+															}
+														} else if (
+															!newShowRecommendedTitle
+														) {
+															// If the checkbox is unchecked, clear the title
+															setTitle("");
+														} else if (
+															newShowRecommendedTitle
+														) {
+															setTitle(
+																predictResult
+															);
+														}
+													}}
+												/>
+												<span className="toggle-label"></span>
+											</label>
+										</div>
+									)}
+								</div>
 
-				console.log(
-				  `Marker dropped at: Latitude ${newLat}, Longitude ${newLng}`
-				);
-			  }}
-			/>
-		  </GoogleMap>
-		</GoogleMapApiLoader>
-		</div>
-		)}
-	  </div>
-		
+								{/* Expandable Text Area for Title */}
+								{titleExpanded && (
+									<div className="mt-2">
+										<textarea
+											id="formTitle"
+											rows={2}
+											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+											placeholder="Enter title"
+											value={title}
+											onChange={(e) =>
+												setTitle(e.target.value)
+											}
+										></textarea>
+									</div>
+								)}
+							</div>
 
-        {/* Submit button only enabled when all fields are filled */}
-        <div>
-          <button
-            className={`w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              !selectedCategory || !selectedGroup || !picture || !title || !caption
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-            onClick={handleAddPinClick}
-            disabled={!selectedCategory || !selectedGroup || !picture || !title || !caption}
-          >
-            Add Pin
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
+							{/* Collapsible Caption Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<label
+									htmlFor="formCaption"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									onClick={() =>
+										setCaptionExpanded(!captionExpanded)
+									}
+								>
+									Caption:
+								</label>
+								{captionExpanded && (
+									<textarea
+										id="formCaption"
+										rows={4}
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										placeholder="Enter description"
+										value={caption}
+										onChange={(e) =>
+											setCaption(e.target.value)
+										}
+									></textarea>
+								)}
+							</div>
 
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<label
+									htmlFor="formDescription"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									onClick={() =>
+										setDragPinExpanded(!dragpinExpanded)
+									}
+								>
+									Sighting Location:
+								</label>
+								{dragpinExpanded && (
+									<div id="sightlocation">
+										<GoogleMapApiLoader
+											apiKey={apicode || ""}
+											suspense
+										>
+											<GoogleMap
+												className="h-full w-full"
+												zoom={15}
+												center={center}
+												mapOptions={{
+													disableDefaultUI: true,
+													zoomControl: true,
+													mapId: "dde51c47799889c4"
+												}}
+											>
+												{" "}
+												{/* draggable */}
+												<Marker
+													lat={latitude}
+													lng={longitude}
+													title={"Sighting Location"}
+													draggable
+													onDragEnd={(event) => {
+														const newPosition =
+															event.getPosition();
+														const newLat =
+															newPosition?.lat();
+														const newLng =
+															newPosition?.lng();
 
+														setdragpinLatitude(
+															newLat !== null &&
+																newLat !==
+																	undefined
+																? newLat
+																: latitude
+														);
+														setdragpinLongitude(
+															newLng !== null &&
+																newLng !==
+																	undefined
+																? newLng
+																: longitude
+														);
+
+														console.log(
+															`Marker dropped at: Latitude ${newLat}, Longitude ${newLng}`
+														);
+													}}
+												/>
+											</GoogleMap>
+										</GoogleMapApiLoader>
+									</div>
+								)}
+							</div>
+
+							{/* Submit button only enabled when all fields are filled */}
+							<div>
+								<button
+									className={`w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+										!selectedCategory ||
+										!selectedGroup ||
+										!picture ||
+										!title ||
+										!caption
+											? "opacity-50 cursor-not-allowed"
+											: ""
+									}`}
+									onClick={handleAddPinClick}
+									disabled={
+										!selectedCategory ||
+										!selectedGroup ||
+										!picture ||
+										!title ||
+										!caption
+									}
+								>
+									Add Pin
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
 
 			{/* Success modal */}
 			{isSuccessModalOpen && (
@@ -1172,19 +1311,17 @@ const HomeScreen: React.FC = () => {
 };
 
 const PoiMarkers = (props: { pois: Poi[] }) => {
-
 	return (
-		  <MarkerClusterer>
+		<MarkerClusterer>
 			{props.pois.map((poi, i) => (
-			  <Marker
-				key={poi.key}
-				lat={poi.location.lat}
-				lng={poi.location.lng}
-			  ></Marker>
+				<Marker
+					key={poi.key}
+					lat={poi.location.lat}
+					lng={poi.location.lng}
+				></Marker>
 			))}
-			</MarkerClusterer>
-	  );
-
+		</MarkerClusterer>
+	);
 };
 
 export default HomeScreen;
