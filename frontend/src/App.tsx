@@ -1,9 +1,9 @@
 import Navigationbar from "./components/Navigationbar";
 import { Outlet } from "react-router-dom";
 
-import './assets/styles/nav.css'
+import "./assets/styles/nav.css";
 import EmailHandler from "./components/EmailHandler";
-
+import WebSocketTest from "./components/WebSocketTest";
 
 const App = () => {
 	return (
@@ -13,6 +13,7 @@ const App = () => {
 				<div className="container mx-0">
 					<Outlet />
 					<EmailHandler />
+					<WebSocketTest />
 				</div>
 			</main>
 		</>

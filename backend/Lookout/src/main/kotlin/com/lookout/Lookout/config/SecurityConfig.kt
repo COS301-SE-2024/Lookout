@@ -18,28 +18,35 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
+
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
-    @Autowired lateinit var userService: UserService
+
+    @Autowired
+    lateinit var userService: UserService
+
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
+            .cors()
+            .and()
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/api/**", "/api/auth/**")
+                    .requestMatchers("/api/**", "/api/auth/**", "/ws/**") // Allowing WebSocket connections
                     .permitAll()
                     .anyRequest()
                     .authenticated()
-
-            }.userDetailsService(userService)
+            }
+            .userDetailsService(userService)
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+
         return http.build()
     }
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder{
+    fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
 
@@ -48,5 +55,4 @@ class SecurityConfig {
     fun authenticationManager(configuration: AuthenticationConfiguration): AuthenticationManager {
         return configuration.authenticationManager
     }
-
 }
