@@ -593,7 +593,7 @@ const HomeScreen: React.FC = () => {
 
       <form>
         {/* Collapsible Category Section */}
-        <div className="mb-3">
+        <div className="mb-3 border-2 border-black rounded-md p-3">
           <label
             htmlFor="categorySelect"
             className="block text-sm font-medium text-gray-700 cursor-pointer"
@@ -621,7 +621,7 @@ const HomeScreen: React.FC = () => {
         </div>
 
         {/* Collapsible Group Section */}
-        <div className="mb-3">
+        <div className="mb-3 border-2 border-black rounded-md p-3">
           <label
             htmlFor="groupSelect"
             className="block text-sm font-medium text-gray-700 cursor-pointer"
@@ -649,7 +649,7 @@ const HomeScreen: React.FC = () => {
         </div>
 						
         {/* Collapsible Image Section */}
-        <div className="mb-3">
+        <div className="mb-3 border-2 border-black rounded-md p-3">
           <label
             className="block text-sm font-medium text-gray-700 cursor-pointer"
             onClick={() => setImageExpanded(!imageExpanded)}
@@ -685,7 +685,7 @@ const HomeScreen: React.FC = () => {
         </div>
 
       {/* Title Section with Slider */}
-<div className="mb-3">
+<div className="mb-3 border-2 border-black rounded-md p-3">
   <div className="flex items-center justify-between">
     <label
       htmlFor="formTitle"
@@ -789,7 +789,7 @@ const HomeScreen: React.FC = () => {
 
 
         {/* Collapsible Caption Section */}
-        <div className="mb-3">
+        <div className="mb-3 border-2 border-black rounded-md p-3">
           <label
             htmlFor="formCaption"
             className="block text-sm font-medium text-gray-700 cursor-pointer"
@@ -808,6 +808,7 @@ const HomeScreen: React.FC = () => {
             ></textarea>
           )}
         </div>
+		
 
         {/* Submit button only enabled when all fields are filled */}
         <div>
