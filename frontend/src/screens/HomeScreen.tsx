@@ -935,7 +935,7 @@ const HomeScreen: React.FC = () => {
 											<img
 												src={picture}
 												alt="Selected"
-												className="w-32 h-32 mt-2 mx-auto"
+												className="max-h-64 w-auto mt-2 mx-auto object-contain rounded-md"
 											/>
 										)}
 									</div>
