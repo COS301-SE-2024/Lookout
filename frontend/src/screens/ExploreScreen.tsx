@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { Link } from "react-router-dom";
 import ExplorePost from "../components/ExplorePost";
+import RecommendPost from "../components/RecommendPost";
 import ExploreGroup from "../components/ExploreGroup";
+import RecommendGroup from "../components/RecommendGroup";
 import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import ExploreArticles from "../components/ExploreArticles";
@@ -56,91 +58,166 @@ const ExploreScreen: React.FC = () => {
   const [, setUserGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
+  const [recommendedGroups, setRecommendedGroups] = useState<Group[]>([]);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchExploreData = async () => {
       try {
-        // Check for cached data
-        const cachedPosts = localStorage.getItem("posts");
-        const cachedAnimalPosts = localStorage.getItem("animalPosts");
-        const cachedCampingPosts = localStorage.getItem("campingPosts");
-        const cachedPoiPosts = localStorage.getItem("poiPosts");
-        const cachedSecurityPosts = localStorage.getItem("securityPosts");
-        const cachedGroupPosts = localStorage.getItem("groupPosts");
-        const cachedTimestamp = localStorage.getItem("postsTimestamp");
-  
-        // Set expiration time (e.g., 1 hour)
-        const expirationTime = 60 * 60 * 1000;
+        // Fetch from cache
+        const fetchFromCache = () => {
+          const cachedPosts = localStorage.getItem("posts");
+          const cachedAnimalPosts = localStorage.getItem("animalPosts");
+          const cachedCampingPosts = localStorage.getItem("campingPosts");
+          const cachedPoiPosts = localStorage.getItem("poiPosts");
+          const cachedSecurityPosts = localStorage.getItem("securityPosts");
+          const cachedGroupPosts = localStorage.getItem("groupPosts");
+          const cachedRecommendedPosts = localStorage.getItem("recommendedPosts");
+          const cachedRecommendedGroups = localStorage.getItem("recommendedGroups");
+          const cachedTimestamp = localStorage.getItem("postsTimestamp");
+
+          return {
+            posts: cachedPosts ? JSON.parse(cachedPosts) : null,
+            animalPosts: cachedAnimalPosts ? JSON.parse(cachedAnimalPosts) : null,
+            campingPosts: cachedCampingPosts ? JSON.parse(cachedCampingPosts) : null,
+            poiPosts: cachedPoiPosts ? JSON.parse(cachedPoiPosts) : null,
+            securityPosts: cachedSecurityPosts ? JSON.parse(cachedSecurityPosts) : null,
+            groupPosts: cachedGroupPosts ? JSON.parse(cachedGroupPosts) : null,
+            recommendedPosts: cachedRecommendedPosts ? JSON.parse(cachedRecommendedPosts) : null,
+            recommendedGroups: cachedRecommendedGroups ? JSON.parse(cachedRecommendedGroups) : null,
+            cachedTimestamp: cachedTimestamp ? parseInt(cachedTimestamp) : null,
+          };
+        };
+
+        const cacheData = fetchFromCache();
         const now = Date.now();
-  
+        const expirationTime = 60 * 1000; // 1 minute cache expiration
+
+        // Check if cached data is valid and recent
         if (
-          cachedPosts &&
-          cachedAnimalPosts &&
-          cachedCampingPosts &&
-          cachedPoiPosts &&
-          cachedSecurityPosts &&
-          cachedGroupPosts &&
-          cachedTimestamp &&
-          now - parseInt(cachedTimestamp) < expirationTime
+          cacheData.posts &&
+          cacheData.animalPosts &&
+          cacheData.campingPosts &&
+          cacheData.poiPosts &&
+          cacheData.securityPosts &&
+          cacheData.groupPosts &&
+          cacheData.recommendedPosts &&
+          cacheData.recommendedGroups &&
+          cacheData.cachedTimestamp &&
+          now - cacheData.cachedTimestamp < expirationTime
         ) {
           // Use cached data
-          setPosts(JSON.parse(cachedPosts));
-          setAnimalPosts(JSON.parse(cachedAnimalPosts));
-          setCampingPosts(JSON.parse(cachedCampingPosts));
-          setPoiPosts(JSON.parse(cachedPoiPosts));
-          setSecurityPosts(JSON.parse(cachedSecurityPosts));
-          setGroupPosts(JSON.parse(cachedGroupPosts));
+          setPosts(cacheData.posts);
+          setAnimalPosts(cacheData.animalPosts);
+          setCampingPosts(cacheData.campingPosts);
+          setPoiPosts(cacheData.poiPosts);
+          setSecurityPosts(cacheData.securityPosts);
+          setGroupPosts(cacheData.groupPosts);
+          setRecommendedPosts(cacheData.recommendedPosts);
+          setRecommendedGroups(cacheData.recommendedGroups);
           setLoading(false);
         } else {
-          // Fetch new data
-          const response = await fetch("/api/posts/category/3?page=0&size=12");
-          const animalResponse = await fetch("/api/posts/category/1?page=0&size=10");
-          const campResponse = await fetch("/api/posts/category/2?page=0&size=10");
-          const poiResponse = await fetch("/api/posts/category/4?page=0&size=10");
-          const securityResponse = await fetch("/api/posts/category/5?page=0&size=10");
-          const groupResponse = await fetch("/api/groups");
-          const userGroupResponse = await fetch(`/api/groups/user/2`);
-  
-          const data = await response.json();
-          const animalData = await animalResponse.json();
-          const campData = await campResponse.json();
-          const poiData = await poiResponse.json();
-          const securityData = await securityResponse.json();
-          const groupData = await groupResponse.json();
-          const userGroupData = await userGroupResponse.json();
-  
-          setPosts(data.content);
+          // Fetch data if cache is expired or empty
+          const [
+            postResponse,
+            animalResponse,
+            campResponse,
+            poiResponse,
+            securityResponse,
+            groupResponse,
+            userGroupResponse,
+            recommendedPostResponse,
+            recommendedGroupResponse,
+          ] = await Promise.all([
+            fetch("/api/posts/category/3?page=0&size=12"),
+            fetch("/api/posts/category/1?page=0&size=10"),
+            fetch("/api/posts/category/2?page=0&size=10"),
+            fetch("/api/posts/category/4?page=0&size=10"),
+            fetch("/api/posts/category/5?page=0&size=10"),
+            fetch("/api/groups"),
+            fetch(`/api/groups/user/2`),
+            fetch("http://127.0.0.1:5000/recommend_posts?user_id=1&top_n=10"),
+            fetch("http://127.0.0.1:5000/recommend_groups?user_id=1&top_n=10"),
+          ]);
+
+          const [
+            postData,
+            animalData,
+            campData,
+            poiData,
+            securityData,
+            groupData,
+            userGroupData,
+            recommendedPostData,
+            recommendedGroupData,
+          ] = await Promise.all([
+            postResponse.json(),
+            animalResponse.json(),
+            campResponse.json(),
+            poiResponse.json(),
+            securityResponse.json(),
+            groupResponse.json(),
+            userGroupResponse.json(),
+            recommendedPostResponse.json(),
+            recommendedGroupResponse.json(),
+          ]);
+
+          // Process recommended posts and groups
+          const postIds = recommendedPostData.map((post: { id: number }) => post.id);
+          const fullPostDetails: Post[] = [];
+          for (const postId of postIds) {
+            const postDetailResponse = await fetch(`/api/posts/${postId}`);
+            const postDetail = await postDetailResponse.json();
+            fullPostDetails.push(postDetail);
+          }
+
+          const groupIds = recommendedGroupData.map((group: { id: number }) => group.id);
+          const fullGroupDetails: Group[] = [];
+          for (const groupId of groupIds) {
+            const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
+            const groupDetail = await groupDetailResponse.json();
+            fullGroupDetails.push(groupDetail);
+          }
+
+          // Update state with new data
+          setPosts(postData.content);
           setAnimalPosts(animalData.content);
           setCampingPosts(campData.content);
           setPoiPosts(poiData.content);
           setSecurityPosts(securityData.content);
           setGroupPosts(groupData.content);
           setUserGroups(userGroupData);
-  
-          // Save to local storage
-          localStorage.setItem("posts", JSON.stringify(data.content));
+          setRecommendedPosts(fullPostDetails);
+          setRecommendedGroups(fullGroupDetails);
+
+          // Cache new data
+          localStorage.setItem("posts", JSON.stringify(postData.content));
           localStorage.setItem("animalPosts", JSON.stringify(animalData.content));
           localStorage.setItem("campingPosts", JSON.stringify(campData.content));
           localStorage.setItem("poiPosts", JSON.stringify(poiData.content));
           localStorage.setItem("securityPosts", JSON.stringify(securityData.content));
           localStorage.setItem("groupPosts", JSON.stringify(groupData.content));
+          localStorage.setItem("recommendedPosts", JSON.stringify(fullPostDetails));
+          localStorage.setItem("recommendedGroups", JSON.stringify(fullGroupDetails));
           localStorage.setItem("postsTimestamp", now.toString());
-  
+
           setLoading(false);
         }
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching data:", error);
         setLoading(false);
       }
     };
-  
-    fetchPosts();
+
+    fetchExploreData();
   }, []);
-  
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    const query = event.target.value;
+    startTransition(() => {
+      setSearchQuery(query);
+    });
   };
 
   const filteredPosts = posts.filter((post) =>
@@ -212,6 +289,31 @@ const ExploreScreen: React.FC = () => {
 
       {!loading && searchQuery === "" && (
         <>
+
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
+            <span>Posts we think you'll like</span>
+            <Link to="/recommend/posts" className="text-black-500 underline">
+              View All
+            </Link>
+          </h1>
+          <HorizontalCarousel>
+            {recommendedPosts.map((post, index) => (
+              <RecommendPost key={post.id} post={post} rank={index + 1} />
+            ))}
+          </HorizontalCarousel>
+
+          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
+            <span>Groups we think you'll like</span>
+            <Link to="/recommend/groups" className="text-black-500 underline">
+              View All
+            </Link>
+          </h1>
+          <HorizontalCarousel>
+            {recommendedGroups.map((group, index) => (
+              <RecommendGroup key={group.id} group={group} rank={index + 1} />
+            ))}
+          </HorizontalCarousel>
+
           <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
             <span>Animal Sightings</span>
             <Link to="/category/1" className="text-black-500 underline">

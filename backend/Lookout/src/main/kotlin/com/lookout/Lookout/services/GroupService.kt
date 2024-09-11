@@ -17,6 +17,8 @@ class GroupService(private val groupRepository: GroupRepository, private val use
 
     fun findAll(pageable: Pageable): Page<Groups> = groupRepository.findAll(pageable)
 
+    fun findAll(): Page<Groups> = groupRepository.findAll(Pageable.unpaged())
+
     fun findById(groupId: Long): Groups? = groupRepository.findById(groupId).orElse(null)
 
     fun save(group: Groups): Groups {
@@ -91,6 +93,15 @@ class GroupService(private val groupRepository: GroupRepository, private val use
     fun getGroupMembers(groupId: Long): List<User> {
         val group = findById(groupId) ?: throw IllegalArgumentException("Group not found with id: $groupId")
         return groupRepository.findGroupMembers(groupId)
+    }
+
+    fun getAllGroupMembers(): List<Pair<Long, Long>> {
+        val groupMembersArray = groupRepository.findAllGroupMembers()
+        return groupMembersArray.map { array ->
+            val groupId = (array[0] as Number).toLong()
+            val userId = (array[1] as Number).toLong()
+            Pair(groupId, userId)
+        }
     }
 
 }

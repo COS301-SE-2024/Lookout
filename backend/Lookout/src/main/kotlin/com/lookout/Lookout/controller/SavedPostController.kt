@@ -5,6 +5,7 @@ import com.lookout.Lookout.dto.SavedPostDto
 import com.lookout.Lookout.entity.SavedPosts
 import com.lookout.Lookout.service.SavedPostsService
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -12,6 +13,38 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/savedPosts")
 class SavedPostController(private val savedPostsService: SavedPostsService) {
 
+//    @GetMapping("/all")
+//    fun getAllSavedPostsWithUsers(): ResponseEntity<List<SavedPostDto>> {
+//        return try {
+//            val savedPosts = savedPostsService.getAllSavedPostsWithUsers()
+//            val savedPostDtos = savedPosts.map { convertToDto(it) }
+//            ResponseEntity.ok(savedPostDtos)
+//        } catch (e: Exception) {
+//            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
+//        }
+//    }
+
+
+    @GetMapping("/all", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun getAllSavedPostsWithUsersCsv(): ResponseEntity<String> {
+        return try {
+            val savedPosts = savedPostsService.getAllSavedPostsWithUsers()
+            val savedPostDtos = savedPosts.map { convertToDto(it) }
+
+            // Create CSV content
+            val csvBuilder = StringBuilder()
+            csvBuilder.append("id,postid,userid\n")
+            savedPostDtos.forEach { dto ->
+                csvBuilder.append("${dto.savedPostId},${dto.postId},${dto.userId}\n")
+            }
+
+            ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(csvBuilder.toString())
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
+        }
+    }
 
     @PostMapping("/SavePost")
     fun savePost(@RequestBody reqPost: SavePostRequest): ResponseEntity<String> {

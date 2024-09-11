@@ -15,4 +15,6 @@ interface UserRepository: JpaRepository<User,Long> {
     @Query("SELECT COUNT(g) FROM GroupMembers g WHERE g.user.id = :id")
     fun getUserGroupsCount(id: Long): Int
 
+
+
 }

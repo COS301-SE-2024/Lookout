@@ -59,4 +59,9 @@ class UserService: UserDetailsService {
     fun getUserGroupsCount(id: Long): Int {
         return userRepository.getUserGroupsCount(id)
     }
+
+    fun findAllUsers(): List<User> {
+        return userRepository.findAll()
+    }
+
 }

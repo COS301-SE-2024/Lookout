@@ -39,6 +39,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 	implementation("org.springframework.boot:spring-boot-configuration-processor")
+	implementation ("org.apache.commons:commons-csv:1.10.0")
+	implementation ("org.springframework.boot:spring-boot-starter-web")
+
 
 }
 

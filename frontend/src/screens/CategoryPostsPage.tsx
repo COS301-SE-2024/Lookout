@@ -74,7 +74,7 @@ const CategoryPostsPage: React.FC = () => {
   const fetchPosts = useCallback(async (page: number) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=12`);
+      const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=30`);
       const data = await response.json();
       if (page === 0) {
         setPosts(data.content);
@@ -122,10 +122,27 @@ const CategoryPostsPage: React.FC = () => {
   }, [fetchPosts, page, categoryId]);
 
   const handleScroll = useCallback(() => {
-    if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100 && hasMore && !loading) {
-      setPage((prevPage) => prevPage + 1);
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight - 100
+    ) {
+      if (hasMore && !loading) {
+        setPage((prevPage) => {
+          if (prevPage === page) return prevPage; // Avoid triggering if the page hasn't changed
+          return prevPage + 1;
+        });
+      }
     }
-  }, [hasMore, loading]);
+  }, [hasMore, loading, page]);
+  
+
+  useEffect(() => {
+    const scrollY = window.scrollY;
+    return () => {
+      window.scrollTo(0, scrollY); // Preserve scroll position
+    };
+  }, [loading]);
+  
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);

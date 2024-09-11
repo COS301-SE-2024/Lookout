@@ -32,4 +32,7 @@ interface GroupRepository : JpaRepository<Groups, Long> {
     @Query("SELECT gm.user FROM GroupMembers gm WHERE gm.group.id = :groupId")
     fun findGroupMembers(@Param("groupId") groupId: Long): List<User>
 
+    @Query("SELECT gm.group.id, gm.user.id FROM GroupMembers gm")
+    fun findAllGroupMembers(): List<Array<Any>>
+
 }
