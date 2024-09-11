@@ -471,18 +471,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude:
-				dragpinlatitude !== null &&
-				dragpinlatitude !== undefined &&
-				dragpinlatitude !== 0
-					? dragpinlatitude
-					: latitude,
-			longitude:
-				dragpinlongitude !== null &&
-				dragpinlongitude !== undefined &&
-				dragpinlongitude !== 0
-					? dragpinlongitude
-					: longitude
+			latitude: latitude,
+			longitude: longitude
 		});
 
 		const requestOptions = {
@@ -491,19 +481,54 @@ const HomeScreen: React.FC = () => {
 			body: raw
 		};
 
-		try {
-			//old way
-			// const response = await fetch("/api/image/create", requestOptions);
-			console.log("raw", raw);
-			const response = await fetch(
-				"/api/posts/CreatePost",
-				requestOptions
+		if (navigator.onLine) {
+			try {
+				//old way
+				// const response = await fetch("/api/image/create", requestOptions);
+				console.log("requestOptions", requestOptions);
+
+				const response = await fetch(
+					"/api/posts/CreatePost",
+					requestOptions
+				);
+
+				if (!response.ok) {
+					throw new Error("Error");
+				}
+
+				setCaption("");
+				setTitle("");
+				setPicture("");
+				setSelectedGroup(null);
+				setSelectedCategory(null);
+				closeModal();
+
+				setIsSuccessModalOpen(true); // Open success modal
+				setNewNumberPins(newNumberPins + 1);
+				// setIsModalOpen(false); // Close modal after successful pin addition
+				// setIsSuccessModalOpen(true); // Open success modal
+			} catch (error) {
+				console.error("Error creating post:", error);
+			}
+		} else {
+			const now = new Date();
+
+			const formattedDateTime =
+				now.getFullYear() +
+				"-" +
+				String(now.getMonth() + 1).padStart(2, "0") +
+				"-" +
+				String(now.getDate()).padStart(2, "0") +
+				"T" +
+				String(now.getHours()).padStart(2, "0") +
+				":" +
+				String(now.getMinutes()).padStart(2, "0");
+
+			localStorage.setItem(
+				"pin-offline-" + formattedDateTime,
+				JSON.stringify(raw)
 			);
 
-			if (!response.ok) {
-				throw new Error("Error");
-			}
-			console.log("title", title);
 			setCaption("");
 			setTitle("");
 			setPicture("");
@@ -511,12 +536,8 @@ const HomeScreen: React.FC = () => {
 			setSelectedCategory(null);
 			closeModal();
 
-			setIsSuccessModalOpen(true); // Open success modal
+			setIsSuccessModalOpen(true);
 			setNewNumberPins(newNumberPins + 1);
-			// setIsModalOpen(false); // Close modal after successful pin addition
-			// setIsSuccessModalOpen(true); // Open success modal
-		} catch (error) {
-			console.error("Error creating post:", error);
 		}
 	};
 
