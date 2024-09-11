@@ -312,7 +312,7 @@ const HomeScreen: React.FC = () => {
 			myHeaders.append("Content-Type", "application/json");
 
 			const stuff = encodeURIComponent(
-				'{"caption":"1232","title":"321","categoryid":2,"userid":112,"groupid":8,"picture":"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79","latitude":0,"longitude":0}'
+				'{"caption":"1232","title":"321","categoryid":2,"userid":112,"groupid":8,"picture":"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79","latitude":-25.41,"longitude":25.41}'
 			);
 
 			const response = await fetch("/api/posts/CreatePost", {
@@ -471,8 +471,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude: latitude,
-			longitude: longitude
+			latitude: -27.18,
+			longitude: 25.41
 		});
 
 		const requestOptions = {
@@ -494,6 +494,8 @@ const HomeScreen: React.FC = () => {
 
 				if (!response.ok) {
 					throw new Error("Error");
+				} else {
+					console.log("success");
 				}
 
 				setCaption("");
