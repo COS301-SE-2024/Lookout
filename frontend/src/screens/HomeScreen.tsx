@@ -306,6 +306,49 @@ const HomeScreen: React.FC = () => {
 		}
 	};
 
+	const postOfflinePin = async (params: string, key: string) => {
+		if (navigator.onLine) {
+			const myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+
+			const stuff = encodeURIComponent(
+				'{"caption":"1232","title":"321","categoryid":2,"userid":112,"groupid":8,"picture":"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79","latitude":0,"longitude":0}'
+			);
+
+			const response = await fetch("/api/posts/CreatePost", {
+				method: "POST",
+				headers: myHeaders,
+				body: stuff
+			});
+
+			if (response.ok) {
+				alert("Post created successfully!");
+				localStorage.removeItem(key);
+			} else {
+				alert("Offline pins published!");
+				console.log("response", response);
+			}
+		}
+	};
+
+	useEffect(() => {
+		const processOfflinePins = async () => {
+			if (navigator.onLine) {
+				for (let i = 0; i < localStorage.length; i++) {
+					let key = localStorage.key(i);
+					if (key !== null && key.includes("pin-offline")) {
+						const value = localStorage.getItem(key);
+						if (value !== null) {
+							await postOfflinePin(value, key);
+						}
+					}
+				}
+			}
+		};
+
+		processOfflinePins();
+	}, []);
+
 	const [pins, setPins] = useState<myPin[]>([]);
 	const fetchPins = async () => {
 		try {
