@@ -160,6 +160,8 @@ const HomeScreen: React.FC = () => {
 
 	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
+	useEffect(() => {}, []);
+
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
@@ -183,6 +185,49 @@ const HomeScreen: React.FC = () => {
 			throw new Error("Geolocation is not supported by this browser.");
 		}
 	};
+
+	const postOfflinePin = async (params: string, key: string) => {
+		if (navigator.onLine) {
+			const myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+
+			const stuff = encodeURIComponent(
+				'{"caption":"1232","title":"321","categoryid":2,"userid":112,"groupid":8,"picture":"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79","latitude":0,"longitude":0}'
+			);
+
+			const response = await fetch("/api/posts/CreatePost", {
+				method: "POST",
+				headers: myHeaders,
+				body: stuff
+			});
+
+			if (response.ok) {
+				alert("Post created successfully!");
+				localStorage.removeItem(key);
+			} else {
+				alert("Offline pins published!");
+				console.log("response", response);
+			}
+		}
+	};
+
+	useEffect(() => {
+		const processOfflinePins = async () => {
+			if (navigator.onLine) {
+				for (let i = 0; i < localStorage.length; i++) {
+					let key = localStorage.key(i);
+					if (key !== null && key.includes("pin-offline")) {
+						const value = localStorage.getItem(key);
+						if (value !== null) {
+							await postOfflinePin(value, key);
+						}
+					}
+				}
+			}
+		};
+
+		processOfflinePins();
+	}, []);
 
 	const [pins, setPins] = useState<myPin[]>([]);
 	const fetchPins = async () => {
@@ -316,19 +361,54 @@ const HomeScreen: React.FC = () => {
 			body: raw
 		};
 
-		try {
-			//old way
-			// const response = await fetch("/api/image/create", requestOptions);
-			console.log("raw", raw);
-			const response = await fetch(
-				"/api/posts/CreatePost",
-				requestOptions
+		if (navigator.onLine) {
+			try {
+				//old way
+				// const response = await fetch("/api/image/create", requestOptions);
+				console.log("requestOptions", requestOptions);
+
+				const response = await fetch(
+					"/api/posts/CreatePost",
+					requestOptions
+				);
+
+				if (!response.ok) {
+					throw new Error("Error");
+				}
+
+				setCaption("");
+				setTitle("");
+				setPicture("");
+				setSelectedGroup(null);
+				setSelectedCategory(null);
+				closeModal();
+
+				setIsSuccessModalOpen(true); // Open success modal
+				setNewNumberPins(newNumberPins + 1);
+				// setIsModalOpen(false); // Close modal after successful pin addition
+				// setIsSuccessModalOpen(true); // Open success modal
+			} catch (error) {
+				console.error("Error creating post:", error);
+			}
+		} else {
+			const now = new Date();
+
+			const formattedDateTime =
+				now.getFullYear() +
+				"-" +
+				String(now.getMonth() + 1).padStart(2, "0") +
+				"-" +
+				String(now.getDate()).padStart(2, "0") +
+				"T" +
+				String(now.getHours()).padStart(2, "0") +
+				":" +
+				String(now.getMinutes()).padStart(2, "0");
+
+			localStorage.setItem(
+				"pin-offline-" + formattedDateTime,
+				JSON.stringify(raw)
 			);
 
-			if (!response.ok) {
-				throw new Error("Error");
-			}
-			console.log("title", title);
 			setCaption("");
 			setTitle("");
 			setPicture("");
@@ -336,12 +416,8 @@ const HomeScreen: React.FC = () => {
 			setSelectedCategory(null);
 			closeModal();
 
-			setIsSuccessModalOpen(true); // Open success modal
+			setIsSuccessModalOpen(true);
 			setNewNumberPins(newNumberPins + 1);
-			// setIsModalOpen(false); // Close modal after successful pin addition
-			// setIsSuccessModalOpen(true); // Open success modal
-		} catch (error) {
-			console.error("Error creating post:", error);
 		}
 	};
 
