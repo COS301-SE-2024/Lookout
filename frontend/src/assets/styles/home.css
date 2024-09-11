@@ -8,6 +8,11 @@
     left:4rem;
 }
 
+#sightlocation{
+  height: 200px;
+  margin-bottom: 30px;
+}
+
 @media (max-width: 767px) {
     .map-container {
         width: 100%;

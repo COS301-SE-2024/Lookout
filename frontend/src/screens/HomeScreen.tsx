@@ -229,12 +229,17 @@ const HomeScreen: React.FC = () => {
 	const [imageExpanded, setImageExpanded] = useState(false);
 	const [titleExpanded, setTitleExpanded] = useState(false);
 	const [captionExpanded, setCaptionExpanded] = useState(false);
+	const [dragpinExpanded, setDragPinExpanded] = useState(false);
 	const [showRecommendedTitle, setShowRecommendedTitle] = useState(false);
 	const [predictResult, setPredictResult] = useState('');
 
 
 	const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
 	const [newNumberPins, setNewNumberPins] = useState<number>(0);
+
+	
+	const [dragpinlatitude, setdragpinLatitude] = useState(latitude);
+	const [dragpinlongitude, setdragpinLongitude] = useState(longitude);
 
 
 	const navigate = useNavigate();
@@ -408,8 +413,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude: latitude,
-			longitude: longitude
+			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
+			longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
 		});
 
 		const requestOptions = {
@@ -939,6 +944,59 @@ const HomeScreen: React.FC = () => {
             ></textarea>
           )}
         </div>
+
+		<div className="mb-3 border-2 border-black rounded-md p-3" >
+          <label
+            htmlFor="formDescription"
+            className="block text-sm font-medium text-gray-700 cursor-pointer"
+			onClick={() => setDragPinExpanded(!dragpinExpanded)}
+          >
+            Sighting Location:
+          </label>
+		  {dragpinExpanded && (
+			<div id="sightlocation">
+          <GoogleMapApiLoader apiKey={apicode || ""} suspense>
+            <GoogleMap
+              className="h-full w-full"
+              zoom={15}
+              center={center}
+              mapOptions={{
+                disableDefaultUI: true,
+                zoomControl: true,
+                mapId: "dde51c47799889c4",
+              }}
+            > {/* draggable */}
+			<Marker
+			  lat={latitude}
+			  lng={longitude}
+			  title={"Sighting Location"}
+			  draggable
+			  onDragEnd={(event) => {
+				const newPosition = event.getPosition();
+				const newLat = newPosition?.lat();
+				const newLng = newPosition?.lng();
+
+				setdragpinLatitude(
+				  newLat !== null && newLat !== undefined
+					? newLat
+					: latitude
+				);
+				setdragpinLongitude(
+				  newLng !== null && newLng !== undefined
+					? newLng
+					: longitude
+				);
+
+				console.log(
+				  `Marker dropped at: Latitude ${newLat}, Longitude ${newLng}`
+				);
+			  }}
+			/>
+		  </GoogleMap>
+		</GoogleMapApiLoader>
+		</div>
+		)}
+	  </div>
 		
 
         {/* Submit button only enabled when all fields are filled */}
