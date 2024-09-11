@@ -224,8 +224,18 @@ const HomeScreen: React.FC = () => {
 	const [selectCategory, setSelectCategory] = useState(null);
 	const [filteredPins, setFilteredPins] = useState<myPin[]>([]);
 
+	const [categoryExpanded, setCategoryExpanded] = useState(false);
+	const [groupExpanded, setGroupExpanded] = useState(false);
+	const [imageExpanded, setImageExpanded] = useState(false);
+	const [titleExpanded, setTitleExpanded] = useState(false);
+	const [captionExpanded, setCaptionExpanded] = useState(false);
+	const [showRecommendedTitle, setShowRecommendedTitle] = useState(false);
+	const [predictResult, setPredictResult] = useState('');
+
+
 	const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
 	const [newNumberPins, setNewNumberPins] = useState<number>(0);
+
 
 	const navigate = useNavigate();
 
@@ -511,6 +521,28 @@ const HomeScreen: React.FC = () => {
 			});
 
 			setPicture(uploadURL.split("?")[0]);
+			if (showRecommendedTitle) {
+				const formdata = new FormData();
+		  
+				// Append file to FormData, ensuring the file is present
+				formdata.append("image", file);
+		  
+				const requestOptions = {
+				  method: "POST",
+				  body: formdata
+				};
+		  
+				try {
+				  const response = await fetch("http://localhost:5000/predict", requestOptions);
+				  const result = await response.json();
+
+				  setPredictResult(result.predicted_class); 
+    			  setTitle(result.predicted_class);
+				  console.log(result);
+				} catch (error) {
+				  console.error("Error during prediction:", error);
+				}
+			  }
 			console.log(
 				"Image uploaded and profile picture updated successfully.",
 				uploadURL.split("?")[0]
@@ -562,6 +594,35 @@ const HomeScreen: React.FC = () => {
 				body: binaryData
 			});
 			await setPicture(uploadURL.split("?")[0]);
+
+			if (showRecommendedTitle) {
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+
+				const raw = JSON.stringify({
+					"image_url": uploadURL.split("?")[0]
+				});
+		  
+		  
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw
+				};
+
+				try {
+					const response = await fetch("http://localhost:5000/predict", requestOptions);
+					const result = await response.json();
+					setPredictResult(result.predicted_class); 
+    			  	setTitle(result.predicted_class);
+					console.log(result)
+				} catch (error) {
+						console.error(error);
+				};
+		
+			  }
+			console.log(uploadURL.split("?")[0]);
+			console.log(picture);
 			console.log(
 				"Image uploaded and profile picture updated successfully."
 			);
@@ -654,147 +715,252 @@ const HomeScreen: React.FC = () => {
 
 			{/* Add pin modal */}
 			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
-						<button
-							className="absolute top-2 right-2 text-xl"
-							onClick={closeModal}
-						>
-							&times;
-						</button>
-						<h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+      <button className="absolute top-2 right-2 text-xl" onClick={closeModal}>
+        &times;
+      </button>
+      <h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
 
-						<div className="flex justify-center mb-3">
-							<button
-								className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-								onClick={openPhotoModal}
-							>
-								<FaPlus />
-							</button>
-						</div>
+      <form>
+        {/* Collapsible Category Section */}
+        <div className="mb-3 border-2 border-black rounded-md p-3">
+          <label
+            htmlFor="categorySelect"
+            className="block text-sm font-medium text-gray-700 cursor-pointer"
+            onClick={() => setCategoryExpanded(!categoryExpanded)}
+          >
+            Select Category:
+          </label>
+          {categoryExpanded && (
+            <select
+              id="categorySelect"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={selectedCategory ?? ""}
+              onChange={(e) => setSelectedCategory(Number(e.target.value))}
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
 
-						<div className="text-center mb-3">
-							<span className="text-lg">Add a photo</span>
-							<input
-								type="file"
-								accept="image/jpeg, image/png"
-								style={{ display: "none" }}
-								ref={fileInputRef}
-								onChange={handleFileChange}
-							/>
-							{picture && (
-								<img
-									src={picture}
-									alt="Selected"
-									className="w-32 h-32 mt-2 mx-auto"
-								/>
-							)}
-						</div>
+        {/* Collapsible Group Section */}
+        <div className="mb-3 border-2 border-black rounded-md p-3">
+          <label
+            htmlFor="groupSelect"
+            className="block text-sm font-medium text-gray-700 cursor-pointer"
+            onClick={() => setGroupExpanded(!groupExpanded)}
+          >
+            Select Group:
+          </label>
+          {groupExpanded && (
+            <select
+              id="groupSelect"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={selectedGroup ?? ""}
+              onChange={(e) => setSelectedGroup(Number(e.target.value))}
+            >
+              <option value="" disabled>
+                Select a group
+              </option>
+              {groups.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+						
+        {/* Collapsible Image Section */}
+        <div className="mb-3 border-2 border-black rounded-md p-3">
+          <label
+            className="block text-sm font-medium text-gray-700 cursor-pointer"
+            onClick={() => setImageExpanded(!imageExpanded)}
+          >
+            Add Image:
+          </label>
+          {imageExpanded && (
 
-						<form>
-							<div className="mb-3">
-								<label
-									htmlFor="groupSelect"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Select Group:
-								</label>
-								<select
-									id="groupSelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedGroup ?? ""}
-									onChange={(e) =>
-										setSelectedGroup(Number(e.target.value))
-									}
-								>
-									<option value="" disabled>
-										Select a group
-									</option>
-									{groups.map((group) => (
-										<option key={group.id} value={group.id}>
-											{group.name}
-										</option>
-									))}
-								</select>
-							</div>
+			<div className="flex justify-center mb-3">
+				{!picture && (<button
+					type="button"
+					className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+					onClick={openPhotoModal}
+					>
+					<FaPlus />
+				</button>)}
+				<input
+					type="file"
+					accept="image/jpeg, image/png"
+					style={{ display: "none" }}
+					ref={fileInputRef}
+					onChange={handleFileChange}
+					/>
+				{picture && (
+					<img
+						src={picture}
+						alt="Selected"
+						className="w-32 h-32 mt-2 mx-auto"
+					/>
+				)}
+			</div>
+          )}
+        </div>
 
-							<div className="mb-3">
-								<label
-									htmlFor="categorySelect"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Select Category:
-								</label>
-								<select
-									id="categorySelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedCategory ?? ""}
-									onChange={(e) =>
-										setSelectedCategory(
-											Number(e.target.value)
-										)
-									}
-								>
-									<option value="" disabled>
-										Select a category
-									</option>
-									{categories.map((category) => (
-										<option
-											key={category.id}
-											value={category.id}
-										>
-											{category.name}
-										</option>
-									))}
-								</select>
-							</div>
+      {/* Title Section with Slider */}
+<div className="mb-3 border-2 border-black rounded-md p-3">
+  <div className="flex items-center justify-between">
+    <label
+      htmlFor="formTitle"
+      className="block text-sm font-medium text-gray-700 cursor-pointer"
+	  onClick={() => setTitleExpanded(!titleExpanded)}
+    >
+      Title:
+    </label>
 
-							<div className="mb-3">
-								<label
-									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Caption:
-								</label>
-								<textarea
-									id="formDescription"
-									rows={4}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
-									value={caption}
-									onChange={(e) => setCaption(e.target.value)}
-								></textarea>
-							</div>
+    {/* Slider for Recommended Title */}
+    {selectedCategory === 1 && (
+		<div className="flex items-center">
+		<span className="text-sm mr-2">Recommended</span>
+		<label className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+			<input
+			type="checkbox"
+			className="toggle-checkbox"
+			checked={showRecommendedTitle}
+			onChange={async () => {
+				// Toggle the checkbox state
+				const newShowRecommendedTitle = !showRecommendedTitle;
+				setShowRecommendedTitle(newShowRecommendedTitle);
+			
+				if (newShowRecommendedTitle && !predictResult && fileInputRef.current?.files && fileInputRef.current.files[0]) {
+				  
+				  const formdata = new FormData();
+				  const file = fileInputRef.current.files[0];
+				  formdata.append("image", file);
+			
+				  const requestOptions = {
+					method: "POST",
+					body: formdata,
+				  };
+			
+				  try {
+					const response = await fetch("http://localhost:5000/predict", requestOptions);
+					const result = await response.json();
+			
+					setPredictResult(result.predicted_class);
+			
+					setTitle(result.predicted_class);
+			
+					console.log(result);
+				  } catch (error) {
+					console.error("Error during prediction:", error);
+				  }
+				} else if (newShowRecommendedTitle && !predictResult){
+					const myHeaders = new Headers();
+					myHeaders.append("Content-Type", "application/json");
 
-							<div className="mb-3">
-								<label
-									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Title:
-								</label>
-								<textarea
-									id="formDescription"
-									rows={2}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
-									value={title}
-									onChange={(e) => setTitle(e.target.value)}
-								></textarea>
-							</div>
-						</form>
+					const raw = JSON.stringify({
+						"image_url": picture
+					});
+			
+			
+					const requestOptions = {
+						method: "POST",
+						headers: myHeaders,
+						body: raw
+					};
 
-						<div>
-							<button
-								className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-								onClick={handleAddPinClick}
-							>
-								Add Pin
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
+					try {
+						const response = await fetch("http://localhost:5000/predict", requestOptions);
+						const result = await response.json();
+						setPredictResult(result.predicted_class); 
+						setTitle(result.predicted_class);
+						console.log(result)
+					} catch (error) {
+							console.error(error);
+					};
+
+				} else if (!newShowRecommendedTitle) {
+				  // If the checkbox is unchecked, clear the title
+				  setTitle('');
+				} else if (newShowRecommendedTitle){
+					setTitle(predictResult);
+				}
+			  }}
+			/>
+			<span className="toggle-label"></span>
+		</label>
+		</div>
+    )}
+  </div>
+
+  {/* Expandable Text Area for Title */}
+  {titleExpanded && (
+	<div className="mt-2">
+    <textarea
+      id="formTitle"
+      rows={2}
+      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Enter title"
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+    ></textarea>
+  </div>
+)}
+</div>
+
+
+
+        {/* Collapsible Caption Section */}
+        <div className="mb-3 border-2 border-black rounded-md p-3">
+          <label
+            htmlFor="formCaption"
+            className="block text-sm font-medium text-gray-700 cursor-pointer"
+            onClick={() => setCaptionExpanded(!captionExpanded)}
+          >
+            Caption:
+          </label>
+          {captionExpanded && (
+            <textarea
+              id="formCaption"
+              rows={4}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter description"
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+            ></textarea>
+          )}
+        </div>
+		
+
+        {/* Submit button only enabled when all fields are filled */}
+        <div>
+          <button
+            className={`w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              !selectedCategory || !selectedGroup || !picture || !title || !caption
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+            onClick={handleAddPinClick}
+            disabled={!selectedCategory || !selectedGroup || !picture || !title || !caption}
+          >
+            Add Pin
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
+
 
 			{/* Success modal */}
 			{isSuccessModalOpen && (

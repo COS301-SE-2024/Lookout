@@ -4,6 +4,7 @@ import com.lookout.Lookout.entity.User
 import io.github.cdimascio.dotenv.Dotenv
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
@@ -31,22 +32,9 @@ class JwtService {
     }
 
     private fun getSignInKey(): SecretKey {
-        val jwtToken = dotenv["JWT_SECRET_KEY"] ?: throw IllegalStateException("JWT_SECRET_KEY is null")
-
-        // Split the JWT token into its three parts: header, payload, and signature
-        val parts = jwtToken.split('.')
-        if (parts.size != 3) {
-            throw IllegalArgumentException("Invalid JWT token: $jwtToken")
-        }
-
-        // Extract the payload part (second part) which contains the secret key
-        val payload = parts[1]
-
-        // Decode the payload to get the secret key
-        val keyBytes = Base64.getUrlDecoder().decode(payload)
-
-        // Return the secret key
-        return SecretKeySpec(keyBytes, "HmacSHA256")
+        val secret = dotenv["JWT_SECRET_KEY"]
+            ?: throw IllegalStateException("JWT_SECRET_KEY is null")
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret))
     }
 
 
