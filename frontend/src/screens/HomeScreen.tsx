@@ -310,10 +310,19 @@ const HomeScreen: React.FC = () => {
 		if (navigator.onLine) {
 			const myHeaders = new Headers();
 			myHeaders.append("Content-Type", "application/json");
+			myHeaders.append("Cache-Control", "no-cache");
 
-			const stuff = encodeURIComponent(
-				'{"caption":"1232","title":"321","categoryid":2,"userid":112,"groupid":8,"picture":"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79","latitude":-25.41,"longitude":25.41}'
-			);
+			const stuff = JSON.stringify({
+				caption: "1232",
+				title: "321",
+				categoryid: "2",
+				userid: "112",
+				groupid: "8",
+				picture:
+					"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79",
+				latitude: "-25.41",
+				longitude: "25.41"
+			});
 
 			const response = await fetch("/api/posts/CreatePost", {
 				method: "POST",
@@ -323,10 +332,10 @@ const HomeScreen: React.FC = () => {
 
 			if (response.ok) {
 				alert("Post created successfully!");
+
 				localStorage.removeItem(key);
-			} else {
-				alert("Offline pins published!");
-				console.log("response", response);
+				setCurrentNumberPins(currentNumberPins + 1);
+				await fetchPins();
 			}
 		}
 	};
@@ -355,7 +364,8 @@ const HomeScreen: React.FC = () => {
 			const response = await fetch("/api/posts", {
 				method: "GET",
 				headers: {
-					"Content-Type": "application/json"
+					"Content-Type": "application/json",
+					"Cache-Control": "no-cache"
 				}
 			});
 
@@ -392,13 +402,13 @@ const HomeScreen: React.FC = () => {
 		}
 	}, [newNumberPins, currentNumberPins]);
 
-	useEffect(() => {
-		const intervalId = setInterval(() => {
-			fetchPins();
-		}, 15000);
+	// useEffect(() => {
+	// 	const intervalId = setInterval(() => {
+	// 		fetchPins();
+	// 	}, 15000);
 
-		return () => clearInterval(intervalId);
-	}, []);
+	// 	return () => clearInterval(intervalId);
+	// }, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
@@ -494,10 +504,7 @@ const HomeScreen: React.FC = () => {
 
 				if (!response.ok) {
 					throw new Error("Error");
-				} else {
-					console.log("success");
 				}
-
 				setCaption("");
 				setTitle("");
 				setPicture("");
@@ -539,7 +546,6 @@ const HomeScreen: React.FC = () => {
 			closeModal();
 
 			setIsSuccessModalOpen(true);
-			setNewNumberPins(newNumberPins + 1);
 		}
 	};
 
@@ -1236,8 +1242,6 @@ const HomeScreen: React.FC = () => {
 							className="block mx-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
 							onClick={() => {
 								setIsSuccessModalOpen(false);
-
-								navigate("/");
 							}}
 						>
 							Okay
