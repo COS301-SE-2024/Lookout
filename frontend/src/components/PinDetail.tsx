@@ -287,7 +287,7 @@ const PinDetail: React.FC = () => {
       </style>
       <button
         onClick={() => navigate(-1)}
-        className="fixed top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
+        className="absolute top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
         style={{ zIndex: 50 }}
       >
         <svg
