@@ -4,7 +4,7 @@
 
 @layer base {
 	:root {
-		--color-nav-bkg: 106 153 78;
+		--color-nav-bkg: 25 100 52;
 		--color-bkg: 255 251 250;
 		--color-content: 0 0 0;
 	}
@@ -22,8 +22,12 @@
 		--color-content: 255 255 255;
 	}
 	:root[data-theme="light"] {
-		--color-nav-bkg: 22 101 52;
+		--color-nav-bkg: 25 100 52;
 		--color-bkg: 255 251 250;
 		--color-content: 0 0 0;
 	}
+
+
 }
+
+  

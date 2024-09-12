@@ -1,6 +1,6 @@
 .map-container {
-    width: 100%;
-    height: 695px; 
+    width: 100vw;
+    height: 91vh; 
 }
 
 #menu{
