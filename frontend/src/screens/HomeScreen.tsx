@@ -646,10 +646,10 @@ const HomeScreen: React.FC = () => {
 				<IoMenu size={32} onClick={openMenuModal} />
 			</div>
 			<button
-				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-800 sm:bottom-24 md:bottom-20"
-				onClick={openModal}
+			className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-navBkg text-white p-4 rounded-full hover:bg-white hover:text-navBkg sm:bottom-24 md:bottom-20"
+			onClick={openModal}
 			>
-				+
+			<FaPlus />
 			</button>
 
 			{/* Add pin modal */}
