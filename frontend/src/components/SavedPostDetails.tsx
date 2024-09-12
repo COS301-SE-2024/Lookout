@@ -63,12 +63,29 @@ interface Post {
   createdAt: string;
 }
 
+interface User {
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  profilePic: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
+}
+
+
 const PinDetail: React.FC = () => {
   const userId = 1; // ADD IN FROM LOGIN LATER
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [theme, setTheme] = useState("default");
   const [post, setPost] = useState<Post | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loadingPost, setLoadingPost] = useState(true);
   const [loadingRelatedPost, setLoadingRelatedPost] = useState(true);
   const [loadingSaved, setLoadingSaved] = useState(true);
@@ -117,6 +134,12 @@ const PinDetail: React.FC = () => {
         const relatedData = await relatedResponse.json();
         setRelatedPosts(relatedData.content);
         setLoadingRelatedPost(false);
+
+        // Fetch user details using post.userId
+        const userResponse = await fetch(`/api/users/${data.userId}`);
+        const userData = await userResponse.json();
+        setUser(userData);  // Store user data including profile picture
+
       } catch (error) {
         console.error("Error fetching post or related posts:", error);
         setLoadingPost(false);
@@ -303,7 +326,7 @@ const PinDetail: React.FC = () => {
           <div className="flex items-center mb-4 justify-between w-full">
             <div className="flex items-center">
               <img
-                src='https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg'
+                src={user?.profilePic}
                 alt={post?.username}
                 className="w-20 h-20 rounded-full mr-6"
               />

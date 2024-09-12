@@ -31,6 +31,7 @@ interface Post {
     isAccountNonLocked: boolean;
     password: string;
     isEnabled: boolean;
+    profilepic: string;
   };
   group: {
     id: number;
@@ -62,11 +63,27 @@ interface Post {
   createdAt: string;
 }
 
+interface User {
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  profilePic: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
+}
+
 const PinDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [theme, setTheme] = useState("default");
   const [post, setPost] = useState<Post | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [saves, setSaves] = useState<number>(0);
@@ -99,12 +116,14 @@ const PinDetail: React.FC = () => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
         setPost(data);
+        console.log(data)
         setLoading(false);
 
         // Fetch related posts once the main post is fetched
@@ -113,6 +132,15 @@ const PinDetail: React.FC = () => {
         );
         const relatedData = await relatedResponse.json();
         setRelatedPosts(relatedData.content);
+
+        // Fetch user details using post.userId
+        const userResponse = await fetch(`/api/users/${data.userId}`);
+        const userData = await userResponse.json();
+        setUser(userData);  // Store user data including profile picture
+
+
+        
+
       } catch (error) {
         console.error("Error fetching post or related posts:", error);
         setLoading(false);
@@ -215,9 +243,12 @@ const PinDetail: React.FC = () => {
     return <SkeletonPinDetail />;
   }
 
-  if (!post) {
-    return <p>Post not found.</p>;
+  
+  if (!post || !user) {
+    return <p>Post or user not found.</p>;
   }
+ 
+  
 
   return (
     <div className="p-4 scrollbar-hide">
@@ -308,7 +339,7 @@ const PinDetail: React.FC = () => {
 
             <div className="flex items-center mb-4">
               <img
-                src="https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg"
+                src={user.profilePic}
                 alt={post.username}
                 className="w-16 h-16 rounded-full mr-4"
               />
@@ -321,13 +352,13 @@ const PinDetail: React.FC = () => {
 
             <div className="flex justify-start mt-4 space-x-4">
               <button
-                className="px-4 py-2 rounded-full bg-green-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="px-4 py-2 rounded-full bg-navBkg text-white focus:outline-none focus:ring-2 focus:ring-green-400"
                 onClick={() => navigate(`/map`, { state: { post, apicode } })}
               >
                 View on Map
               </button>
               <button
-                className="px-4 py-2 rounded-full bg-green-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="px-4 py-2 rounded-full bg-navBkg text-white focus:outline-none focus:ring-2 focus:ring-green-400"
                 onClick={() =>
                   navigate(`/group/${post.groupId}`, {
                     state: { group: post.group },

@@ -62,12 +62,29 @@ interface Post {
   createdAt: string;
 }
 
+
+interface User {
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  profilePic: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
+}
+
 const PinDetail: React.FC = () => {
   const userId = 1;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [theme, setTheme] = useState("default");
   const [post, setPost] = useState<Post | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [saves, setSaves] = useState<number>(0);
@@ -114,6 +131,13 @@ const PinDetail: React.FC = () => {
         const relatedResponse = await fetch(`/api/posts/group/${data.groupId}?page=0&size=10`);
         const relatedData = await relatedResponse.json();
         setRelatedPosts(relatedData.content);
+
+        // Fetch user details using post.userId
+        const userResponse = await fetch(`/api/users/${data.userId}`);
+        const userData = await userResponse.json();
+        setUser(userData);  // Store user data including profile picture
+
+  
       } catch (error) {
         console.error("Error fetching post or related posts:", error);
       } finally {
@@ -242,11 +266,11 @@ const PinDetail: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
-      <div className="flex items-center z-50">
+    <div className="container  mx-auto p-4 relative max-h-screen overflow-y-auto">
+      <div className="flex items-center z-50 ">
         <button
           onClick={() => navigate('/profile')}
-          className="absolute top-4 left-4 text-green-700 hover:text-green-500"
+          className="absolute top-4 left-4 text-content hover:text-white"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -266,13 +290,13 @@ const PinDetail: React.FC = () => {
         {isEditing ? (
           <>
             <button
-              className="absolute top-4 right-6 text-white bg-green-800 hover:bg-white hover:text-green-800 border border-green-800 rounded-full px-4 py-2 cursor-pointer"
+              className="absolute top-4 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer"
               onClick={handleDoneClick}
             >
               Done
             </button>
             <button
-              className="absolute top-4 left-12 text-green-800 bg-white border border-green-800 hover:bg-green-800 hover:text-white rounded-full px-4 py-2 cursor-pointer"
+              className="absolute top-4 left-12  text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer"
               onClick={handleCancelClick}
             >
               Cancel
@@ -280,14 +304,14 @@ const PinDetail: React.FC = () => {
           </>
         ) : (
           <FaEdit
-            className="absolute top-4 right-4 text-xl text-green-700 cursor-pointer"
+            className="absolute top-4 right-4 text-xl text-content cursor-pointer"
             onClick={handleEditClick}
             size={30}
           />
         )}
       </div>
   
-      <div className="bg-white shadow-xl rounded-lg overflow-hidden mt-12">
+      <div className="bg-bkg shadow-xl rounded-lg overflow-hidden mt-12">
         <figure className="w-full h-60 md:h-96 overflow-hidden">
           <img
             src={post.picture}
@@ -301,7 +325,7 @@ const PinDetail: React.FC = () => {
             {isEditing ? (
               <input
                 type="text"
-                className="text-2xl md:text-3xl font-bold border border-green-800 rounded-full text-center w-full md:w-auto"
+                className="md:text-3xl text-content border-navBkg bg-navBkg font-bold border border-navBkg rounded-full text-center w-full md:w-auto"
                 value={editableTitle}
                 onChange={(e) => setEditableTitle(e.target.value)}
               />
@@ -311,13 +335,13 @@ const PinDetail: React.FC = () => {
             <div className="flex items-center">
               {isSaved ? (
                 <FaBookmark
-                  className="text-green-800 cursor-pointer"
+                  className="text-navBkg cursor-pointer"
                   onClick={handleSaveIconClick}
                   size={24}
                 />
               ) : (
                 <FaRegBookmark
-                  className="text-green-800 cursor-pointer"
+                  className="text-navBkg cursor-pointer"
                   onClick={handleSaveIconClick}
                   size={24}
                 />
@@ -328,7 +352,7 @@ const PinDetail: React.FC = () => {
   
           <div className="flex items-center mb-4">
             <img
-              src='https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg'
+              src={user?.profilePic}
               alt={post.username}
               className="w-16 h-16 md:w-20 md:h-20 rounded-full mr-4"
             />
@@ -336,12 +360,12 @@ const PinDetail: React.FC = () => {
               <h2 className="text-lg font-bold">{post.username}</h2>
               {isEditing ? (
                 <textarea
-                  className="text-gray-600 text-sm w-full border border-green-800 rounded-lg mt-2 p-2"
+                  className="text-content text-sm w-full border border-navBkg bg-navBkg rounded-lg mt-2 p-2"
                   value={editableCaption}
                   onChange={(e) => setEditableCaption(e.target.value)}
                 />
               ) : (
-                <p className="text-gray-600 text-sm">{post.caption}</p>
+                <p className="text-content text-sm">{post.caption}</p>
               )}
               <div className="mt-2">
                 <CategoryPill categoryId={post.categoryId} />
@@ -351,13 +375,13 @@ const PinDetail: React.FC = () => {
   
           <div className="flex justify-center mt-4 space-x-2">
             <button
-              className="px-4 py-1 rounded-full bg-green-800 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="px-4 py-1 rounded-full bg-navBkg text-white hover:bg-white hover:text-navBkg focus:outline-none focus:ring-2 focus:ring-gray-400"
               onClick={() => navigate(`/map`, { state: { post, apicode } })}
             >
               View on Map
             </button>
             <button
-              className="px-4 py-1 rounded-full bg-green-800 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="px-4 py-1 rounded-full bg-navBkg text-white hover:bg-white hover:text-navBkg focus:outline-none focus:ring-2 focus:ring-gray-400"
               onClick={() =>
                 navigate(`/group/${post.groupId}`, {
                   state: { group: post.group },
