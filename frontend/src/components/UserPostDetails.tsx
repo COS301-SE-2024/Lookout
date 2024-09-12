@@ -266,37 +266,70 @@ const PinDetail: React.FC = () => {
   }
 
   return (
-    <div className="container  mx-auto p-4 relative max-h-screen overflow-y-auto">
-      <div className="flex items-center z-50 ">
-        <button
-          onClick={() => navigate('/profile')}
-          className="absolute top-4 left-4 text-content hover:text-white"
+    <div className="p-4 scrollbar-hide">
+      <style>
+        {`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .search-results-container {
+            display: grid;
+            gap: 16px;
+            justify-items: start;
+          }
+          .search-results-container .search-result-card {
+            width: 100%;
+            margin: 0;
+          }
+          @media (min-width: 768px) {
+            .search-results-container {
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+          }
+          @media (max-width: 767px) {
+            .search-results-container {
+              grid-template-columns: 1fr;
+            }
+            .search-bar {
+              width: 100%;
+            }
+          }
+        `}
+      </style>
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
+        style={{ zIndex: 50 }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
         {isEditing ? (
           <>
             <button
-              className="absolute top-4 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer"
+              className="absolute top-10 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:right-8"
               onClick={handleDoneClick}
             >
               Done
             </button>
             <button
-              className="absolute top-4 left-12  text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer"
+              className="absolute top-10 left-24  text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:left-32"
               onClick={handleCancelClick}
             >
               Cancel
@@ -304,21 +337,21 @@ const PinDetail: React.FC = () => {
           </>
         ) : (
           <FaEdit
-            className="absolute top-4 right-4 text-xl text-content cursor-pointer"
+            className="absolute top-12 right-8 text-xl text-content cursor-pointer text-green-700 md:top-24 md:right-8"
             onClick={handleEditClick}
             size={30}
           />
         )}
-      </div>
   
-      <div className="bg-bkg shadow-xl rounded-lg overflow-hidden mt-12">
-        <figure className="w-full h-60 md:h-96 overflow-hidden">
-          <img
-            src={post.picture}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-        </figure>
+      <div className="container mx-auto p-4 mt-16">
+        <div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row">
+          <figure className="rounded-t-lg overflow-hidden md:w-1/2">
+            <img
+              src={post.picture}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
+          </figure>
   
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -404,6 +437,7 @@ const PinDetail: React.FC = () => {
         </div>
       </div>
     </div>
+  </div>
   );
   
 };
