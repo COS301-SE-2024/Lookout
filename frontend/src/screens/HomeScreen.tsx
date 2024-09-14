@@ -681,6 +681,7 @@ const HomeScreen: React.FC = () => {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
+		resetForm();
 	};
 
 	const openMenuModal = () => {
@@ -713,6 +714,33 @@ const HomeScreen: React.FC = () => {
 		{ id: 4, name: "POI" },
 		{ id: 5, name: "Security Concern" }
 	];
+
+	const resetForm = () => {
+		setCenter(defaultCenter); 
+		setSelectedCategory(null); 
+		setCategoryExpanded(false); 
+		setSelectedGroup(null); 
+		setGroupExpanded(false); 
+		setPicture(""); 
+		setImageExpanded(false); 
+		setTitle(''); 
+		setTitleExpanded(false); 
+		setShowRecommendedTitle(false); 
+		setCaption(''); 
+		setCaptionExpanded(false); 
+		setDragPinExpanded(false);  
+		setLatitude(0); 
+		setLongitude(0);
+		setCurrentNumberPins(0); 
+		setNewNumberPins(0);
+		setPredictResult("");
+		setIsModalOpen(false); 
+		setIsMenuModalOpen(false);
+		setIsPhotoOptionsModalOpen(false); 
+		setIsCameraModalOpen(false); 
+	};
+	
+	  
 
 	return (
 		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
