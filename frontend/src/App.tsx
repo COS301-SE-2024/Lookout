@@ -9,8 +9,9 @@ const App = () => {
 	return (
 		<>
 			<Navigationbar />
-			<main className="bg-bkg text-content">
-				<div className="container mx-0">
+			<main className="bg-bkg text-content w-full min-w-full">
+				<div className="container mx-0 w-full min-w-full">
+				
 					<Outlet />
 					<EmailHandler />
 				</div>

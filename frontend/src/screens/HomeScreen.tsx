@@ -38,10 +38,10 @@ const customGradient = [
 ];
 
 function MapContent() {
-	const [show, setShow] = useState(true);
-	const [gradient, setGradient] = useState<string[] | null>(null);
-	const [radius, setRadius] = useState<number | null>(null);
-	const [opacity, setOpacity] = useState<number | null>(null);
+  const [show, setShow] = useState(false);
+  const [gradient, setGradient] = useState<string[] | null>(null);
+  const [radius, setRadius] = useState<number | null>(null);
+  const [opacity, setOpacity] = useState<number | null>(null);
 
 	const data = useMemo(getData, []);
 
@@ -743,8 +743,10 @@ const HomeScreen: React.FC = () => {
 	  
 
 	return (
-		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
-			<div className="map-container">
+		<GoogleMapApiLoader
+			apiKey={apicode || ""}
+			suspense>
+			<div className="map-container h-screen">
 				<GoogleMap
 					className="h-full w-full"
 					zoom={5}

@@ -41,8 +41,8 @@ const Navigationbar = () => {
 	return (
 		<>
 			{isAuthed && (
-				<header className="text-white bg-navBkg">
-					<nav className="container mx-auto py-4 bg-navBkg">
+				<header className="text-white bg-navBkg w-full min-w-full">
+					<nav className="container mx-auto py-4 bg-navBkg w-full min-w-full">
 						<ul className="flex justify-between items-center">
 							<li className="flex-grow"></li>
 							<li className="px-2">
