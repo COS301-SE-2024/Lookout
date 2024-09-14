@@ -448,21 +448,21 @@ class LookoutApplicationTests {
 
 
 ///////////////////////////DELETES/////////////////////////////////////////
-// DONT UNCOMMENT MAKE ACTUAL CHANGES TO DB
 
 
-    // @Test
-    // fun `delete invalid group test`() {
-    //     mockMvc.perform(delete("/api/groups/-4"))
-    //         .andExpect(status().isNotFound)
-    // }
+
+     @Test
+     fun `delete invalid group test`() {
+         mockMvc.perform(delete("/api/groups/-4"))
+             .andExpect(status().isNotFound)
+     }
 
 
-    // @Test
-    // fun `delete invalid post test`() {
-    //     mockMvc.perform(delete("/api/posts/4"))
-    //         .andExpect(status().isNotFound)
-    // }
+     @Test
+     fun `delete invalid post test`() {
+         mockMvc.perform(delete("/api/posts/-4"))
+             .andExpect(status().isNotFound)
+     }
 
 
 /////////////////////////////////Save a post////////////////////////////////////////

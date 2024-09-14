@@ -50,8 +50,8 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-  "groupId": 2,
-  "userId": 52
+  "groupId": 5,
+  "userId": 1
 }
 ###
 
@@ -62,7 +62,7 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-  "groupId": 2,
-  "userId": 52
+  "groupId": 5,
+  "userId": 1
 }
 ###
