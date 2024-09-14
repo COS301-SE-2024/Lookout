@@ -48,7 +48,7 @@ class LookoutApplicationTests {
             .andExpect(status().isOk)
     }
 
-    
+
 //////////////////////////////get groups by id//////////////////////////////////////=
     @Test
     fun `get group by id test`() {
@@ -367,7 +367,7 @@ class LookoutApplicationTests {
     }
             
         """.trimIndent()
-    
+
             mockMvc.perform(
                 post("/api/auth/register")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -606,12 +606,12 @@ class LookoutApplicationTests {
         @JvmStatic
         @BeforeAll
         fun setup(): Unit {
-            // val dotenv = Dotenv.configure()
-            //     .directory("./.env")
-            //     .load()
-            // dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
-            // dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
-            // dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
+             val dotenv = Dotenv.configure()
+                 .directory("./.env")
+                 .load()
+             dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
+             dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
+             dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
         }
     }
 fun addRandomValuesToJson(json: String): String {
