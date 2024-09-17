@@ -55,7 +55,7 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
       try {
         const response = await fetch(`/api/savedPosts/user/${userId}`);
         const data = await response.json();
-  
+
         // Transform the data into the expected structure
         const transformedData = data.map((item: any) => ({
           id: item.savedPostId,
@@ -96,16 +96,29 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
             email: item.userEmail,
           },
         }));
-  
-        setSavedPosts(transformedData);
+
+        // Remove duplicate posts based on post ID
+        const uniquePosts = transformedData.reduce((acc: SavedPost[], current: SavedPost) => {
+          const x = acc.find(item => item.post?.id === current.post?.id);
+          if (!x) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+
+        setSavedPosts(uniquePosts);
       } catch (error) {
         console.error('Error fetching saved posts:', error);
       }
     };
-  
+
     fetchSavedPosts();
+
+    // Cleanup function to clear state if component unmounts
+    return () => {
+      setSavedPosts([]);
+    };
   }, [userId]);
-  
 
   const handlePostClick = (post: Post) => {
     navigate(`/saved_post/${post.id}`, { state: { post } });

@@ -23,8 +23,9 @@ const GroupsProfile = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="mb-1 flex flex-col space-y-4 ml-4">
-        {/* Search Bar */}
-        <div className="flex items-center space-x-2">
+        {/* Search Bar and Filter Dropdown on the Same Line */}
+        <div className="flex items-center space-x-4">
+          {/* Search Bar */}
           <input
             type="text"
             placeholder={placeholderText}
@@ -32,10 +33,7 @@ const GroupsProfile = () => {
             onChange={handleSearchChange}
             className="border p-2 rounded w-full max-w-md bg-gray-200"
           />
-        </div>
-
-        {/* Filter Dropdown */}
-        <div className="flex items-center space-x-2">
+          {/* Filter Dropdown */}
           <select
             id="groupFilter"
             value={selectedOption}

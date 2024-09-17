@@ -35,63 +35,39 @@ const Profile = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			try {
-				// Fetch user data
-				const userResponse = await fetch(`/api/users/${userId}`, {
-					headers: {
-						Accept: "application/json"
-					}
-				});
-				const userData = await userResponse.json();
-				setUsername(userData.userName || "Unknown User");
-
-				// Fetch posts count
-				const postsCountResponse = await fetch(
-					`/api/users/postsCount/${userId}`,
-					{
-						headers: {
-							Accept: "application/json"
-						}
-					}
-				);
-				const postsCountData = await postsCountResponse.json();
-				setPostsCount(postsCountData);
-
-				// Fetch groups count
-				const groupsCountResponse = await fetch(
-					`/api/users/groupsCount/${userId}`,
-					{
-						headers: {
-							Accept: "application/json"
-						}
-					}
-				);
-				const groupsCountData = await groupsCountResponse.json();
-				setGroupsCount(groupsCountData);
-
-				// Fetch profile picture
-				const profilePicResponse = await fetch(`/api/users/${userId}`);
-				const profilePicData = await profilePicResponse.json();
-				if (profilePicData.profilePic !== null) {
-					localStorage.setItem(
-						"previewUrl",
-						profilePicData.profilePic
-					);
-					setPreviewUrl(profilePicData.profilePic);
-				}
-
-				setDataLoaded(true); // Set data loaded to true
-			} catch (error) {
-				console.error("Error fetching data:", error);
-				setUsername("User");
-				setPostsCount(0);
-				setGroupsCount(0);
-				setDataLoaded(true); // Set data loaded to true even on error
+		  try {
+			const [userResponse, postsCountResponse, groupsCountResponse] = await Promise.all([
+			  fetch(`/api/users/${userId}`, { headers: { Accept: "application/json" } }),
+			  fetch(`/api/users/postsCount/${userId}`, { headers: { Accept: "application/json" } }),
+			  fetch(`/api/users/groupsCount/${userId}`, { headers: { Accept: "application/json" } })
+			]);
+	  
+			const userData = await userResponse.json();
+			const postsCountData = await postsCountResponse.json();
+			const groupsCountData = await groupsCountResponse.json();
+	  
+			setUsername(userData.userName || "Unknown User");
+			setPostsCount(postsCountData);
+			setGroupsCount(groupsCountData);
+	  
+			// Profile picture logic
+			if (userData.profilePic !== null) {
+			  localStorage.setItem("previewUrl", userData.profilePic);
+			  setPreviewUrl(userData.profilePic);
 			}
+	  
+			setDataLoaded(true);
+		  } catch (error) {
+			console.error("Error fetching data:", error);
+			setUsername("User");
+			setPostsCount(0);
+			setGroupsCount(0);
+			setDataLoaded(true);
+		  }
 		};
-
+	  
 		fetchData();
-	}, []);
+	  }, []);	  
 
 	const closeModal = () => {
 		setModalOpen(false);
