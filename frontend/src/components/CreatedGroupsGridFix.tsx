@@ -19,7 +19,7 @@ interface CreatedGroupsGridFixProps {
 
 const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery }) => {
   // ADD IN FROM LOGIN LATER
-	const userId = 1;
+  const userId = 1;
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
 
@@ -33,16 +33,27 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
           },
         });
         const data = await response.json();
-        console.log("data, ",data)
+
+        // Filter out only groups created by the current user
         const filteredGroups = data.content.filter((group: Group) => group.userId === userId);
-        setGroups(filteredGroups);
+
+        // Ensure unique groups based on the group ID
+        const uniqueGroups = filteredGroups.reduce((acc: Group[], current: Group) => {
+          const x = acc.find(group => group.id === current.id);
+          if (!x) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+
+        setGroups(uniqueGroups);
       } catch (error) {
         console.error('Error fetching groups:', error);
       }
     };
 
     fetchGroups();
-  }, []);
+  }, [userId]);
 
   const handleGroupClick = (group: Group) => {
     navigate(`/createdGroup/${group.id}`, { state: { group } });

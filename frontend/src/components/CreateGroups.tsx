@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { FaToggleOn, FaToggleOff, FaPlus } from "react-icons/fa";
+import { FaToggleOn, FaToggleOff, FaPlus, FaTimes, FaTrash } from "react-icons/fa";
 
 interface CreateGroupsProps {
   onCreateGroup: (newGroup: Group) => void;
+  onClose: () => void;  // New prop for closing the modal
 }
 
 interface Group {
@@ -15,7 +16,7 @@ interface Group {
   createdAt: string;
 }
 
-const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
+const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup, onClose }) => {
   const [isToggled, setIsToggled] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -36,10 +37,6 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
       userId: 2 // Replace with the actual user ID
     };
 
-    console.log(newGroup);
-
-
-
     try {
       const response = await fetch('/api/groups', {
         method: 'POST',
@@ -59,6 +56,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
       setDescription("");
       setPicture("");
       setIsToggled(false);
+      onClose(); // Close the modal after creating the group
     } catch (error) {
       console.error('Error creating group:', error);
     }
@@ -78,17 +76,46 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
     }
   };
 
+  const handleRemovePhoto = () => {
+    setPicture("");
+  };
+
   return (
-    <div className="container mx-auto p-4">
+    <div className="relative bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
+      {/* Close Button */}
+      <button
+        className="absolute top-2 right-2 text-gray-600"
+        onClick={onClose}  // Use the onClose prop
+      >
+        <FaTimes className="text-xl" />
+      </button>
+
       <h2 className="text-2xl font-bold mb-4">Create</h2>
 
       <div className="flex justify-center mb-3">
         <button
-          className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+          className="flex items-center justify-center w-32 h-32 border border-gray-300 rounded-lg relative overflow-hidden"
           onClick={handleAddPhotoClick}
           data-testid="add-photo-button"
         >
-          <FaPlus />
+          {picture ? (
+            <>
+              <img
+                src={picture}
+                alt="Selected"
+                className="object-cover w-full h-full"
+              />
+              <button
+                className="absolute top-2 right-2 bg-gray-800 text-white p-1 rounded-full"
+                onClick={handleRemovePhoto}
+                data-testid="remove-photo-button"
+              >
+                <FaTrash />
+              </button>
+            </>
+          ) : (
+            <FaPlus className="text-3xl" />
+          )}
         </button>
       </div>
 
@@ -102,9 +129,6 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
           data-testid="file-input"
           onChange={handleFileChange}
         />
-        {picture && (
-          <img src={picture} alt="Selected" className="w-32 h-32 mt-2 mx-auto" />
-        )}
       </div>
 
       <form>
@@ -144,7 +168,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
 
         <div className="mb-3">
           <div className="flex justify-between items-center">
-            <label htmlFor="visibilityToggle" className="text-sm font-medium text-gray-700">
+            {/* <label htmlFor="visibilityToggle" className="text-sm font-medium text-gray-700">
               Visibility - set your group to private:
             </label>
             <button
@@ -160,7 +184,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
               ) : (
                 <FaToggleOff className="text-2xl text-gray-500" />
               )}
-            </button>
+            </button> */}
           </div>
         </div>
       </form>

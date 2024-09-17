@@ -19,7 +19,7 @@ interface GroupsGridFixProps {
 
 const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
   // ADD IN FROM LOGIN LATER
-	const userId = 1;
+  const userId = 1;
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
 
@@ -43,14 +43,24 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
         const allGroups = await createdGroupsResponse.json();
         const createdGroups = allGroups.content.filter((group: Group) => group.userId === userId);
 
-        setGroups([...joinedGroups, ...createdGroups]);
+        // Combine groups and ensure uniqueness based on group ID
+        const combinedGroups = [...joinedGroups, ...createdGroups];
+        const uniqueGroups = combinedGroups.reduce((acc: Group[], current: Group) => {
+          const x = acc.find(group => group.id === current.id);
+          if (!x) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+
+        setGroups(uniqueGroups);
       } catch (error) {
         console.error('Error fetching groups:', error);
       }
     };
 
     fetchGroups();
-  }, []);
+  }, [userId]);
 
   const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });
