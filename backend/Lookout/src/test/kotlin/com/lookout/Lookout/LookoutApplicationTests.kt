@@ -587,15 +587,6 @@ class LookoutApplicationTests {
 
 
 
-// companion object {
-//         @JvmStatic
-//         @BeforeAll
-//         fun setup() {
-//             // No need to load .env, environment variables should be available from GitHub Actions
-//             println("DB_URL: ${System.getenv("DB_URL")}")
-//         }
-//     }
-
 
 
 
@@ -614,7 +605,18 @@ class LookoutApplicationTests {
              dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
         }
     }
-fun addRandomValuesToJson(json: String): String {
+
+
+    // companion object {
+//         @JvmStatic
+//         @BeforeAll
+//         fun setup() {
+//             // No need to load .env, environment variables should be available from GitHub Actions
+//             println("DB_URL: ${System.getenv("DB_URL")}")
+//         }
+//     }
+
+    fun addRandomValuesToJson(json: String): String {
     val randomSuffix = Random.nextInt(1000, 9999)
 
     val updatedEmail = json.replace("\"email\": \"(.*?)\"".toRegex()) {
