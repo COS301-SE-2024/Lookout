@@ -386,10 +386,10 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
+          {/* <h1 className="text-2xl font-bold mb-4 mt-8">Articles</h1>
           <div className="">
             <ExploreArticles />
-          </div>
+          </div> */}
         </>
       )}
 

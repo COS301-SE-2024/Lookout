@@ -107,13 +107,13 @@ const Profile = () => {
 			{dataLoaded ? (
 				<>
 					{/* Settings Icon */}
-					<div className="absolute top-4 right-4 cursor-pointer mt-2">
+					{/* <div className="absolute top-4 right-4 cursor-pointer mt-2">
 						<FaCog
 							className="text-gray-500 hover:text-gray-700"
 							size={24}
 							onClick={() => setShowSettings(true)}
 						/>
-					</div>
+					</div> */}
 
 					{/* Profile Picture */}
 					<div className="mt-10 cursor-pointer">

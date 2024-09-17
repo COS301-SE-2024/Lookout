@@ -50,7 +50,7 @@ const RecommendGroup: React.FC<{ group: Group; rank?: number }> = ({ group, rank
       )}
       <div className="p-4">
         <h2 className="text-xl font-semibold">{group.name}</h2>
-        <p className="text-gray-700">{group.description}</p>
+        <p className="text-gray-700  line-clamp-3">{group.description}</p>
         <CategoryPill categoryId={6} />
       </div>
     </div>
