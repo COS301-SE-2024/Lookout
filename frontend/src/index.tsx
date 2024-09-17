@@ -29,6 +29,8 @@ import PinMap from "./components/PinMap";
 import CreatedGroupDetail from "./components/CreatedGroupDetail";
 import Landing from "./screens/Landing";
 import Settings from "./screens/SettingsScreen";
+import Settings2 from "./screens/Settings";
+
 
 function Main() {
 	useEffect(() => {
@@ -58,8 +60,12 @@ function Main() {
 					element={<ProtectedRoute element={GroupScreen} />}
 				/>
 				<Route
-					path="/settings"
+					path="/settings2"
 					element={<ProtectedRoute element={Settings} />}
+				/>
+				<Route
+					path="/settings"
+					element={<ProtectedRoute element={Settings2} />}
 				/>
 				<Route
 					path="/groupMap"

@@ -61,6 +61,7 @@ const ExploreScreen: React.FC = () => {
   const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
   const [recommendedGroups, setRecommendedGroups] = useState<Group[]>([]);
 
+  
   useEffect(() => {
     const fetchExploreData = async () => {
       try {

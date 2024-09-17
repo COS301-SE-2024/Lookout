@@ -11,7 +11,8 @@ export const EditProfile = () => {
 		closeIcon: "text-gray-500 hover:text-gray-700",
 		settingsTitle: "text-xl font-semibold mb-4 ml-8",
 		sectionTitle: "text-lg font-semibold mt-4 mb-2",
-		logoutButton: "bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full"
+		logoutButton: "bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full",
+		buttonContainer: "flex space-x-4 mt-4"
 	};
 
 	// const [temp, setTemp] = useState<Response>();
@@ -112,15 +113,17 @@ export const EditProfile = () => {
 
 	return (
 		<>
-			<h2 className={modalStyles.settingsTitle}>Edit Profile</h2>
-			<div className="flex flex-col items-center">
+			<h2 className="text-xl font-bold">Profile</h2>
+			<p className="text-sm text-gray-500">This is how others will see you on the site.</p>
+			<hr className="mr-8"></hr>
+			<div className="flex flex-col items-center mr-4">
 				<ul className="w-full">
-					<li className="flex flex-col py-2 border-t border-b">
+					<li className="flex flex-col py-2 mr-4">
 						<label
 							htmlFor="username"
-							className="block text-gray-700 font-bold mb-2"
+							className=" text-gray-700 font-bold mb-2"
 						>
-							Change Username
+							Username
 						</label>
 						<input
 							type="text"
@@ -129,11 +132,12 @@ export const EditProfile = () => {
 							placeholder="change your username"
 							value={inputUsernameValue}
 							onChange={handleInputUsernameChange}
-							className="border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+							className="border border-gray-300 rounded-md h-8 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full"
 						/>
 					</li>
+					<p className="text-sm text-gray-500 mb-4 mr-4">This is your public display name that other users will identify you with.</p>
 
-					<li className="flex flex-col py-2 border-t border-b">
+					<li className="flex flex-col py-2 mr-4">
 						<label
 							htmlFor="email"
 							className="block text-gray-700 font-bold mb-2"
@@ -147,27 +151,29 @@ export const EditProfile = () => {
 							placeholder="change your email"
 							value={inputEmailValue}
 							onChange={handleInputEmailChange}
-							className="border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+							className="border border-gray-300 rounded-md h-8 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full"
 						/>
 					</li>
+					<p className="text-sm text-gray-500 mb-4">This is your email address you use to log in.</p>
 
-					<li className="flex flex-col py-2 border-t border-b">
-						<button
-							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
-							onClick={alertUnimplemented}
-						>
-							Reset Password
-						</button>
+
+					<li className="flex flex-col py-2">
+						<div className={modalStyles.buttonContainer}>
+							<button
+								className="bg-black hover:bg-gray-400 text-white font-bold py-2 px-4 rounded transition ease-in-out"
+								onClick={saveAndExit}
+							>
+								Update Profile
+							</button>
+							<button
+								className="bg-black hover:bg-gray-400 text-white font-bold py-2 px-4 rounded transition ease-in-out"
+								onClick={alertUnimplemented}
+							>
+								Reset Your Password
+							</button>
+						</div>
 					</li>
 
-					<li className="flex flex-col py-2 border-t border-b">
-						<button
-							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
-							onClick={saveAndExit}
-						>
-							Save and Exit
-						</button>
-					</li>
 				</ul>
 			</div>
 		</>
