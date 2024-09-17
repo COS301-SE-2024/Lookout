@@ -1,53 +1,91 @@
-import React, { useState } from "react";
+import React, { startTransition, useState } from "react";
 import GroupsGridFix from "./GroupsGridFix";
 import CreatedGroupsGridFix from "./CreatedGroupsGridFix";
-
+import CreateGroups from "./CreateGroups"; // Import CreateGroups component
+import { FaPlus } from "react-icons/fa6";
 
 const GroupsProfile = () => {
-  const [selectedOption, setSelectedOption] = useState<string>('groups');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedOption, setSelectedOption] = useState<string>("groups");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isCreateGroupsOpen, setIsCreateGroupsOpen] = useState<boolean>(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value);
+    startTransition(() => {
+      setSelectedOption(event.target.value);
+    });
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  const placeholderText = selectedOption === 'groups'
-    ? 'Search groups you joined'
-    : 'Search groups you own';
+  const placeholderText =
+    selectedOption === "groups"
+      ? "Search groups you joined"
+      : "Search groups you own";
 
+  const handleCreateGroup = (newGroup: any) => {
+    console.log("New group created:", newGroup);
+    startTransition(() => {
+      setIsCreateGroupsOpen(false);
+    });
+  };
+
+  const handleCloseModal = () => {
+    setIsCreateGroupsOpen(false); // Close modal
+  };
 
   return (
     <div className="container mx-auto p-4">
       <div className="mb-1 flex flex-col space-y-4 ml-4">
         {/* Search Bar and Filter Dropdown on the Same Line */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between space-x-4">
           {/* Search Bar */}
-          <input
+          {/* <input
             type="text"
             placeholder={placeholderText}
             value={searchQuery}
             onChange={handleSearchChange}
             className="border p-2 rounded w-full max-w-md bg-gray-200"
-          />
+          /> */}
           {/* Filter Dropdown */}
           <select
             id="groupFilter"
             value={selectedOption}
             onChange={handleChange}
-            className="border p-2 rounded bg-gray-200" // Added styling
+            className="border p-2 rounded bg-gray-200"
           >
-            <option value="groups">Joined Groups</option>
-            <option value="ownedGroups">Owned Groups</option>
+            <option value="groups">Groups Joined</option>
+            <option value="created">Groups Created</option>
           </select>
+          {/* Create Group Button */}
+          <button
+            className="p-2 h-12 w-12 border border-gray-300 rounded-lg bg-gray-200 hover:bg-gray-300"
+            onClick={() => setIsCreateGroupsOpen(true)}
+          >
+            <FaPlus className="text-gray-600 ml-2" />
+          </button>
         </div>
       </div>
-      
+
       {/* Display Groups */}
-      {selectedOption === 'groups' ? <GroupsGridFix searchQuery={searchQuery} /> : <CreatedGroupsGridFix searchQuery={searchQuery} />}
+      {selectedOption === "groups" ? (
+        <GroupsGridFix searchQuery={searchQuery} />
+      ) : (
+        <CreatedGroupsGridFix searchQuery={searchQuery} />
+      )}
+
+      {/* Create Groups Modal */}
+      {isCreateGroupsOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md relative">
+            <CreateGroups
+              onCreateGroup={handleCreateGroup}
+              onClose={handleCloseModal} // Pass handleCloseModal to CreateGroups
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

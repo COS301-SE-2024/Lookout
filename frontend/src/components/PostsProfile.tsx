@@ -24,13 +24,13 @@ const Profile = () => {
         {/* Search Bar and Filter Dropdown on the Same Line */}
         <div className="flex items-center space-x-4">
           {/* Search Bar */}
-          <input
+          {/* <input
             type="text"
             placeholder={placeholderText}
             value={searchQuery}
             onChange={handleSearchChange}
             className="border p-2 rounded w-full max-w-md bg-gray-200"
-          />
+          /> */}
 
           {/* Filter Dropdown */}
           <select
