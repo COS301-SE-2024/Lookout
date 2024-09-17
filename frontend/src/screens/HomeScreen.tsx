@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
+import { MdFilterList } from "react-icons/md";
+import { FiFilter } from "react-icons/fi";
 import { 
 	HeatmapLayer, 
 	Control , 
@@ -11,7 +13,7 @@ import {
 } from 'react-google-map-wrapper';
 import '../assets/styles/home.css'
 import HomePins from '../components/HomePins';
-import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
+import { FaFolder, FaCamera, FaTimes, FaPlus, FaFilter } from 'react-icons/fa'
 import Legend from '../components/Legend';
 import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
 import campIcon from '../assets/icons/camping-zone.png';
@@ -65,7 +67,7 @@ function MapContent() {
 
   return (
     <>
-      <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
+      {/* <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
       <Control position={google.maps.ControlPosition.TOP_CENTER}>
         <div id='floating-panel' className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg">
           <button
@@ -97,7 +99,7 @@ function MapContent() {
             Change Opacity
           </button>
         </div>
-      </Control>
+      </Control> */}
     </>
   );
 }
@@ -642,11 +644,19 @@ const HomeScreen: React.FC = () => {
 				</GoogleMap>
 				<Legend items={legendItems} />
 			</div>
-			<div className="fixed top-12 left-4 z-10" id="menu">
-				<IoMenu size={32} onClick={openMenuModal} />
-			</div>
+			{/* <button 
+				className="fixed top-20 left-4 z-50" id="menu">
+					<IoMenu size={32} onClick={openMenuModal} />
+			</button> */}
+
+		<button
+			className="fixed top-20 left-16 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-gray-200 hover:text-gray-500"
+			onClick={openMenuModal}
+			>
+			<FiFilter size={24} />
+			</button>
 			<button
-			className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-navBkg text-white p-4 rounded-full hover:bg-white hover:text-navBkg sm:bottom-24 md:bottom-20"
+			className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white p-4 rounded-full hover:bg-gray-200 hover:text-gray-500 sm:bottom-24 md:bottom-20"
 			onClick={openModal}
 			>
 			<FaPlus />
