@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import React, { useState } from "react";
 export const EditProfile = () => {
 	//const [, setPicture] = useState("");
@@ -88,11 +89,11 @@ export const EditProfile = () => {
 
 	const [inputUsernameValue, setInputUsernameValue] = useState("");
 	const handleInputUsernameChange = (event: any) => {
-		setInputUsernameValue(event.target.value);
+		setInputUsernameValue(DOMPurify.sanitize(event.target.value));
 	};
 	const [inputEmailValue, setInputEmailValue] = useState("");
 	const handleInputEmailChange = (event: any) => {
-		setInputEmailValue(event.target.value);
+		setInputEmailValue(DOMPurify.sanitize(event.target.value));
 	};
 
 	const saveAndExit = async () => {

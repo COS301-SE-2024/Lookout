@@ -4,6 +4,11 @@ GET http://localhost:8080/api/groups
 Accept: application/json
 ###
 
+### Get all groups by owner ID
+GET http://localhost:8080/api/groups/owner/2
+Accept: application/json
+###
+
 ### Get a group by ID
 GET http://localhost:8080/api/groups/2
 Accept: application/json

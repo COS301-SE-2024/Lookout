@@ -48,6 +48,20 @@ class LookoutApplicationTests {
             .andExpect(status().isOk)
     }
 
+//////////////////////////////Get groups by owner id//////////////////////////////
+
+    @Test
+    fun `get groups by owner id test`() {
+        mockMvc.perform(get("/api/groups/owner/1"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `get groups by invalid owner id test`() {
+        mockMvc.perform(get("/api/groups/owner/-1"))
+            .andExpect(status().isNotFound)
+    }
+
     
 //////////////////////////////get groups by id//////////////////////////////////////=
     @Test

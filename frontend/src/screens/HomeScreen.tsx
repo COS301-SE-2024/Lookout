@@ -23,6 +23,7 @@ import POIIcon from '../assets/icons/point-of-interest.png';
 import SecurityIcon from '../assets/icons/danger.png';
 // import { url } from "inspector";
 import AWS from "aws-sdk";
+import DOMPurify from 'dompurify';
 
 
 // ##############################  HEAT MAP STUFF!!
@@ -772,7 +773,7 @@ const HomeScreen: React.FC = () => {
 									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									placeholder="Enter description"
 									value={caption}
-									onChange={(e) => setCaption(e.target.value)}
+									onChange={(e) => setCaption(DOMPurify.sanitize(e.target.value))}
 								></textarea>
 							</div>
 
@@ -789,7 +790,7 @@ const HomeScreen: React.FC = () => {
 									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									placeholder="Enter description"
 									value={title}
-									onChange={(e) => setTitle(e.target.value)}
+									onChange={(e) => setTitle(DOMPurify.sanitize(e.target.value))}
 								></textarea>
 							</div>
 						</form>

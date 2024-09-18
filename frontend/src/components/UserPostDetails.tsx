@@ -5,6 +5,7 @@ import SkeletonPinDetail from "./PinDetailSkeleton";
 import { FaBookmark, FaRegBookmark, FaEdit } from 'react-icons/fa';
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import PinDetailPost from "./PinDetailPost";
+import DOMPurify from "dompurify";
 
 interface Post {
   id: number;
@@ -360,7 +361,7 @@ const PinDetail: React.FC = () => {
                   type="text"
                   className="md:text-3xl font-bold italic bg-bkg "
                   value={editableTitle}
-                  onChange={(e) => setEditableTitle(e.target.value)}
+                  onChange={(e) => setEditableTitle(DOMPurify.sanitize(e.target.value))}
                 />
               ) : (
                 <h1 className="text-2xl md:text-3xl  font-bold">{post.title}</h1>
@@ -397,7 +398,7 @@ const PinDetail: React.FC = () => {
                     type="text"
                     className="text-content text-sm italic resize-none bg-bkg"
                     value={editableCaption}
-                    onChange={(e) => setEditableCaption(e.target.value)}
+                    onChange={(e) => setEditableCaption(DOMPurify.sanitize(e.target.value))}
                   />
                 ) : (
                   <p className="text-content text-sm">{post.caption}</p>

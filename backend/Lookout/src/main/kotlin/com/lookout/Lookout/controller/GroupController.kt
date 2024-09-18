@@ -67,6 +67,17 @@ class GroupController(private val groupService: GroupService) {
             .body(csvBuilder.toString())
     }
 
+    @GetMapping("/owner/{ownerId}")
+    fun getGroupsByOwnerId(@PathVariable ownerId: Long): ResponseEntity<List<GroupDto>> {
+        val groups = groupService.findGroupsByOwnerId(ownerId).map { group -> convertToDto(group) }
+        return if (groups.isNotEmpty()) {
+            ResponseEntity.ok(groups)
+        } else {
+            ResponseEntity.noContent().build()
+        }
+    }
+
+
 
     @GetMapping("/{id}")
     fun getGroupById(@PathVariable id: Long): ResponseEntity<GroupDto> {

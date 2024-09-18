@@ -29,7 +29,8 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
     const fetchGroups = async () => {
       setLoading(true); // Start loading
       try {
-        const response = await fetch('/api/groups', {
+        // Use the new endpoint to get groups created by the current user
+        const response = await fetch(`/api/groups/owner/${userId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
