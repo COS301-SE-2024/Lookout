@@ -106,7 +106,9 @@ const CreatedGroupDetail: React.FC = () => {
           headers: { Accept: 'application/json' },
         });
         const memberData = await memberResponse.json();
-        setMembers(memberData);
+        const members = memberData.filter((m: User) => m.id !== groupData.userId);
+        setMembers(members);
+
       } catch (error) {
         console.error('Error fetching group details:', error);
         setGroupLoaded(true);
