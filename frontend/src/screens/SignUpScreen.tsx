@@ -63,7 +63,7 @@ const SignUpScreen = () => {
     }
   };
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
+    <div className="font-custom flex items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-md p-8 space-y-8 rounded-lg border">
         <div className="text-center mb-2">
           <h1 className="text-2xl font-bold">Create an Account</h1>

@@ -2,32 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
-	:root {
-		--color-nav-bkg: 25 100 52;
-		--color-bkg: 255 251 250;
-		--color-content: 0 0 0;
-	}
-	@media (prefers-color-scheme: dark) {
-		:root {
-			--color-nav-bkg: 0 48 61;
-			--color-bkg: 0 32 41;
-			--color-content: 255 255 255;
-		}
-	}
+	@font-face {
+		font-family: 'CustomFont';
+		src: url('lato.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	  }
 
-	:root[data-theme="dark"] {
-		--color-nav-bkg: 0 48 61;
-		--color-bkg: 0 32 41;
-		--color-content: 255 255 255;
-	}
-	:root[data-theme="light"] {
-		--color-nav-bkg: 25 100 52;
-		--color-bkg: 255 251 250;
-		--color-content: 0 0 0;
-	}
+    /* body {
+      font-family: 'CustomFont', sans-serif;
+    } */
+     
+    @layer base {
+      body {
+        @apply font-custom; /* Apply the custom font globally */
+      }
+    }
 
+  :root {
+    --color-nav-bkg: 25 100 52;
+    --color-bkg: 255 251 250;
+    --color-content: 0 0 0;
+    --font-family: 'CustomFont', sans-serif; /* Add your default font family here */
+  }
 
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-nav-bkg: 0 48 61;
+      --color-bkg: 0 32 41;
+      --color-content: 255 255 255;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --color-nav-bkg: 0 48 61;
+    --color-bkg: 0 32 41;
+    --color-content: 255 255 255;
+  }
+  :root[data-theme="light"] {
+    --color-nav-bkg: 25 100 52;
+    --color-bkg: 255 251 250;
+    --color-content: 0 0 0;
+  }
 }
-
-  

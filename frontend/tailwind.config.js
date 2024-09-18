@@ -8,6 +8,9 @@ module.exports = {
 		  content: "rgb(var(--color-content) / <alpha-value>)",
 		  navBkg: "rgb(var(--color-nav-bkg) / <alpha-value>)"
 		},
+		fontFamily: {
+		  custom: ['CustomFont']  // Add your custom font family here
+		},
 		clipPath: {
 		  'custom-arch': 'ellipse(75% 40% at 50% 0%)',
 		}
