@@ -28,9 +28,8 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
 
   useEffect(() => {
     const fetchGroups = async () => {
-      setLoading(true); // Start loading
+      setLoading(true); 
       try {
-        // Use the new endpoint to get groups created by the current user
         const response = await fetch(`/api/groups/owner/${userId}`, {
           method: 'GET',
           headers: {
@@ -42,16 +41,18 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
         }
         const data = await response.json();
 
-        const filteredGroups = data.content.filter((group: Group) => group.userId === userId);
-        const uniqueGroups = filteredGroups.reduce((acc: Group[], current: Group) => {
-          const x = acc.find(group => group.id === current.id);
-          if (!x) {
-            acc.push(current);
-          }
-          return acc;
-        }, []);
+        // console.log(data);
 
-        setGroups(uniqueGroups);
+        // const filteredGroups = data.content.filter((group: Group) => group.userId === userId);
+        // const uniqueGroups = filteredGroups.reduce((acc: Group[], current: Group) => {
+        //   const x = acc.find(group => group.id === current.id);
+        //   if (!x) {
+        //     acc.push(current);
+        //   }
+        //   return acc;
+        // }, []);
+
+        setGroups(data);
       } catch (error) {
         if (error instanceof Error) {
           setError('Error fetching groups: ' + error.message);
