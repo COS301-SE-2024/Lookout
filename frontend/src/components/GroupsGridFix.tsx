@@ -22,12 +22,12 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
   const userId = 1;
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState<string | null>(null); // Add error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGroups = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const joinedGroupsResponse = await fetch(`/api/groups/user/${userId}`, {
           method: 'GET',
@@ -70,7 +70,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
         }
         console.error('Error fetching groups:', error);
       } finally {
-        setLoading(false); // Set loading to false after fetch
+        setLoading(false);
       }
     };
 
@@ -91,16 +91,16 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
   );
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div className="container mx-auto">
       {error && <div className="text-red-500 mb-4">{error}</div>}
       {loading ? (
         <GroupsGridSkeleton />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filteredGroups.map((group) => (
             <div
               key={group.id}
-              className="flex items-start p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-100"
+              className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-500" // Use items-center to center items vertically
               onClick={() => handleGroupClick(group)}
             >
               {/* Group image */}
@@ -108,21 +108,20 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
                 <img
                   src={group.picture}
                   alt={`${group.name} logo`}
-                  className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-cover rounded-md"
+                  className="w-28 h-32 object-cover rounded-md"
                 />
               </div>
 
               {/* Text section */}
               <div className="flex-1 ml-4 flex flex-col">
                 <div className="text-base font-semibold break-words">{group.name}</div>
-                {/* Wrapping description */}
-                <p className="text-gray-600 text-sm mt-1 break-words whitespace-normal">
+                <p className="text-gray-600 text-sm mt-1 break-words whitespace-normal line-clamp-2">
                   {group.description}
                 </p>
               </div>
 
               {/* Chevron button fixed to the right */}
-              <div className="ml-auto flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+              <div className="flex items-center justify-center w-10 h-10 ml-4 "> {/* Ensure the container has dimensions and uses flex */}
                 <FaChevronRight className="text-gray-600" />
               </div>
             </div>

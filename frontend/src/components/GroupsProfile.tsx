@@ -52,14 +52,15 @@ const GroupsProfile = () => {
           </select>
           {/* Create Group Button */}
           <button
-            className="p-2 h-12 w-12"
-            onClick={() => setIsCreateGroupsOpen(true)}
-          >
-            <FaPlus
-              size={24}
-              className="text-content hover:text-navBkg ml-2"
-            />
-          </button>
+  className="p-2 h-12 w-12 rounded-md hover:bg-gray-300 flex items-center justify-center"
+  onClick={() => setIsCreateGroupsOpen(true)}
+>
+  <FaPlus
+    size={24}
+    className="text-content"
+  />
+</button>
+
         </div>
       </div>
 
