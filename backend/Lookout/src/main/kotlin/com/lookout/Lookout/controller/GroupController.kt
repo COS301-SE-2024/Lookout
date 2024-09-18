@@ -176,13 +176,18 @@ class GroupController(private val groupService: GroupService) {
 
     @GetMapping("/users/{groupId}")
     fun getGroupMembers(@PathVariable groupId: Long): ResponseEntity<List<UserDto>> {
-        val groupMembers = groupService.getGroupMembers(groupId).map { user -> convertToUserDto(user) }
-        return if (groupMembers.isNotEmpty()) {
-            ResponseEntity.ok(groupMembers)
-        } else {
-            ResponseEntity.noContent().build()
+        return try {
+            val groupMembers = groupService.getGroupMembers(groupId).map { user -> convertToUserDto(user) }
+            if (groupMembers.isNotEmpty()) {
+                ResponseEntity.ok(groupMembers)
+            } else {
+                ResponseEntity.noContent().build()
+            }
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.notFound().build() // Return 404 if group not found
         }
     }
+
 
     @GetMapping("/joinedGroups/all", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun getAllGroupMembersCsv(): ResponseEntity<String> {
