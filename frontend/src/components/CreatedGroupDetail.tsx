@@ -62,13 +62,15 @@ const CreatedGroupDetail: React.FC = () => {
   const [group, setGroup] = useState<Group | null>(null);
   const [owner, setOwner] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [, setMembers] = useState<User[]>([]);
+  const [groupMembers, setMembers] = useState<User[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [postsLoaded, setPostsLoaded] = useState(false);
   const [groupLoaded, setGroupLoaded] = useState(false);
   const [editableName, setEditableName] = useState('');
   const [editableDescription, setEditableDescription] = useState('');
+  const [isRemoving, setIsRemoving] = useState(false);
 
+  
   useEffect(() => {
     const fetchGroupDetails = async () => {
       try {
@@ -118,6 +120,37 @@ const CreatedGroupDetail: React.FC = () => {
 
   const handleViewOnMapClick = () => {
     navigate(`/groupMap/${id}`);
+  };
+  
+  const handleRemoveMember = async (member: User) => {
+    if (!group) {
+      return;
+    }
+    if (window.confirm(`Are you sure you want to remove ${member.userName} from group ${group.name}?`)) {
+      try {
+        const response = await fetch('/api/groups/RemoveMemberFromGroup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            groupId: group.id,
+            userId: member.id
+          }),
+        });
+
+
+        if (!response.ok) {
+          throw new Error('Failed to remove member');
+        }
+
+        setMembers(groupMembers.filter(m => m.id !== member.id));
+        setIsRemoving(false);
+      } catch (error) {
+        console.error('Error removing member:', error);
+        alert('Failed to remove member. Please try again.');
+      }
+    }
   };
 
   const handleEditClick = () => {
@@ -244,13 +277,13 @@ const CreatedGroupDetail: React.FC = () => {
           className="absolute top-16 right-20 text-xl text-red-700 hover:text-gray-800 cursor-pointer md:top-24 md:right-20"
           onClick={handleDeleteClick}
           size={24}
-        />
-        <FaEdit
-          className="absolute top-16 right-8 text-xl text-content cursor-pointer text-green-700 hover:text-gray-800 md:top-24 md:right-8"
-          onClick={handleEditClick}
-          size={24}
-        />
-      </>
+          />
+          <FaEdit
+            className="absolute top-16 right-8 text-xl text-content cursor-pointer text-green-700 hover:text-gray-800 md:top-24 md:right-8"
+            onClick={handleEditClick}
+            size={24}
+          />
+        </>
       )}
   
       <div className="container mx-auto p-4 mt-10">
@@ -282,23 +315,20 @@ const CreatedGroupDetail: React.FC = () => {
                 onChange={(e) => setEditableDescription(DOMPurify.sanitize(e.target.value))}
               />
             ) : (
-              <>
-              
-                <p className="text-content text-ml mb-2">
-                  {group?.description?.split(' ').map((word, index) => 
-                    (index + 1) % 10 === 0 ? `${word} ` : `${word} `
-                  ).reduce<React.ReactNode[]>((acc, curr, index) => (
-                    (index + 1) % 10 === 0 ? [...acc, curr, <br key={index} />] : [...acc, curr]
-                  ), [])}
-                </p>
-              </>
+              <p className="text-content text-ml mb-2">
+                {group?.description?.split(' ').map((word, index) => 
+                  (index + 1) % 10 === 0 ? `${word} ` : `${word} `
+                ).reduce<React.ReactNode[]>((acc, curr, index) => (
+                  (index + 1) % 10 === 0 ? [...acc, curr, <br key={index} />] : [...acc, curr]
+                ), [])}
+              </p>
             )}
   
             <div className="flex flex-col md:flex-row items-center mb-2">
               <div className="flex flex-row items-center">
                 <span className="text-content text-sm">{posts.length} Posts</span>
                 <div className="w-px h-6 bg-gray-300 mx-2"></div>
-                <span className="text-content text-sm">7 Followers</span>
+                <span className="text-content text-sm">{groupMembers.length} Members</span>
               </div>
             </div>
   
@@ -345,6 +375,31 @@ const CreatedGroupDetail: React.FC = () => {
               <h2 className="text-lm font-bold">{owner?.userName || 'No Name'}</h2>
               <p className="text-gray-600 text-sm">{owner?.email || 'No Email'}</p>
             </div>
+          </div>
+        </div>
+  
+        <div className="mt-8">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-ml font-bold ml-4">Group Members</h1>
+            <button 
+              onClick={() => setIsRemoving(!isRemoving)}
+              className={`text-sm ${isRemoving ? 'bg-red-500 text-white' : 'text-navBkg'} px-2 py-1 rounded hover:bg-red-600 hover:text-white`}
+            >
+              {isRemoving ? 'Cancel' : 'Remove Member'}
+            </button>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {groupMembers.slice(0, 8).map((member) => (
+              <div key={member.id} className="flex flex-col items-center">
+                <img 
+                  src={member.profilePic} 
+                  alt={member.userName} 
+                  className={`w-16 h-16 rounded-full mb-2 ${isRemoving ? 'cursor-pointer' : ''}`}
+                  onClick={() => isRemoving && handleRemoveMember(member)}
+                />
+                <span className="text-sm text-center">{member.userName}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
