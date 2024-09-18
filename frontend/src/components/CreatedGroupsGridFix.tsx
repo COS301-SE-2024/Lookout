@@ -19,7 +19,8 @@ interface CreatedGroupsGridFixProps {
 }
 
 const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery }) => {
-  const userId = 1;
+  // ADD IN FROM LOGIN LATER
+  const userId = 2;
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true); // Add loading state
