@@ -182,7 +182,7 @@ const CreatedGroupDetail: React.FC = () => {
         }
 
         // Navigate to home page after deletion
-        navigate('/');
+        navigate('/profile');
       } catch (error) {
         console.error('Error deleting group:', error);
       }

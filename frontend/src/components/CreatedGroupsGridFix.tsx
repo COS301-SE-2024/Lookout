@@ -26,29 +26,23 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await fetch('/api/groups', {
+        // Use the new endpoint to get groups created by the current user
+        const response = await fetch(`/api/groups/owner/${userId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
           },
         });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch groups');
+        }
+
         const data = await response.json();
+        // console.log('Fetched groups:', data);
 
-        console.log('Data:', data);
-
-        // Filter out only groups created by the current user
-        const filteredGroups = data.content.filter((group: Group) => group.userId === userId);
-
-        // Ensure unique groups based on the group ID
-        const uniqueGroups = filteredGroups.reduce((acc: Group[], current: Group) => {
-          const x = acc.find(group => group.id === current.id);
-          if (!x) {
-            acc.push(current);
-          }
-          return acc;
-        }, []);
-
-        setGroups(uniqueGroups);
+        // Set the groups directly from the response as they already belong to the user
+        setGroups(data);
       } catch (error) {
         console.error('Error fetching groups:', error);
       }
