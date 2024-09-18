@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import EditProfile from "../components/EditProfile";
 import HelpCentre from "../components/HelpCentre";
 import Tutorials from "../components/Tutorials";
 import FAQ from "../components/FAQ";
 import ToggleButton from "../components/ThemeToggleButton"; // Import ToggleButton component
-import { FaArrowLeft } from "react-icons/fa"; // Import back arrow icon
+import { FaArrowLeft, FaSignOutAlt, FaChevronLeft } from "react-icons/fa"; // Import icons
+import { useNavigate } from "react-router-dom";
+import { getEmailFromLocalStorage } from "../utils/auth";
+import HelpCentreModal from "../components/HelpModal";
 
 const Settings = () => {
   const menuItems = [
@@ -16,8 +19,10 @@ const Settings = () => {
     { id: 6, name: "Terms of Service" },
     { id: 7, name: "Privacy Policy" },
     { id: 8, name: "About Us" },
+    { id: 9, name: "Logout", icon: <FaSignOutAlt /> }, // Add logout option
   ];
-
+  
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<number | null>(menuItems[0].id);
   const [isDarkTheme, setIsDarkTheme] = useState(
     localStorage.getItem("data-theme") === "dark"
@@ -38,7 +43,75 @@ const Settings = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const renderContent = () => {
+  const handleLogout = async () => {
+    localStorage.setItem("authToken", "");
+    const email = getEmailFromLocalStorage();
+    try {
+        const response = await fetch("/api/auth/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Logout failed!");
+        }
+
+        localStorage.setItem("authToken", "");
+        localStorage.removeItem("userEmail");
+        navigate("/login");
+        window.location.reload();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
+
+const handleToggle = (isToggled: boolean) => {
+    document.documentElement.setAttribute(
+        "data-theme",
+        isToggled ? "dark" : "light"
+    );
+    localStorage.setItem("data-theme", isToggled ? "dark" : "light");
+};
+
+const [showHelpCentre, setShowHelpCentre] = useState(false);
+
+const handleHelpCentreClick = () => {
+    setShowHelpCentre(true);
+};
+
+const handleCloseHelpCentre = () => {
+    setShowHelpCentre(false);
+};
+
+const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
+    undefined
+);
+
+const jsx = useMemo(() => {
+    if (selectedIndex === undefined) {
+        return undefined;
+    }
+    if (selectedIndex === 0) {
+        return (
+            <div>
+                <div
+                    className="cursor-pointer"
+                    onClick={() => setSelectedIndex(undefined)}
+                >
+                    <FaChevronLeft size={24} />
+                </div>
+                <EditProfile />
+            </div>
+        );
+    }
+}, [selectedIndex]);
+
+const renderContent = () => {
     switch (activeMenu) {
       case 1:
         return <EditProfile />;
@@ -74,7 +147,8 @@ const Settings = () => {
         return <div>Privacy Policy</div>;
       case 8:
         return <div>About Us</div>;
-     
+      case 9:
+        return null; // Logout does not have content
     }
   };
 
@@ -97,10 +171,17 @@ const Settings = () => {
             {menuItems.map((item) => (
               <li
                 key={item.id}
-                onClick={() => setActiveMenu(item.id)}
-                className={`p-2 cursor-pointer rounded ${activeMenu === item.id ? "bg-gray-200" : "bg-bkg"} hover:bg-gray-200`}
+                onClick={() => {
+                  if (item.id === 9) {
+                    handleLogout();
+                  } else {
+                    setActiveMenu(item.id);
+                  }
+                }}
+                className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-gray-200" : "bg-bkg"} hover:bg-gray-200`}
               >
-                {item.name}
+                <span className="flex-1">{item.name}</span>
+                {item.icon && <span className="ml-2">{item.icon}</span>}
               </li>
             ))}
           </ul>
@@ -108,20 +189,19 @@ const Settings = () => {
 
         {/* Content Panel */}
         <div
-  className={`w-full md:w-4/5 ml-4 ${isMobileView ? 'block' : 'hidden md:block'}`}
->
-  {isMobileView && activeMenu !== null && (
-    <button
-      className="text-gray-500 hover:text-gray-700 mb-2 flex items-center"
-      onClick={() => setActiveMenu(null)}
-    >
-      <FaArrowLeft className="mr-2" />
-      Back to menu
-    </button>
-  )}
-  {renderContent()}
-</div>
-
+          className={`w-full md:w-4/5 ml-4 ${isMobileView ? 'block' : 'hidden md:block'}`}
+        >
+          {isMobileView && activeMenu !== null && (
+            <button
+              className="text-gray-500 hover:text-gray-700 mb-2 flex items-center"
+              onClick={() => setActiveMenu(null)}
+            >
+              <FaArrowLeft className="mr-2" />
+              Back to menu
+            </button>
+          )}
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
