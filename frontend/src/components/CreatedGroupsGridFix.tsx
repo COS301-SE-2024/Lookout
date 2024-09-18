@@ -19,7 +19,7 @@ interface CreatedGroupsGridFixProps {
 
 const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery }) => {
   // ADD IN FROM LOGIN LATER
-  const userId = 1;
+  const userId = 2;
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
 
@@ -33,6 +33,8 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
           },
         });
         const data = await response.json();
+
+        console.log('Data:', data);
 
         // Filter out only groups created by the current user
         const filteredGroups = data.content.filter((group: Group) => group.userId === userId);

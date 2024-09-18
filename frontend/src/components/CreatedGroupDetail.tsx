@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import HorizontalCarousel from './HorizontalCarousel';
 import CreatedGroupDetailSkeleton from '../components/CreatedGroupSkeleton';
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';
 
 interface User {
@@ -168,6 +168,27 @@ const CreatedGroupDetail: React.FC = () => {
     setIsEditing(false);
   };
 
+  const handleDeleteClick = async () => {
+    const confirmed = window.confirm("Are you sure you want to delete this group?");
+    if (confirmed && group) {
+      try {
+        const response = await fetch(`/api/groups/${group.id}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete group');
+        }
+
+        // Navigate to home page after deletion
+        navigate('/');
+      } catch (error) {
+        console.error('Error deleting group:', error);
+      }
+    }
+  };
+
+
   if (!group || !owner || !groupLoaded || !postsLoaded) {
     return <CreatedGroupDetailSkeleton />;
   }
@@ -217,11 +238,18 @@ const CreatedGroupDetail: React.FC = () => {
           </button>
         </>
       ) : (
+        <>
+          <FaTrash
+          className="absolute top-16 right-20 text-xl text-red-700 hover:text-gray-800 cursor-pointer md:top-24 md:right-20"
+          onClick={handleDeleteClick}
+          size={24}
+        />
         <FaEdit
           className="absolute top-16 right-8 text-xl text-content cursor-pointer text-green-700 hover:text-gray-800 md:top-24 md:right-8"
           onClick={handleEditClick}
           size={24}
         />
+      </>
       )}
   
       <div className="container mx-auto p-4 mt-10">
