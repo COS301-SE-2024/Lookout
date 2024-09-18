@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PostsGridFix from "./PostsGridFix";
 import SavedPostsGridFix from "./SavedPostsGridFix";
 
-const Profile = () => {
+const PostsProfile = () => {
   const [selectedOption, setSelectedOption] = useState<string>('yourPosts');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -37,7 +37,7 @@ const Profile = () => {
             id="postFilter"
             value={selectedOption}
             onChange={handleChange}
-            className="border p-2 rounded bg-gray-200"
+            className="border rounded bg-gray-200 p-2 "
           >
             <option value="yourPosts">Your posts</option>
             <option value="savedPosts">Saved posts</option>
@@ -51,4 +51,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default PostsProfile;
