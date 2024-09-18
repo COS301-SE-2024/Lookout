@@ -35,4 +35,8 @@ interface GroupRepository : JpaRepository<Groups, Long> {
     @Query("SELECT gm.group.id, gm.user.id FROM GroupMembers gm")
     fun findAllGroupMembers(): List<Array<Any>>
 
+    @Query("SELECT g FROM Groups g WHERE g.user.id = :ownerId")
+    fun findGroupsByOwnerId(@Param("ownerId") ownerId: Long): List<Groups>
+
+
 }
