@@ -4,6 +4,7 @@ import HorizontalCarousel from './HorizontalCarousel';
 import CreatedGroupDetailSkeleton from '../components/CreatedGroupSkeleton';
 import { FaEdit } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';
+import DOMPurify from 'dompurify';
 
 interface User {
   id: number;
@@ -239,7 +240,7 @@ const CreatedGroupDetail: React.FC = () => {
                 type="text"
                 className="text-content text-2xl italic font-bold bg-transparent mb-2"
                 value={editableName}
-                onChange={(e) => setEditableName(e.target.value)}
+                onChange={(e) => setEditableName(DOMPurify.sanitize(e.target.value))}
               />
             ) : (
               <h1 className="text-2xl text-content font-bold mb-2">{group.name}</h1>
@@ -250,7 +251,7 @@ const CreatedGroupDetail: React.FC = () => {
                 type="text"
                 className="text-content text-ml italic w-80 bg-transparent border-none mb-2"
                 value={editableDescription}
-                onChange={(e) => setEditableDescription(e.target.value)}
+                onChange={(e) => setEditableDescription(DOMPurify.sanitize(e.target.value))}
               />
             ) : (
               <>
