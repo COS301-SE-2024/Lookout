@@ -137,7 +137,7 @@ const PinDetail: React.FC = () => {
         const userData = await userResponse.json();
         setUser(userData);  // Store user data including profile picture
 
-  
+
       } catch (error) {
         console.error("Error fetching post or related posts:", error);
       } finally {
@@ -302,7 +302,7 @@ const PinDetail: React.FC = () => {
       </style>
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
+        className="absolute top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2"
         style={{ zIndex: 50 }}
       >
         <svg
@@ -320,126 +320,129 @@ const PinDetail: React.FC = () => {
           />
         </svg>
       </button>
-        {isEditing ? (
-          <>
-            <button
-              className="absolute top-10 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:right-8"
-              onClick={handleDoneClick}
-            >
-              Done
-            </button>
-            <button
-              className="absolute top-10 left-24  text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:left-32"
-              onClick={handleCancelClick}
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <FaEdit
-            className="absolute top-12 right-8 text-xl text-content cursor-pointer text-green-700 md:top-24 md:right-8"
-            onClick={handleEditClick}
-            size={30}
-          />
-        )}
-  
+      {isEditing ? (
+        <>
+          <button
+            className="absolute top-10 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:right-28"
+            onClick={handleDoneClick}
+          >
+            Done
+          </button>
+          <button
+            className="absolute top-10 left-24  text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:left-28"
+            onClick={handleCancelClick}
+          >
+            Cancel
+          </button>
+        </>
+      ) : (
+        <FaEdit
+          className="absolute top-12 right-8 text-xl text-content cursor-pointer text-green-700 md:top-24 md:right-8"
+          onClick={handleEditClick}
+          size={30}
+        />
+      )}
+
       <div className="container mx-auto p-4 mt-16">
         <div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row">
-          <figure className="rounded-t-lg overflow-hidden md:w-1/2">
+          <figure className="rounded-t-lg overflow-hidden md:w-1/2 h-auto">
             <img
               src={post.picture}
               alt={post.title}
               className="w-full h-full object-cover"
             />
           </figure>
-  
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            {isEditing ? (
-              <input
-                type="text"
-                className="md:text-3xl text-content border-navBkg bg-navBkg font-bold border border-navBkg rounded-full text-center w-full md:w-auto"
-                value={editableTitle}
-                onChange={(e) => setEditableTitle(e.target.value)}
-              />
-            ) : (
-              <h1 className="text-2xl md:text-3xl font-bold">{post.title}</h1>
-            )}
-            <div className="flex items-center">
-              {isSaved ? (
-                <FaBookmark
-                  className="text-navBkg cursor-pointer"
-                  onClick={handleSaveIconClick}
-                  size={24}
-                />
-              ) : (
-                <FaRegBookmark
-                  className="text-navBkg cursor-pointer"
-                  onClick={handleSaveIconClick}
-                  size={24}
-                />
-              )}
-              <span className="ml-2">{saves} saves</span>
-            </div>
-          </div>
-  
-          <div className="flex items-center mb-4">
-            <img
-              src={user?.profilePic}
-              alt={post.username}
-              className="w-16 h-16 md:w-20 md:h-20 rounded-full mr-4"
-            />
-            <div>
-              <h2 className="text-lg font-bold">{post.username}</h2>
+
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
               {isEditing ? (
-                <textarea
-                  className="text-content text-sm w-full border border-navBkg bg-navBkg rounded-lg mt-2 p-2"
-                  value={editableCaption}
-                  onChange={(e) => setEditableCaption(e.target.value)}
+                <input
+                  type="text"
+                  className="md:text-3xl font-bold italic bg-bkg "
+                  value={editableTitle}
+                  onChange={(e) => setEditableTitle(e.target.value)}
                 />
               ) : (
-                <p className="text-content text-sm">{post.caption}</p>
+                <h1 className="text-2xl md:text-3xl  font-bold">{post.title}</h1>
               )}
-              <div className="mt-2">
-                <CategoryPill categoryId={post.categoryId} />
+              <div className="flex items-center">
+                {isSaved ? (
+                  <FaBookmark
+                    className="text-navBkg cursor-pointer"
+                    onClick={handleSaveIconClick}
+                    size={24}
+                  />
+                ) : (
+                  <FaRegBookmark
+                    className="text-navBkg cursor-pointer"
+                    onClick={handleSaveIconClick}
+                    size={24}
+                  />
+                )}
+                <span className="ml-2">{saves} saves</span>
               </div>
             </div>
-          </div>
-  
-          <div className="flex justify-center mt-4 space-x-2">
-            <button
-              className="px-4 py-1 rounded-full bg-navBkg text-white hover:bg-white hover:text-navBkg focus:outline-none focus:ring-2 focus:ring-gray-400"
-              onClick={() => navigate(`/map`, { state: { post, apicode } })}
-            >
-              View on Map
-            </button>
-            <button
-              className="px-4 py-1 rounded-full bg-navBkg text-white hover:bg-white hover:text-navBkg focus:outline-none focus:ring-2 focus:ring-gray-400"
-              onClick={() =>
-                navigate(`/group/${post.groupId}`, {
-                  state: { group: post.group },
-                })
-              }
-            >
-              View Group
-            </button>
-          </div>
-  
-          <div className="mt-8">
-            <h1 className="text-lg font-semibold">See more posts like this:</h1>
-  
-            <HorizontalCarousel>
-              {relatedPosts.map((relatedPost) => (
-                <PinDetailPost key={relatedPost.id} post={relatedPost} />
-              ))}
-            </HorizontalCarousel>
+
+            <div className="flex items-center mb-4">
+              <img
+                src={user?.profilePic}
+                alt={post.username}
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full mr-4"
+              />
+              <div>
+                <h2 className="text-lg font-bold">{post.username}</h2>
+
+                {isEditing ? (
+                  <input
+                    type="text"
+                    className="text-content text-sm italic resize-none bg-bkg"
+                    value={editableCaption}
+                    onChange={(e) => setEditableCaption(e.target.value)}
+                  />
+                ) : (
+                  <p className="text-content text-sm">{post.caption}</p>
+                )} 
+
+                <div className="mt-2">
+                  <CategoryPill categoryId={post.categoryId} />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center mt-4 space-x-2">
+              <button
+                className="px-4 py-1 rounded-full bg-navBkg text-white hover:bg-white hover:text-navBkg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                onClick={() => navigate(`/map`, { state: { post, apicode } })}
+              >
+                View on Map
+              </button>
+              <button
+                className="px-4 py-1 rounded-full bg-navBkg text-white hover:bg-white hover:text-navBkg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                onClick={() =>
+                  navigate(`/group/${post.groupId}`, {
+                    state: { group: post.group },
+                  })
+                }
+              >
+                View Group
+              </button>
+            </div>
+
+            <div className="mt-8">
+              <h1 className="text-lg font-semibold">See more posts like this:</h1>
+
+              <HorizontalCarousel>
+                {relatedPosts.map((relatedPost) => (
+                  <PinDetailPost key={relatedPost.id} post={relatedPost} />
+                ))}
+              </HorizontalCarousel>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   );
-  
+
 };
 
 export default PinDetail;

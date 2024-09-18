@@ -9,7 +9,7 @@ interface User {
   id: number;
   userName: string;
   email: string;
-  picture?: string;
+  profilePic: string;
   role: string;
   isEnabled: boolean;
   username: string;
@@ -44,6 +44,16 @@ interface Post {
   userId: number;
   title: string;
 }
+
+
+const getDayWithSuffix = (date: Date) => {
+  const day = date.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11 ? 'st' :
+      day % 10 === 2 && day !== 12 ? 'nd' :
+        day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+  return `${day}${suffix}`;
+};
 
 const CreatedGroupDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -105,29 +115,6 @@ const CreatedGroupDetail: React.FC = () => {
     fetchGroupDetails();
   }, [id]);
 
-  // const handleRemoveMember = (userId: number) => {
-  //   if (group) {
-  //     const requestBody = {
-  //       groupId: group.id,
-  //       userId: userId,
-  //     };
-
-  //     fetch('/api/groups/RemoveMemberFromGroup', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify(requestBody),
-  //     })
-  //       .then((response) => {
-  //         if (response.ok) {
-  //           setMembers((prevMembers) => prevMembers.filter((member) => member.id !== userId));
-  //         } else {
-  //           response.text().then((errorMessage) => console.error(errorMessage));
-  //         }
-  //       })
-  //       .catch((error) => console.error('Error removing member:', error));
-  //   }
-  // };
-
   const handleViewOnMapClick = () => {
     navigate(`/groupMap/${id}`);
   };
@@ -181,113 +168,159 @@ const CreatedGroupDetail: React.FC = () => {
     setIsEditing(false);
   };
 
-  if (!group || !owner || !groupLoaded || !postsLoaded ) {
+  if (!group || !owner || !groupLoaded || !postsLoaded) {
     return <CreatedGroupDetailSkeleton />;
   }
 
   return (
-    <div className="relative">
-      <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-800 to-green-100 clip-path-custom-arch z-0"></div>
-      <div className="container mx-auto p-4 relative z-10">
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 text-white hover:text-blue-700"
+    <div className="p-4 scrollbar-hide">
+      <style>
+        {`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}
+      </style>
+  
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-14 left-4 md:top-20 md:left-8 text-green-700 hover:text-gray-800 z-50 rounded-full p-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+  
+      {isEditing ? (
+        <>
+          <button
+            className="absolute top-20 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
+            onClick={handleDoneClick}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        {isEditing ? (
-          <>
-            <button
-              className="absolute top-4 right-6 text-white bg-green-800 hover:bg-white hover:text-green-800 border border-green-800 rounded-full px-4 py-2 cursor-pointer"
-              onClick={handleDoneClick}
-            >
-              Done
-            </button>
-            <button
-              className="absolute top-4 left-6 text-green-800 bg-white border border-green-800 hover:bg-green-800 hover:text-white rounded-full px-4 py-2 cursor-pointer"
-              onClick={handleCancelClick}
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <FaEdit
-            className="absolute top-4 right-4 text-xl text-green-700 cursor-pointer mr-3"
-            onClick={handleEditClick}
-            color='white'
-            size={24}
-          />
-        )}
-        <div className="text-center mb-4">
-          {isEditing ? (
-            <textarea
-              className="text-white text-xl w-80 rounded-full text-center bg-transparent"
-              style={{ paddingTop: '10px' }}
-              value={editableName}
-              onChange={(e) => setEditableName(e.target.value)}
-            />
-          ) : (
-            <h1 className="text-2xl text-white font-bold mb-4">{group.name}</h1>
-          )}
+            Done
+          </button>
+          <button
+            className="absolute top-20 left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
+            onClick={handleCancelClick}
+          >
+            Cancel
+          </button>
+        </>
+      ) : (
+        <FaEdit
+          className="absolute top-16 right-8 text-xl text-content cursor-pointer text-green-700 hover:text-gray-800 md:top-24 md:right-8"
+          onClick={handleEditClick}
+          size={24}
+        />
+      )}
+  
+      <div className="container mx-auto p-4 mt-10">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-center items-center">
           <img
             src={group.picture}
             alt={`${group.name} logo`}
-            className="rounded-full mx-auto mb-4"
-            style={{ width: '130px', height: '130px' }}
+            className="w-56 h-56 object-cover mb-4 md:mb-0 md:mr-8"
+            style={{ borderRadius: '8px' }}
           />
-          {isEditing ? (
-            <textarea
-              className="text-black text-sm w-80 rounded-full text-center bg-transparent"
-              style={{ paddingTop: '10px' }}
-              value={editableDescription}
-              onChange={(e) => setEditableDescription(e.target.value)}
-            />
-          ) : (
-            <p className="text-gray-600 text-sm mt-1">{group.description}</p>
-          )}
-        </div>
-        <div className="flex justify-center gap-1 mb-4">
-          <button
-            onClick={handleViewOnMapClick}
-            className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          >
-            View on Map
-          </button>
-        </div>
-        <div className="flex justify-center items-center mb-8">
-          <div className="flex flex-col items-center">
-            <span className="text-gray-600">{posts.length} Posts</span>
+  
+          <div className="text-center md:text-left flex flex-col items-center md:items-start">
+            {isEditing ? (
+              <input
+                type="text"
+                className="text-content text-2xl italic font-bold bg-transparent mb-2"
+                value={editableName}
+                onChange={(e) => setEditableName(e.target.value)}
+              />
+            ) : (
+              <h1 className="text-2xl text-content font-bold mb-2">{group.name}</h1>
+            )}
+  
+            {isEditing ? (
+              <input
+                type="text"
+                className="text-content text-ml italic w-80 bg-transparent border-none mb-2"
+                value={editableDescription}
+                onChange={(e) => setEditableDescription(e.target.value)}
+              />
+            ) : (
+              <>
+              
+                <p className="text-content text-ml mb-2">
+                  {group?.description?.split(' ').map((word, index) => 
+                    (index + 1) % 10 === 0 ? `${word} ` : `${word} `
+                  ).reduce<React.ReactNode[]>((acc, curr, index) => (
+                    (index + 1) % 10 === 0 ? [...acc, curr, <br key={index} />] : [...acc, curr]
+                  ), [])}
+                </p>
+              </>
+            )}
+  
+            <div className="flex flex-col md:flex-row items-center mb-2">
+              <div className="flex flex-row items-center">
+                <span className="text-content text-sm">{posts.length} Posts</span>
+                <div className="w-px h-6 bg-gray-300 mx-2"></div>
+                <span className="text-content text-sm">7 Followers</span>
+              </div>
+            </div>
+  
+            <span className="text-gray-500 text-sm">
+              {group.createdAt ? (
+                `${getDayWithSuffix(new Date(group.createdAt))} ${new Date(group.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`
+              ) : 'Unknown'}
+            </span>
+  
+            <div className="flex gap-1 mt-4">
+              <button
+                onClick={handleViewOnMapClick}
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
+              >
+                View on map
+              </button>
+            </div>
           </div>
-          <div className="w-px h-6 bg-gray-300 mx-4"></div>
-          <div className="flex flex-col items-center">
-            <span className="text-gray-600">7 Followers</span>
-          </div>
         </div>
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-bold">Posts in this group</h1>
-          <Link to="/" className="text-green-800 hover:text-gray-600">
-            View all
+  
+        <div className="mt-8">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-lm font-bold ml-4">Posts in this group</h1>
+            <Link to={`/group/${id}/posts`} className="text-sm text-navBkg underline hover:text-gray-800">View All</Link>
+          </div>
+          <HorizontalCarousel>
+            {posts.map((post) => (
+              <GroupsPost key={post.id} post={post} />
+            ))}
+          </HorizontalCarousel>
+        </div>
+  
+        <div className="flex justify-between items-center mb-4 mt-4 ml-4">
+          <h1 className="text-ml font-bold">About the owner</h1>
+          <Link to={`/profileView/${owner?.id}`} className="text-sm text-navBkg hover:text-gray-800 underline">
+            View their profile
           </Link>
         </div>
-        <HorizontalCarousel>
-          {posts.map((post) => (
-            <GroupsPost
-              key={post.id}
-              post={post}
-            />
-          ))}
-        </HorizontalCarousel>
+        
+        <div className="mt-4 ml-4">
+          <div className="flex items-center mb-4">
+            <img src={owner?.profilePic} alt="" className="w-20 h-20 rounded-full mr-6" />
+            <div>
+              <h2 className="text-lm font-bold">{owner?.userName || 'No Name'}</h2>
+              <p className="text-gray-600 text-sm">{owner?.email || 'No Email'}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
-
-export default CreatedGroupDetail;
+  export default CreatedGroupDetail;
+  
