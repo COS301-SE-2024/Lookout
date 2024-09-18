@@ -59,7 +59,7 @@ class LookoutApplicationTests {
     @Test
     fun `get groups by invalid owner id test`() {
         mockMvc.perform(get("/api/groups/owner/-1"))
-            .andExpect(status().isNotFound)
+            .andExpect(status().isNoContent)
     }
 
     
@@ -168,6 +168,20 @@ class LookoutApplicationTests {
     fun `Get a group by invalid user id`() {
         mockMvc.perform(get("/api/groups/user/-45"))
             .andExpect(status().isNoContent)
+    }
+
+/////////////////////////////Gets all the group's members/////////////////////////////
+
+    @Test
+    fun `Get all group members`() {
+        mockMvc.perform(get("/api/groups/users/4"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `Get all group members with invalid group id`() {
+        mockMvc.perform(get("/api/groups/users/-4"))
+            .andExpect(status().isNotFound)
     }
 
 /////////////////////////////add member to group///////////////////////////////////////
@@ -620,12 +634,12 @@ class LookoutApplicationTests {
         @JvmStatic
         @BeforeAll
         fun setup(): Unit {
-            // val dotenv = Dotenv.configure()
-            //     .directory("./.env")
-            //     .load()
-            // dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
-            // dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
-            // dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
+             val dotenv = Dotenv.configure()
+                 .directory("./.env")
+                 .load()
+             dotenv["DB_URL"]?.let { System.setProperty("DB_URL", it) }
+             dotenv["DB_USER"]?.let { System.setProperty("DB_USER", it) }
+             dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
         }
     }
 fun addRandomValuesToJson(json: String): String {
