@@ -3,6 +3,7 @@ import { FaChevronRight, FaTimes } from "react-icons/fa";
 import FAQModal from "./FAQModal";
 import TutorialsModal from "./TutorialsModal";
 import HelpCentreModal from "./HelpCentreModal";
+import DOMPurify from 'dompurify';
 
 interface SettingsModalProps {
 	onClose: () => void;
@@ -27,7 +28,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(e.target.value);
+		setSearchQuery(DOMPurify.sanitize(e.target.value));
 	};
 
 	const [showFAQModal, setShowFAQModal] = useState(false);

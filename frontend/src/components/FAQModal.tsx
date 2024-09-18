@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
@@ -74,7 +75,7 @@ const FAQModal: React.FC<FAQModalProps> = ({ onClose }) => {
 	]);
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(e.target.value);
+		setSearchQuery(DOMPurify.sanitize(e.target.value));
 	};
 
 	const filteredFaqItems = faqItems.filter((item) =>

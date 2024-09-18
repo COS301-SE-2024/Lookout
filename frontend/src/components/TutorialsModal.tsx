@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import images from "../assets/styles/images/images"; // Adjust the path as necessary
+import DOMPurify from "dompurify";
 
 interface FaqItem {
 	question: string;
@@ -94,7 +95,7 @@ const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
 	]);
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(e.target.value);
+		setSearchQuery(DOMPurify.sanitize(e.target.value));
 		setSelectedQuestion(null); // Clear selected question when searching
 	};
 

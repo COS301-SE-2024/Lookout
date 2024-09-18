@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
@@ -100,7 +101,7 @@ function Login() {
 							id="inputEmail"
 							placeholder="Enter email"
 							value={email}
-              				onChange={(e) => setEmail(e.target.value)}
+              				onChange={(e) => setEmail(DOMPurify.sanitize(e.target.value))}
 							required
 						/>
 					</div>
@@ -117,7 +118,7 @@ function Login() {
 							id="inputPassword"
 							placeholder="Password"
 							value={password}
-              				onChange={(e) => setPassword(e.target.value)}
+              				onChange={(e) => setPassword(DOMPurify.sanitize(e.target.value))}
 							required
 						/>
 					</div>

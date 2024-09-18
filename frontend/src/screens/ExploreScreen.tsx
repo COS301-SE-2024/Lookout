@@ -7,6 +7,7 @@ import RecommendGroup from "../components/RecommendGroup";
 import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import ExploreArticles from "../components/ExploreArticles";
+import DOMPurify from 'dompurify';
 
 interface User {
   userName: string;
@@ -215,7 +216,7 @@ const ExploreScreen: React.FC = () => {
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value;
+    const query = DOMPurify.sanitize(event.target.value);
     startTransition(() => {
       setSearchQuery(query);
     });
