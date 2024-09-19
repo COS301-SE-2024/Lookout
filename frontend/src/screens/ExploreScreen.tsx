@@ -277,15 +277,15 @@ const ExploreScreen: React.FC = () => {
         `}
       </style>
 
-      <div className="mb-4">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search for Posts or Groups"
-          className="border p-2 rounded w-full search-bar bg-gray-200"
-        />
-      </div>
+      <div className="mb-4 w-full">
+  <input
+    type="text"
+    value={searchQuery}
+    onChange={handleSearchChange}
+    placeholder="Search for Posts or Groups"
+    className="border p-2 rounded w-full max-w-[75vw] md:max-w-full search-bar bg-gray-200"
+  />
+</div>
 
       {loading && <ExploreSkeletonScreen />}
 

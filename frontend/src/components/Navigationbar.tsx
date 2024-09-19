@@ -49,7 +49,7 @@ const Navigationbar = () => {
 						{/* Help icon for mobile view */}
 						<FaQuestion
 							size={40}
-							className="absolute top-2 right-2 text-white bg-gray-500 p-2 rounded-full cursor-pointer hover:bg-gray-200 hover:text-navBkg z-10"
+							className="absolute top-3 right-2 text-white bg-gray-500 p-2 rounded-full cursor-pointer hover:bg-gray-200 hover:text-navBkg z-10"
 							onClick={handleHelpCentreClick}
 						/>
 
@@ -96,6 +96,13 @@ const Navigationbar = () => {
 
 								{/* Right side icons */}
 								<ul className="flex ml-auto md:justify-end justify-center items-center space-x-2 md:mr-8 mt-2 md:mt-0">
+								<li>
+										<FaQuestion
+											size={42}
+											className="text-gray-500 p-2 rounded-full cursor-pointer hover:bg-gray-200 hover:text-navBkg"
+											onClick={handleHelpCentreClick}
+										/>
+									</li>
 									<li>
 										<Link to="/" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg hover:bg-gray-200 transition-all duration-300">
 											<FaMap size={26} />
