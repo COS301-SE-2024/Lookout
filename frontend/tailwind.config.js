@@ -19,6 +19,7 @@ module.exports = {
 	plugins: [
 	  require('tailwind-clip-path'),  // Already included
 	  require('@tailwindcss/line-clamp'),  // Add the line-clamp plugin
+	  require('tailwind-scrollbar'),
 	],
   };
   
