@@ -100,7 +100,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
           {filteredGroups.map((group) => (
             <div
               key={group.id}
-              className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-500" // Use items-center to center items vertically
+              className="flex items-center p-4 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-hver" // Use items-center to center items vertically
               onClick={() => handleGroupClick(group)}
             >
               {/* Group image */}
@@ -115,14 +115,14 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
               {/* Text section */}
               <div className="flex-1 ml-4 flex flex-col">
                 <div className="text-base font-semibold break-words">{group.name}</div>
-                <p className="text-gray-600 text-sm mt-1 break-words whitespace-normal line-clamp-2">
+                <p className="text-content2 text-sm mt-1 break-words whitespace-normal line-clamp-2">
                   {group.description}
                 </p>
               </div>
 
               {/* Chevron button fixed to the right */}
-              <div className="flex items-center justify-center w-10 h-10 ml-4 "> {/* Ensure the container has dimensions and uses flex */}
-                <FaChevronRight className="text-gray-600" />
+              <div className="flex items-center text-content justify-center w-10 h-10 ml-4 "> {/* Ensure the container has dimensions and uses flex */}
+                <FaChevronRight className="text-content " />
               </div>
             </div>
           ))}

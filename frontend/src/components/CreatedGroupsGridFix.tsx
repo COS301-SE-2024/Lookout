@@ -91,7 +91,7 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
           {filteredGroups.map((group) => (
             <div
               key={group.id}
-              className="flex items-center p-2 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-gray-500 h-36"
+              className="flex items-center p-2 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-hver h-36"
               onClick={() => handleGroupClick(group)}
             >
               <div className="flex-shrink-0">
@@ -106,14 +106,14 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
               <div className="flex-1 ml-4 flex flex-col">
                 <div className="text-base font-semibold break-words">{group.name}</div>
                 {/* Wrapping description */}
-                <p className="text-gray-600 text-sm mt-1 break-words whitespace-normal line-clamp-2">
+                <p className="text-content2 text-sm mt-1 break-words whitespace-normal line-clamp-2">
                   {group.description}
                 </p>
               </div>
               
               {/* Arrow is now outside of the flex container holding image and text */}
               <div className="flex items-center justify-center w-10 h-10 ml-4">
-                <FaChevronRight className="text-gray-600" />
+                <FaChevronRight className=" text-content " />
               </div>
             </div>
           ))}

@@ -39,20 +39,20 @@ const GroupsProfile = () => {
     <div className="w-full"> 
     <div className="mb-4 flex flex-col space-y-4"> {/* Removed unnecessary ml-4 */}
         {/* Search Bar and Filter Dropdown on the Same Line */}
-        <div className="flex items-center justify-between space-x-2">
+        <div className="flex items-center  justify-between space-x-2">
           {/* Filter Dropdown */}
           <select
             id="groupFilter"
             value={selectedOption}
             onChange={handleChange}
-            className="border p-2 rounded bg-gray-200"
+            className="border p-2 rounded bg-hver border-hver"
           >
-            <option value="groups">Groups Joined</option>
+            <option  value="groups">Groups Joined</option>
             <option value="created">Groups Created</option>
           </select>
           {/* Create Group Button */}
           <button
-  className="p-2 h-12 w-12 rounded-md hover:bg-gray-300 flex items-center justify-center"
+  className= "p-2 h-12 w-12 rounded-md hover:bg-hver flex items-center justify-center"
   onClick={() => setIsCreateGroupsOpen(true)}
 >
   <FaPlus

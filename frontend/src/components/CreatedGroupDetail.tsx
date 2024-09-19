@@ -245,7 +245,7 @@ const CreatedGroupDetail: React.FC = () => {
   
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-14 left-4 md:top-20 md:left-8 text-green-700 hover:text-gray-800 z-50 rounded-full p-2"
+        className="absolute top-14 left-4 md:top-20 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -281,7 +281,7 @@ const CreatedGroupDetail: React.FC = () => {
           size={24}
           />
           <FaEdit
-            className="absolute top-16 right-8 text-xl text-content cursor-pointer text-green-700 hover:text-gray-800 md:top-24 md:right-8"
+            className="absolute top-16 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon  md:top-24 md:right-8"
             onClick={handleEditClick}
             size={24}
           />
@@ -334,7 +334,7 @@ const CreatedGroupDetail: React.FC = () => {
               </div>
             </div>
   
-            <span className="text-gray-500 text-sm">
+            <span className="text-content2 text-sm">
               {group.createdAt ? (
                 `${getDayWithSuffix(new Date(group.createdAt))} ${new Date(group.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`
               ) : 'Unknown'}

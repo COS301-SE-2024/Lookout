@@ -61,6 +61,7 @@
     --color-content2: 247 231 220;
     --color-btntxt:  223 208 184;
     --color-hver: 21 52 72;
+    --color-shd: 60 91 111;
   }
   :root[data-theme="light"] {
     --color-nav-bkg: 25 100 52;
@@ -73,5 +74,6 @@
     --color-content2: 107 114 128;
     --color-btntxt: 255 251 250;
     --color-hver: 229 231 235;
+    --color-shd: 60 91 111;
   }
 }

@@ -171,7 +171,7 @@ const GroupDetail: React.FC = () => {
 			</style>
 			<button
 				onClick={() => navigate(-1)}
-				className="absolute top-14 left-4 md:top-20 md:left-8 text-green-700 hover:text-gray-800 z-50 rounded-full p-2"
+				className="absolute top-14 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 rounded-full p-2"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -213,7 +213,7 @@ const GroupDetail: React.FC = () => {
 							</div>
 						</div>
 
-						<span className="text-gray-500 text-sm">
+						<span className="text-content2 text-sm">
 
 							{group?.createdAt ? (
 								`${getDayWithSuffix(new Date(group.createdAt))} ${new Date(group.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`
@@ -246,12 +246,12 @@ const GroupDetail: React.FC = () => {
 				<div className="mt-8">
 					<div className="flex justify-between items-center mb-4">
 						<h1 className="text-lm font-bold ml-4">Posts in this group</h1>
-						<Link to={`/group/${id}/posts`} className="text-sm text-navBkg hover:text-gray-800 underline">View All</Link>
+						<Link to={`/group/${id}/posts`} className="text-sm text-content hover:text-gray-800 underline">View All</Link>
 					</div>
 					{posts.length === 0 ? (
 						<div className="text-center">
 							<img src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png" alt="No posts" className="w-68 h-64 mx-auto mb-4" />
-							<p className="text-gray-600">There are no posts in this group yet. Be the first to post!</p>
+							<p className="text-content">There are no posts in this group yet. Be the first to post!</p>
 						</div>
 					) : (
 						<HorizontalCarousel>
@@ -264,7 +264,7 @@ const GroupDetail: React.FC = () => {
 
 				<div className="flex justify-between items-center mb-4 mt-4 ml-4">
 					<h1 className="text-ml font-bold">About the owner</h1>
-					<Link to={`/profileView/${owner?.id}`} className="text-sm text-navBkg underline hover:text-gray-800">
+					<Link to={`/profileView/${owner?.id}`} className="text-sm text-content underline hover:text-gray-800">
 						View their profile
 					</Link>
 				</div>
@@ -273,7 +273,7 @@ const GroupDetail: React.FC = () => {
 						<img src={owner?.profilePic} alt="" className="w-20 h-20 rounded-full mr-6" />
 						<div>
 							<h2 className="text-lm font-bold">{owner?.userName || 'No Name'}</h2>
-							<p className="text-gray-600 text-sm">{owner?.email || 'No Email'}</p>
+							<p className="text-content2 text-sm">{owner?.email || 'No Email'}</p>
 						</div>
 					</div>
 				</div>
