@@ -4,15 +4,21 @@ import { Stomp } from "@stomp/stompjs";
 class WebSocketService {
 	constructor() {
 		this.stompClient = null;
-		this.isConnected = false; // Track connection state
+		this.isConnected = false;
+		this.subscriptions = {};
 	}
 
 	async connect() {
-		if (this.isConnected) return; // Prevent multiple connections
+		if (this.isConnected) {
+			console.log("Already connected to WebSocket");
+			return;
+		}
 
 		console.log("Attempting WebSocket connection...");
 		const socket = new SockJS("http://localhost:8080/ws");
 		this.stompClient = Stomp.over(socket);
+
+		this.stompClient.debug = null;
 
 		try {
 			await new Promise((resolve, reject) => {
@@ -30,6 +36,12 @@ class WebSocketService {
 					}
 				);
 			});
+
+			this.stompClient.onclose = () => {
+				console.log("WebSocket connection closed");
+				this.isConnected = false;
+				this.stompClient = null;
+			};
 		} catch (error) {
 			console.error("Connection failed:", error);
 		}
@@ -37,18 +49,42 @@ class WebSocketService {
 
 	subscribe(destination, callback) {
 		if (this.stompClient && this.isConnected) {
-			this.stompClient.subscribe(destination, callback);
+			if (this.subscriptions[destination]) {
+				console.log(`Already subscribed to ${destination}`);
+				return;
+			}
+
+			const subscription = this.stompClient.subscribe(
+				destination,
+				callback
+			);
+			this.subscriptions[destination] = subscription;
 			console.log(`Subscribed to ${destination}`);
 		} else {
 			console.error("Cannot subscribe, not connected to WebSocket");
 		}
 	}
 
+	unsubscribe(destination) {
+		if (this.subscriptions[destination]) {
+			this.subscriptions[destination].unsubscribe();
+			delete this.subscriptions[destination];
+			console.log(`Unsubscribed from ${destination}`);
+		} else {
+			console.log(`No active subscription to ${destination}`);
+		}
+	}
+
 	disconnect() {
 		if (this.stompClient && this.isConnected) {
+			Object.keys(this.subscriptions).forEach((destination) => {
+				this.unsubscribe(destination);
+			});
+
 			this.stompClient.disconnect(() => {
 				console.log("WebSocket disconnected");
 				this.isConnected = false;
+				this.stompClient = null;
 			});
 		} else {
 			console.error("WebSocket is not connected, nothing to disconnect");

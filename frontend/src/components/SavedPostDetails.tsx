@@ -161,7 +161,6 @@ const PinDetail: React.FC = () => {
 		getCountSaves();
 	}, [id, userId]);
 
-	// WebSocket subscription for real-time saves
 	useEffect(() => {
 		const subscribeToWebSocket = async () => {
 			try {
@@ -172,11 +171,18 @@ const PinDetail: React.FC = () => {
 				webSocketService.subscribe(
 					`/topic/post/${id}`,
 					(message: { body: string }) => {
-						const updatedSaveData = JSON.parse(message.body);
-						setSaves(updatedSaveData.saves);
+						try {
+							const updatedSaveData = JSON.parse(message.body);
+							setSaves(updatedSaveData.saves);
 
-						if (updatedSaveData.userId === userId) {
-							setIsSaved(updatedSaveData.isSaved);
+							if (updatedSaveData.userId === userId) {
+								setIsSaved(updatedSaveData.isSaved);
+							}
+						} catch (error) {
+							console.error(
+								"Failed to parse WebSocket message:",
+								error
+							);
 						}
 					}
 				);
