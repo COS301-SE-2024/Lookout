@@ -349,7 +349,23 @@ const HomeScreen: React.FC = () => {
 
 			const pinsData = await response.json();
 
-			const formattedPins = pinsData.content.map((pin: any) => ({
+			const currentTime = new Date().getTime();
+
+			const TimepinsData = pinsData.content.filter((pin:any) => {
+				const pinTime = new Date(pin.createdAt).getTime();
+				const timeDifference = currentTime - pinTime; // Difference in milliseconds
+				
+	
+				if (pin.categoryId === 1) {
+					// For "animals" category, check if it's within 24 hours
+					return timeDifference <= 86400000;
+				} else {
+					// For other categories
+					return timeDifference;
+				}
+			});
+
+			const formattedPins = TimepinsData.map((pin: any) => ({
 				id: pin.id,
 				location: { lat: pin.latitude, lng: pin.longitude },
 				caption: pin.caption,
@@ -360,6 +376,7 @@ const HomeScreen: React.FC = () => {
 
 			setPins(formattedPins);
 			setFilteredPins(formattedPins);
+			
 			setCurrentNumberPins(formattedPins.length);
 		} catch (error) {
 			console.error("Error fetching pins:", error);
@@ -488,6 +505,7 @@ const HomeScreen: React.FC = () => {
 				throw new Error("Error");
 			}
 			console.log("title", title);
+			
 			setCaption("");
 			setTitle("");
 			setPicture("");
