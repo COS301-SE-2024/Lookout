@@ -1,197 +1,132 @@
 import { useEffect, useState } from "react";
 import { FaMap, FaBinoculars, FaUser, FaGear, FaQuestion } from "react-icons/fa6";
-import { FaSearch } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useLocation } from "react-router-dom";
 import HelpModal from "./HelpModal";
 import logoGreen from '../assets/styles/images/LogoGreen.png'; // Import the image
 
 const Navigationbar = () => {
 	const [isAuthed, setIsAuthed] = useState(
-	  localStorage.getItem("authToken") !== "" &&
-	  localStorage.getItem("authToken") !== null
+		localStorage.getItem("authToken") !== "" &&
+		localStorage.getItem("authToken") !== null
 	);
-	const location = useLocation(); // Detect current route
+	const location = useLocation();
 	const [searchQuery, setSearchQuery] = useState("");
-  
-	useEffect(() => {
-	  //console.log("isAuthed", isAuthed);
-	}, [isAuthed]);
-  
-	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(event.target.value);
-		
-		
-		if (location.pathname === "/explore") {
-		  console.log("Searching explore posts for", event.target.value);
-		} 
-		if (location.pathname === "/") {
-			console.log("Searching for posts on the map", event.target.value);
-		} 
-		if (location.pathname === "/profile") {
-			console.log("Searching for your posts or groups", event.target.value);
-		} 
-		if (location.pathname === "/settings") {
-			console.log("Search settings", event.target.value);
-		} 
-		else {
-		  console.log("Search", event.target.value);
-		}
-	  };
-	  
-  
-	useEffect(() => {
-	  const handleStorageChange = (event: StorageEvent) => {
-		if (event.key === "authToken") {
-		  setIsAuthed(localStorage.getItem("authToken") !== "");
-		}
-	  };
-  
-	  window.addEventListener("storage", handleStorageChange);
-  
-	  return () => {
-		window.removeEventListener("storage", handleStorageChange);
-	  };
-	}, []);
-  
-	const [showHelpCentre, setShowHelpCentre] = useState(false);
-  
-	const handleHelpCentreClick = () => {
-	  setShowHelpCentre(true);
-	};
-  
-	const handleCloseHelpCentre = () => {
-	  setShowHelpCentre(false);
-	};
-  
-	// Dynamic search placeholder based on the page
-	const getSearchPlaceholder = () => {
-	  if (location.pathname === "/") {
-		return "Search for posts on the map...";
-	  }
-	  else if (location.pathname === "/profile") {
-		return "Search for your posts or groups...";
-	  }
-	  else if (location.pathname === "/settings") {
-		return "Search settings...";
-	  }
-	  else if (location.pathname === "/explore") {
-		return "Search new posts or groups...";
-	  }
 
-	  return "Search...";
+	useEffect(() => {
+		//console.log("isAuthed", isAuthed);
+	}, [isAuthed]);
+
+	useEffect(() => {
+		const handleStorageChange = (event: StorageEvent) => {
+			if (event.key === "authToken") {
+				setIsAuthed(localStorage.getItem("authToken") !== "");
+			}
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+		};
+	}, []);
+
+	const [showHelpCentre, setShowHelpCentre] = useState(false);
+
+	const handleHelpCentreClick = () => {
+		setShowHelpCentre(true);
 	};
-  
+
+	const handleCloseHelpCentre = () => {
+		setShowHelpCentre(false);
+	};
+
 	return (
-	  <>
-		{isAuthed && (
-		  <header className="text-white bg-white w-full min-w-full relative">
-			{/* Mobile View */}
-			<div className="md:hidden flex flex-col items-center">
-			  {/* Search bar at the top */}
-			  <div className="flex w-full items-center p-2 bg-gray-200">
-				<div className="flex-grow mx-2 flex items-center bg-gray-200 rounded-lg">
-				  <FaSearch className="text-gray-500 ml-3" size={20} />
-				  <input
-					type="text"
-					placeholder={getSearchPlaceholder()} // Dynamic placeholder
-					value={searchQuery}
-					onChange={handleSearch} // Handle search input change
-					className="w-full px-4 py-2 bg-transparent border-none focus:outline-none"
-				  />
-				</div>
-				{/* Help Icon on the right */}
-				<FaQuestion
-				  size={24}
-				  className="text-gray-500 mx-2 cursor-pointer"
-				  onClick={handleHelpCentreClick}
-				/>
-			  </div>
-  
-			  {/* Bottom navigation for icons */}
-			  <nav className="fixed bottom-0 w-full bg-white shadow-lg py-2 flex justify-around">
-				<Link to="/" className="text-gray-500 flex flex-col items-center justify-center">
-				  <FaMap size={24} />
-				  <span className="text-xs">Map</span>
-				</Link>
-				<Link to="/explore" className="text-gray-500 flex flex-col items-center justify-center">
-				  <FaBinoculars size={24} />
-				  <span className="text-xs">Explore</span>
-				</Link>
-				<Link to="/profile" className="text-gray-500 flex flex-col items-center justify-center">
-				  <FaUser size={24} />
-				  <span className="text-xs">Profile</span>
-				</Link>
-				<Link to="/settings" className="text-gray-500 flex flex-col items-center justify-center">
-				  <FaGear size={24} />
-				  <span className="text-xs">Settings</span>
-				</Link>
-			  </nav>
-  
-			  {/* Help Modal */}
-			  {showHelpCentre && <HelpModal onClose={handleCloseHelpCentre} />}
-			</div>
-  
-			{/* Desktop View */}
-			<div className="hidden md:flex flex-col md:flex-row items-center">
-			  <nav className="container mx-auto py-2 bg-bkg w-full min-w-full">
-				<div className="flex flex-col md:flex-row items-center">
-				  {/* Left side icons */}
-				  <ul className="flex md:justify-start justify-center items-center space-x-2 md:ml-8">
-					<li>
-					  <Link to="/" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition-all duration-300">
-						<FaMap size={26} />
-					  </Link>
-					</li>
-					<li>
-					  <Link to="/explore" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition-all duration-300">
-						<FaBinoculars size={26} />
-					  </Link>
-					</li>
-				  </ul>
-  
-				  {/* Search bar */}
-				  <div className="flex-grow mx-4 md:mx-8 my-2 md:my-0 flex items-center bg-gray-200 rounded-lg">
-					<FaSearch className="text-gray-500 ml-3" size={20} />
-					<input
-					  type="text"
-					  placeholder={getSearchPlaceholder()} // Dynamic placeholder
-					  value={searchQuery}
-					  onChange={handleSearch} // Handle search input change
-					  className="w-full px-4 py-2 bg-transparent border-none focus:outline-none"
-					/>
-				  </div>
-  
-				  {/* Right side icons */}
-				  <ul className="flex md:justify-end justify-center items-center space-x-2 md:mr-8 mt-2 md:mt-0">
-					<li>
-					  <Link to="/profile" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition-all duration-300">
-						<FaUser size={26} />
-					  </Link>
-					</li>
-					<li>
-					  <Link to="/settings" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition-all duration-300">
-						<FaGear size={26} />
-					  </Link>
-					</li>
-					<li>
-					  <FaQuestion
-						size={42}
-						className="text-gray-500 p-2 rounded-full cursor-pointer hover:bg-gray-200"
-						onClick={handleHelpCentreClick}
-					  />
-					</li>
-				  </ul>
-				</div>
-			  </nav>
-  
-			  {/* Help Modal */}
-			  {showHelpCentre && <HelpModal onClose={handleCloseHelpCentre} />}
-			</div>
-		  </header>
-		)}
-	  </>
+		<>
+			{isAuthed && (
+				<header className="w-full min-w-full relative">
+					{/* Mobile View */}
+					<div className="md:hidden flex flex-col items-center relative">
+						{/* Help icon for mobile view */}
+						<FaQuestion
+							size={40}
+							className="absolute top-2 right-2 text-white bg-gray-500 p-2 rounded-full cursor-pointer hover:bg-gray-200 hover:text-navBkg z-10"
+							onClick={handleHelpCentreClick}
+						/>
+
+						{/* Bottom navigation for icons */}
+						<nav className="fixed bottom-0 w-full bg-white shadow-lg py-2 flex justify-around">
+							<Link to="/" className="text-gray-500 flex flex-col items-center justify-center">
+								<FaMap size={24} />
+								<span className="text-xs">Map</span>
+							</Link>
+							<Link to="/explore" className="text-gray-500 flex flex-col items-center justify-center">
+								<FaBinoculars size={24} />
+								<span className="text-xs">Explore</span>
+							</Link>
+							<Link to="/profile" className="text-gray-500 flex flex-col items-center justify-center">
+								<FaUser size={24} />
+								<span className="text-xs">Profile</span>
+							</Link>
+							<Link to="/settings" className="text-gray-500 flex flex-col items-center justify-center">
+								<FaGear size={24} />
+								<span className="text-xs">Settings</span>
+							</Link>
+						</nav>
+
+						{/* Help Modal */}
+						{showHelpCentre && <HelpModal onClose={handleCloseHelpCentre} />}
+					</div>
+
+					{/* Desktop View */}
+					<div className="hidden md:flex flex-col md:flex-row items-center">
+						<nav className="container mx-auto py-2 bg-bkg w-full min-w-full">
+							<div className="flex flex-col md:flex-row items-center">
+								{/* Left side icons */}
+								<ul className="flex md:justify-start justify-center items-center space-x-2 md:ml-8">
+									{/* Icon and text for LOOKOUT */}
+									<li className="flex items-center space-x-2 hover:scale-105 transform transition-transform duration-300">
+										<Link to="/" className="flex items-center space-x-2">
+											<FaBinoculars size={32} className="text-navBkg hover:text-navBkg-dark transition-colors duration-300" />
+											<h1 className="text-navBkg font-extrabold text-3xl hover:text-navBkg-dark transition-transform duration-300">
+												LOOKOUT
+											</h1>
+										</Link>
+									</li>
+								</ul>
+
+								{/* Right side icons */}
+								<ul className="flex ml-auto md:justify-end justify-center items-center space-x-2 md:mr-8 mt-2 md:mt-0">
+									<li>
+										<Link to="/" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg hover:bg-gray-200 transition-all duration-300">
+											<FaMap size={26} />
+										</Link>
+									</li>
+									<li>
+										<Link to="/explore" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg hover:bg-gray-200 transition-all duration-300">
+											<FaBinoculars size={26} />
+										</Link>
+									</li>
+									<li>
+										<Link to="/profile" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg hover:bg-gray-200 transition-all duration-300">
+											<FaUser size={26} />
+										</Link>
+									</li>
+									<li>
+										<Link to="/settings" className="text-gray-500 flex items-center justify-center hover:text-navBkg w-12 h-12 rounded-full hover:bg-gray-200 transition-all duration-300">
+											<FaGear size={26} />
+										</Link>
+									</li>
+								</ul>
+							</div>
+						</nav>
+
+						{/* Help Modal */}
+						{showHelpCentre && <HelpModal onClose={handleCloseHelpCentre} />}
+					</div>
+				</header>
+			)}
+		</>
 	);
-  };
-  
-  export default Navigationbar;
-  
+};
+
+export default Navigationbar;

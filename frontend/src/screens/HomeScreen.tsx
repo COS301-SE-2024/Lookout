@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
 import { MdFilterList } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
-import { 
-	HeatmapLayer, 
-	Control , 
-	GoogleMap, 
-	GoogleMapApiLoader, 
+import {
+	HeatmapLayer,
+	Control,
+	GoogleMap,
+	GoogleMapApiLoader,
 	MarkerClusterer,
 	Marker
 } from 'react-google-map-wrapper';
@@ -32,43 +32,43 @@ const getData = () => [
 	new google.maps.LatLng(-27.782745, 22.444586),
 	new google.maps.LatLng(-27.752986, 22.403112),
 	new google.maps.LatLng(-27.751266, 22.403355),
-  ];
+];
 
 
 const customGradient = [
-  'rgba(0, 255, 255, 0)',
-  'rgba(0, 255, 255, 1)',
-  'rgba(191, 0, 31, 1)',
-  'rgba(255, 0, 0, 1)',
+	'rgba(0, 255, 255, 0)',
+	'rgba(0, 255, 255, 1)',
+	'rgba(191, 0, 31, 1)',
+	'rgba(255, 0, 0, 1)',
 ];
 
 function MapContent() {
-  const [show, setShow] = useState(true);
-  const [gradient, setGradient] = useState<string[] | null>(null);
-  const [radius, setRadius] = useState<number | null>(null);
-  const [opacity, setOpacity] = useState<number | null>(null);
+	const [show, setShow] = useState(true);
+	const [gradient, setGradient] = useState<string[] | null>(null);
+	const [radius, setRadius] = useState<number | null>(null);
+	const [opacity, setOpacity] = useState<number | null>(null);
 
-  const data = useMemo(getData, []);
+	const data = useMemo(getData, []);
 
-  const toggleHeatmap = () => {
-    setShow(!show);
-  };
+	const toggleHeatmap = () => {
+		setShow(!show);
+	};
 
-  const changeGradient = () => {
-    setGradient((prev) => (prev ? null : customGradient));
-  };
+	const changeGradient = () => {
+		setGradient((prev) => (prev ? null : customGradient));
+	};
 
-  const changeRadius = () => {
-    setRadius(radius ? null : 20);
-  };
+	const changeRadius = () => {
+		setRadius(radius ? null : 20);
+	};
 
-  const changeOpacity = () => {
-    setOpacity(opacity ? null : 0.2);
-  };
+	const changeOpacity = () => {
+		setOpacity(opacity ? null : 0.2);
+	};
 
-  return (
-    <>
-      {/* <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
+	return (
+		<>
+			{/* <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
       <Control position={google.maps.ControlPosition.TOP_CENTER}>
         <div id='floating-panel' className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg">
           <button
@@ -101,22 +101,22 @@ function MapContent() {
           </button>
         </div>
       </Control> */}
-    </>
-  );
+		</>
+	);
 }
 
 // #################### END OF HEAT MAP STUFF
 
-type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
-type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
+type Poi = { key: string, location: google.maps.LatLngLiteral, label: string, details: string }
+type myPin = { id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
 
 const legendItems = [
-  { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
-  { name: 'Camp Sites', icon: campIcon },
-  { name: 'Animal', icon: AnimalIcon },
-  { name: 'Hiking', icon: HikingIcon },
-  { name: 'POI', icon: POIIcon },
-  { name: 'Security Risk', icon: SecurityIcon },
+	{ name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
+	{ name: 'Camp Sites', icon: campIcon },
+	{ name: 'Animal', icon: AnimalIcon },
+	{ name: 'Hiking', icon: HikingIcon },
+	{ name: 'POI', icon: POIIcon },
+	{ name: 'Security Risk', icon: SecurityIcon },
 
 
 ];
@@ -205,7 +205,7 @@ const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const HomeScreen: React.FC = () => {
 
 	const defaultCenter = { lat: -28, lng: 23 };
-  const [center, setCenter] = useState(defaultCenter);
+	const [center, setCenter] = useState(defaultCenter);
 
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -238,23 +238,23 @@ const HomeScreen: React.FC = () => {
 
 	useEffect(() => {
 		if (navigator.geolocation) {
-		  navigator.geolocation.getCurrentPosition(
-			(position) => {
-			  setCenter({
-				lat: position.coords.latitude,
-				lng: position.coords.longitude,
-			  });
-			},
-			(error) => {
-			  console.error("Error getting user's location:", error);
-			  // If user denies location access or an error occurs, retain the default center
-			}
-		  );
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					setCenter({
+						lat: position.coords.latitude,
+						lng: position.coords.longitude,
+					});
+				},
+				(error) => {
+					console.error("Error getting user's location:", error);
+					// If user denies location access or an error occurs, retain the default center
+				}
+			);
 		}
-	  }, []);
+	}, []);
 
 
-	  // get for posts
+	// get for posts
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
@@ -631,16 +631,16 @@ const HomeScreen: React.FC = () => {
 					className='h-full w-full'
 					zoom={5}
 					center={center}
- 
+
 					mapOptions={{
 						disableDefaultUI: true,
 						zoomControl: true,
 						mapId: 'dde51c47799889c4'
-					  }}
+					}}
 				>
-					
-						<PoiMarkers pois={locations} />
-						<HomePins pin={filteredPins} />
+
+					<PoiMarkers pois={locations} />
+					<HomePins pin={filteredPins} />
 					<MapContent />
 				</GoogleMap>
 				<Legend items={legendItems} />
@@ -650,17 +650,17 @@ const HomeScreen: React.FC = () => {
 					<IoMenu size={32} onClick={openMenuModal} />
 			</button> */}
 
-		<button
-			className="fixed top-20 left-16 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-gray-200 hover:text-gray-500"
-			onClick={openMenuModal}
+			<button
+				className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-gray-200 hover:text-gray-500"
+				onClick={openMenuModal}
 			>
-			<FiFilter size={24} />
+				<FiFilter size={25} />
 			</button>
 			<button
-			className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white p-4 rounded-full hover:bg-gray-200 hover:text-gray-500 sm:bottom-24 md:bottom-20"
-			onClick={openModal}
+				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white p-4 rounded-full hover:bg-gray-200 hover:text-gray-500 sm:bottom-24 md:bottom-20"
+				onClick={openModal}
 			>
-			<FaPlus />
+				<FaPlus />
 			</button>
 
 			{/* Add pin modal */}
@@ -916,11 +916,10 @@ const HomeScreen: React.FC = () => {
 							</h2>
 							<div className="mt-2">
 								<button
-									className={`w-full text-left p-2 rounded mb-2 ${
-										selectCategory === null
+									className={`w-full text-left p-2 rounded mb-2 ${selectCategory === null
 											? "bg-gray-400"
 											: "bg-gray-200"
-									}`}
+										}`}
 									onClick={() => handleCategoryClick(null)}
 								>
 									All Pins
@@ -928,11 +927,10 @@ const HomeScreen: React.FC = () => {
 								{categories.map((category) => (
 									<div key={category.id}>
 										<button
-											className={`w-full text-left p-2 rounded mb-2 ${
-												selectCategory === category.id
+											className={`w-full text-left p-2 rounded mb-2 ${selectCategory === category.id
 													? "bg-gray-400"
 													: "bg-gray-200"
-											}`}
+												}`}
 											onClick={() =>
 												handleCategoryClick(category.id)
 											}
@@ -961,16 +959,16 @@ const HomeScreen: React.FC = () => {
 const PoiMarkers = (props: { pois: Poi[] }) => {
 
 	return (
-		  <MarkerClusterer>
+		<MarkerClusterer>
 			{props.pois.map((poi, i) => (
-			  <Marker
-				key={poi.key}
-				lat={poi.location.lat}
-				lng={poi.location.lng}
-			  ></Marker>
+				<Marker
+					key={poi.key}
+					lat={poi.location.lat}
+					lng={poi.location.lng}
+				></Marker>
 			))}
-			</MarkerClusterer>
-	  );
+		</MarkerClusterer>
+	);
 
 };
 
