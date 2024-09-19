@@ -33,8 +33,8 @@ class SecurityConfig {
             .and()
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/api/**", "/api/auth/**", "/ws/**") // Allowing WebSocket connections
-                    .permitAll()
+                    .requestMatchers("/api/**", "/api/auth/**", "/ws/**")  // WebSocket connections
+                    .permitAll()  // Ensure WebSockets are permitted
                     .anyRequest()
                     .authenticated()
             }

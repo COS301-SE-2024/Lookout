@@ -5,7 +5,7 @@ import SkeletonPinDetail from "./PinDetailSkeleton";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import PinDetailPost from "./PinDetailPost";
-import webSocketService from "../utils/websocketService";
+import webSocketService from "../utils/webSocketService";
 
 interface Post {
 	id: number;
@@ -64,7 +64,7 @@ interface Post {
 }
 
 const PinDetail: React.FC = () => {
-	const userId = 1; // ADD IN FROM LOGIN LATER
+	const userId = 1;
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [theme, setTheme] = useState("default");
@@ -76,15 +76,12 @@ const PinDetail: React.FC = () => {
 	const [isSaved, setIsSaved] = useState<boolean>(false);
 	const [saves, setSaves] = useState<number>(0);
 	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
-	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-	// Fetch theme from local storage
 	useEffect(() => {
 		const localStoreTheme = localStorage.getItem("data-theme") || "default";
 		setTheme(localStoreTheme);
 	}, []);
 
-	// Handle theme change
 	useEffect(() => {
 		const handleStorageChange = (event: StorageEvent) => {
 			if (event.key === "data-theme") {
@@ -94,20 +91,15 @@ const PinDetail: React.FC = () => {
 				document.documentElement.setAttribute("data-theme", newTheme);
 			}
 		};
-
 		window.addEventListener("storage", handleStorageChange);
 
-		return () => {
-			window.removeEventListener("storage", handleStorageChange);
-		};
+		return () => window.removeEventListener("storage", handleStorageChange);
 	}, []);
 
-	// Apply theme
 	useEffect(() => {
 		document.documentElement.setAttribute("data-theme", theme);
 	}, [theme]);
 
-	// Fetch post and related data from API
 	useEffect(() => {
 		const fetchPost = async () => {
 			try {
@@ -162,43 +154,53 @@ const PinDetail: React.FC = () => {
 	}, [id, userId]);
 
 	useEffect(() => {
-		const subscribeToWebSocket = async () => {
-			try {
-				await webSocketService.connect();
-				console.log("Connected to WebSocket");
+		if (!post?.id) {
+			console.log("Post ID is not available yet.");
+			return;
+		}
 
-				// Subscribe to WebSocket messages for the specific post
-				webSocketService.subscribe(
-					`/topic/post/${id}`,
-					(message: { body: string }) => {
+		let subscription: any = null;
+
+		webSocketService
+			.connect(localStorage.getItem("authToken")!!)
+			.then(() => {
+				console.log("WebSocket connected");
+
+				subscription = webSocketService.subscribe(
+					`/post/${post.id}`,
+					(message: any) => {
+						console.log(
+							`Message received on /post/${post.id}:`,
+							message
+						);
+
 						try {
-							const updatedSaveData = JSON.parse(message.body);
-							setSaves(updatedSaveData.saves);
+							const savedPostData = JSON.parse(message.body);
+							console.log("Parsed message data:", savedPostData);
 
-							if (updatedSaveData.userId === userId) {
-								setIsSaved(updatedSaveData.isSaved);
+							if (savedPostData.postId === post.id) {
+								setIsSaved(savedPostData.isSaved);
+								setSaves(savedPostData.saves);
 							}
 						} catch (error) {
-							console.error(
-								"Failed to parse WebSocket message:",
-								error
-							);
+							console.error("Error parsing message:", error);
 						}
 					}
 				);
-			} catch (error) {
-				console.error("Error subscribing to WebSocket:", error);
-			}
-		};
-
-		subscribeToWebSocket();
+			})
+			.catch((error) => {
+				console.error("WebSocket connection error:", error);
+			});
 
 		return () => {
+			if (subscription) {
+				console.log(`Unsubscribing from /post/${post.id}`);
+				webSocketService.unsubscribe(subscription);
+			}
 			webSocketService.disconnect();
 		};
-	}, [id, userId]);
+	}, [post?.id]);
 
-	// Handle saving post
 	const handleSaveClick = async () => {
 		const requestBody = {
 			userId,
@@ -225,7 +227,6 @@ const PinDetail: React.FC = () => {
 		}
 	};
 
-	// Handle unsaving post
 	const handleUnsaveClick = async () => {
 		const requestBody = {
 			userId,
@@ -252,7 +253,6 @@ const PinDetail: React.FC = () => {
 		}
 	};
 
-	// Toggle save/unsave
 	const handleSaveIconClick = () => {
 		if (isSaved) {
 			handleUnsaveClick();
@@ -261,7 +261,6 @@ const PinDetail: React.FC = () => {
 		}
 	};
 
-	// Wait for all data to load
 	const allDataLoaded =
 		!loadingPost && !loadingSaved && !loadingSaves && !loadingRelatedPost;
 
@@ -335,7 +334,6 @@ const PinDetail: React.FC = () => {
 			</div>
 
 			{/* Related Posts */}
-
 			<HorizontalCarousel>
 				{relatedPosts.map((relatedPost) => (
 					<PinDetailPost key={relatedPost.id} post={relatedPost} />
