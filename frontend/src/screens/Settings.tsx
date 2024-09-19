@@ -8,18 +8,21 @@ import { FaArrowLeft, FaSignOutAlt, FaChevronLeft } from "react-icons/fa"; // Im
 import { useNavigate } from "react-router-dom";
 import { getEmailFromLocalStorage } from "../utils/auth";
 import HelpCentreModal from "../components/HelpModal";
+import { LuLogOut } from "react-icons/lu";
+import AboutUs from "../components/AboutUs";
+import ThemeSwitcher from "../components/ThemeSwitcher";
 
 const Settings = () => {
   const menuItems = [
     { id: 1, name: "Profile" },
     { id: 2, name: "Appearance" },
-    { id: 3, name: "Help Centre" },
+    // { id: 3, name: "Help Centre" },
     { id: 4, name: "Tutorials" },
     { id: 5, name: "FAQS" },
-    { id: 6, name: "Terms of Service" },
-    { id: 7, name: "Privacy Policy" },
+    // { id: 6, name: "Terms of Service" },
+    // { id: 7, name: "Privacy Policy" },
     { id: 8, name: "About Us" },
-    { id: 9, name: "Logout", icon: <FaSignOutAlt /> }, // Add logout option
+    { id: 9, name: "Logout", icon: <LuLogOut size={20}/> },
   ];
   
   const navigate = useNavigate();
@@ -116,37 +119,38 @@ const renderContent = () => {
       case 1:
         return <EditProfile />;
       case 2:
-        return (
-          <div>
-            <h2 className="text-xl font-bold">Appearance</h2>
-            <p className="text-sm text-gray-500">Edit the appearance of the site.</p>
-            <hr className="mr-10"/>
-            <div className="flex items-center py-2">
-              <label
-                htmlFor="dark-theme-toggle"
-                className="font-bold mr-4"
-              >
-                Enable Dark Theme
-              </label>
-              <ToggleButton
-                onToggle={(isToggled) => setIsDarkTheme(isToggled)}
-                initialState={isDarkTheme}
-              />
-            </div>
-          </div>
-        );
-      case 3:
-        return <HelpCentre />;
+        return <ThemeSwitcher />;
+        // return (
+        //   <div>
+        //     <h2 className="text-xl font-bold">Appearance</h2>
+        //     <p className="text-sm text-gray-500">Edit the appearance of the site.</p>
+        //     <hr className="mr-10"/>
+        //     <div className="flex items-center py-2">
+        //       <label
+        //         htmlFor="dark-theme-toggle"
+        //         className="font-bold mr-4"
+        //       >
+        //         Enable Dark Theme
+        //       </label>
+        //       <ToggleButton
+        //         onToggle={(isToggled) => setIsDarkTheme(isToggled)}
+        //         initialState={isDarkTheme}
+        //       />
+        //     </div>
+        //   </div>
+        // );
+      // case 3:
+      //   return <HelpCentre />;
       case 4:
         return <Tutorials />;
       case 5:
         return <FAQ />;
-      case 6:
-        return <div>Terms of Service</div>;
-      case 7:
-        return <div>Privacy Policy</div>;
+      // case 6:
+      //   return <div>Terms of Service</div>;
+      // case 7:
+      //   return <div>Privacy Policy</div>;
       case 8:
-        return <div>About Us</div>;
+        return <AboutUs />;
       case 9:
         return null; // Logout does not have content
     }
