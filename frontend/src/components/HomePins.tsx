@@ -1,7 +1,6 @@
 
   import React, { useState} from 'react';
   import { 
-    MarkerClusterer,
     Marker,
     InfoWindow
   } from 'react-google-map-wrapper';
@@ -76,7 +75,7 @@ const HomePins = (props: { pin: myPin[]}) => {
 
 
   return (
-    <MarkerClusterer>
+    <>
       {props.pin.map((poi) => (
         <React.Fragment key={poi.id}>
           <Marker
@@ -100,7 +99,7 @@ const HomePins = (props: { pin: myPin[]}) => {
           />
         </React.Fragment>
       ))}
-    </MarkerClusterer>
+    </>
   );
 };
 export default HomePins;

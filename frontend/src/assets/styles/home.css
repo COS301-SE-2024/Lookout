@@ -3,6 +3,16 @@
     height: 92vh; 
 }
 
+.search-bar {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+
 #menu{
     top:1.5rem;
     left:4rem;
