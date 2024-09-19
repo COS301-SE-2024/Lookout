@@ -666,7 +666,7 @@ const HomeScreen: React.FC = () => {
 			{/* Add pin modal */}
 			{isModalOpen && (
 				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+					<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto">
 						<button
 							className="absolute top-2 right-2 text-xl"
 							onClick={closeModal}
@@ -677,7 +677,7 @@ const HomeScreen: React.FC = () => {
 
 						<div className="flex justify-center mb-3">
 							<button
-								className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+								className="flex items-center justify-center text-content w-12 h-12 border border-gray-300 rounded-lg"
 								onClick={openPhotoModal}
 							>
 								<FaPlus />
@@ -703,16 +703,16 @@ const HomeScreen: React.FC = () => {
 						</div>
 
 						<form>
-							<div className="mb-3">
+							<div className="mb-3 text-gray-400">
 								<label
 									htmlFor="groupSelect"
-									className="block text-sm font-medium text-gray-700"
+									className="block text-content text-sm font-medium "
 								>
 									Select Group:
 								</label>
 								<select
 									id="groupSelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="mt-1 text-gray-600 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									value={selectedGroup ?? ""}
 									onChange={(e) =>
 										setSelectedGroup(Number(e.target.value))
@@ -729,16 +729,16 @@ const HomeScreen: React.FC = () => {
 								</select>
 							</div>
 
-							<div className="mb-3">
+							<div className="text-gray-400">
 								<label
 									htmlFor="categorySelect"
-									className="block text-sm font-medium text-gray-700"
+									className="block text-sm font-medium text-content"
 								>
 									Select Category:
 								</label>
 								<select
 									id="categorySelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="mt-1 block text-gray-600 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 									value={selectedCategory ?? ""}
 									onChange={(e) =>
 										setSelectedCategory(
@@ -746,7 +746,7 @@ const HomeScreen: React.FC = () => {
 										)
 									}
 								>
-									<option value="" disabled>
+									<option className="mt-1" value="" disabled>
 										Select a category
 									</option>
 									{categories.map((category) => (
@@ -763,15 +763,15 @@ const HomeScreen: React.FC = () => {
 							<div className="mb-3">
 								<label
 									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
+									className="block text-sm font-medium text-content"
 								>
 									Caption:
 								</label>
 								<textarea
 									id="formDescription"
 									rows={4}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
+									className="mt-1 block w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									placeholder="Enter caption"
 									value={caption}
 									onChange={(e) => setCaption(DOMPurify.sanitize(e.target.value))}
 								></textarea>
@@ -780,15 +780,15 @@ const HomeScreen: React.FC = () => {
 							<div className="mb-3">
 								<label
 									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
+									className="block text-sm font-medium text-content"
 								>
 									Title:
 								</label>
 								<textarea
 									id="formDescription"
 									rows={2}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
+									className="mt-1 block w-full text-gray-600 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									placeholder="Enter title"
 									value={title}
 									onChange={(e) => setTitle(DOMPurify.sanitize(e.target.value))}
 								></textarea>
@@ -797,7 +797,7 @@ const HomeScreen: React.FC = () => {
 
 						<div>
 							<button
-								className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="w-full px-4 py-2 bg-navBkg text-txtBtn rounded-md hover:bg-iconShadow focus:outline-none focus:ring-2 focus:ring-blue-500"
 								onClick={handleAddPinClick}
 							>
 								Add Pin
@@ -809,8 +809,8 @@ const HomeScreen: React.FC = () => {
 
 			{/* Success modal */}
 			{isSuccessModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50">
+					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
 						<h2 className="text-2xl font-bold mb-4 text-center">
 							Post Created Successfully!
 						</h2>
@@ -830,8 +830,8 @@ const HomeScreen: React.FC = () => {
 
 			{/* PhotoOptions modal */}
 			{isPhotoOptionsModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto relative">
+				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50">
+					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto relative">
 						<h2 className="text-2xl font-bold mb-4 text-center">
 							Photo
 						</h2>
@@ -869,14 +869,14 @@ const HomeScreen: React.FC = () => {
 			{/* Camera modal */}
 			{isCameraModalOpen && (
 				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="relative bg-white p-6 rounded-lg w-full max-w-sm mx-auto">
+					<div className="relative bg-bkg p-6 rounded-lg w-full max-w-sm mx-auto">
 						<button
 							className="absolute top-2 right-2 text-xl"
 							onClick={() => setIsCameraModalOpen(false)}
 						>
 							&times;
 						</button>
-						<h2 className="text-2xl font-bold mb-4">
+						<h2 className="flex items-center justify-center text-2xl font-bold mb-4">
 							Take A Photo
 						</h2>
 						<CameraComponent

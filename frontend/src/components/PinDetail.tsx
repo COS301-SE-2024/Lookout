@@ -287,7 +287,7 @@ const PinDetail: React.FC = () => {
       </style>
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
+        className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2 "
         style={{ zIndex: 50 }}
       >
         <svg
@@ -322,13 +322,13 @@ const PinDetail: React.FC = () => {
               <div className="flex items-center">
                 {isSaved ? (
                   <FaBookmark
-                    className="text-green-800 cursor-pointer"
+                    className="text-navBkg cursor-pointer"
                     onClick={handleSaveIconClick}
                     size={24}
                   />
                 ) : (
                   <FaRegBookmark
-                    className="text-green-800 cursor-pointer"
+                    className="text-navBkg cursor-pointer"
                     onClick={handleSaveIconClick}
                     size={24}
                   />
@@ -345,20 +345,20 @@ const PinDetail: React.FC = () => {
               />
               <div>
                 <h2 className="text-lg font-bold">{post.username}</h2>
-                <p className="text-gray-600 text-sm">{post.caption}</p>
+                <p className="text-content2 text-sm">{post.caption}</p>
                 <CategoryPill categoryId={post.categoryId} />
               </div>
             </div>
 
             <div className="flex justify-start mt-4 space-x-4">
               <button
-                className="px-4 py-2 rounded-full bg-navBkg text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
                 onClick={() => navigate(`/map`, { state: { post, apicode } })}
               >
                 View on Map
               </button>
               <button
-                className="px-4 py-2 rounded-full bg-navBkg text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
                 onClick={() =>
                   navigate(`/group/${post.groupId}`, {
                     state: { group: post.group },

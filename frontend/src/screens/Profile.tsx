@@ -100,7 +100,7 @@ const Profile = () => {
       {/* Posts and Groups Count */}
       <div className="flex flex-row items-center space-x-4 mt-2">
         <span className="text-md sm:text-lg">{postsCount} Posts</span>
-        <div className="w-px h-8 bg-gray-300"></div>
+        <div className="w-px h-8 bg-content"></div>
         <span className="text-md sm:text-lg">{groupsCount} Groups</span>
       </div>
 
@@ -108,7 +108,7 @@ const Profile = () => {
       <div className="flex mt-4 space-x-8 sm:space-x-12">
         <button
           className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${activeTab === "posts"
-            ? "border-b-4 border-[#6A994E] font-bold"
+            ? "border-b-4 border-navBkg font-bold"
             : "text-gray-500"
           }`}
           onClick={() => setActiveTab("posts")}
@@ -117,7 +117,7 @@ const Profile = () => {
         </button>
         <button
           className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${activeTab === "groups"
-            ? "border-b-4 border-[#6A994E] font-bold"
+            ? "border-b-4 border-navBkg font-bold"
             : "text-gray-500"
           }`}
           onClick={() => setActiveTab("groups")}

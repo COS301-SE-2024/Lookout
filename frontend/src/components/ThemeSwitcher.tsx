@@ -36,16 +36,16 @@ const ThemeSwitcher = () => {
 
   // Block border styles
   const blockBorderStyles = (theme: string) => 
-    `p-6 cursor-pointer border-4 rounded ${selectedTheme === theme ? 'border-blue-600' : 'border-gray-300'} ${theme === 'light' ? 'bg-gray-200 text-gray-800' : 'bg-gray-800 text-gray-300'}`;
+    `p-6 cursor-pointer border-4 rounded ${selectedTheme === theme ? 'border-content2' : 'border-bkg'} ${theme === 'light' ? 'bg-gray-200 text-gray-800' : 'bg-gray-800 text-gray-300'}`;
   
   return (
     <div>
       <h2 className="text-xl font-bold">Appearance</h2>
-      <p className="text-sm text-gray-500">Edit the appearance of the site.</p>
+      <p className="text-sm text-content2">Edit the appearance of the site.</p>
       <hr className="mr-10" />
 
       <h2 className="text-xl font-bold mt-4">Theme</h2>
-      <p className="text-sm text-gray-500">Select the theme for the app:</p>
+      <p className="text-sm text-content2">Select the theme for the app:</p>
       <div className="flex items-center py-2 space-x-4">
         {/* Light Theme Block */}
         <div

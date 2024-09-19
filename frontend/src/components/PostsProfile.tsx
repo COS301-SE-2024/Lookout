@@ -17,13 +17,13 @@ const PostsProfile = () => {
   return (
     <div className="w-full"> {/* Full width with smaller padding */}
     <div className="mb-4 flex flex-col space-y-4"> {/* Removed unnecessary ml-4 */}
-    <div className="flex items-center justify-between space-x-2">
+    <div className="flex items-center justify-between space-x-2 ">
       {/* Filter Dropdown */}
       <select
         id="postFilter"
         value={selectedOption}
         onChange={handleChange}
-        className="border p-2 rounded bg-gray-200"
+        className="border p-2 rounded bg-gray-200 bg-hver border-hver"
       >
         <option value="yourPosts">Your posts</option>
         <option value="savedPosts">Saved posts</option>

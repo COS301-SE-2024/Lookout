@@ -115,14 +115,14 @@ export const EditProfile = () => {
   return (
     <>
       <h2 className="text-xl font-bold">Profile</h2>
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-content2 text-content2">
         This is how others will see you on the site.
       </p>
       <hr className="mr-8"></hr>
       <div className="flex flex-col items-center mr-4">
         <ul className="w-full">
           <li className="flex flex-col py-2 mr-4">
-            <label htmlFor="username" className=" text-gray-700 font-bold mb-2">
+            <label htmlFor="username" className=" text-content font-bold mb-2">
               Username
             </label>
             <input
@@ -135,7 +135,7 @@ export const EditProfile = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 ease-in-out text-gray-700 placeholder-gray-400"
             />
           </li>
-          <p className="text-sm text-gray-500 mb-4 mr-4">
+          <p className="text-sm mb-4 mr-4 text-content2">
             This is your public display name that other users will identify you
             with.
           </p>
@@ -143,7 +143,7 @@ export const EditProfile = () => {
           <li className="flex flex-col py-2 mr-4">
             <label
               htmlFor="email"
-              className="block text-gray-700 font-bold mb-2"
+              className="block text-content font-bold mb-2"
             >
               Change Email
             </label>
@@ -157,20 +157,20 @@ export const EditProfile = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 ease-in-out text-gray-700 placeholder-gray-400"
             />
           </li>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm mb-4 text-content2">
             This is your email address you use to log in.
           </p>
 
           <li className="flex flex-col py-2">
             <div className={modalStyles.buttonContainer}>
               <button
-                className="bg-black hover:bg-gray-400 text-white font-bold py-2 px-4 rounded transition ease-in-out"
+                className="bg-navBkg hover:bg-gray-400 text-txtBtn font-bold py-2 px-4 rounded transition ease-in-out"
                 onClick={saveAndExit}
               >
                 Update Profile
               </button>
               <button
-                className="bg-black hover:bg-gray-400 text-white font-bold py-2 px-4 rounded transition ease-in-out"
+                className="bg-navBkg hover:bg-gray-400 text-txtBtn font-bold py-2 px-4 rounded transition ease-in-out"
                 onClick={alertUnimplemented}
               >
                 Reset Your Password
