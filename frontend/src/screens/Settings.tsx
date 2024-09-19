@@ -120,25 +120,6 @@ const renderContent = () => {
         return <EditProfile />;
       case 2:
         return <ThemeSwitcher />;
-        // return (
-        //   <div>
-        //     <h2 className="text-xl font-bold">Appearance</h2>
-        //     <p className="text-sm text-gray-500">Edit the appearance of the site.</p>
-        //     <hr className="mr-10"/>
-        //     <div className="flex items-center py-2">
-        //       <label
-        //         htmlFor="dark-theme-toggle"
-        //         className="font-bold mr-4"
-        //       >
-        //         Enable Dark Theme
-        //       </label>
-        //       <ToggleButton
-        //         onToggle={(isToggled) => setIsDarkTheme(isToggled)}
-        //         initialState={isDarkTheme}
-        //       />
-        //     </div>
-        //   </div>
-        // );
       // case 3:
       //   return <HelpCentre />;
       case 4:
@@ -159,7 +140,8 @@ const renderContent = () => {
   return (
     <div className="flex flex-col h-screen ml-6">
       {/* Heading */}
-      <div className="p-4">
+      <div className={`p-4 ${isMobileView && (activeMenu === 1 || activeMenu === 2 || activeMenu === 4 || activeMenu === 5
+        || activeMenu === 8) ? 'hidden' : ''}`}>
         <h2 className="text-2xl font-bold">Settings</h2>
         <p className="text-sm text-gray-500">Manage your account settings, get help or find additional information.</p>
         <hr className="mr-6" />
