@@ -91,7 +91,7 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
           {filteredGroups.map((group) => (
             <div
               key={group.id}
-              className="flex items-center p-2 border rounded-lg shadow-sm group-item cursor-pointer hover:bg-hver h-36"
+              className="flex items-center p-2 border border-hver rounded-lg shadow-sm group-item cursor-pointer hover:bg-hver h-36"
               onClick={() => handleGroupClick(group)}
             >
               <div className="flex-shrink-0">

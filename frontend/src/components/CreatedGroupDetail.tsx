@@ -275,11 +275,7 @@ const CreatedGroupDetail: React.FC = () => {
         </>
       ) : (
         <>
-          <FaTrash
-          className="absolute top-16 right-20 text-xl text-red-700 hover:text-gray-800 cursor-pointer md:top-24 md:right-20"
-          onClick={handleDeleteClick}
-          size={24}
-          />
+      
           <FaEdit
             className="absolute top-16 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon  md:top-24 md:right-8"
             onClick={handleEditClick}
@@ -343,9 +339,15 @@ const CreatedGroupDetail: React.FC = () => {
             <div className="flex gap-1 mt-4">
               <button
                 onClick={handleViewOnMapClick}
-                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
               >
                 View on map
+              </button>
+              <button
+                onClick={handleDeleteClick}
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
+              >
+                Delete group
               </button>
             </div>
           </div>
@@ -354,7 +356,7 @@ const CreatedGroupDetail: React.FC = () => {
         <div className="mt-8">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-lm font-bold ml-4">Posts in this group</h1>
-            <Link to={`/group/${id}/posts`} className="text-sm text-navBkg underline hover:text-gray-800">View All</Link>
+            <Link to={`/group/${id}/posts`} className="text-sm text-content underline hover:text-gray-800">View All</Link>
           </div>
           <HorizontalCarousel>
             {posts.map((post) => (
@@ -365,7 +367,7 @@ const CreatedGroupDetail: React.FC = () => {
   
         <div className="flex justify-between items-center mb-4 mt-4 ml-4">
           <h1 className="text-ml font-bold">About the owner</h1>
-          <Link to={`/profileView/${owner?.id}`} className="text-sm text-navBkg hover:text-gray-800 underline">
+          <Link to={`/profileView/${owner?.id}`} className="text-content text-sm hover:text-gray-800 underline">
             View their profile
           </Link>
         </div>
@@ -374,36 +376,38 @@ const CreatedGroupDetail: React.FC = () => {
           <div className="flex items-center mb-4">
             <img src={owner?.profilePic} alt="" className="w-20 h-20 rounded-full mr-6" />
             <div>
-              <h2 className="text-lm font-bold">{owner?.userName || 'No Name'}</h2>
-              <p className="text-gray-600 text-sm">{owner?.email || 'No Email'}</p>
+              <h2 className="text-content text-lm font-bold">{owner?.userName || 'No Name'}</h2>
+              <p className="text-content text-sm">{owner?.email || 'No Email'}</p>
             </div>
           </div>
         </div>
   
-        <div className="mt-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-ml font-bold ml-4">Group Members</h1>
-            <button 
-              onClick={() => setIsRemoving(!isRemoving)}
-              className={`text-sm ${isRemoving ? 'bg-red-500 text-white' : 'text-navBkg'} px-2 py-1 rounded hover:bg-red-600 hover:text-white`}
-            >
-              {isRemoving ? 'Cancel' : 'Remove Member'}
-            </button>
+       {/* Group members list */}
+  <div className="mt-6">
+    <h2 className="text-xl font-bold mb-2">Group Members</h2>
+    <ul className="space-y-4">
+      {groupMembers.map((member) => (
+        <li key={member.id} className="flex items-center p-2 rounded-lg">
+          <img
+            src={member.profilePic}
+            alt={`${member.userName}'s profile`}
+            className="w-12 h-12 rounded-full mr-4"
+          />
+          <div>
+            <span className="text-lg font-bold">{member.userName}</span>
+            <p className="text-sm text-content2 ">{member.email}</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {groupMembers.slice(0, 8).map((member) => (
-              <div key={member.id} className="flex flex-col items-center">
-                <img 
-                  src={member.profilePic} 
-                  alt={member.userName} 
-                  className={`w-16 h-16 rounded-full mb-2 ${isRemoving ? 'cursor-pointer' : ''}`}
-                  onClick={() => isRemoving && handleRemoveMember(member)}
-                />
-                <span className="text-sm text-center">{member.userName}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+          {/* Optional: Add Remove Member button */}
+          <button
+            className="ml-auto bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
+            onClick={() => handleRemoveMember(member)}
+          >
+            Remove
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
       </div>
     </div>
   );

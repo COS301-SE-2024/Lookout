@@ -60,6 +60,7 @@ const GroupDetail: React.FC = () => {
 	const [group, setGroup] = useState<Group | null>(null);
 	const [owner, setOwner] = useState<User | null>(null);
 	const [posts, setPosts] = useState<Post[]>([]);
+	const [groupMembers, setMembers] = useState<User[]>([]);
 	const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 	const [groupLoaded, setGroupLoaded] = useState(false);
 	const [ownerLoaded, setOwnerLoaded] = useState(false);
@@ -104,6 +105,14 @@ const GroupDetail: React.FC = () => {
 				}
 				setGroupsLoaded(true);
 				setGroupLoaded(true);
+
+				const memberResponse = await fetch(`/api/groups/users/${id}`, {
+					method: 'GET',
+					headers: { Accept: 'application/json' },
+				  });
+				  const memberData = await memberResponse.json();
+				  const members = memberData.filter((m: User) => m.id !== groupData.userId);
+				  setMembers(members);
 			} catch (error) {
 				console.error("Error fetching group details:", error);
 				setGroupLoaded(true);
@@ -209,8 +218,8 @@ const GroupDetail: React.FC = () => {
 							<div className="flex flex-row items-center">
 								<span className="text-content text-sm">{posts.length} Posts</span>
 								<div className="w-px h-6 bg-gray-300 mx-2"></div>
-								<span className="text-content text-sm">7 Followers</span>
-							</div>
+								<span className="text-content text-sm">{groupMembers.length} Members</span>
+								</div>
 						</div>
 
 						<span className="text-content2 text-sm">
