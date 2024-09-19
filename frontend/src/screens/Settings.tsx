@@ -22,9 +22,9 @@ const Settings = () => {
     // { id: 6, name: "Terms of Service" },
     // { id: 7, name: "Privacy Policy" },
     { id: 8, name: "About Us" },
-    { id: 9, name: "Logout", icon: <LuLogOut size={20}/> },
+    { id: 9, name: "Logout", icon: <LuLogOut size={20} /> },
   ];
-  
+
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<number | null>(menuItems[0].id);
   const [isDarkTheme, setIsDarkTheme] = useState(
@@ -50,71 +50,71 @@ const Settings = () => {
     localStorage.setItem("authToken", "");
     const email = getEmailFromLocalStorage();
     try {
-        const response = await fetch("/api/auth/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email
-            })
-        });
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email
+        })
+      });
 
-        if (!response.ok) {
-            throw new Error("Logout failed!");
-        }
+      if (!response.ok) {
+        throw new Error("Logout failed!");
+      }
 
-        localStorage.setItem("authToken", "");
-        localStorage.removeItem("userEmail");
-        navigate("/login");
-        window.location.reload();
+      localStorage.setItem("authToken", "");
+      localStorage.removeItem("userEmail");
+      navigate("/login");
+      window.location.reload();
     } catch (error) {
-        console.error("Error:", error);
+      console.error("Error:", error);
     }
-};
+  };
 
-const handleToggle = (isToggled: boolean) => {
+  const handleToggle = (isToggled: boolean) => {
     document.documentElement.setAttribute(
-        "data-theme",
-        isToggled ? "dark" : "light"
+      "data-theme",
+      isToggled ? "dark" : "light"
     );
     localStorage.setItem("data-theme", isToggled ? "dark" : "light");
-};
+  };
 
-const [showHelpCentre, setShowHelpCentre] = useState(false);
+  const [showHelpCentre, setShowHelpCentre] = useState(false);
 
-const handleHelpCentreClick = () => {
+  const handleHelpCentreClick = () => {
     setShowHelpCentre(true);
-};
+  };
 
-const handleCloseHelpCentre = () => {
+  const handleCloseHelpCentre = () => {
     setShowHelpCentre(false);
-};
+  };
 
-const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
+  const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
     undefined
-);
+  );
 
-const jsx = useMemo(() => {
+  const jsx = useMemo(() => {
     if (selectedIndex === undefined) {
-        return undefined;
+      return undefined;
     }
     if (selectedIndex === 0) {
-        return (
-            <div>
-                <div
-                    className="cursor-pointer"
-                    onClick={() => setSelectedIndex(undefined)}
-                >
-                    <FaChevronLeft size={24} />
-                </div>
-                <EditProfile />
-            </div>
-        );
+      return (
+        <div>
+          <div
+            className="cursor-pointer"
+            onClick={() => setSelectedIndex(undefined)}
+          >
+            <FaChevronLeft size={24} />
+          </div>
+          <EditProfile />
+        </div>
+      );
     }
-}, [selectedIndex]);
+  }, [selectedIndex]);
 
-const renderContent = () => {
+  const renderContent = () => {
     switch (activeMenu) {
       case 1:
         return <EditProfile />;
@@ -151,7 +151,7 @@ const renderContent = () => {
       <div className="flex flex-1">
         {/* Left-hand Menu */}
         <div
-          className={`w-full md:w-1/5 p-4 ${isMobileView && activeMenu !== null ? 'hidden' : 'block'}`}
+          className={`w-full md:w-1/5 p-2 ${isMobileView && activeMenu !== null ? 'hidden' : 'block'}`}
         >
           <ul>
             {menuItems.map((item) => (
@@ -164,13 +164,17 @@ const renderContent = () => {
                     setActiveMenu(item.id);
                   }
                 }}
-                className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-gray-200" : "bg-bkg"} hover:bg-gray-200`}
+                className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-gray-200" : "bg-bkg"
+                  } hover:bg-gray-200`}
               >
-                <span className="flex-1">{item.name}</span>
+                <span className={`flex-1 ${isMobileView ? 'text-lg' : 'text-base'}`}>
+                  {item.name}
+                </span>
                 {item.icon && <span className="ml-2">{item.icon}</span>}
               </li>
             ))}
           </ul>
+
         </div>
 
         {/* Content Panel */}
@@ -179,7 +183,7 @@ const renderContent = () => {
         >
           {isMobileView && activeMenu !== null && (
             <button
-              className="text-gray-500 hover:text-gray-700 mb-2 flex items-center"
+              className="text-gray-500 hover:text-gray-700 mb-2 flex items-center mt-6 mb-4"
               onClick={() => setActiveMenu(null)}
             >
               <FaArrowLeft className="mr-2" />

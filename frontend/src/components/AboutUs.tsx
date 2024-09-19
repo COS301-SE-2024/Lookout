@@ -2,7 +2,7 @@ import React from 'react';
 
 const AboutUs: React.FC = () => {
   return (
-    <div className="p-8 min-h-screen">
+    <div className="mr-4 min-h-screen">
       <h1 className="text-3xl font-bold mb-4 text-center">About Us</h1>
       <p className="text-lg mb-6">
         Welcome to Lookout, a cutting-edge Progressive Web App (PWA) designed to enhance how we record and share points of interest in nature. Our application addresses the needs of animal spotters, hikers, and conservationists by offering a modern and efficient way to document and disseminate important information.

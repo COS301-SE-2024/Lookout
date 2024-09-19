@@ -13,8 +13,8 @@ const TutorialsPage: React.FC = () => {
   const pageStyles = {
     pageContainer: "w-full min-h-screen p-4", 
     contentContainer:
-      "bg-white text-black rounded-lg p-8 mx-auto w-11/12 md:w-3/4 pb-16", // Add bottom padding
-    helpTitle: "text-xl font-semibold mb-4 text-center text-black",
+      "text-black rounded-lg w-11/12 md:w-3/4 pb-16", // Add bottom padding
+    helpTitle: "text-xl font-bold",
     searchBar:
       "w-full py-2 px-4 bg-gray-200 border rounded-lg mt-4 text-black mb-6",
     questionItem:
@@ -117,10 +117,12 @@ const TutorialsPage: React.FC = () => {
   );
 
   return (
-    <div className={pageStyles.pageContainer}>
+    <div className="">
       <div className={pageStyles.contentContainer}>
-        <h2 className={pageStyles.helpTitle}>Tutorials</h2>
-        <input
+      <h2 className={pageStyles.helpTitle}>Tutorials</h2>
+      <p className="text-sm text-gray-500">Step-by-step instructions to guide you.</p>
+      <hr className="mr-10" />
+         <input
           type="text"
           className={pageStyles.searchBar}
           placeholder="Search for a question..."
@@ -157,7 +159,7 @@ const TutorialsPage: React.FC = () => {
               )}
             </div>
           ))}
-        </ul>
+        </ul> 
       </div>
     </div>
   );
