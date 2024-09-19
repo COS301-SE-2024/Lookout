@@ -61,9 +61,9 @@ const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
     fetchPosts();
   }, [userId]);
 
-  const handlePostsClick = (post: Post) => {
-    navigate(`/user_post/${post.id}`, { state: { post } });
-  };
+  // const handlePostsClick = (post: Post) => {
+  //   navigate(`/user_post/${post.id}`, { state: { post } });
+  // };
 
   const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -81,9 +81,9 @@ const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
             <div
               key={post.id}
               className="overflow-hidden rounded-md shadow-lg cursor-pointer"
-              onClick={() => handlePostsClick(post)}
+             // onClick={() => handlePostsClick(post)}
             >
-              <Link to={`/saved_post/${post.id}`}>
+              <Link to={`/user_post/${post.id}`}>
                 <img
                   src={post.picture}
                   alt={`Post ${post.id}`}

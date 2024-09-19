@@ -11,7 +11,10 @@ import S3Uploader from "../components/S3Uploader";
 
 const Profile = () => {
   const userId = 1;
-  const [activeTab, setActiveTab] = useState("posts");
+  const [activeTab, setActiveTab] = useState(() => {
+    // Check localStorage for the active tab, default to "posts"
+    return localStorage.getItem("activeTab") || "posts";
+  });
   const [showSettings, setShowSettings] = useState(false);
   const [username, setUsername] = useState("Loading...");
   const [postsCount, setPostsCount] = useState(0);
@@ -66,6 +69,11 @@ const Profile = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // Store active tab in localStorage whenever it changes
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   const closeModal = () => {
     setModalOpen(false);
@@ -126,14 +134,13 @@ const Profile = () => {
         </button>
       </div>
 
-    {/* Content */}
-<div className="w-full max-w-6xl mx-auto mt-4 sm:mt-6 px-2"> {/* Reduced padding */}
-  {activeTab === "posts" && <PostsProfile />}
-  {activeTab === "groups" && <GroupsProfile />}
-</div>
+      {/* Content */}
+      <div className="w-full max-w-6xl mx-auto mt-4 sm:mt-6 px-2">
+        {activeTab === "posts" && <PostsProfile />}
+        {activeTab === "groups" && <GroupsProfile />}
+      </div>
     </div>
   );
 };
-
 
 export default Profile;

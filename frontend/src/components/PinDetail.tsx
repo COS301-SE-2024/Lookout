@@ -97,81 +97,39 @@ const PinDetail: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "data-theme") {
-        const newTheme = localStorage.getItem("data-theme") || "default";
-        setTheme(newTheme);
-        document.documentElement.setAttribute("data-theme", newTheme);
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
-  useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchData = async () => {
       try {
         const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
         setPost(data);
-        console.log(data)
         setLoading(false);
 
-        // Fetch related posts once the main post is fetched
-        const relatedResponse = await fetch(
-          `/api/posts/group/${data.groupId}?page=0&size=10`
-        );
+        const relatedResponse = await fetch(`/api/posts/group/${data.groupId}?page=0&size=10`);
         const relatedData = await relatedResponse.json();
         setRelatedPosts(relatedData.content);
 
-        // Fetch user details using post.userId
         const userResponse = await fetch(`/api/users/${data.userId}`);
         const userData = await userResponse.json();
-        setUser(userData);  // Store user data including profile picture
+        setUser(userData);
 
+        const savedResponse = await fetch(`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`);
+        const isPostSaved = await savedResponse.json();
+        setIsSaved(isPostSaved);
 
-        
-
+        const savesResponse = await fetch(`/api/savedPosts/countSaves?postId=${id}`);
+        const savesCount = await savesResponse.json();
+        setSaves(savesCount);
       } catch (error) {
-        console.error("Error fetching post or related posts:", error);
+        console.error("Error fetching data:", error);
         setLoading(false);
       }
     };
 
-    const checkIfSaved = async () => {
-      try {
-        const response = await fetch(
-          `/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`
-        );
-        const data = await response.json();
-        setIsSaved(data);
-      } catch (error) {
-        console.error("Error checking saved status:", error);
-      }
-    };
-
-    const getCountSaves = async () => {
-      try {
-        const response = await fetch(`/api/savedPosts/countSaves?postId=${id}`);
-        const data = await response.json();
-        setSaves(data);
-      } catch (error) {
-        console.error("Error fetching saves count:", error);
-      }
-    };
-
-    fetchPost();
-    checkIfSaved();
-    getCountSaves();
+    fetchData();
   }, [id, userId]);
 
   const handleSaveClick = async () => {
@@ -245,7 +203,7 @@ const PinDetail: React.FC = () => {
 
   
   if (!post || !user) {
-    return <p>Post or user not found.</p>;
+    return <SkeletonPinDetail />;
   }
  
   
@@ -353,17 +311,21 @@ const PinDetail: React.FC = () => {
             <div className="flex justify-start mt-4 space-x-4">
               <button
                 className="px-4 py-2 rounded-full bg-navBkg text-white focus:outline-none focus:ring-2 focus:ring-green-400"
-                onClick={() => navigate(`/map`, { state: { post, apicode } })}
+                onClick={() => navigate(`/map`, { state: { post, apicode }, replace: true })
+              }
               >
                 View on Map
               </button>
               <button
                 className="px-4 py-2 rounded-full bg-navBkg text-white focus:outline-none focus:ring-2 focus:ring-green-400"
-                onClick={() =>
-                  navigate(`/group/${post.groupId}`, {
-                    state: { group: post.group },
-                  })
-                }
+                onClick={() => {
+                  if (window.location.pathname !== `/group/${post.groupId}`) {
+                    navigate(`/group/${post.groupId}`, {
+                      state: { group: post.group },
+                      replace: true,
+                    });
+                  }
+                }}                               
               >
                 View Group
               </button>

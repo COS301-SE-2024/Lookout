@@ -1,13 +1,21 @@
-import React, { startTransition, useState } from "react";
+import React, { startTransition, useState, useEffect } from "react";
 import GroupsGridFix from "./GroupsGridFix";
 import CreatedGroupsGridFix from "./CreatedGroupsGridFix";
 import CreateGroups from "./CreateGroups"; // Import CreateGroups component
 import { FaPlus } from "react-icons/fa6";
 
 const GroupsProfile = () => {
-  const [selectedOption, setSelectedOption] = useState<string>("groups");
+  // Initialize selectedOption from localStorage or default to "groups"
+  const [selectedOption, setSelectedOption] = useState(() => {
+    return localStorage.getItem("selectedOption") || "groups";
+  });
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isCreateGroupsOpen, setIsCreateGroupsOpen] = useState<boolean>(false);
+
+  // Update localStorage whenever selectedOption changes
+  useEffect(() => {
+    localStorage.setItem("selectedOption", selectedOption);
+  }, [selectedOption]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     startTransition(() => {
@@ -37,7 +45,7 @@ const GroupsProfile = () => {
 
   return (
     <div className="w-full"> 
-    <div className="mb-4 flex flex-col space-y-4"> {/* Removed unnecessary ml-4 */}
+      <div className="mb-4 flex flex-col space-y-4">
         {/* Search Bar and Filter Dropdown on the Same Line */}
         <div className="flex items-center justify-between space-x-2">
           {/* Filter Dropdown */}
@@ -52,28 +60,20 @@ const GroupsProfile = () => {
           </select>
           {/* Create Group Button */}
           <button
-  className="p-2 h-12 w-12 rounded-md hover:bg-gray-300 flex items-center justify-center"
-  onClick={() => setIsCreateGroupsOpen(true)}
->
-  <FaPlus
-    size={24}
-    className="text-content"
-  />
-</button>
-
+            className="p-2 h-12 w-12 rounded-md hover:bg-gray-300 flex items-center justify-center"
+            onClick={() => setIsCreateGroupsOpen(true)}
+          >
+            <FaPlus size={24} className="text-content" />
+          </button>
         </div>
       </div>
 
       {/* Display Groups */}
-    
-        {selectedOption === "groups" ? (
-          <GroupsGridFix searchQuery={searchQuery} />
-        ) : (
-          <CreatedGroupsGridFix searchQuery={searchQuery} />
-        )}
-      
-
-       
+      {selectedOption === "groups" ? (
+        <GroupsGridFix searchQuery={searchQuery} />
+      ) : (
+        <CreatedGroupsGridFix searchQuery={searchQuery} />
+      )}
 
       {/* Create Groups Modal */}
       {isCreateGroupsOpen && (
