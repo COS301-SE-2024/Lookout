@@ -62,7 +62,7 @@ class SavedPostsService(
 
     private fun broadcastSaveCount(postId: Long) {
         val updatedCount = countSavesByPostId(postId)
-        // Broadcasting to all clients subscribed to /topic/post/{postId}
+
         messagingTemplate.convertAndSend("/topic/post/$postId", updatedCount)
     }
 }
