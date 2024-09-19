@@ -81,20 +81,21 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup, onClose }) =
   };
 
   return (
-    <div className="relative bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
+    <div className="relative p-4 rounded-lg w-full max-w-md">
       {/* Close Button */}
-      <button
-        className="absolute top-2 right-2 text-gray-600"
-        onClick={onClose}  // Use the onClose prop
-      >
-        <FaTimes className="text-xl" />
-      </button>
-
-      <h2 className="text-2xl font-bold mb-4">Create</h2>
+      <div className="flex justify-between items-center mb-4">
+  <h2 className="text-2xl font-bold">Create a New Group</h2>
+  <button
+    className="text-gray-600 hover:text-navBkg"
+    onClick={onClose}  // Use the onClose prop
+  >
+    <FaTimes className="text-xl" />
+  </button>
+</div>
 
       <div className="flex justify-center mb-3">
         <button
-          className="flex items-center justify-center w-32 h-32 border border-gray-300 rounded-lg relative overflow-hidden"
+          className="flex items-center justify-center w-32 h-32 border border-gray-300 rounded-lg relative overflow-hidden hover:text-navBkg"
           onClick={handleAddPhotoClick}
           data-testid="add-photo-button"
         >
@@ -191,7 +192,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup, onClose }) =
 
       <div>
         <button
-          className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 bg-navBkg text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           onClick={handleCreateClick}
         >
           Create
