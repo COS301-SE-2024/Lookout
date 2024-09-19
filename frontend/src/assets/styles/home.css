@@ -1,11 +1,23 @@
 .map-container {
-	width: 100vw;
-	height: 91vh;
+
+    width: 100%;
+    height: 92vh; 
 }
 
-#menu {
-	top: 1.5rem;
-	left: 4rem;
+.search-bar {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+
+#menu{
+    top:1.5rem;
+    left:4rem;
+
 }
 
 #sightlocation {
@@ -14,6 +26,7 @@
 }
 
 @media (max-width: 767px) {
+
 	.map-container {
 		width: 100%;
 		height: 840px;
@@ -23,6 +36,7 @@
 		top: 4rem;
 		left: 1rem;
 	}
+
 }
 
 /* Slider styles */

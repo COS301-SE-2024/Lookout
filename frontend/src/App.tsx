@@ -8,12 +8,11 @@ import WebSocketTest from "./components/WebSocketTest";
 const App = () => {
 	return (
 		<>
-			<main className="bg-bkg text-content">
-				<div className="container mx-0">
-					<Navigationbar />
+			<Navigationbar />
+			<main className="bg-bkg text-content w-full min-w-full">
+				<div className="container mx-0 w-full min-w-full">
 					<Outlet />
 					<EmailHandler />
-					{/* <WebSocketTest /> */}
 				</div>
 			</main>
 		</>
