@@ -138,7 +138,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen ml-6">
+    <div className="flex flex-col h-screen ml-6 mt-4 md:mt-0">
       {/* Heading */}
       <div className={`p-4 ${isMobileView && (activeMenu === 1 || activeMenu === 2 || activeMenu === 4 || activeMenu === 5
         || activeMenu === 8) ? 'hidden' : ''}`}>
