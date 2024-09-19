@@ -292,21 +292,23 @@ const ExploreScreen: React.FC = () => {
       {!loading && searchQuery === "" && (
         <>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
-            <span>Posts we think you'll like</span>
-            <Link to="/recommend/posts" className="text-black-500 underline">
-              View All
-            </Link>
-          </h1>
+        <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+          <span>Posts we think you'll like</span>
+          <Link to="/recommend/posts" className="text-sm md:text-base text-black-500 underline">
+            View All
+          </Link>
+        </h1>
+
+
           <HorizontalCarousel>
             {recommendedPosts.map((post, index) => (
               <RecommendPost key={post.id} post={post} rank={index + 1} />
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">            
             <span>Groups we think you'll like</span>
-            <Link to="/recommend/groups" className="text-black-500 underline">
+            <Link to="/recommend/groups"className="text-sm md:text-base text-black-500 underline">
               View All
             </Link>
           </h1>
@@ -316,9 +318,9 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
-            <span>Animal Sightings</span>
-            <Link to="/category/1" className="text-black-500 underline">
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+                        <span>Animal Sightings</span>
+            <Link to="/category/1" className="text-sm md:text-base text-black-500 underline">
               View All
             </Link>
           </h1>
@@ -328,9 +330,9 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
-            <span>Campsites</span>
-            <Link to="/category/2" className="text-black-500 underline">
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+                        <span>Campsites</span>
+            <Link to="/category/2" className="text-sm md:text-base text-black-500 underline">
               View All
             </Link>
           </h1>
@@ -340,9 +342,9 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
-            <span>Hiking Trails</span>
-            <Link to="/category/3" className="text-black-500 underline">
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+                        <span>Hiking Trails</span>
+            <Link to="/category/3" className="text-sm md:text-base text-black-500 underline">
               View All
             </Link>
           </h1>
@@ -352,9 +354,9 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
-            <span>Points of Interest</span>
-            <Link to="/category/4" className="text-black-500 underline">
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+                        <span>Points of Interest</span>
+            <Link to="/category/4" className="text-sm md:text-base text-black-500 underline">
               View All
             </Link>
           </h1>
@@ -364,9 +366,9 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
-            <span>Security Concerns</span>
-            <Link to="/category/5" className="text-black-500 underline">
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+                        <span>Security Concerns</span>
+            <Link to="/category/5" className="text-sm md:text-base text-black-500 underline">
               View All
             </Link>
           </h1>
@@ -376,9 +378,9 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-2xl font-bold mb-4 flex justify-between items-center mt-8">
-            <span>Groups</span>
-            <Link to="/category/6" className="text-black-500 underline">
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+                        <span>Groups</span>
+            <Link to="/category/6" className="text-sm md:text-base text-black-500 underline">
               View All
             </Link>
           </h1>
