@@ -11,18 +11,18 @@ interface SettingsModalProps {
 const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const modalStyles = {
     modalContainer:
-      "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50",
+      "fixed inset-0 z-50 flex items-center justify-center bg-nav bg-opacity-50",
     modalContent:
-      "bg-white text-gray-900 rounded-2xl shadow-lg p-8 relative w-11/12 md:w-96 h-auto transition-all transform duration-300",
-    closeButton: "absolute top-3 right-3 cursor-pointer",
+      "bg-nav text-gray-900 rounded-2xl shadow-lg p-8 relative w-11/12 md:w-96 h-auto transition-all transform duration-300",
+    closeButton: "text-content absolute top-3 right-3 cursor-pointer",
     closeIcon:
-      "text-gray-500 hover:text-gray-700 transition-colors duration-200",
-    helpTitle: "text-2xl font-bold mb-6 text-center text-gray-800",
-    sectionTitle: "text-lg font-semibold mt-4 mb-2 text-gray-600",
+      "hover:text-gray-700 transition-colors duration-200",
+    helpTitle: "text-2xl font-bold mb-6 text-center text-content",
+    sectionTitle: "text-lg font-semibold mt-4 mb-2 text-content",
     listItem:
-      "py-4 border-b border-gray-200 flex items-center justify-between hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer",
-    listItemText: "flex items-center text-lg text-gray-800",
-    chevronIcon: "text-gray-400",
+      "text-content py-4 border-b border-gray-200 flex items-center justify-between hover:bg-bkg rounded-lg transition-colors duration-200 cursor-pointer",
+    listItemText: "text-content flex items-center text-lg ",
+    chevronIcon: "text-content",
   };
 
   const [showFAQModal, setShowFAQModal] = useState(false);
@@ -70,7 +70,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                   href="https://forms.gle/dc4i9pd2GNLZKm2h6"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
+                  className="text-content underline hover:underline"
                 >
                   Send us your feedback
                 </a>

@@ -143,7 +143,7 @@ const Settings = () => {
       <div className={`p-4 ${isMobileView && (activeMenu === 1 || activeMenu === 2 || activeMenu === 4 || activeMenu === 5
         || activeMenu === 8) ? 'hidden' : ''}`}>
         <h2 className="text-2xl font-bold">Settings</h2>
-        <p className="text-sm text-gray-500">Manage your account settings, get help or find additional information.</p>
+        <p className="text-sm text-content2 text-content2">Manage your account settings, get help or find additional information.</p>
         <hr className="mr-6" />
       </div>
 
@@ -164,8 +164,8 @@ const Settings = () => {
                     setActiveMenu(item.id);
                   }
                 }}
-                className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-gray-200" : "bg-bkg"
-                  } hover:bg-gray-200`}
+                className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-hver" : "bg-bkg"
+                  } hover:bg-hver`}
               >
                 <span className={`flex-1 ${isMobileView ? 'text-lg' : 'text-base'}`}>
                   {item.name}
@@ -183,7 +183,7 @@ const Settings = () => {
         >
           {isMobileView && activeMenu !== null && (
             <button
-              className="text-gray-500 hover:text-gray-700 mb-2 flex items-center mt-6 mb-4"
+              className="text-content2 hover:text-gray-700 mb-2 flex items-center mt-6 mb-4"
               onClick={() => setActiveMenu(null)}
             >
               <FaArrowLeft className="mr-2" />

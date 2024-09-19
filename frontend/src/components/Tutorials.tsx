@@ -13,15 +13,15 @@ const TutorialsPage: React.FC = () => {
   const pageStyles = {
     pageContainer: "w-full min-h-screen p-4", 
     contentContainer:
-      "text-black rounded-lg w-11/12 md:w-3/4 pb-16", // Add bottom padding
+      "text-content rounded-lg w-11/12 md:w-3/4 pb-16", // Add bottom padding
     helpTitle: "text-xl font-bold",
     searchBar:
       "w-full py-2 px-4 bg-gray-200 border rounded-lg mt-4 text-black mb-6",
     questionItem:
       "py-4 border-b border-gray-200 cursor-pointer flex justify-between items-center",
-    questionTitle: "text-lg font-medium text-black",
+    questionTitle: "text-lg font-medium",
     arrowIcon: "text-gray-500",
-    answerSection: "mt-4 ml-4 text-sm text-gray-700",
+    answerSection: "mt-4 ml-4 text-sm",
     image: "w-full sm:w-3/4 md:w-1/2 lg:w-1/3 h-auto mt-4 rounded-md border border-gray-200",
     answerList: "list-decimal list-inside mt-2",
   };  
@@ -120,7 +120,7 @@ const TutorialsPage: React.FC = () => {
     <div className="">
       <div className={pageStyles.contentContainer}>
       <h2 className={pageStyles.helpTitle}>Tutorials</h2>
-      <p className="text-sm text-gray-500">Step-by-step instructions to guide you.</p>
+      <p className="text-sm text-content2">Step-by-step instructions to guide you.</p>
       <hr className="mr-10" />
          <input
           type="text"

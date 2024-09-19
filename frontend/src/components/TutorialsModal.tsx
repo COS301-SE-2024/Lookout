@@ -16,19 +16,19 @@ interface TutorialsModalProps {
 const TutorialsModal: React.FC<TutorialsModalProps> = ({ onClose }) => {
   const modalStyles = {
     modalContainer:
-      "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50",
+      "fixed inset-0 z-50 flex items-center justify-center bg-nav bg-opacity-50",
     modalContent:
-      "bg-white text-black rounded-lg p-8 relative w-11/12 md:w-96 max-h-screen h-[80vh] overflow-y-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200",
+      "bg-nav text-content rounded-lg p-8 relative w-11/12 md:w-96 max-h-screen h-[80vh] overflow-y-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200",
     closeButton: "absolute top-2 left-2 cursor-pointer",
-    closeIcon: "text-gray-500 hover:text-gray-700",
-    helpTitle: "text-xl font-semibold mb-4 text-center text-black",
+    closeIcon: "text-content hover:text-gray-700",
+    helpTitle: "text-xl font-semibold mb-4 text-center text-content",
     searchBar:
-      "w-full py-2 px-4 bg-gray-200 border rounded-lg mt-4 text-black mb-6",
+      "w-full py-2 px-4 bg-gray-200 border rounded-lg mt-4 text-content mb-6",
     questionItem:
       "py-4 border-b border-gray-200 cursor-pointer flex justify-between items-center",
-    questionTitle: "text-lg font-medium text-black",
-    arrowIcon: "text-gray-500",
-    answerSection: "mt-4 ml-4 text-sm text-gray-700",
+    questionTitle: "text-lg font-medium text-content",
+    arrowIcon: "text-content",
+    answerSection: "mt-4 ml-4 text-sm text-content2",
     image: "w-full h-auto mt-4 rounded-md border border-gray-200",
     answerList: "list-decimal list-inside mt-2",
   };

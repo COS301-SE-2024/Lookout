@@ -49,25 +49,25 @@ const Navigationbar = () => {
 						{/* Help icon for mobile view */}
 						<FaQuestion
 							size={40}
-							className="absolute top-3 right-2 text-white bg-gray-500 p-2 rounded-full cursor-pointer hover:bg-gray-200 hover:text-navBkg z-10"
+							className="absolute top-3 right-2 text-icon bg-nav p-2 rounded-full cursor-pointer hover:bg-gray-200 hover:text-navBkg z-10"
 							onClick={handleHelpCentreClick}
 						/>
 
 						{/* Bottom navigation for icons */}
-						<nav className="fixed bottom-0 w-full bg-white shadow-lg py-2 flex justify-around">
-							<Link to="/" className="text-gray-500 flex flex-col items-center justify-center">
+						<nav className="fixed bottom-0 w-full bg-nav shadow-lg py-2 flex justify-around">
+							<Link to="/" className="text-icon flex flex-col items-center justify-center">
 								<FaMap size={24} />
 								<span className="text-xs">Map</span>
 							</Link>
-							<Link to="/explore" className="text-gray-500 flex flex-col items-center justify-center">
+							<Link to="/explore" className="text-icon flex flex-col items-center justify-center">
 								<FaBinoculars size={24} />
 								<span className="text-xs">Explore</span>
 							</Link>
-							<Link to="/profile" className="text-gray-500 flex flex-col items-center justify-center">
+							<Link to="/profile" className="text-icon flex flex-col items-center justify-center">
 								<FaUser size={24} />
 								<span className="text-xs">Profile</span>
 							</Link>
-							<Link to="/settings" className="text-gray-500 flex flex-col items-center justify-center">
+							<Link to="/settings" className="text-icon flex flex-col items-center justify-center">
 								<FaGear size={24} />
 								<span className="text-xs">Settings</span>
 							</Link>
@@ -79,15 +79,15 @@ const Navigationbar = () => {
 
 					{/* Desktop View */}
 					<div className="hidden md:flex flex-col md:flex-row items-center">
-						<nav className="container mx-auto py-2 bg-bkg w-full min-w-full">
+						<nav className="container mx-auto py-2 bg-nav w-full min-w-full">
 							<div className="flex flex-col md:flex-row items-center">
 								{/* Left side icons */}
 								<ul className="flex md:justify-start justify-center items-center space-x-2 md:ml-8">
 									{/* Icon and text for LOOKOUT */}
 									<li className="flex items-center space-x-2 hover:scale-105 transform transition-transform duration-300">
 										<Link to="/" className="flex items-center space-x-2">
-											<FaBinoculars size={32} className="text-navBkg hover:text-navBkg-dark transition-colors duration-300" />
-											<h1 className="text-navBkg font-extrabold text-3xl hover:text-navBkg-dark transition-transform duration-300">
+											<FaBinoculars size={32} className="text-navBkg2 hover:text-navBkg-dark transition-colors duration-300" />
+											<h1 className="text-navBkg2 font-extrabold text-3xl hover:text-navBkg-dark transition-transform duration-300">
 												LOOKOUT
 											</h1>
 										</Link>
@@ -99,27 +99,27 @@ const Navigationbar = () => {
 								<li>
 										<FaQuestion
 											size={42}
-											className="text-gray-500 p-2 rounded-full cursor-pointer hover:bg-gray-200 hover:text-navBkg"
+											className="text-icon p-2 rounded-full cursor-pointer hover:bg-iconShadow hover:text-navBkg2"
 											onClick={handleHelpCentreClick}
 										/>
 									</li>
 									<li>
-										<Link to="/" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg hover:bg-gray-200 transition-all duration-300">
+										<Link to="/" className="text-icon flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300">
 											<FaMap size={26} />
 										</Link>
 									</li>
 									<li>
-										<Link to="/explore" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg hover:bg-gray-200 transition-all duration-300">
+										<Link to="/explore" className="text-icon flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300">
 											<FaBinoculars size={26} />
 										</Link>
 									</li>
 									<li>
-										<Link to="/profile" className="text-gray-500 flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg hover:bg-gray-200 transition-all duration-300">
+										<Link to="/profile" className="text-icon flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300">
 											<FaUser size={26} />
 										</Link>
 									</li>
 									<li>
-										<Link to="/settings" className="text-gray-500 flex items-center justify-center hover:text-navBkg w-12 h-12 rounded-full hover:bg-gray-200 transition-all duration-300">
+										<Link to="/settings" className="text-icon flex items-center justify-center hover:text-navBkg2 w-12 h-12 rounded-full hover:bg-iconShadow transition-all duration-300">
 											<FaGear size={26} />
 										</Link>
 									</li>

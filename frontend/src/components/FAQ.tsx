@@ -14,8 +14,8 @@ const FAQScreen: React.FC = () => {
 		searchBar: "w-full py-2 px-4 bg-gray-200 rounded-lg mt-2 ml-4 text-black mr-4",
 		faqList: "w-full  overflow-hidden",
 		faqItem: "py-4 border-t border-b mr-4",
-		faqQuestion: "font-bold text-black mr-4",
-		faqAnswer: "text-sm text-black mt-2 mr-4"
+		faqQuestion: "font-bold text-content2 mr-4",
+		faqAnswer: "text-sm text-content mt-2 mr-4"
 	};
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -82,7 +82,7 @@ const FAQScreen: React.FC = () => {
 	return (
 		<div className="mr-8">
 			<h2 className="text-xl font-bold">Frequently Asked Questions</h2>
-			<p className="text-sm text-gray-500">Find a question that was likely asked already.</p>
+			<p className="text-sm text-content2">Find a question that was likely asked already.</p>
 			<hr className="mr-2"/>
 			<div className="flex items-center py-2">
 			<div className={screenStyles.container}>
