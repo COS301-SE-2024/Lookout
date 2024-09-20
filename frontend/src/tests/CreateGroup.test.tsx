@@ -28,13 +28,17 @@ afterEach(() => {
 
 describe('CreateGroups', () => {
   test('renders CreateGroups component', () => {
-    render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
+    render(<CreateGroups onCreateGroup={mockOnCreateGroup} onClose={function (): void {
+        throw new Error('Function not implemented.');
+    } } />);
     const createElements = screen.getAllByText('Create');
     expect(createElements.length).toBeGreaterThan(0);
   });
 
   test('handles form input', () => {
-    render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
+    render(<CreateGroups onCreateGroup={mockOnCreateGroup} onClose={function (): void {
+        throw new Error('Function not implemented.');
+    } } />);
 
     const titleInput = screen.getByLabelText(/title/i);
     const descriptionInput = screen.getByLabelText(/description/i);
@@ -47,7 +51,9 @@ describe('CreateGroups', () => {
   });
 
   test('submits form and calls API', async () => {
-    render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
+    render(<CreateGroups onCreateGroup={mockOnCreateGroup} onClose={function (): void {
+        throw new Error('Function not implemented.');
+    } } />);
 
     const titleInput = screen.getByLabelText(/title/i);
     const descriptionInput = screen.getByLabelText(/description/i);
