@@ -77,7 +77,7 @@ const GroupPosts: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 relative ">
+    <div className="container mx-auto p-4 relative flex flex-col h-screen bg-bkg">
       {/* Back Arrow */}
       <button
         onClick={() => navigate(-1)}

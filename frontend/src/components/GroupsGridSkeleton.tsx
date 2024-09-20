@@ -2,7 +2,7 @@ import React from 'react';
 
 const GroupsGridSkeleton: React.FC = () => {
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 flex flex-col h-screen bg-bkg">
       <div className="space-y-3">
         {Array.from({ length: 6 }).map((_, index) => (
           <div

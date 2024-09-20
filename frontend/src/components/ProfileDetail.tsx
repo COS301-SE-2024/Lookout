@@ -71,7 +71,8 @@ const ProfileDetail: React.FC = () => {
   }
 
   return (
-    <div className="relative flex flex-col items-center w-full min-h-screen">
+    <div className="relative flex flex-col items-center bg-bkg w-full min-h-screen">
+
       {user ? (
         <>
         <button onClick={() => navigate(-1)} className="absolute top-4 left-4 text-navBkg hover:text-icon">

@@ -2,7 +2,7 @@ import React from 'react';
 
 const PinDetailSkeleton: React.FC = () => {
   return (
-    <div className="p-4 mx-auto max-w-screen-lg">
+    <div className="p-4 mx-auto max-w-screen-lg flex flex-col h-screen bg-bkg">
       <div className="relative mb-8">
       </div>
 

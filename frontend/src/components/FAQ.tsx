@@ -80,7 +80,7 @@ const FAQScreen: React.FC = () => {
 	);
 
 	return (
-		<div className="mr-8">
+		<div className="mr-8 bg-bkg">
 			<h2 className="text-xl font-bold">Frequently Asked Questions</h2>
 			<p className="text-sm text-content2">Find a question that was likely asked already.</p>
 			<hr className="mr-2"/>

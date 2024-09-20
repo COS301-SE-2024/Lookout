@@ -117,7 +117,7 @@ const TutorialsPage: React.FC = () => {
   );
 
   return (
-    <div className="">
+    <div className="bg-bkg">
       <div className={pageStyles.contentContainer}>
       <h2 className={pageStyles.helpTitle}>Tutorials</h2>
       <p className="text-sm text-content2">Step-by-step instructions to guide you.</p>

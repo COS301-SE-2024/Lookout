@@ -114,6 +114,7 @@ export const EditProfile = () => {
 
   return (
     <>
+    <div className="flex flex-col h-screen bg-bkg">
       <h2 className="text-xl font-bold">Profile</h2>
       <p className="text-sm text-content2 text-content2">
         This is how others will see you on the site.
@@ -178,6 +179,7 @@ export const EditProfile = () => {
             </div>
           </li>
         </ul>
+      </div>
       </div>
     </>
   );

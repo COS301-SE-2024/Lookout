@@ -39,7 +39,7 @@ const ThemeSwitcher = () => {
     `p-6 cursor-pointer border-4 rounded ${selectedTheme === theme ? 'border-content2' : 'border-bkg'} ${theme === 'light' ? 'bg-gray-200 text-gray-800' : 'bg-gray-800 text-gray-300'}`;
   
   return (
-    <div>
+    <div className="flex flex-col h-screen bg-bkg">
       <h2 className="text-xl font-bold">Appearance</h2>
       <p className="text-sm text-content2">Edit the appearance of the site.</p>
       <hr className="mr-10" />

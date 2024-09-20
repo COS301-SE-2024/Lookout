@@ -114,7 +114,7 @@ function Login() {
 					<div className="flex justify-around items-center">
 						<button
 							type="submit"
-							className="w-full px-4 py-2 text-content bg-navBkg rounded-md hover:bg-content hover:border-content hover:text-navBkg border border-navBkg"
+							className="w-full px-4 py-2 text-txtBtn bg-navBkg rounded-md hover:bg-txtBtn hover:border-navBkg hover:text-navBkg border border-navBkg"
 							onClick={handleSubmit}
 						>
 							Login
