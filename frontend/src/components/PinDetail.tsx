@@ -5,62 +5,62 @@ import SkeletonPinDetail from "./PinDetailSkeleton";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 import PinDetailPost from "./PinDetailPost";
-import webSocketService from "../utils/webSocketService";
 
 interface Post {
-	id: number;
-	username: string;
-	description: string;
-	groupName: string;
-	groupDescription: string;
-	categoryId: any;
-	groupId: number;
-	title: string;
-	groupPicture: string;
-	admin: string;
-	userId: number;
-	user: {
-		userId: number;
-		userName: string;
-		email: string;
-		passcode: string;
-		role: string;
-		username: string;
-		authorities: { authority: string }[];
-		isCredentialsNonExpired: boolean;
-		isAccountNonExpired: boolean;
-		isAccountNonLocked: boolean;
-		password: string;
-		isEnabled: boolean;
-	};
-	group: {
-		id: number;
-		name: string;
-		description: string;
-		isPrivate: boolean;
-		userId: number;
-		username: string;
-		user: {
-			email: string;
-			passcode: string;
-			role: string;
-			username: string;
-			authorities: { authority: string }[];
-			isCredentialsNonExpired: boolean;
-			isAccountNonExpired: boolean;
-			isAccountNonLocked: boolean;
-			password: string;
-			isEnabled: boolean;
-		};
-		picture: string;
-		createdAt: string;
-	};
-	category: { id: number; description: string };
-	picture: string;
-	latitude: number;
-	longitude: number;
-	caption: string;
-	createdAt: string;
+  id: number;
+  username: string;
+  description: string;
+  groupName: string;
+  groupDescription: string;
+  categoryId: any;
+  groupId: number;
+  title: string;
+  groupPicture: string;
+  admin: string;
+  userId: number;
+  user: {
+    userId: number;
+    userName: string;
+    email: string;
+    passcode: string;
+    role: string;
+    username: string;
+    authorities: { authority: string }[];
+    isCredentialsNonExpired: boolean;
+    isAccountNonExpired: boolean;
+    isAccountNonLocked: boolean;
+    password: string;
+    isEnabled: boolean;
+    profilepic: string;
+  };
+  group: {
+    id: number;
+    name: string;
+    description: string;
+    isPrivate: boolean;
+    userId: number;
+    username: string;
+    user: {
+      email: string;
+      passcode: string;
+      role: string;
+      username: string;
+      authorities: { authority: string }[];
+      isCredentialsNonExpired: boolean;
+      isAccountNonExpired: boolean;
+      isAccountNonLocked: boolean;
+      password: string;
+      isEnabled: boolean;
+    };
+    picture: string;
+    createdAt: string;
+  };
+  category: { id: number; description: string };
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
+  createdAt: string;
 }
 
 interface User {
@@ -79,217 +79,139 @@ interface User {
 }
 
 const PinDetail: React.FC = () => {
-	const { id } = useParams<{ id: string }>();
-	const navigate = useNavigate();
-	const [theme, setTheme] = useState("default");
-	const [post, setPost] = useState<Post | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [isSaved, setIsSaved] = useState<boolean>(false);
-	const [saves, setSaves] = useState<number>(0);
-	const [userId] = useState<number>(2);
-	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
-	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [theme, setTheme] = useState("default");
+  const [post, setPost] = useState<Post | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [saves, setSaves] = useState<number>(0);
+  const [userId] = useState<number>(2);
+  const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
+  const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-	useEffect(() => {
-		const localStoreTheme = localStorage.getItem("data-theme") || "default";
-		setTheme(localStoreTheme);
-	}, []);
+  useEffect(() => {
+    const localStoreTheme = localStorage.getItem("data-theme") || "default";
+    setTheme(localStoreTheme);
+  }, []);
 
-	useEffect(() => {
-		const handleStorageChange = (event: StorageEvent) => {
-			if (event.key === "data-theme") {
-				const newTheme =
-					localStorage.getItem("data-theme") || "default";
-				setTheme(newTheme);
-				document.documentElement.setAttribute("data-theme", newTheme);
-			}
-		};
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
-		window.addEventListener("storage", handleStorageChange);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/posts/${id}`);
+        const data = await response.json();
+        setPost(data);
+        setLoading(false);
 
-		return () => {
-			window.removeEventListener("storage", handleStorageChange);
-		};
-	}, []);
+        const relatedResponse = await fetch(`/api/posts/group/${data.groupId}?page=0&size=10`);
+        const relatedData = await relatedResponse.json();
+        setRelatedPosts(relatedData.content);
 
-	useEffect(() => {
-		document.documentElement.setAttribute("data-theme", theme);
-	}, [theme]);
+        const userResponse = await fetch(`/api/users/${data.userId}`);
+        const userData = await userResponse.json();
+        setUser(userData);
 
-	useEffect(() => {
-		const fetchPost = async () => {
-			try {
-				const response = await fetch(`/api/posts/${id}`);
-				const data = await response.json();
-				setPost(data);
-				setLoading(false);
+        const savedResponse = await fetch(`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`);
+        const isPostSaved = await savedResponse.json();
+        setIsSaved(isPostSaved);
 
-				// Fetch related posts once the main post is fetched
-				const relatedResponse = await fetch(
-					`/api/posts/group/${data.groupId}?page=0&size=10`
-				);
-				const relatedData = await relatedResponse.json();
-				setRelatedPosts(relatedData.content);
-			} catch (error) {
-				console.error("Error fetching post or related posts:", error);
-				setLoading(false);
-			}
-		};
+        const savesResponse = await fetch(`/api/savedPosts/countSaves?postId=${id}`);
+        const savesCount = await savesResponse.json();
+        setSaves(savesCount);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
 
-		const checkIfSaved = async () => {
-			try {
-				const response = await fetch(
-					`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`
-				);
-				const data = await response.json();
-				setIsSaved(data);
-			} catch (error) {
-				console.error("Error checking saved status:", error);
-			}
-		};
+    fetchData();
+  }, [id, userId]);
 
-		const getCountSaves = async () => {
-			try {
-				const response = await fetch(
-					`/api/savedPosts/countSaves?postId=${id}`
-				);
-				const data = await response.json();
-				setSaves(data);
-			} catch (error) {
-				console.error("Error fetching saves count:", error);
-			}
-		};
+  const handleSaveClick = async () => {
+    const requestBody = {
+      userId,
+      postId: post?.id,
+    };
 
-		fetchPost();
-		checkIfSaved();
-		getCountSaves();
-	}, [id, userId]);
+    console.log("Save request body:", requestBody);
 
-	useEffect(() => {
-		if (!post?.id) {
-			console.log("Post ID is not available yet.");
-			return;
-		}
+    try {
+      const response = await fetch("/api/savedPosts/SavePost", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-		let subscription: any = null;
+      if (!response.ok) {
+        throw new Error("Failed to save post");
+      }
 
-		webSocketService
-			.connect(localStorage.getItem("authToken")!!)
-			.then(() => {
-				console.log("WebSocket connected");
+      setIsSaved(true);
+      setSaves((prevSaves) => prevSaves + 1); // Increase saves count
+    } catch (error) {
+      console.error("Error saving post:", error);
+    }
+  };
 
-				subscription = webSocketService.subscribe(
-					`/post/${post.id}`,
-					(message: any) => {
-						console.log(
-							`Message received on /post/${post.id}:`,
-							message
-						);
+  const handleUnsaveClick = async () => {
+    const requestBody = {
+      userId,
+      postId: post?.id,
+    };
 
-						try {
-							const savedPostData = JSON.parse(message.body);
-							console.log("Parsed message data:", savedPostData);
+    console.log("Unsave request body:", requestBody);
 
-							if (savedPostData.postId === post.id) {
-								setIsSaved(savedPostData.isSaved);
-								setSaves(savedPostData.saves);
-							}
-						} catch (error) {
-							console.error("Error parsing message:", error);
-						}
-					}
-				);
-			})
-			.catch((error) => {
-				console.error("WebSocket connection error:", error);
-			});
+    try {
+      const response = await fetch("/api/savedPosts/UnsavePost", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-		return () => {
-			if (subscription) {
-				console.log(`Unsubscribing from /post/${post.id}`);
-				webSocketService.unsubscribe(subscription);
-			}
-			webSocketService.disconnect();
-		};
-	}, [post?.id]);
+      if (!response.ok) {
+        throw new Error("Failed to unsave post");
+      }
 
-	const handleSaveClick = async () => {
-		const requestBody = {
-			userId,
-			postId: post?.id
-		};
+      setIsSaved(false);
+      setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
+    } catch (error) {
+      console.error("Error unsaving post:", error);
+    }
+  };
 
-		console.log("Save request body:", requestBody);
+  const handleSaveIconClick = () => {
+    console.log("Save icon clicked");
+    if (isSaved) {
+      handleUnsaveClick();
+    } else {
+      handleSaveClick();
+    }
+  };
 
-		try {
-			const response = await fetch("/api/savedPosts/SavePost", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify(requestBody)
-			});
+  if (loading) {
+    return <SkeletonPinDetail />;
+  }
 
-			if (!response.ok) {
-				throw new Error("Failed to save post");
-			}
+  
+  if (!post || !user) {
+    return <SkeletonPinDetail />;
+  }
+ 
+  
 
-			setIsSaved(true);
-			setSaves((prevSaves) => prevSaves + 1); // Increase saves count
-		} catch (error) {
-			console.error("Error saving post:", error);
-		}
-	};
-
-	const handleUnsaveClick = async () => {
-		const requestBody = {
-			userId,
-			postId: post?.id
-		};
-
-		console.log("Unsave request body:", requestBody);
-
-		try {
-			const response = await fetch("/api/savedPosts/UnsavePost", {
-				method: "DELETE",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify(requestBody)
-			});
-
-			if (!response.ok) {
-				throw new Error("Failed to unsave post");
-			}
-
-			setIsSaved(false);
-			setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
-		} catch (error) {
-			console.error("Error unsaving post:", error);
-		}
-	};
-
-	const handleSaveIconClick = () => {
-		console.log("Save icon clicked");
-		if (isSaved) {
-			handleUnsaveClick();
-		} else {
-			handleSaveClick();
-		}
-	};
-
-	if (loading) {
-		return <SkeletonPinDetail />;
-	}
-
-	if (!post) {
-		return <p>Post not found.</p>;
-	}
-
-	return (
-		<div className="p-4 scrollbar-hide flex flex-col h-screen bg-bkg">
-			<style>
-				{`
+  return (
+    <div className="p-4 scrollbar-hide flex flex-col h-screen bg-bkg">
+      <style>
+        {`
           .scrollbar-hide::-webkit-scrollbar {
             display: none;
           }
@@ -320,7 +242,6 @@ const PinDetail: React.FC = () => {
             }
           }
         `}
-
       </style>
       <button
         onClick={() => navigate(-1)}
@@ -425,7 +346,6 @@ const PinDetail: React.FC = () => {
       </div>
     </div>
   );
-
 };
 
 export default PinDetail;
