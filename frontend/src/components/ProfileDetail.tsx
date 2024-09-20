@@ -9,7 +9,7 @@ interface User {
   id: number;
   userName: string;
   email: string;
-  picture?: string;
+  profilePic: string;
   role: string;
   isEnabled: boolean;
   username: string;
@@ -27,7 +27,7 @@ const ProfileDetail: React.FC = () => {
   const [postsCount, setPostsCount] = useState(0);
   const [groupsCount, setGroupsCount] = useState(0);
   const [activeTab, setActiveTab] = useState<'posts' | 'groups'>('posts');
-
+console.log(id)
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -83,7 +83,7 @@ const ProfileDetail: React.FC = () => {
           <div className="mt-10 cursor-pointer">
             <img
               className="w-24 h-24 rounded-full bg-gray-300 mb-2 cursor-pointer"
-              src={user.picture || profilePhoto}
+              src={user.profilePic || profilePhoto}
               alt={`${user.userName}'s profile`}
             />
           </div>

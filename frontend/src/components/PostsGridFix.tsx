@@ -21,7 +21,7 @@ interface PostsGridFixProps {
 
 const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
   // ADD IN FROM LOGIN LATER
-  const userId = 1;
+  const userId = 2;
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
