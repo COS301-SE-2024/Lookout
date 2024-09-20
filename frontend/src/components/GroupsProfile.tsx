@@ -23,14 +23,6 @@ const GroupsProfile = () => {
     });
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const placeholderText =
-    selectedOption === "groups"
-      ? "Search groups you joined"
-      : "Search groups you own";
 
   const handleCreateGroup = (newGroup: any) => {
     console.log("New group created:", newGroup);

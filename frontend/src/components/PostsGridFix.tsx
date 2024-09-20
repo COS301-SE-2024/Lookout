@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import PostsGridSkeleton from './PostsGridSkeleton'; // Import the skeleton
 
 interface Post {
@@ -22,7 +21,6 @@ interface PostsGridFixProps {
 const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
   // ADD IN FROM LOGIN LATER
   const userId = 2;
-  const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true); // Add loading state

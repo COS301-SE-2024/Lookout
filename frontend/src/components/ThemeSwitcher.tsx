@@ -4,7 +4,6 @@ const ThemeSwitcher = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(
     localStorage.getItem("data-theme") === "dark"
   );
-  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   
   useEffect(() => {
     document.documentElement.setAttribute(

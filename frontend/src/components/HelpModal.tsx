@@ -34,7 +34,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const handleCloseTutorialsModal = () => setShowTutorialsModal(false);
 
   const [showHelpCentreModal, setShowHelpCentreModal] = useState(false);
-  const handleHelpCentreModalClick = () => setShowHelpCentreModal(true);
   const handleCloseHelpCentreModal = () => setShowHelpCentreModal(false);
 
   return (

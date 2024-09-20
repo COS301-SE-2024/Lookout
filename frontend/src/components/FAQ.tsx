@@ -1,6 +1,5 @@
 import DOMPurify from "dompurify";
 import React, { useState } from "react";
-import { FaTimes } from "react-icons/fa";
 
 const FAQScreen: React.FC = () => {
 	const screenStyles = {

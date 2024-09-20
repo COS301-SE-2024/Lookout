@@ -2,12 +2,8 @@ import React, { useState, useEffect } from "react";
 import ProfileSkeleton from "../components/ProfileSkeleton";
 import PostsProfile from "../components/PostsProfile";
 import GroupsProfile from "../components/GroupsProfile";
-import { FaCog } from "react-icons/fa";
-import SettingsModal from "../components/SettingsModal";
 import { useLocation } from "react-router-dom";
-import Modal from "../components/Modal";
 import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
-import S3Uploader from "../components/S3Uploader";
 
 const Profile = () => {
   const userId = 1;
@@ -15,7 +11,6 @@ const Profile = () => {
     // Check localStorage for the active tab, default to "posts"
     return localStorage.getItem("activeTab") || "posts";
   });
-  const [showSettings, setShowSettings] = useState(false);
   const [username, setUsername] = useState("Loading...");
   const [postsCount, setPostsCount] = useState(0);
   const [groupsCount, setGroupsCount] = useState(0);

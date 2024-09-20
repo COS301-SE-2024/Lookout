@@ -66,7 +66,6 @@ const GroupDetail: React.FC = () => {
 	const [ownerLoaded, setOwnerLoaded] = useState(false);
 	const [postsLoaded, setPostsLoaded] = useState(false);
 	const [groupsLoaded, setGroupsLoaded] = useState(false);
-	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 	useEffect(() => {
 		const fetchGroupDetails = async () => {

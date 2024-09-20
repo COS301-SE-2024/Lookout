@@ -18,9 +18,7 @@ const PostsProfile = () => {
     setSelectedOption(event.target.value);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
+
 
   return (
     <div className="w-full"> {/* Full width with smaller padding */}

@@ -1,13 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import EditProfile from "../components/EditProfile";
-import HelpCentre from "../components/HelpCentre";
 import Tutorials from "../components/Tutorials";
 import FAQ from "../components/FAQ";
-import ToggleButton from "../components/ThemeToggleButton"; // Import ToggleButton component
-import { FaArrowLeft, FaSignOutAlt, FaChevronLeft } from "react-icons/fa"; // Import icons
+import { FaArrowLeft, FaChevronLeft } from "react-icons/fa"; // Import icons
 import { useNavigate } from "react-router-dom";
 import { getEmailFromLocalStorage } from "../utils/auth";
-import HelpCentreModal from "../components/HelpModal";
 import { LuLogOut } from "react-icons/lu";
 import AboutUs from "../components/AboutUs";
 import ThemeSwitcher from "../components/ThemeSwitcher";

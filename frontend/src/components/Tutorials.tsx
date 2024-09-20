@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaChevronDown, FaChevronUp, FaChevronRight} from "react-icons/fa";
+import { FaChevronDown, FaChevronRight} from "react-icons/fa";
 import images from "../assets/styles/images/images"; // Adjust the path as necessary
 import DOMPurify from "dompurify";
 

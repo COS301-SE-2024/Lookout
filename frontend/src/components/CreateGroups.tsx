@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaToggleOn, FaToggleOff, FaPlus, FaTimes, FaTrash } from "react-icons/fa";
+import { FaPlus, FaTimes, FaTrash } from "react-icons/fa";
 
 interface CreateGroupsProps {
   onCreateGroup: (newGroup: Group) => void;
@@ -23,10 +23,6 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup, onClose }) =
   const [picture, setPicture] = useState("");
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-
-  const toggleSwitch = () => {
-    setIsToggled(!isToggled);
-  };
 
   const handleCreateClick = async () => {
     const newGroup = {

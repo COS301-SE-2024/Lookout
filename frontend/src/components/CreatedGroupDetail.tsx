@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import HorizontalCarousel from './HorizontalCarousel';
-import CreatedGroupDetailSkeleton from '../components/CreatedGroupSkeleton';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';
 import DOMPurify from 'dompurify';
 import GroupDetailSkeleton from './GroupDetailSkeleton';

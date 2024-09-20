@@ -1,7 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { IoMenu } from "react-icons/io5";
-
-import { MdFilterList } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import {
   HeatmapLayer,

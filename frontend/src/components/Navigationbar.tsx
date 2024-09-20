@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { FaMap, FaBinoculars, FaUser, FaGear, FaQuestion } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import HelpModal from "./HelpModal";
-import logoGreen from '../assets/styles/images/LogoGreen.png'; // Import the image
 
 const Navigationbar = () => {
 	const [isAuthed, setIsAuthed] = useState(
@@ -10,7 +9,6 @@ const Navigationbar = () => {
 		localStorage.getItem("authToken") !== null
 	);
 	const location = useLocation();
-	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
 		//console.log("isAuthed", isAuthed);
