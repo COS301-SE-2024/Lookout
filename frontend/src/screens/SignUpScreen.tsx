@@ -77,7 +77,7 @@ const SignUpScreen = () => {
 
         <form className="mt-2 space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-content">
               Email address
             </label>
             <input
@@ -85,6 +85,7 @@ const SignUpScreen = () => {
               name="email"
               type="email"
               autoComplete="email"
+              placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(DOMPurify.sanitize(e.target.value))}
               required
@@ -92,7 +93,7 @@ const SignUpScreen = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-content">
               Password
             </label>
             <input
@@ -100,6 +101,7 @@ const SignUpScreen = () => {
               name="password"
               type="password"
               autoComplete="current-password"
+              placeholder="Enter Password"
               value={password}
               onChange={(e) => setPassword(DOMPurify.sanitize(e.target.value))}
               required
@@ -107,12 +109,13 @@ const SignUpScreen = () => {
             />
           </div>
           <div>
-            <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="confirm-password" className="block text-sm font-medium text-content">
               Confirm Password
             </label>
             <input
               id="confirm-password"
               name="confirm-password"
+              placeholder="Confirm Password"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(DOMPurify.sanitize(e.target.value))}
@@ -124,7 +127,7 @@ const SignUpScreen = () => {
           <div>
             <button
               type="submit"
-							className="w-full px-4 py-2 text-white bg-navBkg rounded-md hover:bg-white hover:text-navBkg border border-navBkg"
+							className="w-full px-4 py-2 text-content bg-navBkg rounded-md hover:bg-content hover:border-content hover:text-navBkg border border-navBkg"
             >
               Sign Up
             </button>
@@ -134,12 +137,12 @@ const SignUpScreen = () => {
 
         <div className="flex items-center my-2">
 					<hr className="flex-grow border-gray-300" />
-					<span className="px-3 text-gray-500 whitespace-nowrap">OR CONTINUE WITH</span>
+					<span className="px-3 text-content whitespace-nowrap">OR CONTINUE WITH</span>
 					<hr className="flex-grow border-gray-300" />
 				</div>
 
         <div className="flex justify-center">
-          <button className="w-full py-2 text-black bg-white-500 rounded-md hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300"
+        <button className="w-full py-2 text-content bg-white-500 rounded-md hover:bg-navBkg hover:border-navBkg focus:outline-none flex items-center justify-center border border-gray-300"
             onClick={handleLogin}
           >
             <FcGoogle size={20} style={{ marginRight: 10 }} />

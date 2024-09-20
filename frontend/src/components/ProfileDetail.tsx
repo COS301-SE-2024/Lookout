@@ -74,7 +74,7 @@ const ProfileDetail: React.FC = () => {
     <div className="relative flex flex-col items-center w-full min-h-screen">
       {user ? (
         <>
-        <button onClick={() => navigate(-1)} className="absolute top-4 left-4 text-green-800 hover:text-blue-700">
+        <button onClick={() => navigate(-1)} className="absolute top-4 left-4 text-navBkg hover:text-icon">
 					<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
 					</svg>
@@ -104,13 +104,13 @@ const ProfileDetail: React.FC = () => {
             <div className="flex justify-center">
               <button
                 onClick={() => setActiveTab('posts')}
-                className={`px-4 py-2 font-semibold ${activeTab === 'posts' ? 'border-b-2 border-green-800 text-green-800' : 'text-gray-600'}`}
+                className={`px-4 py-2 font-semibold ${activeTab === 'posts' ? 'border-b-4 border-navBkg font-bold' : 'text-gray-500'}`}
               >
                 Posts
               </button>
               <button
                 onClick={() => setActiveTab('groups')}
-                className={`px-4 py-2 font-semibold ${activeTab === 'groups' ? 'border-b-2 border-green-800 text-green-800' : 'text-gray-600'}`}
+                className={`px-4 py-2 font-semibold ${activeTab === 'groups' ? 'border-b-4 border-navBkg font-bold' : 'text-gray-500'}`}
               >
                 Groups
               </button>

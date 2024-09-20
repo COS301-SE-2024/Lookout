@@ -100,7 +100,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
           {filteredGroups.map((group) => (
             <div
               key={group.id}
-              className="flex items-center p-4 border border-hver rounded-lg shadow-sm group-item cursor-pointer hover:bg-hver" // Use items-center to center items vertically
+              className="flex items-center p-4 bg-hver border border-hver rounded-lg shadow-sm group-item cursor-pointer hover:bg-bkg" // Use items-center to center items vertically
               onClick={() => handleGroupClick(group)}
             >
               {/* Group image */}

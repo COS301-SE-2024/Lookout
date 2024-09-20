@@ -80,7 +80,7 @@ function Login() {
 					<div>
 						<label
 							htmlFor="inputEmail"
-							className="block text-sm font-medium text-gray-700"
+							className="block text-sm font-medium text-content"
 						>
 							Email address
 						</label>
@@ -97,7 +97,7 @@ function Login() {
 					<div>
 						<label
 							htmlFor="inputPassword"
-							className="block text-sm font-medium text-gray-700"
+							className="block text-sm font-medium text-content"
 						>
 							Password
 						</label>
@@ -105,7 +105,7 @@ function Login() {
 							type="password"
 							className="w-full px-3 py-2 mt-1 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-black focus:border-navBkg"
 							id="inputPassword"
-							placeholder="Password"
+							placeholder="Enter Password"
 							value={password}
 							onChange={(e) => setPassword(DOMPurify.sanitize(e.target.value))}
 							required
@@ -114,7 +114,7 @@ function Login() {
 					<div className="flex justify-around items-center">
 						<button
 							type="submit"
-							className="w-full px-4 py-2 text-white bg-navBkg rounded-md hover:bg-white hover:text-navBkg border border-navBkg"
+							className="w-full px-4 py-2 text-content bg-navBkg rounded-md hover:bg-content hover:border-content hover:text-navBkg border border-navBkg"
 							onClick={handleSubmit}
 						>
 							Login
@@ -124,12 +124,12 @@ function Login() {
 
 				<div className="flex items-center my-2">
 					<hr className="flex-grow border-gray-300" />
-					<span className="px-3 text-gray-500 whitespace-nowrap">OR CONTINUE WITH</span>
+					<span className="px-3 text-content whitespace-nowrap">OR CONTINUE WITH</span>
 					<hr className="flex-grow border-gray-300" />
 				</div>
 
 				<div className="flex justify-center mb-2">
-					<button className="w-full py-2 text-black bg-white-500 rounded-md hover:bg-gray-300 focus:outline-none flex items-center justify-center border border-gray-300"
+					<button className="w-full py-2 text-content bg-white-500 rounded-md hover:bg-navBkg hover:border-navBkg focus:outline-none flex items-center justify-center border border-gray-300"
 						onClick={handleLogin}
 					>
 						<FcGoogle size={20} style={{ marginRight: 10 }} />
@@ -139,7 +139,7 @@ function Login() {
 				</div>
 
 				<div className="text-center mt-4">
-					<span className="text-sm text-gray-500">Don't have an account? </span>
+					<span className="text-sm text-content">Don't have an account? </span>
 					<Link to="/signup" className="text-sm text-content underline hover:text-navBkg">
 						Signup
 					</Link>

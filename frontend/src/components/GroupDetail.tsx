@@ -239,7 +239,7 @@ const GroupDetail: React.FC = () => {
 							</button>
 							<button
 								className={`px-4 py-2 rounded-lg ${joinedGroups.includes(group?.id ?? 0)
-										? "bg-gray-200 text-black border-gray-200 border rounded-lg text-sm hover:bg-gray-300 hover:border-gray-300"
+										? "bg-gray-200 text-black border-gray-200 border rounded-lg text-sm hover:bg-white hover:text-navBkg hover:border-gray-300"
 										: "bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg text-sm"
 									}`}
 								onClick={() => handleJoinClick(group?.id ?? 0)}
