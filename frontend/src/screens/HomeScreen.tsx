@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
+
 import { MdFilterList } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import {
@@ -14,6 +14,7 @@ import {
 import "../assets/styles/home.css";
 import HomePins from "../components/HomePins";
 import { FaFolder, FaCamera, FaTimes, FaPlus, FaFilter } from "react-icons/fa";
+
 import Legend from "../components/Legend";
 import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
 import campIcon from "../assets/icons/camping-zone.png";
@@ -21,115 +22,129 @@ import AnimalIcon from "../assets/icons/zoo.png";
 import HikingIcon from "../assets/icons/mountain.png";
 import POIIcon from "../assets/icons/point-of-interest.png";
 import SecurityIcon from "../assets/icons/danger.png";
+import DOMPurify from "dompurify";
 // import { url } from "inspector";
 import AWS from "aws-sdk";
-import DOMPurify from "dompurify";
+
+
 
 // ##############################  HEAT MAP STUFF!!
 const getData = () => [
-  new google.maps.LatLng(-27.782551, 22.445368),
-  new google.maps.LatLng(-27.782745, 22.444586),
-  new google.maps.LatLng(-27.752986, 22.403112),
-  new google.maps.LatLng(-27.751266, 22.403355),
+	new google.maps.LatLng(-27.782551, 22.445368),
+	new google.maps.LatLng(-27.782745, 22.444586),
+	new google.maps.LatLng(-27.752986, 22.403112),
+	new google.maps.LatLng(-27.751266, 22.403355)
 ];
 
 const customGradient = [
-  "rgba(0, 255, 255, 0)",
-  "rgba(0, 255, 255, 1)",
-  "rgba(191, 0, 31, 1)",
-  "rgba(255, 0, 0, 1)",
+	"rgba(0, 255, 255, 0)",
+	"rgba(0, 255, 255, 1)",
+	"rgba(191, 0, 31, 1)",
+	"rgba(255, 0, 0, 1)"
 ];
 
 function MapContent() {
-  const [show, setShow] = useState(true);
-  const [gradient, setGradient] = useState<string[] | null>(null);
-  const [radius, setRadius] = useState<number | null>(null);
-  const [opacity, setOpacity] = useState<number | null>(null);
+	const [show, setShow] = useState(false);
+	const [gradient, setGradient] = useState<string[] | null>(null);
+	const [radius, setRadius] = useState<number | null>(null);
+	const [opacity, setOpacity] = useState<number | null>(null);
 
-  const data = useMemo(getData, []);
+	const data = useMemo(getData, []);
 
-  const toggleHeatmap = () => {
-    setShow(!show);
-  };
+	const toggleHeatmap = () => {
+		setShow(!show);
+	};
 
-  const changeGradient = () => {
-    setGradient((prev) => (prev ? null : customGradient));
-  };
+	const changeGradient = () => {
+		setGradient((prev) => (prev ? null : customGradient));
+	};
 
-  const changeRadius = () => {
-    setRadius(radius ? null : 20);
-  };
+	const changeRadius = () => {
+		setRadius(radius ? null : 20);
+	};
 
-  const changeOpacity = () => {
-    setOpacity(opacity ? null : 0.2);
-  };
+	const changeOpacity = () => {
+		setOpacity(opacity ? null : 0.2);
+	};
 
-  return (
-    <>
-      {/* <HeatmapLayer data={data} gradient={gradient} radius={radius} opacity={opacity} hidden={!show} />
-      <Control position={google.maps.ControlPosition.TOP_CENTER}>
-        <div id='floating-panel' className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg">
-          <button
-            id='toggle-heatmap'
-            onClick={toggleHeatmap}
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            Toggle Heatmap
-          </button>
-          <button
-            id='change-gradient'
-            onClick={changeGradient}
-            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
-          >
-            Change Gradient
-          </button>
-          <button
-            id='change-radius'
-            onClick={changeRadius}
-            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          >
-            Change Radius
-          </button>
-          <button
-            id='change-opacity'
-            onClick={changeOpacity}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
-          >
-            Change Opacity
-          </button>
-        </div>
-      </Control> */}
-    </>
-  );
+	return (
+		<>
+			<HeatmapLayer
+				data={data}
+				gradient={gradient}
+				radius={radius}
+				opacity={opacity}
+				hidden={!show}
+			/>
+			<Control position={google.maps.ControlPosition.TOP_CENTER}>
+				<div
+					id="floating-panel"
+					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
+				>
+					<button
+						id="toggle-heatmap"
+						onClick={toggleHeatmap}
+						className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+					>
+						Toggle Heatmap
+					</button>
+					<button
+						id="change-gradient"
+						onClick={changeGradient}
+						className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+					>
+						Change Gradient
+					</button>
+					<button
+						id="change-radius"
+						onClick={changeRadius}
+						className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+					>
+						Change Radius
+					</button>
+					<button
+						id="change-opacity"
+						onClick={changeOpacity}
+						className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+					>
+						Change Opacity
+					</button>
+				</div>
+			</Control>
+		</>
+	);
+
 }
 
 // #################### END OF HEAT MAP STUFF
 
 type Poi = {
-  key: string;
-  location: google.maps.LatLngLiteral;
-  label: string;
-  details: string;
+
+	key: string;
+	location: google.maps.LatLngLiteral;
+	label: string;
+	details: string;
 };
 type myPin = {
-  id: string;
-  location: google.maps.LatLngLiteral;
-  caption: string;
-  category: string;
-  image: string;
-  categoryId: number;
+	id: string;
+	location: google.maps.LatLngLiteral;
+	caption: string;
+	category: string;
+	image: string;
+	categoryId: number;
 };
 
 const legendItems = [
-  {
-    name: "Nature Reserves",
-    icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-  },
-  { name: "Camp Sites", icon: campIcon },
-  { name: "Animal", icon: AnimalIcon },
-  { name: "Hiking", icon: HikingIcon },
-  { name: "POI", icon: POIIcon },
-  { name: "Security Risk", icon: SecurityIcon },
+	{
+		name: "Nature Reserves",
+		icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+	},
+	{ name: "Camp Sites", icon: campIcon },
+	{ name: "Animal", icon: AnimalIcon },
+	{ name: "Hiking", icon: HikingIcon },
+	{ name: "POI", icon: POIIcon },
+	{ name: "Security Risk", icon: SecurityIcon }
+
 ];
 
 const locations: Poi[] = [
@@ -214,440 +229,683 @@ type Group = {
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC = () => {
-  const defaultCenter = { lat: -28, lng: 23 };
-  const [center, setCenter] = useState(defaultCenter);
 
-  //const id = 2;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
-  const [isPhotoOptionsModalOpen, setIsPhotoOptionsModalOpen] = useState(false);
-  const [isCameraModalOpen, setIsCameraModalOpen] = useState(false); // New state for camera modal
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [caption, setCaption] = useState("");
-  const [picture, setPicture] = useState("");
-  const [title, setTitle] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [selectCategory, setSelectCategory] = useState(null);
-  const [filteredPins, setFilteredPins] = useState<myPin[]>([]);
+	const defaultCenter = { lat: -28, lng: 23 };
+	const [center, setCenter] = useState(defaultCenter);
 
-  const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
-  const [newNumberPins, setNewNumberPins] = useState<number>(0);
+	const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const navigate = useNavigate();
+	//const id = 2;
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
+	const [isPhotoOptionsModalOpen, setIsPhotoOptionsModalOpen] =
+		useState(false);
+	const [isCameraModalOpen, setIsCameraModalOpen] = useState(false); // New state for camera modal
+	const [latitude, setLatitude] = useState(0);
+	const [longitude, setLongitude] = useState(0);
+	const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
+	const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+	const [groups, setGroups] = useState<Group[]>([]);
+	const [caption, setCaption] = useState("");
+	const [picture, setPicture] = useState("");
+	const [title, setTitle] = useState("");
+	const [selectedCategory, setSelectedCategory] = useState<number | null>(
+		null
+	);
+	const [selectCategory, setSelectCategory] = useState(null);
+	const [filteredPins, setFilteredPins] = useState<myPin[]>([]);
 
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+	const [reservePins, setReservePins] = useState<Poi[]>(locations);
 
-  // get curretn for map
+	const [categoryExpanded, setCategoryExpanded] = useState(false);
+	const [groupExpanded, setGroupExpanded] = useState(false);
+	const [imageExpanded, setImageExpanded] = useState(false);
+	const [titleExpanded, setTitleExpanded] = useState(false);
+	const [captionExpanded, setCaptionExpanded] = useState(false);
+	const [dragpinExpanded, setDragPinExpanded] = useState(false);
+	const [showRecommendedTitle, setShowRecommendedTitle] = useState(false);
+	const [predictResult, setPredictResult] = useState("");
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCenter({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Error getting user's location:", error);
-          // If user denies location access or an error occurs, retain the default center
-        }
-      );
-    }
-  }, []);
+	const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
+	const [newNumberPins, setNewNumberPins] = useState<number>(0);
 
-  // get for posts
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          console.log("fetching location long:", position.coords.longitude);
-          console.log("fetching location lat:", position.coords.latitude);
-        },
-        (error) => {
-          console.error("Error fetching location:", error);
-        }
-      );
-    } else {
-      throw new Error("Geolocation is not supported by this browser.");
-    }
-  };
+	const [dragpinlatitude, setdragpinLatitude] = useState(latitude);
+	const [dragpinlongitude, setdragpinLongitude] = useState(longitude);
 
-  const [pins, setPins] = useState<myPin[]>([]);
-  const fetchPins = async () => {
-    try {
-      const response = await fetch("/api/posts", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+	//map search
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch pins");
-      }
+	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const searchValue = event.target.value.toLowerCase();
+		setSearchTerm(searchValue);
 
-      const pinsData = await response.json();
+		const filtered = pins.filter(
+			(pin) =>
+				pin.caption.toLowerCase().includes(searchValue) ||
+				pin.category.toLowerCase().includes(searchValue)
+		);
 
-      const formattedPins = pinsData.content.map((pin: any) => ({
-        id: pin.id,
-        location: { lat: pin.latitude, lng: pin.longitude },
-        caption: pin.caption,
-        category: pin.title,
-        categoryId: pin.categoryId,
-        image: pin.picture,
-      }));
+		const filterreserve = locations.filter(
+			(pin) =>
+				pin.label.toLowerCase().includes(searchValue) ||
+				pin.details.toLowerCase().includes(searchValue)
+		);
 
-      setPins(formattedPins);
-      setFilteredPins(formattedPins);
-      setCurrentNumberPins(formattedPins.length);
-    } catch (error) {
-      console.error("Error fetching pins:", error);
-    }
-  };
-  useEffect(() => {
-    fetchPins();
-  }, []);
+		setFilteredPins(filtered);
+		setReservePins(filterreserve);
+	};
 
-  useEffect(() => {
-    if (newNumberPins > currentNumberPins) {
-      setCurrentNumberPins(newNumberPins);
-      fetchPins();
-    }
-  }, [newNumberPins, currentNumberPins]);
+	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchPins();
-    }, 15000);
+	// get curretn for map
 
-    return () => clearInterval(intervalId);
-  }, []);
+	useEffect(() => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					setCenter({
+						lat: position.coords.latitude,
+						lng: position.coords.longitude
+					});
+				},
+				(error) => {
+					console.error("Error getting user's location:", error);
+					// If user denies location access or an error occurs, retain the default center
+				}
+			);
+		}
+	}, []);
 
-  useEffect(() => {
-    if (selectCategory === null) {
-      setFilteredPins(pins);
-    } else {
-      const categoryId =
-        typeof selectCategory === "number"
-          ? selectCategory
-          : Number(selectCategory);
+	// get for posts
+	const getLocation = () => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					setLatitude(position.coords.latitude);
+					setLongitude(position.coords.longitude);
+					console.log(
+						"fetching location long:",
+						position.coords.longitude
+					);
+					console.log(
+						"fetching location lat:",
+						position.coords.latitude
+					);
+				},
+				(error) => {
+					console.error("Error fetching location:", error);
+				}
+			);
+		} else {
+			throw new Error("Geolocation is not supported by this browser.");
+		}
+	};
 
-      setFilteredPins(pins.filter((pin) => pin.categoryId === categoryId));
-    }
-  }, [selectCategory, pins]);
+	const postOfflinePin = async (params: string, key: string) => {
+		if (navigator.onLine) {
+			const myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+			myHeaders.append("Cache-Control", "no-cache");
 
-  const handleCategoryClick = (categoryId: any) => {
-    setSelectCategory(categoryId);
-  };
+			const stuff = JSON.stringify({
+				caption: "1232",
+				title: "321",
+				categoryid: "2",
+				userid: "112",
+				groupid: "8",
+				picture:
+					"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79",
+				latitude: "-25.41",
+				longitude: "25.41"
+			});
 
-  // Function to convert blob URL to base64
-  // async function blobToBase64(blobUrl: string) {
-  // 	const response = await fetch(blobUrl);
-  // 	const blob = await response.blob();
-  // 	return new Promise((resolve, reject) => {
-  // 		const reader = new FileReader();
-  // 		reader.onloadend = () => {
-  // 			if (typeof reader.result === "string") {
-  // 				resolve(reader.result.split(",")[1]); // Get the base64 string
-  // 			}
-  // 		};
-  // 		reader.onerror = reject;
-  // 		reader.readAsDataURL(blob);
-  // 	});
-  // }
+			const response = await fetch("/api/posts/CreatePost", {
+				method: "POST",
+				headers: myHeaders,
+				body: stuff
+			});
 
-  const handleAddPinClick = async () => {
-    if (selectedGroup === null) {
-      alert("Please select a group.");
-      return;
-    }
-    if (selectedCategory === null) {
-      alert("Please select a category.");
-      return;
-    }
+			if (response.ok) {
+				alert("Post created successfully!");
 
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+				localStorage.removeItem(key);
+				setCurrentNumberPins(currentNumberPins + 1);
+				await fetchPins();
+			}
+		}
+	};
 
-    // let Image;
+	useEffect(() => {
+		const processOfflinePins = async () => {
+			if (navigator.onLine) {
+				for (let i = 0; i < localStorage.length; i++) {
+					let key = localStorage.key(i);
+					if (key !== null && key.includes("pin-offline")) {
+						const value = localStorage.getItem(key);
+						if (value !== null) {
+							await postOfflinePin(value, key);
+						}
+					}
+				}
+			}
+		};
 
-    // if (picture.startsWith("blob:")) {
-    // 	Image = await blobToBase64(picture);
-    // } else {
-    // 	Image = picture.split(",")[1];
-    // }
+		processOfflinePins();
+	});
 
-    const raw = JSON.stringify({
-      // caption: caption,
-      // title: title,
-      // categoryId: selectedCategory,
-      // userId: 112,
-      // groupId: selectedGroup,
-      // image: "https://h5p.org/sites/default/files/h5p/content/1209180/images/file-6113d5f8845dc.jpeg",
-      // latitude: latitude,
-      // longitude: longitude
-      caption: caption,
-      title: title,
-      categoryid: selectedCategory,
-      userid: 112,
-      groupid: selectedGroup,
-      picture: picture,
-      latitude: latitude,
-      longitude: longitude,
-    });
+	const [pins, setPins] = useState<myPin[]>([]);
+	const fetchPins = async () => {
+		try {
+			const response = await fetch("/api/posts", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Cache-Control": "no-cache"
+				}
+			});
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-    };
+			if (!response.ok) {
+				throw new Error("Failed to fetch pins");
+			}
 
-    try {
-      //old way
-      // const response = await fetch("/api/image/create", requestOptions);
-      console.log("raw", raw);
-      const response = await fetch("/api/posts/CreatePost", requestOptions);
+			const pinsData = await response.json();
 
-      if (!response.ok) {
-        throw new Error("Error");
-      }
-      console.log("title", title);
-      setCaption("");
-      setTitle("");
-      setPicture("");
-      setSelectedGroup(null);
-      setSelectedCategory(null);
-      closeModal();
+			const currentTime = new Date().getTime();
 
-      setIsSuccessModalOpen(true); // Open success modal
-      setNewNumberPins(newNumberPins + 1);
-      // setIsModalOpen(false); // Close modal after successful pin addition
-      // setIsSuccessModalOpen(true); // Open success modal
-    } catch (error) {
-      console.error("Error creating post:", error);
-    }
-  };
+			const TimepinsData = pinsData.content.filter((pin: any) => {
+				const pinTime = new Date(pin.createdAt).getTime();
+				const timeDifference = currentTime - pinTime; // Difference in milliseconds
 
-  const handleAddPhotoClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-    setIsPhotoOptionsModalOpen(false);
-  };
+				if (pin.categoryId === 1) {
+					// For "animals" category, check if it's within 24 hours
+					return timeDifference <= 86400000;
+				} else {
+					// For other categories
+					return timeDifference;
+				}
+			});
 
-  const handleTakePhotoClick = () => {
-    setIsCameraModalOpen(true);
-    setIsPhotoOptionsModalOpen(false);
-  };
+			const formattedPins = TimepinsData.map((pin: any) => ({
+				id: pin.id,
+				location: { lat: pin.latitude, lng: pin.longitude },
+				caption: pin.caption,
+				category: pin.title,
+				categoryId: pin.categoryId,
+				image: pin.picture
+			}));
 
-  const openPhotoModal = () => {
-    setIsPhotoOptionsModalOpen(true);
-  };
+			setPins(formattedPins);
+			setFilteredPins(formattedPins);
 
-  //###########################################################################
-  //S3 ZONE
-  //#############################################################################
-  // Helper function to generate a random string for unique file names
-  const generateRandomString = (length: number): string => {
-    const array = new Uint8Array(length / 2);
-    window.crypto.getRandomValues(array);
-    return Array.from(array, (byte) =>
-      ("0" + byte.toString(16)).slice(-2)
-    ).join("");
-  };
+			setCurrentNumberPins(formattedPins.length);
+		} catch (error) {
+			console.error("Error fetching pins:", error);
+		}
+	};
+	useEffect(() => {
+		fetchPins();
+	}, []);
 
-  // Configuration
-  const region = "eu-west-1";
-  const bucketName = "lookout-bucket-capstone";
-  const accessKeyId = process.env.REACT_APP_AWS_S3_ACCESS_ID || "";
-  const secretAccessKey = process.env.REACT_APP_AWS_S3_SECRET_ACCESS_KEY || "";
+	useEffect(() => {
+		if (newNumberPins > currentNumberPins) {
+			setCurrentNumberPins(newNumberPins);
+			fetchPins();
+		}
+	}, [newNumberPins, currentNumberPins]);
 
-  // Initialize AWS S3
-  const s3 = new AWS.S3({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    signatureVersion: "v4",
-  });
+	// useEffect(() => {
+	// 	const intervalId = setInterval(() => {
+	// 		fetchPins();
+	// 	}, 15000);
 
-  const generateUploadURL = async (): Promise<string> => {
-    const randomBytes = generateRandomString(16);
-    const imageName = randomBytes.toString();
+	// 	return () => clearInterval(intervalId);
+	// }, []);
 
-    const params = {
-      Bucket: bucketName,
-      Key: imageName,
-      Expires: 60,
-    };
+	useEffect(() => {
+		if (selectCategory === null) {
+			setFilteredPins(pins);
+		} else {
+			const categoryId =
+				typeof selectCategory === "number"
+					? selectCategory
+					: Number(selectCategory);
 
-    const uploadURL = await s3.getSignedUrlPromise("putObject", params);
-    return uploadURL;
-  };
+			setFilteredPins(
+				pins.filter((pin) => pin.categoryId === categoryId)
+			);
+		}
+	}, [selectCategory, pins]);
 
-  const uploadImageFileToS3 = async (file: File): Promise<void> => {
-    if (!file) {
-      throw new Error("No file provided for upload.");
-    }
+	const handleCategoryClick = (categoryId: any) => {
+		setSelectCategory(categoryId);
+	};
 
-    try {
-      const uploadURL = await generateUploadURL();
+	// Function to convert blob URL to base64
+	// async function blobToBase64(blobUrl: string) {
+	// 	const response = await fetch(blobUrl);
+	// 	const blob = await response.blob();
+	// 	return new Promise((resolve, reject) => {
+	// 		const reader = new FileReader();
+	// 		reader.onloadend = () => {
+	// 			if (typeof reader.result === "string") {
+	// 				resolve(reader.result.split(",")[1]); // Get the base64 string
+	// 			}
+	// 		};
+	// 		reader.onerror = reject;
+	// 		reader.readAsDataURL(blob);
+	// 	});
+	// }
 
-      await fetch(uploadURL, {
-        method: "PUT",
-        headers: {
-          "Content-Type": file.type,
-        },
-        body: file,
-      });
+	const handleAddPinClick = async () => {
+		if (selectedGroup === null) {
+			alert("Please select a group.");
+			return;
+		}
+		if (selectedCategory === null) {
+			alert("Please select a category.");
+			return;
+		}
 
-      setPicture(uploadURL.split("?")[0]);
-      console.log(
-        "Image uploaded and profile picture updated successfully.",
-        uploadURL.split("?")[0]
-      );
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  };
+		const myHeaders = new Headers();
+		myHeaders.append("Content-Type", "application/json");
 
-  const base64ToBuffer = (base64: string): Uint8Array => {
-    const binaryString = window.atob(base64);
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes;
-  };
+		// let Image;
 
-  const generateUploadURL64 = async (imageName: string): Promise<string> => {
-    const params = {
-      Bucket: bucketName,
-      Key: imageName,
-      Expires: 60,
-    };
+		// if (picture.startsWith("blob:")) {
+		// 	Image = await blobToBase64(picture);
+		// } else {
+		// 	Image = picture.split(",")[1];
+		// }
 
-    const uploadURL = await s3.getSignedUrlPromise("putObject", params);
-    return uploadURL;
-  };
+		const raw = JSON.stringify({
+			// caption: caption,
+			// title: title,
+			// categoryId: selectedCategory,
+			// userId: 112,
+			// groupId: selectedGroup,
+			// image: "https://h5p.org/sites/default/files/h5p/content/1209180/images/file-6113d5f8845dc.jpeg",
+			// latitude: latitude,
+			// longitude: longitude
+			caption: caption,
+			title: title,
+			categoryid: selectedCategory,
+			userid: 112,
+			groupid: selectedGroup,
+			picture: picture,
+			latitude: -27.18,
+			longitude: 25.41
+		});
 
-  const uploadBase64ImageToS3 = async (base64Image: string): Promise<void> => {
-    if (!base64Image) {
-      throw new Error("No image data provided for upload.");
-    }
+		const requestOptions = {
+			method: "POST",
+			headers: myHeaders,
+			body: raw
+		};
 
-    try {
-      const base64Data = base64Image.split(",")[1];
-      if (!base64Data) throw new Error("Invalid base64 image data.");
-      const binaryData = base64ToBuffer(base64Data);
-      const imageName = generateRandomString(16) + ".png";
-      const uploadURL = await generateUploadURL64(imageName);
-      await fetch(uploadURL, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "image/png",
-        },
-        body: binaryData,
-      });
-      await setPicture(uploadURL.split("?")[0]);
-      console.log("Image uploaded and profile picture updated successfully.");
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
+		if (navigator.onLine) {
+			try {
+				//old way
+				// const response = await fetch("/api/image/create", requestOptions);
+				console.log("requestOptions", requestOptions);
 
-  //#######################################################
+				const response = await fetch(
+					"/api/posts/CreatePost",
+					requestOptions
+				);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      uploadImageFileToS3(file);
-    }
-  };
+				if (!response.ok) {
+					throw new Error("Error");
+				}
+				setCaption("");
+				setTitle("");
+				setPicture("");
+				setSelectedGroup(null);
+				setSelectedCategory(null);
+				closeModal();
 
-  const openModal = () => {
-    getLocation();
-    setIsModalOpen(true);
-  };
+				setIsSuccessModalOpen(true); // Open success modal
+				setNewNumberPins(newNumberPins + 1);
+				await fetchPins();
+				// setIsModalOpen(false); // Close modal after successful pin addition
+				// setIsSuccessModalOpen(true); // Open success modal
+			} catch (error) {
+				console.error("Error creating post:", error);
+			}
+		} else {
+			const now = new Date();
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+			const formattedDateTime =
+				now.getFullYear() +
+				"-" +
+				String(now.getMonth() + 1).padStart(2, "0") +
+				"-" +
+				String(now.getDate()).padStart(2, "0") +
+				"T" +
+				String(now.getHours()).padStart(2, "0") +
+				":" +
+				String(now.getMinutes()).padStart(2, "0");
 
-  const openMenuModal = () => {
-    setIsMenuModalOpen(true);
-  };
+			localStorage.setItem(
+				"pin-offline-" + formattedDateTime,
+				JSON.stringify(raw)
+			);
 
-  const closeMenuModal = () => {
-    setIsMenuModalOpen(false);
-  };
+			setCaption("");
+			setTitle("");
+			setPicture("");
+			setSelectedGroup(null);
+			setSelectedCategory(null);
+			closeModal();
 
-  useEffect(() => {
-    fetch(`/api/groups/user/1`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(data); // Log the data to check the response format
-        setGroups(data);
-      })
-      .catch((error) => console.error("Error fetching groups:", error));
-  }, []);
+			setIsSuccessModalOpen(true);
+		}
+	};
 
-  const categories = [
-    { id: 1, name: "Animal Sighting" },
-    { id: 2, name: "Campsite" },
-    { id: 3, name: "Hiking Trail" },
-    { id: 4, name: "POI" },
-    { id: 5, name: "Security Concern" },
-  ];
+	const handleAddPhotoClick = () => {
+		if (fileInputRef.current) {
+			fileInputRef.current.click();
+		}
+		setIsPhotoOptionsModalOpen(false);
+	};
 
-  return (
-    <GoogleMapApiLoader apiKey={apicode || ""} suspense>
-      <div className="map-container">
-        <GoogleMap
-          className="h-full w-full"
-          zoom={5}
-          center={center}
-          mapOptions={{
-            disableDefaultUI: true,
-            zoomControl: true,
-            mapId: "dde51c47799889c4",
-          }}
-        >
-          <PoiMarkers pois={locations} />
-          <HomePins pin={filteredPins} />
-          <MapContent />
-        </GoogleMap>
-        <Legend items={legendItems} />
-      </div>
-      {/* <button 
-				className="fixed top-20 left-4 z-50" id="menu">
-					<IoMenu size={32} onClick={openMenuModal} />
-			</button> */}
+	const handleTakePhotoClick = () => {
+		setIsCameraModalOpen(true);
+		setIsPhotoOptionsModalOpen(false);
+	};
 
-      <button
+	const openPhotoModal = () => {
+		setIsPhotoOptionsModalOpen(true);
+	};
+
+	//###########################################################################
+	//S3 ZONE
+	//#############################################################################
+	// Helper function to generate a random string for unique file names
+	const generateRandomString = (length: number): string => {
+		const array = new Uint8Array(length / 2);
+		window.crypto.getRandomValues(array);
+		return Array.from(array, (byte) =>
+			("0" + byte.toString(16)).slice(-2)
+		).join("");
+	};
+
+	// Configuration
+	const region = "eu-west-1";
+	const bucketName = "lookout-bucket-capstone";
+	const accessKeyId = process.env.REACT_APP_AWS_S3_ACCESS_ID || "";
+	const secretAccessKey =
+		process.env.REACT_APP_AWS_S3_SECRET_ACCESS_KEY || "";
+
+	// Initialize AWS S3
+	const s3 = new AWS.S3({
+		region,
+		accessKeyId,
+		secretAccessKey,
+		signatureVersion: "v4"
+	});
+
+	const generateUploadURL = async (): Promise<string> => {
+		const randomBytes = generateRandomString(16);
+		const imageName = randomBytes.toString();
+
+		const params = {
+			Bucket: bucketName,
+			Key: imageName,
+			Expires: 60
+		};
+
+		const uploadURL = await s3.getSignedUrlPromise("putObject", params);
+		return uploadURL;
+	};
+
+	const uploadImageFileToS3 = async (file: File): Promise<void> => {
+		if (!file) {
+			throw new Error("No file provided for upload.");
+		}
+
+		try {
+			const uploadURL = await generateUploadURL();
+
+			await fetch(uploadURL, {
+				method: "PUT",
+				headers: {
+					"Content-Type": file.type
+				},
+				body: file
+			});
+
+			setPicture(uploadURL.split("?")[0]);
+			if (showRecommendedTitle) {
+				const formdata = new FormData();
+
+				// Append file to FormData, ensuring the file is present
+				formdata.append("image", file);
+
+				const requestOptions = {
+					method: "POST",
+					body: formdata
+				};
+
+				try {
+					const response = await fetch(
+						"http://localhost:5000/predict",
+						requestOptions
+					);
+					const result = await response.json();
+
+					setPredictResult(result.predicted_class);
+					setTitle(result.predicted_class);
+					console.log(result);
+				} catch (error) {
+					console.error("Error during prediction:", error);
+				}
+			}
+			console.log(
+				"Image uploaded and profile picture updated successfully.",
+				uploadURL.split("?")[0]
+			);
+		} catch (error) {
+			console.error("Error uploading file:", error);
+		}
+	};
+
+	const base64ToBuffer = (base64: string): Uint8Array => {
+		const binaryString = window.atob(base64);
+		const len = binaryString.length;
+		const bytes = new Uint8Array(len);
+		for (let i = 0; i < len; i++) {
+			bytes[i] = binaryString.charCodeAt(i);
+		}
+		return bytes;
+	};
+
+	const generateUploadURL64 = async (imageName: string): Promise<string> => {
+		const params = {
+			Bucket: bucketName,
+			Key: imageName,
+			Expires: 60
+		};
+
+		const uploadURL = await s3.getSignedUrlPromise("putObject", params);
+		return uploadURL;
+	};
+
+	const uploadBase64ImageToS3 = async (
+		base64Image: string
+	): Promise<void> => {
+		if (!base64Image) {
+			throw new Error("No image data provided for upload.");
+		}
+
+		try {
+			const base64Data = base64Image.split(",")[1];
+			if (!base64Data) throw new Error("Invalid base64 image data.");
+			const binaryData = base64ToBuffer(base64Data);
+			const imageName = generateRandomString(16) + ".png";
+			const uploadURL = await generateUploadURL64(imageName);
+			await fetch(uploadURL, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "image/png"
+				},
+				body: binaryData
+			});
+			await setPicture(uploadURL.split("?")[0]);
+
+			if (showRecommendedTitle) {
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+
+				const raw = JSON.stringify({
+					image_url: uploadURL.split("?")[0]
+				});
+
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw
+				};
+
+				try {
+					const response = await fetch(
+						"http://localhost:5000/predict",
+						requestOptions
+					);
+					const result = await response.json();
+					setPredictResult(result.predicted_class);
+					setTitle(result.predicted_class);
+					console.log(result);
+				} catch (error) {
+					console.error(error);
+				}
+			}
+			console.log(uploadURL.split("?")[0]);
+			console.log(picture);
+			console.log(
+				"Image uploaded and profile picture updated successfully."
+			);
+		} catch (error) {
+			console.error("Error uploading image:", error);
+		}
+	};
+
+	//#######################################################
+
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (file) {
+			uploadImageFileToS3(file);
+		}
+	};
+
+	const openModal = () => {
+		getLocation();
+		setIsModalOpen(true);
+	};
+
+	const closeModal = () => {
+		setIsModalOpen(false);
+		resetForm();
+	};
+
+	const openMenuModal = () => {
+		setIsMenuModalOpen(true);
+	};
+
+	const closeMenuModal = () => {
+		setIsMenuModalOpen(false);
+	};
+
+	useEffect(() => {
+		fetch(`/api/groups/user/1`, {
+			method: "GET",
+			headers: {
+				Accept: "application/json"
+			}
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				// console.log(data); // Log the data to check the response format
+				setGroups(data);
+			})
+			.catch((error) => console.error("Error fetching groups:", error));
+	}, []);
+
+	const categories = [
+		{ id: 1, name: "Animal Sighting" },
+		{ id: 2, name: "Campsite" },
+		{ id: 3, name: "Hiking Trail" },
+		{ id: 4, name: "POI" },
+		{ id: 5, name: "Security Concern" }
+	];
+
+	const resetForm = () => {
+		setCenter(defaultCenter);
+		setSelectedCategory(null);
+		setCategoryExpanded(false);
+		setSelectedGroup(null);
+		setGroupExpanded(false);
+		setPicture("");
+		setImageExpanded(false);
+		setTitle("");
+		setTitleExpanded(false);
+		setShowRecommendedTitle(false);
+		setCaption("");
+		setCaptionExpanded(false);
+		setDragPinExpanded(false);
+		setLatitude(0);
+		setLongitude(0);
+		setCurrentNumberPins(0);
+		setNewNumberPins(0);
+		setPredictResult("");
+		setIsModalOpen(false);
+		setIsMenuModalOpen(false);
+		setIsPhotoOptionsModalOpen(false);
+		setIsCameraModalOpen(false);
+	};
+
+	return (
+		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
+			<div className="map-container h-screen">
+				<GoogleMap
+					className="h-full w-full"
+					zoom={5}
+					center={center}
+					mapOptions={{
+						disableDefaultUI: true,
+						zoomControl: true,
+						mapId: "dde51c47799889c4"
+					}}
+				>
+					<MarkerClusterer>
+						<PoiMarkers pois={reservePins} />
+						<HomePins pin={filteredPins} />
+					</MarkerClusterer>
+					<MapContent />
+				</GoogleMap>
+				<Legend items={legendItems} />
+			</div>
+			<div className="fixed top-20 left-48 transform -translate-x-1/2 z-10">
+				<input
+					type="text"
+					placeholder="Search..."
+					value={searchTerm}
+					onChange={handleSearchChange}
+					className="search-bar p-2 border rounded-md left-3"
+				/>
+			</div>
+			  <button
         className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-gray-200 hover:text-gray-500"
         onClick={openMenuModal}
       >
         <FiFilter size={25} />
       </button>
-      <button
-        className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white p-4 rounded-full hover:bg-gray-200 hover:text-gray-500 sm:bottom-24 md:bottom-20"
-        onClick={openModal}
-      >
-        <FaPlus />
-      </button>
+			<button
+				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-800 sm:bottom-24 md:bottom-20"
+				onClick={openModal}
+			>
+				<FaPlus />
+			</button>
+
 
 			{/* Add pin modal */}
 			{isModalOpen && (
@@ -661,115 +919,334 @@ const HomeScreen: React.FC = () => {
 						</button>
 						<h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
 
-						<div className="flex justify-center mb-3">
-							<button
-								className="flex items-center justify-center text-content w-12 h-12 border border-gray-300 rounded-lg"
-								onClick={openPhotoModal}
-							>
-								<FaPlus />
-							</button>
-						</div>
-
-            <div className="text-center mb-3">
-              <span className="text-lg">Add a photo</span>
-              <input
-                type="file"
-                accept="image/jpeg, image/png"
-                style={{ display: "none" }}
-                ref={fileInputRef}
-                onChange={handleFileChange}
-              />
-              {picture && (
-                <img
-                  src={picture}
-                  alt="Selected"
-                  className="w-32 h-32 mt-2 mx-auto"
-                />
-              )}
-            </div>
 
 						<form>
-							<div className="mb-3 text-gray-400">
-								<label
-									htmlFor="groupSelect"
-									className="block text-content text-sm font-medium "
-								>
-									Select Group:
-								</label>
-								<select
-									id="groupSelect"
-									className="mt-1 text-gray-600 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedGroup ?? ""}
-									onChange={(e) =>
-										setSelectedGroup(Number(e.target.value))
-									}
-								>
-									<option value="" disabled>
-										Select a group
-									</option>
-									{groups.map((group) => (
-										<option key={group.id} value={group.id}>
-											{group.name}
-										</option>
-									))}
-								</select>
-							</div>
-
-							<div className="text-gray-400">
+							{/* Collapsible Category Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
 									htmlFor="categorySelect"
-									className="block text-sm font-medium text-content"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									onClick={() =>
+										setCategoryExpanded(!categoryExpanded)
+									}
 								>
 									Select Category:
 								</label>
-								<select
-									id="categorySelect"
-									className="mt-1 block text-gray-600 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedCategory ?? ""}
-									onChange={(e) =>
-										setSelectedCategory(
-											Number(e.target.value)
-										)
-									}
-								>
-									<option className="mt-1" value="" disabled>
-										Select a category
-									</option>
-									{categories.map((category) => (
-										<option
-											key={category.id}
-											value={category.id}
-										>
-											{category.name}
+								{categoryExpanded && (
+									<select
+										id="categorySelect"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										value={selectedCategory ?? ""}
+										onChange={(e) =>
+											setSelectedCategory(
+												Number(e.target.value)
+											)
+										}
+									>
+										<option value="" disabled>
+											Select a category
 										</option>
-									))}
-								</select>
+										{categories.map((category) => (
+											<option
+												key={category.id}
+												value={category.id}
+											>
+												{category.name}
+											</option>
+										))}
+									</select>
+								)}
 							</div>
 
-							<div className="mb-3">
+
+							{/* Collapsible Group Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
-									htmlFor="formDescription"
-									className="block text-sm font-medium text-content"
+									htmlFor="groupSelect"
+									className="block text-sm font-medium text-content cursor-pointer"
+									onClick={() =>
+										setGroupExpanded(!groupExpanded)
+									}
+
+								>
+									Select Group:
+								</label>
+
+								{groupExpanded && (
+									<select
+										id="groupSelect"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										value={selectedGroup ?? ""}
+										onChange={(e) =>
+											setSelectedGroup(
+												Number(e.target.value)
+											)
+										}
+									>
+										<option value="" disabled>
+											Select a group
+										</option>
+										{groups.map((group) => (
+											<option
+												key={group.id}
+												value={group.id}
+											>
+												{group.name}
+											</option>
+										))}
+									</select>
+								)}
+							</div>
+
+							{/* Collapsible Image Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<label
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									onClick={() =>
+										setImageExpanded(!imageExpanded)
+									}
+								>
+									Add Image:
+								</label>
+								{imageExpanded && (
+									<div className="flex justify-center mb-3">
+										{!picture && (
+											<button
+												type="button"
+												className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+												onClick={openPhotoModal}
+											>
+												<FaPlus />
+											</button>
+										)}
+										<input
+											type="file"
+											accept="image/jpeg, image/png"
+											style={{ display: "none" }}
+											ref={fileInputRef}
+											onChange={handleFileChange}
+										/>
+										{picture && (
+											<img
+												src={picture}
+												alt="Selected"
+												className="max-h-64 w-auto mt-2 mx-auto object-contain rounded-md"
+											/>
+										)}
+									</div>
+								)}
+							</div>
+
+							{/* Title Section with Slider */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<div className="flex items-center justify-between">
+									<label
+										htmlFor="formTitle"
+										className="block text-sm font-medium text-gray-700 cursor-pointer"
+										onClick={() =>
+											setTitleExpanded(!titleExpanded)
+										}
+									>
+										Title:
+									</label>
+
+									{/* Slider for Recommended Title */}
+									{selectedCategory === 1 && (
+										<div className="flex items-center">
+											<span className="text-sm mr-2">
+												Recommended
+											</span>
+											<label className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+												<input
+													type="checkbox"
+													className="toggle-checkbox"
+													checked={
+														showRecommendedTitle
+													}
+													onChange={async () => {
+														// Toggle the checkbox state
+														const newShowRecommendedTitle =
+															!showRecommendedTitle;
+														setShowRecommendedTitle(
+															newShowRecommendedTitle
+														);
+
+														if (
+															newShowRecommendedTitle &&
+															!predictResult &&
+															fileInputRef.current
+																?.files &&
+															fileInputRef.current
+																.files[0]
+														) {
+															const formdata =
+																new FormData();
+															const file =
+																fileInputRef
+																	.current
+																	.files[0];
+															formdata.append(
+																"image",
+																file
+															);
+
+															const requestOptions =
+																{
+																	method: "POST",
+																	body: formdata
+																};
+
+															try {
+																const response =
+																	await fetch(
+																		"http://localhost:5000/predict",
+																		requestOptions
+																	);
+																const result =
+																	await response.json();
+
+																setPredictResult(
+																	result.predicted_class
+																);
+
+																setTitle(
+																	result.predicted_class
+																);
+
+																console.log(
+																	result
+																);
+															} catch (error) {
+																console.error(
+																	"Error during prediction:",
+																	error
+																);
+															}
+														} else if (
+															newShowRecommendedTitle &&
+															!predictResult
+														) {
+															const myHeaders =
+																new Headers();
+															myHeaders.append(
+																"Content-Type",
+																"application/json"
+															);
+
+															const raw =
+																JSON.stringify({
+																	image_url:
+																		picture
+																});
+
+															const requestOptions =
+																{
+																	method: "POST",
+																	headers:
+																		myHeaders,
+																	body: raw
+																};
+
+															try {
+																const response =
+																	await fetch(
+																		"http://localhost:5000/predict",
+																		requestOptions
+																	);
+																const result =
+																	await response.json();
+																setPredictResult(
+																	result.predicted_class
+																);
+																setTitle(
+																	result.predicted_class
+																);
+																console.log(
+																	result
+																);
+															} catch (error) {
+																console.error(
+																	error
+																);
+															}
+														} else if (
+															!newShowRecommendedTitle
+														) {
+															// If the checkbox is unchecked, clear the title
+															setTitle("");
+														} else if (
+															newShowRecommendedTitle
+														) {
+															setTitle(
+																predictResult
+															);
+														}
+													}}
+												/>
+												<span className="toggle-label"></span>
+											</label>
+										</div>
+									)}
+								</div>
+
+								{/* Expandable Text Area for Title */}
+								{titleExpanded && (
+									<div className="mt-2">
+										<textarea
+											id="formTitle"
+											rows={2}
+											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+											placeholder="Enter title"
+											value={title}
+											onChange={(e) =>
+												setTitle(e.target.value)
+											}
+										></textarea>
+									</div>
+								)}
+
+							</div>
+
+							{/* Collapsible Caption Section */}
+							<div className="mb-3 border-2 border-black rounded-md p-3">
+								<label
+
+									htmlFor="formCaption"
+									className="block text-sm font-medium text-content cursor-pointer"
+									onClick={() =>
+										setCaptionExpanded(!captionExpanded)
+									}
 								>
 									Caption:
 								</label>
-								<textarea
-									id="formDescription"
-									rows={4}
-									className="mt-1 block w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter caption"
-									value={caption}
-									onChange={(e) => setCaption(DOMPurify.sanitize(e.target.value))}
-								></textarea>
+								{captionExpanded && (
+									<textarea
+										id="formCaption"
+										rows={4}
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										placeholder="Enter description"
+										value={caption}
+										onChange={(e) =>
+											setCaption(e.target.value)
+										}
+									></textarea>
+								)}
+
 							</div>
 
-							<div className="mb-3">
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
 									htmlFor="formDescription"
-									className="block text-sm font-medium text-content"
+
+									className="block text-sm font-medium text-content cursor-pointer"
+									onClick={() =>
+										setDragPinExpanded(!dragpinExpanded)
+									}
+
 								>
-									Title:
+									Sighting Location:
 								</label>
+
 								<textarea
 									id="formDescription"
 									rows={2}
@@ -778,17 +1255,92 @@ const HomeScreen: React.FC = () => {
 									value={title}
 									onChange={(e) => setTitle(DOMPurify.sanitize(e.target.value))}
 								></textarea>
+
+								{dragpinExpanded && (
+									<div id="sightlocation">
+										<GoogleMapApiLoader
+											apiKey={apicode || ""}
+											suspense
+										>
+											<GoogleMap
+												className="h-full w-full"
+												zoom={15}
+												center={center}
+												mapOptions={{
+													disableDefaultUI: true,
+													zoomControl: true,
+													mapId: "dde51c47799889c4"
+												}}
+											>
+												{" "}
+												{/* draggable */}
+												<Marker
+													lat={latitude}
+													lng={longitude}
+													title={"Sighting Location"}
+													draggable
+													onDragEnd={(event) => {
+														const newPosition =
+															event.getPosition();
+														const newLat =
+															newPosition?.lat();
+														const newLng =
+															newPosition?.lng();
+
+														setdragpinLatitude(
+															newLat !== null &&
+																newLat !==
+																	undefined
+																? newLat
+																: latitude
+														);
+														setdragpinLongitude(
+															newLng !== null &&
+																newLng !==
+																	undefined
+																? newLng
+																: longitude
+														);
+
+														console.log(
+															`Marker dropped at: Latitude ${dragpinlatitude}, Longitude ${dragpinlongitude}`
+														);
+													}}
+												/>
+											</GoogleMap>
+										</GoogleMapApiLoader>
+									</div>
+								)}
+
+							</div>
+
+
+							{/* Submit button only enabled when all fields are filled */}
+							<div>
+								<button
+									className={`w-full px-4 py-2 bg-navBkg text-txtBtn rounded-md hover:bg-iconShadow focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+										!selectedCategory ||
+										!selectedGroup ||
+										!picture ||
+										!title ||
+										!caption
+											? "opacity-50 cursor-not-allowed"
+											: ""
+									}`}
+									onClick={handleAddPinClick}
+									disabled={
+										!selectedCategory ||
+										!selectedGroup ||
+										!picture ||
+										!title ||
+										!caption
+									}
+								>
+									Add Pin
+								</button>
 							</div>
 						</form>
 
-						<div>
-							<button
-								className="w-full px-4 py-2 bg-navBkg text-txtBtn rounded-md hover:bg-iconShadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-								onClick={handleAddPinClick}
-							>
-								Add Pin
-							</button>
-						</div>
 					</div>
 				</div>
 			)}
@@ -805,14 +1357,14 @@ const HomeScreen: React.FC = () => {
 							onClick={() => {
 								setIsSuccessModalOpen(false);
 
-                navigate("/");
-              }}
-            >
-              Okay
-            </button>
-          </div>
-        </div>
-      )}
+							}}
+						>
+							Okay
+						</button>
+					</div>
+				</div>
+			)}
+
 
 			{/* PhotoOptions modal */}
 			{isPhotoOptionsModalOpen && (
@@ -956,18 +1508,66 @@ const HomeScreen: React.FC = () => {
   );
 };
 
-const PoiMarkers = (props: { pois: Poi[] }) => {
-  return (
-    <MarkerClusterer>
-      {props.pois.map((poi, i) => (
-        <Marker
-          key={poi.key}
-          lat={poi.location.lat}
-          lng={poi.location.lng}
-        ></Marker>
-      ))}
-    </MarkerClusterer>
-  );
+const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
+	const [activeMarker, setActiveMarker] = useState<string | null>(null);
+
+	const handleMarkerClick = (id: string) => {
+		setActiveMarker(id);
+	};
+
+	const handleCloseClick = () => {
+		setActiveMarker(null);
+	};
+
+	function Content({
+		category,
+		caption
+	}: {
+		category: string;
+		caption: string;
+	}) {
+		return (
+			<div id="content">
+				<div className="bg-white rounded-lg shadow-md p-4 max-w-xs">
+					<h1 className="text-2xl font-semibold text-black">
+						{category}
+					</h1>
+					<div id="bodyContent">
+						<p className="text-gray-700 mt-2 text-xl">{caption}</p>
+						<div className="flex justify-center"></div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<>
+			{pois.map((poi: any) => (
+				<React.Fragment key={poi.key}>
+					<Marker
+						lat={poi.location.lat}
+						lng={poi.location.lng}
+						title={poi.label}
+						onClick={() => handleMarkerClick(poi.key)}
+					/>
+					<InfoWindow
+						position={poi.location}
+						open={activeMarker === poi.key}
+						ariaLabel={poi.details}
+						content={
+							<Content
+								category={poi.label}
+								caption={poi.details}
+							/>
+						}
+						onCloseClick={handleCloseClick}
+					/>
+				</React.Fragment>
+			))}
+		</>
+	);
+
 };
 
 export default HomeScreen;

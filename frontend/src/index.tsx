@@ -18,7 +18,7 @@ import GroupPosts from "./components/GroupPosts";
 import Profile from "./screens/Profile";
 import ProfileDetail from "./components/ProfileDetail";
 import GroupsMap from "./components/GroupsMap";
-import ExploreScreen from "./screens/ExploreScreen";
+// import ExploreScreen from "./screens/ExploreScreen";
 import UserPostDetails from "./components/UserPostDetails";
 import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -53,7 +53,7 @@ function Main() {
 				/>
 				<Route
 					path="/explore"
-					element={<ProtectedRoute element={ExploreScreen} />}
+					// element={<ProtectedRoute element={ExploreScreen} />}
 				/>
 				<Route
 					path="/groups"
@@ -99,7 +99,7 @@ function Main() {
 					element={<ProtectedRoute element={SavedPostDetails} />}
 				/>
 				<Route>
-					<Route path="/" element={<ExploreScreen />} />
+					{/* <Route path="/" element={<ExploreScreen />} /> */}
 					<Route
 						path="/category/:categoryId"
 						element={<CategoryPostsPage />}
@@ -112,7 +112,6 @@ function Main() {
 						path="/recommend/groups"
 						element={<ExploreRecommend />}
 					/>{" "}
-					
 				</Route>
 				<Route
 					path="/createdGroup/:id"
