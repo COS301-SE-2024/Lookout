@@ -5,6 +5,7 @@ import CreatedGroupDetailSkeleton from '../components/CreatedGroupSkeleton';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';
 import DOMPurify from 'dompurify';
+import GroupDetailSkeleton from './GroupDetailSkeleton';
 
 interface User {
   id: number;
@@ -46,7 +47,6 @@ interface Post {
   title: string;
 }
 
-
 const getDayWithSuffix = (date: Date) => {
   const day = date.getDate();
   const suffix =
@@ -68,8 +68,10 @@ const CreatedGroupDetail: React.FC = () => {
   const [groupLoaded, setGroupLoaded] = useState(false);
   const [editableName, setEditableName] = useState('');
   const [editableDescription, setEditableDescription] = useState('');
-  const [isRemoving, setIsRemoving] = useState(false);
 
+  // Modal State
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchGroupDetails = async () => {
@@ -113,7 +115,6 @@ const CreatedGroupDetail: React.FC = () => {
         console.error('Error fetching group details:', error);
         setGroupLoaded(true);
         setPostsLoaded(true);
-
       }
     };
 
@@ -124,35 +125,45 @@ const CreatedGroupDetail: React.FC = () => {
     navigate(`/groupMap/${id}`);
   };
 
-  const handleRemoveMember = async (member: User) => {
-    if (!group) {
-      return;
-    }
-    if (window.confirm(`Are you sure you want to remove ${member.userName} from group ${group.name}?`)) {
-      try {
-        const response = await fetch('/api/groups/RemoveMemberFromGroup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            groupId: group.id,
-            userId: member.id
-          }),
-        });
+  // Open Modal
+  const openRemoveModal = (member: User) => {
+    setMemberToRemove(member);
+    setShowRemoveModal(true);
+  };
 
+  // Confirm Removal
+  const confirmRemoveMember = async () => {
+    if (!group || !memberToRemove) return;
 
-        if (!response.ok) {
-          throw new Error('Failed to remove member');
-        }
+    try {
+      const response = await fetch('/api/groups/RemoveMemberFromGroup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          groupId: group.id,
+          userId: memberToRemove.id
+        }),
+      });
 
-        setMembers(groupMembers.filter(m => m.id !== member.id));
-        setIsRemoving(false);
-      } catch (error) {
-        console.error('Error removing member:', error);
-        alert('Failed to remove member. Please try again.');
+      if (!response.ok) {
+        throw new Error('Failed to remove member');
       }
+
+      setMembers(groupMembers.filter((m) => m.id !== memberToRemove.id));
+      setShowRemoveModal(false);
+      setMemberToRemove(null);
+    } catch (error) {
+      console.error('Error removing member:', error);
+      alert('Failed to remove member. Please try again.');
     }
+  };
+
+  // Close Modal
+  const closeRemoveModal = () => {
+    setShowRemoveModal(false);
+    setMemberToRemove(null);
   };
 
   const handleEditClick = () => {
@@ -224,13 +235,36 @@ const CreatedGroupDetail: React.FC = () => {
     }
   };
 
-
   if (!group || !owner || !groupLoaded || !postsLoaded) {
-    return <CreatedGroupDetailSkeleton />;
+    return <GroupDetailSkeleton />;
   }
 
+  // Modal Component
+  const RemoveMemberModal: React.FC<{ member: User; onConfirm: () => void; onCancel: () => void }> = ({ member, onConfirm, onCancel }) => (
+    <div className="fixed inset-0 flex items-center justify-center bg-navBkg bg-opacity-50 z-50">
+      <div className="bg-bkg p-6 rounded-lg shadow-lg max-w-sm w-full text-white">
+        <h2 className="text-content text-xl font-bold mb-4">Confirm Removal</h2>
+        <p  className="text-content">Are you sure you want to remove <span className="font-semibold">{member.userName}</span> from the group?</p>
+        <div className="flex justify-center items-center mt-6">
+          <button
+            onClick={onCancel}
+            className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg px-4 py-2 rounded"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="p-4 scrollbar-hide flex flex-col h-screen bg-bkg">
+    <div className="p-4 scrollbar-hide flex flex-col h-full bg-bkg relative">
       <style>
         {`
           .scrollbar-hide::-webkit-scrollbar {
@@ -243,6 +277,7 @@ const CreatedGroupDetail: React.FC = () => {
         `}
       </style>
 
+      {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="absolute top-14 left-4 md:top-20 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
@@ -258,6 +293,7 @@ const CreatedGroupDetail: React.FC = () => {
         </svg>
       </button>
 
+      {/* Edit and Cancel/Done Buttons */}
       {isEditing ? (
         <>
           <button
@@ -275,9 +311,8 @@ const CreatedGroupDetail: React.FC = () => {
         </>
       ) : (
         <>
-
           <FaEdit
-            className="absolute top-16 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon  md:top-24 md:right-8"
+            className="absolute top-16 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon md:top-24 md:right-8"
             onClick={handleEditClick}
             size={24}
           />
@@ -297,7 +332,7 @@ const CreatedGroupDetail: React.FC = () => {
             {isEditing ? (
               <input
                 type="text"
-                className="text-content text-2xl italic font-bold bg-transparent mb-2"
+                className="text-content text-2xl italic font-bold bg-transparent mb-2 border-b border-gray-300 focus:outline-none"
                 value={editableName}
                 onChange={(e) => setEditableName(DOMPurify.sanitize(e.target.value))}
               />
@@ -308,7 +343,7 @@ const CreatedGroupDetail: React.FC = () => {
             {isEditing ? (
               <input
                 type="text"
-                className="text-content text-ml italic w-80 bg-transparent border-none mb-2"
+                className="text-content text-ml italic w-80 bg-transparent border-b border-gray-300 focus:outline-none mb-2"
                 value={editableDescription}
                 onChange={(e) => setEditableDescription(DOMPurify.sanitize(e.target.value))}
               />
@@ -339,13 +374,13 @@ const CreatedGroupDetail: React.FC = () => {
             <div className="flex gap-1 mt-4">
               <button
                 onClick={handleViewOnMapClick}
-                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm text-white"
               >
                 View on map
               </button>
               <button
                 onClick={handleDeleteClick}
-                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm text-white"
               >
                 Delete group
               </button>
@@ -353,6 +388,7 @@ const CreatedGroupDetail: React.FC = () => {
           </div>
         </div>
 
+        {/* Posts Section */}
         <div className="mt-8">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-lm font-bold ml-4">Posts in this group</h1>
@@ -365,6 +401,7 @@ const CreatedGroupDetail: React.FC = () => {
           </HorizontalCarousel>
         </div>
 
+        {/* About the Owner Section */}
         <div className="flex justify-between items-center mb-4 mt-4 ml-4">
           <h1 className="text-ml font-bold">About the owner</h1>
           <Link to={`/profileView/${owner?.id}`} className="text-content text-sm hover:text-gray-800 underline">
@@ -382,7 +419,7 @@ const CreatedGroupDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Group members list */}
+        {/* Group Members List */}
         <div className="mt-6">
           <h2 className="text-xl font-bold mb-2">Group Members</h2>
           <ul className="space-y-4">
@@ -397,10 +434,10 @@ const CreatedGroupDetail: React.FC = () => {
                   <span className="text-lg font-bold">{member.userName}</span>
                   <p className="text-sm text-content2 ">{member.email}</p>
                 </div>
-                {/* Optional: Add Remove Member button */}
+                {/* Remove Member Button */}
                 <button
-                  className="ml-auto bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
-                  onClick={() => handleRemoveMember(member)}
+                  className="ml-auto bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm text-white"
+                  onClick={() => openRemoveModal(member)}
                 >
                   Remove
                 </button>
@@ -409,7 +446,17 @@ const CreatedGroupDetail: React.FC = () => {
           </ul>
         </div>
       </div>
+
+      {/* Render Modal */}
+      {showRemoveModal && memberToRemove && (
+        <RemoveMemberModal
+          member={memberToRemove}
+          onConfirm={confirmRemoveMember}
+          onCancel={closeRemoveModal}
+        />
+      )}
     </div>
   );
 };
+
 export default CreatedGroupDetail;
