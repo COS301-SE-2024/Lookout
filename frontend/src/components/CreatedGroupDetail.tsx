@@ -70,7 +70,7 @@ const CreatedGroupDetail: React.FC = () => {
   const [editableDescription, setEditableDescription] = useState('');
   const [isRemoving, setIsRemoving] = useState(false);
 
-  
+
   useEffect(() => {
     const fetchGroupDetails = async () => {
       try {
@@ -123,7 +123,7 @@ const CreatedGroupDetail: React.FC = () => {
   const handleViewOnMapClick = () => {
     navigate(`/groupMap/${id}`);
   };
-  
+
   const handleRemoveMember = async (member: User) => {
     if (!group) {
       return;
@@ -242,7 +242,7 @@ const CreatedGroupDetail: React.FC = () => {
           }
         `}
       </style>
-  
+
       <button
         onClick={() => navigate(-1)}
         className="absolute top-14 left-4 md:top-20 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
@@ -257,7 +257,7 @@ const CreatedGroupDetail: React.FC = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
-  
+
       {isEditing ? (
         <>
           <button
@@ -275,7 +275,7 @@ const CreatedGroupDetail: React.FC = () => {
         </>
       ) : (
         <>
-      
+
           <FaEdit
             className="absolute top-16 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon  md:top-24 md:right-8"
             onClick={handleEditClick}
@@ -283,7 +283,7 @@ const CreatedGroupDetail: React.FC = () => {
           />
         </>
       )}
-  
+
       <div className="container mx-auto p-4 mt-10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-center items-center">
           <img
@@ -292,7 +292,7 @@ const CreatedGroupDetail: React.FC = () => {
             className="w-56 h-56 object-cover mb-4 md:mb-0 md:mr-8"
             style={{ borderRadius: '8px' }}
           />
-  
+
           <div className="text-center md:text-left flex flex-col items-center md:items-start">
             {isEditing ? (
               <input
@@ -304,7 +304,7 @@ const CreatedGroupDetail: React.FC = () => {
             ) : (
               <h1 className="text-2xl text-content font-bold mb-2">{group.name}</h1>
             )}
-  
+
             {isEditing ? (
               <input
                 type="text"
@@ -314,14 +314,14 @@ const CreatedGroupDetail: React.FC = () => {
               />
             ) : (
               <p className="text-content text-ml mb-2">
-                {group?.description?.split(' ').map((word, index) => 
+                {group?.description?.split(' ').map((word, index) =>
                   (index + 1) % 10 === 0 ? `${word} ` : `${word} `
                 ).reduce<React.ReactNode[]>((acc, curr, index) => (
                   (index + 1) % 10 === 0 ? [...acc, curr, <br key={index} />] : [...acc, curr]
                 ), [])}
               </p>
             )}
-  
+
             <div className="flex flex-col md:flex-row items-center mb-2">
               <div className="flex flex-row items-center">
                 <span className="text-content text-sm">{posts.length} Posts</span>
@@ -329,13 +329,13 @@ const CreatedGroupDetail: React.FC = () => {
                 <span className="text-content text-sm">{groupMembers.length} Members</span>
               </div>
             </div>
-  
+
             <span className="text-content2 text-sm">
               {group.createdAt ? (
                 `${getDayWithSuffix(new Date(group.createdAt))} ${new Date(group.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`
               ) : 'Unknown'}
             </span>
-  
+
             <div className="flex gap-1 mt-4">
               <button
                 onClick={handleViewOnMapClick}
@@ -352,7 +352,7 @@ const CreatedGroupDetail: React.FC = () => {
             </div>
           </div>
         </div>
-  
+
         <div className="mt-8">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-lm font-bold ml-4">Posts in this group</h1>
@@ -364,14 +364,14 @@ const CreatedGroupDetail: React.FC = () => {
             ))}
           </HorizontalCarousel>
         </div>
-  
+
         <div className="flex justify-between items-center mb-4 mt-4 ml-4">
           <h1 className="text-ml font-bold">About the owner</h1>
           <Link to={`/profileView/${owner?.id}`} className="text-content text-sm hover:text-gray-800 underline">
             View their profile
           </Link>
         </div>
-        
+
         <div className="mt-4 ml-4">
           <div className="flex items-center mb-4">
             <img src={owner?.profilePic} alt="" className="w-20 h-20 rounded-full mr-6" />
@@ -381,36 +381,35 @@ const CreatedGroupDetail: React.FC = () => {
             </div>
           </div>
         </div>
-  
-       {/* Group members list */}
-  <div className="mt-6">
-    <h2 className="text-xl font-bold mb-2">Group Members</h2>
-    <ul className="space-y-4">
-      {groupMembers.map((member) => (
-        <li key={member.id} className="flex items-center p-2 rounded-lg">
-          <img
-            src={member.profilePic}
-            alt={`${member.userName}'s profile`}
-            className="w-12 h-12 rounded-full mr-4"
-          />
-          <div>
-            <span className="text-lg font-bold">{member.userName}</span>
-            <p className="text-sm text-content2 ">{member.email}</p>
-          </div>
-          {/* Optional: Add Remove Member button */}
-          <button
-            className="ml-auto bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
-            onClick={() => handleRemoveMember(member)}
-          >
-            Remove
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
+
+        {/* Group members list */}
+        <div className="mt-6">
+          <h2 className="text-xl font-bold mb-2">Group Members</h2>
+          <ul className="space-y-4">
+            {groupMembers.map((member) => (
+              <li key={member.id} className="flex items-center p-2 rounded-lg">
+                <img
+                  src={member.profilePic}
+                  alt={`${member.userName}'s profile`}
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+                <div>
+                  <span className="text-lg font-bold">{member.userName}</span>
+                  <p className="text-sm text-content2 ">{member.email}</p>
+                </div>
+                {/* Optional: Add Remove Member button */}
+                <button
+                  className="ml-auto bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm"
+                  onClick={() => handleRemoveMember(member)}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
 };
-  export default CreatedGroupDetail;
-  
+export default CreatedGroupDetail;
