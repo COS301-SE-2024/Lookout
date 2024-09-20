@@ -104,4 +104,9 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         }
     }
 
+    fun findGroupsByOwnerId(ownerId: Long): List<Groups> {
+        return groupRepository.findGroupsByOwnerId(ownerId)
+    }
+
+
 }

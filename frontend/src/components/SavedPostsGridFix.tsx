@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PostsGridSkeleton from './PostsGridSkeleton'; // Import the skeleton
 
 interface User {
   id: number;
@@ -45,17 +46,21 @@ interface SavedPostsGridFixProps {
 }
 
 const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) => {
-  // ADD IN FROM LOGIN LATER
-	const userId = 1;
+  const userId = 1; // This should be dynamically set based on the logged-in user
   const navigate = useNavigate();
   const [savedPosts, setSavedPosts] = useState<SavedPost[]>([]);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [error, setError] = useState<string | null>(null); // Add error state
 
   useEffect(() => {
     const fetchSavedPosts = async () => {
       try {
         const response = await fetch(`/api/savedPosts/user/${userId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         const data = await response.json();
-  
+
         // Transform the data into the expected structure
         const transformedData = data.map((item: any) => ({
           id: item.savedPostId,
@@ -68,7 +73,7 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
             picture: item.postPicture,
             createdAt: item.postCreatedAt,
             category: {
-              id: item.postCategoryId, // Assuming you have postCategoryId in your backend response
+              id: item.postCategoryId,
               description: item.postCategoryDescription,
             },
             group: {
@@ -77,12 +82,6 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
               description: item.groupDescription,
               isPrivate: item.groupIsPrivate,
               picture: item.groupPicture,
-              createdAt: item.groupCreatedAt,
-              user: {
-                id: item.groupUserId,
-                userName: item.groupUsername,
-                email: item.groupUserEmail,
-              },
             },
             user: {
               id: item.userId,
@@ -96,16 +95,36 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
             email: item.userEmail,
           },
         }));
-  
-        setSavedPosts(transformedData);
+
+        // Remove duplicate posts based on post ID
+        const uniquePosts = transformedData.reduce((acc: SavedPost[], current: SavedPost) => {
+          const x = acc.find(item => item.post?.id === current.post?.id);
+          if (!x) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+
+        setSavedPosts(uniquePosts);
       } catch (error) {
+        if (error instanceof Error) {
+          setError('Error fetching saved posts: ' + error.message);
+        } else {
+          setError('An unknown error occurred');
+        }
         console.error('Error fetching saved posts:', error);
+      } finally {
+        setLoading(false); // Set loading to false after fetch
       }
     };
-  
+
     fetchSavedPosts();
+
+    // Cleanup function to clear state if component unmounts
+    return () => {
+      setSavedPosts([]);
+    };
   }, [userId]);
-  
 
   const handlePostClick = (post: Post) => {
     navigate(`/saved_post/${post.id}`, { state: { post } });
@@ -118,24 +137,29 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
 
   return (
     <div className="p-4 scrollbar-hide">
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        {filteredSavedPosts.map(savedPost => (
-          <div
-            key={savedPost.post?.id}
-            className="w-full overflow-hidden rounded-md shadow-lg cursor-pointer"
-            onClick={() => handlePostClick(savedPost.post!)}
-          >
-            <Link to={`/saved_post/${savedPost.post?.id}`}>
-              <img
-                src={savedPost.post?.picture}
-                alt={`Post ${savedPost.post?.id}`}
-                className="w-full h-40 object-cover"
-              />
-              {/* Optional: Add caption or other details */}
-            </Link>
-          </div>
-        ))}
-      </div>
+      {error && <div className="text-red-500">{error}</div>}
+      {loading ? (
+        <PostsGridSkeleton /> // Show skeleton while loading
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+          {filteredSavedPosts.map(savedPost => (
+            <div
+              key={savedPost.post?.id}
+              className="w-full overflow-hidden rounded-md shadow-lg cursor-pointer"
+              onClick={() => handlePostClick(savedPost.post!)}
+            >
+              <Link to={`/saved_post/${savedPost.post?.id}`}>
+                <img
+                  src={savedPost.post?.picture}
+                  alt={`Post ${savedPost.post?.id}`}
+                  className="w-full h-40 object-cover"
+                />
+                {/* Optional: Add caption or other details */}
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

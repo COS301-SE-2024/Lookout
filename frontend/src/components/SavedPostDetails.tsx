@@ -179,8 +179,9 @@ const PinDetail: React.FC = () => {
 							console.log("Parsed message data:", savedPostData);
 
 							if (savedPostData.postId === post.id) {
-								setIsSaved(savedPostData.isSaved);
-								setSaves(savedPostData.saves);
+								if (savedPostData.userId !== userId) {
+									setSaves(savedPostData.saves);
+								}
 							}
 						} catch (error) {
 							console.error("Error parsing message:", error);
@@ -199,7 +200,7 @@ const PinDetail: React.FC = () => {
 			}
 			webSocketService.disconnect();
 		};
-	}, [post?.id]);
+	}, [post?.id, userId]);
 
 	const handleSaveClick = async () => {
 		const requestBody = {

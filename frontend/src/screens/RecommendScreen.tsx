@@ -143,8 +143,8 @@ const RecommendScreen: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         {/* Back arrow and title */}
         <div className="flex items-center space-x-4">
-        <button onClick={() => navigate('/explore')} className="text-blue-500">
-            <MdKeyboardArrowLeft size={42} color="green" />
+        <button onClick={() => navigate('/explore')} className="text-navBkg hover:text-icon">
+            <MdKeyboardArrowLeft size={42} />
           </button>
           <h1 className="text-2xl font-bold">
             {selectedCategory === "Posts" ? "Posts we think you'll like" : "Groups we think you'll like"}
@@ -155,7 +155,7 @@ const RecommendScreen: React.FC = () => {
           <select
             value={sortOrder}
             onChange={handleSortChange}
-            className="border border-gray-300 rounded-md p-2"
+            className="bg-nav border border-nav rounded-md p-2"
           >
             <option value="newest">
               <FaSortAmountDown className="inline-block mr-2" />

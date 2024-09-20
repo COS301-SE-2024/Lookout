@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
@@ -8,16 +9,16 @@ interface FAQModalProps {
 const FAQModal: React.FC<FAQModalProps> = ({ onClose }) => {
 	const modalStyles = {
 		modalContainer:
-			"fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
-		modalContent:
-			"bg-white text-black rounded-lg p-8 relative w-11/12 md:w-96 max-h-screen h-[80vh] overflow-y-auto", // Adjusted to ensure contrast
+			"fixed inset-0 z-50 flex items-center justify-center bg-nav bg-opacity-50 flex justify-start md:justify-center items-center",
+			modalContent:
+			"bg-nav text-content rounded-lg p-8 relative w-11/12 md:w-96 max-h-screen h-[80vh] overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200", // Adjusted to ensure contrast
 		closeButton: "absolute top-2 left-2 cursor-pointer",
-		closeIcon: "text-gray-500 hover:text-gray-700",
-		helpTitle: "text-xl font-semibold mb-4 text-center text-black", // Ensures text is visible
-		sectionTitle: "text-lg font-semibold mt-4 mb-2 text-black", // Ensures text is visible
-		logoutButton: "bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full",
-		searchBar: "w-full py-2 px-4 border rounded-lg mt-4 text-black", // Ensures text is visible
-		faqTitle: "text-lg font-semibold mt-4 mb-2 text-black" // Ensures text is visible
+		closeIcon: "text-content hover:text-gray-700",
+		helpTitle: "text-xl font-semibold mb-4 text-center text-content", // Ensures text is visible
+		sectionTitle: "text-lg font-semibold mt-4 mb-2 text-content", // Ensures text is visible
+		logoutButton: "bg-blue-500 text-content py-2 px-4 rounded-lg mt-4 w-full",
+		searchBar: "w-full py-2 px-4 border rounded-lg mt-4 mb-8 text-content", // Ensures text is visible
+		faqTitle: "text-lg font-semibold mt-4 mb-2 text-content" // Ensures text is visible
 	};
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -74,7 +75,7 @@ const FAQModal: React.FC<FAQModalProps> = ({ onClose }) => {
 	]);
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(e.target.value);
+		setSearchQuery(DOMPurify.sanitize(e.target.value));
 	};
 
 	const filteredFaqItems = faqItems.filter((item) =>
@@ -99,7 +100,7 @@ const FAQModal: React.FC<FAQModalProps> = ({ onClose }) => {
 				/>
 				<ul>
 					{filteredFaqItems.map((item, index) => (
-						<li key={index} className="py-2 border-t border-b mb-4">
+						<li key={index} className="py-2 border-t border-b mb-8">
 							<h1 className="text-xl font-semibold">
 								{item.question}
 							</h1>

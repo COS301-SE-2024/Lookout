@@ -1,9 +1,9 @@
 /* src/components/Legend.css */
 
 .legend {
-    background: white;
+    background: nav;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid nav;
     border-radius: 4px;
     position: absolute;
     top: 10%; 

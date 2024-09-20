@@ -2,28 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-	:root {
-		--color-nav-bkg: 106 153 78;
-		--color-bkg: 255 251 250;
-		--color-content: 0 0 0;
-	}
-	@media (prefers-color-scheme: dark) {
-		:root {
-			--color-nav-bkg: 0 48 61;
-			--color-bkg: 0 32 41;
-			--color-content: 255 255 255;
-		}
-	}
 
-	:root[data-theme="dark"] {
-		--color-nav-bkg: 0 48 61;
-		--color-bkg: 0 32 41;
-		--color-content: 255 255 255;
-	}
-	:root[data-theme="light"] {
-		--color-nav-bkg: 22 101 52;
-		--color-bkg: 255 251 250;
-		--color-content: 0 0 0;
-	}
+@layer base {
+	@font-face {
+		font-family: 'CustomFont';
+		src: url('Fonts/Outfit.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	  }
+
+    /* body {
+      font-family: 'CustomFont', sans-serif;
+    } */
+     
+    @layer base {
+      body {
+        @apply font-custom; /* Apply the custom font globally */
+      }
+    }
+
+  :root {
+    --color-nav-bkg: 25 100 52;
+    --color-nav-bkg2: 25 100 52;
+    --color-nav: 255 251 250;
+    --color-bkg: 255 251 250;
+    --color-icon: 107 114 128;
+    --color-icon-shadow: 229 231 235;
+    --color-content: 0 0 0;
+    --color-content2: 107 114 128;
+    --color-btntxt: 255 251 250;
+    --color-hver: 229 231 235;
+    --color-shd: 60 91 111;
+    --color-navHighlight: 25 100 52;
+    --font-family: 'CustomFont'; /* Add your default font family here */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-nav-bkg: 31 41 55;
+      --color-nav-bkg2: 223 208 184;
+      --color-nav: 21 52 72;
+      --color-bkg: 60 91 111;
+      --color-icon: 223 208 184;
+      --color-icon-shadow: 60 91 111;
+      --color-content: 223 208 184;
+      --color-content2: 247 231 220;
+      --color-btntxt:  223 208 184;
+      --color-hver: 21 52 72;
+      --color-shd: 60 91 111;
+      --color-navHighlight: 255 255 255;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --color-nav-bkg: 31 41 55;
+    --color-nav-bkg2: 223 208 184;
+    --color-nav: 21 52 72;
+    --color-bkg: 60 91 111;
+    --color-icon: 223 208 184;
+    --color-icon-shadow: 60 91 111;
+    --color-content: 223 208 184;
+    --color-content2: 247 231 220;
+    --color-btntxt:  223 208 184;
+    --color-hver: 21 52 72;
+    --color-shd: 60 91 111;
+    --color-navHighlight: 255 255 255;
+  }
+  :root[data-theme="light"] {
+    --color-nav-bkg: 25 100 52;
+    --color-nav-bkg2: 25 100 52;
+    --color-nav: 255 251 250;
+    --color-bkg: 255 251 250;
+    --color-icon: 107 114 128;
+    --color-icon-shadow: 229 231 235;
+    --color-content: 0 0 0;
+    --color-content2: 107 114 128;
+    --color-btntxt: 255 251 250;
+    --color-hver: 229 231 235;
+    --color-shd: 60 91 111;
+    --color-navHighlight: 25 100 52;
+  }
 }

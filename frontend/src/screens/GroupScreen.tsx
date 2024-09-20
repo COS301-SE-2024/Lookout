@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import SearchGroups from "../components/SearchGroups";
-import CreateGroups from "../components/CreateGroups";
 import GroupsList from '../components/GroupsList';
 
 type Group = {
@@ -78,7 +77,7 @@ const GroupScreen = () => {
 			<div className="tab-content">
 				{activeTab === "your-groups" && <GroupsList />}
 				{activeTab === "search" && <SearchGroups />}
-				{activeTab === "create" && <CreateGroups onCreateGroup={handleAddGroup} />}
+				{/* {activeTab === "create" && <CreateGroups onCreateGroup={handleAddGroup} />} */}
 			</div>
 		</div>
 	);
