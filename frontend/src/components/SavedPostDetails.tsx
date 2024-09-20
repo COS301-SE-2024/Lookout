@@ -200,7 +200,7 @@ const PinDetail: React.FC = () => {
 			}
 			webSocketService.disconnect();
 		};
-	}, [post?.id]);
+	}, [post?.id, userId]);
 
 	const handleSaveClick = async () => {
 		const requestBody = {
