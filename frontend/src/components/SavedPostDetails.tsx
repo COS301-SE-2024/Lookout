@@ -8,7 +8,6 @@ import PinDetailPost from "./PinDetailPost";
 import webSocketService from "../utils/webSocketService";
 
 interface Post {
-
 	id: number;
 	username: string;
 	description: string;
@@ -33,8 +32,6 @@ interface Post {
 		isAccountNonLocked: boolean;
 		password: string;
 		isEnabled: boolean;
-    profilepic: string;
- 
 	};
 	group: {
 		id: number;
@@ -64,22 +61,6 @@ interface Post {
 	longitude: number;
 	caption: string;
 	createdAt: string;
-
-}
-
-interface User {
-  userName: string;
-  email: string;
-  passcode: string;
-  role: string;
-  isEnabled: boolean;
-  password: string;
-  username: string;
-  profilePic: string;
-  authorities: { authority: string }[];
-  isAccountNonLocked: boolean;
-  isCredentialsNonExpired: boolean;
-  isAccountNonExpired: boolean;
 }
 
 const PinDetail: React.FC = () => {
@@ -198,8 +179,9 @@ const PinDetail: React.FC = () => {
 							console.log("Parsed message data:", savedPostData);
 
 							if (savedPostData.postId === post.id) {
-								setIsSaved(savedPostData.isSaved);
-								setSaves(savedPostData.saves);
+								if (savedPostData.userId !== userId) {
+									setSaves(savedPostData.saves);
+								}
 							}
 						} catch (error) {
 							console.error("Error parsing message:", error);
@@ -218,7 +200,7 @@ const PinDetail: React.FC = () => {
 			}
 			webSocketService.disconnect();
 		};
-	}, [post?.id]);
+	}, [post?.id, userId]);
 
 	const handleSaveClick = async () => {
 		const requestBody = {
@@ -288,140 +270,78 @@ const PinDetail: React.FC = () => {
 	}
 
 	return (
-    <div className="p-4 scrollbar-hide flex flex-col h-screen bg-bkg">
-      <style>
-        {`
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-          .search-results-container {
-            display: grid;
-            gap: 16px;
-            justify-items: start;
-          }
-          .search-results-container .search-result-card {
-            width: 100%;
-            margin: 0;
-          }
-          @media (min-width: 768px) {
-            .search-results-container {
-              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            }
-          }
-          @media (max-width: 767px) {
-            .search-results-container {
-              grid-template-columns: 1fr;
-            }
-            .search-bar {
-              width: 100%;
-            }
-          }
-        `}
-      </style>
-      <button
-        onClick={() => navigate(-1)}
-        className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2"
-        style={{ zIndex: 50 }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-8 w-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </button>
+		<div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
+			{/* Button to go back */}
+			<button
+				onClick={() => navigate(-1)}
+				className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2"
+				style={{ zIndex: 50 }}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					className="h-8 w-8"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="2"
+						d="M15 19l-7-7 7-7"
+					/>
+				</svg>
+			</button>
 
-      <div className="container mx-auto p-4 mt-16">
-        <div className="card bg-base-100 shadow-xl shadow rounded-lg flex flex-col md:flex-row">
-          <figure className="rounded-t-lg overflow-hidden md:w-1/2">
-            <img
-              src={post?.picture}
-              alt={post?.title}
-              className="w-full h-full object-cover"
-            />
-          </figure>
+			{/* Post details */}
+			<div className="grid md:grid-cols-2 mt-10 relative">
+				{/* Left Section (Image) */}
+				<div className="rounded-l-lg">
+					<img
+						src={post?.picture}
+						alt={post?.title}
+						className="rounded-lg max-h-96 w-full object-cover object-center"
+					/>
+				</div>
 
-          <div className="card-body p-4 md:w-1/2">
-            <div className="flex items-center justify-between mt-2 mb-4">
-              <h1 className="text-2xl font-bold">{post?.title}</h1>
-              <div className="flex items-center">
-                {isSaved ? (
-                  <FaBookmark
-                  className="text-navBkg cursor-pointer"
-                  onClick={handleSaveIconClick}
-                    size={24}
-                  />
-                ) : (
-                  <FaRegBookmark
-                  className="text-navBkg cursor-pointer"
-                  onClick={handleSaveIconClick}
-                    size={24}
-                  />
-                )}
-                <span className="ml-2">{saves} saves</span>
-              </div>
-            </div>
+				{/* Right Section (Post Content) */}
+				<div className="p-4 flex flex-col">
+					<h1 className="text-4xl font-bold">{post?.title}</h1>
+					<p className="mt-4 text-lg">{post?.description}</p>
 
-            <div className="flex items-center mb-4">
-              <img
-                src={user?.profilePic}
-                alt={post?.username}
-                className="w-16 h-16 rounded-full mr-4"
-              />
-              <div>
-                <h2 className="text-content text-lg font-bold">{post?.username}</h2>
-                <p className="text-content text-sm">{post?.caption}</p>
-                <CategoryPill categoryId={post?.categoryId} />
-              </div>
-            </div>
+					{/* Category pill */}
+					<div>
+						<h2 className="text-lg font-bold">{post?.username}</h2>
+						<p className="text-gray-600 text-sm">{post?.caption}</p>
+						<CategoryPill categoryId={post?.categoryId} />
+					</div>
 
-            <div className="flex justify-start mt-4 space-x-4">
-              <button
-								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
-                onClick={() => navigate(`/map`, { state: { post, apicode } })}
-              >
-                View on Map
-              </button>
-              <button
-								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
-                onClick={() =>
-                  navigate(`/group/${post?.groupId}`, {
-                    state: { group: post?.group },
-                  })
-                }
-              >
-                View Group
-              </button>
-            </div>
+					{/* Save Button */}
+					<div className="mt-6 flex items-center">
+						{isSaved ? (
+							<FaBookmark
+								className="text-4xl text-green-600 hover:text-green-400 cursor-pointer"
+								onClick={handleSaveIconClick}
+							/>
+						) : (
+							<FaRegBookmark
+								className="text-4xl text-gray-500 hover:text-gray-300 cursor-pointer"
+								onClick={handleSaveIconClick}
+							/>
+						)}
+						<span className="ml-3 text-lg">{saves} Saves</span>
+					</div>
+				</div>
+			</div>
 
-            <div className="mt-8">
-              <h1 className="text-lg font-semibold">
-                See more posts like this:
-              </h1>
-
-              <HorizontalCarousel>
-                {relatedPosts.map((relatedPost) => (
-                  <PinDetailPost key={relatedPost.id} post={relatedPost} />
-                ))}
-              </HorizontalCarousel>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+			{/* Related Posts */}
+			<HorizontalCarousel>
+				{relatedPosts.map((relatedPost) => (
+					<PinDetailPost key={relatedPost.id} post={relatedPost} />
+				))}
+			</HorizontalCarousel>
+		</div>
+	);
 };
 
 export default PinDetail;
