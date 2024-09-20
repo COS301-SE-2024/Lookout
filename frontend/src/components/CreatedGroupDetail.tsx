@@ -263,7 +263,7 @@ const CreatedGroupDetail: React.FC = () => {
   );
 
   return (
-    <div className="p-4 scrollbar-hide flex flex-col h-full bg-bkg relative">
+    <div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg relative">
       <style>
         {`
           .scrollbar-hide::-webkit-scrollbar {
@@ -279,7 +279,7 @@ const CreatedGroupDetail: React.FC = () => {
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-14 left-4 md:top-20 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
+        className="absolute top-11 left-4 md:top-10 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -311,7 +311,7 @@ const CreatedGroupDetail: React.FC = () => {
       ) : (
         <>
           <FaEdit
-            className="absolute top-16 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon md:top-24 md:right-8"
+            className="absolute top-14 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon md:top-10 md:right-8"
             onClick={handleEditClick}
             size={24}
           />
@@ -336,18 +336,18 @@ const CreatedGroupDetail: React.FC = () => {
                 onChange={(e) => setEditableName(DOMPurify.sanitize(e.target.value))}
               />
             ) : (
-              <h1 className="text-2xl text-content font-bold mb-2">{group.name}</h1>
+              <h1 className="text-2xl md:text-4xl text-content font-bold mb-2">{group.name}</h1>
             )}
 
             {isEditing ? (
               <input
                 type="text"
-                className="text-content text-ml italic w-80 bg-transparent border-b border-gray-300 focus:outline-none mb-2"
+                className="text-content md:text-xl text-md italic w-80 bg-transparent border-b border-gray-300 focus:outline-none mb-2"
                 value={editableDescription}
                 onChange={(e) => setEditableDescription(DOMPurify.sanitize(e.target.value))}
               />
             ) : (
-              <p className="text-content text-ml mb-2">
+              <p className="text-content md:text-xl text-base mb-2">
                 {group?.description?.split(' ').map((word, index) =>
                   (index + 1) % 10 === 0 ? `${word} ` : `${word} `
                 ).reduce<React.ReactNode[]>((acc, curr, index) => (
@@ -358,13 +358,13 @@ const CreatedGroupDetail: React.FC = () => {
 
             <div className="flex flex-col md:flex-row items-center mb-2">
               <div className="flex flex-row items-center">
-                <span className="text-content text-sm">{posts.length} Posts</span>
+                <span className="text-content md:text-xl text-md">{posts.length} Posts</span>
                 <div className="w-px h-6 bg-gray-300 mx-2"></div>
-                <span className="text-content text-sm">{groupMembers.length} Members</span>
+                <span className="text-content md:text-xl text-md">{groupMembers.length} Members</span>
               </div>
             </div>
 
-            <span className="text-content2 text-sm">
+            <span className="text-content2 md:text-md text-base">
               {group.createdAt ? (
                 `${getDayWithSuffix(new Date(group.createdAt))} ${new Date(group.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`
               ) : 'Unknown'}
@@ -373,13 +373,13 @@ const CreatedGroupDetail: React.FC = () => {
             <div className="flex gap-1 mt-4">
               <button
                 onClick={handleViewOnMapClick}
-                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm text-white"
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 md:text-md text-base text-white"
               >
                 View on map
               </button>
               <button
                 onClick={handleDeleteClick}
-                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm text-white"
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 md:text-md text-base text-white"
               >
                 Delete group
               </button>
@@ -390,8 +390,8 @@ const CreatedGroupDetail: React.FC = () => {
         {/* Posts Section */}
         <div className="mt-8">
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-lm font-bold ml-4">Posts in this group</h1>
-            <Link to={`/group/${id}/posts`} className="text-sm text-content underline hover:text-gray-800">View All</Link>
+            <h1 className="md:text-xl text-base font-bold ml-4">Posts in this group</h1>
+            <Link to={`/group/${id}/posts`} className="md:text-base text-sm text-content underline hover:text-gray-800">View All</Link>
           </div>
           <HorizontalCarousel>
             {posts.map((post) => (
@@ -402,8 +402,8 @@ const CreatedGroupDetail: React.FC = () => {
 
         {/* About the Owner Section */}
         <div className="flex justify-between items-center mb-4 mt-4 ml-4">
-          <h1 className="text-ml font-bold">About the owner</h1>
-          <Link to={`/profileView/${owner?.id}`} className="text-content text-sm hover:text-gray-800 underline">
+          <h1 className="md:text-xl text-base font-bold">About the owner</h1>
+          <Link to={`/profileView/${owner?.id}`} className="text-content md:text-base text-sm hover:text-gray-800 underline">
             View their profile
           </Link>
         </div>
@@ -412,38 +412,41 @@ const CreatedGroupDetail: React.FC = () => {
           <div className="flex items-center mb-4">
             <img src={owner?.profilePic} alt="" className="w-20 h-20 rounded-full mr-6" />
             <div>
-              <h2 className="text-content text-lm font-bold">{owner?.userName || 'No Name'}</h2>
+              <h2 className="text-content text-lg font-bold">{owner?.userName || 'No Name'}</h2>
               <p className="text-content text-sm">{owner?.email || 'No Email'}</p>
             </div>
           </div>
         </div>
 
         {/* Group Members List */}
-        <div className="mt-6">
-          <h2 className="text-xl font-bold mb-2">Group Members</h2>
-          <ul className="space-y-4">
-            {groupMembers.map((member) => (
-              <li key={member.id} className="flex items-center p-2 rounded-lg">
-                <img
-                  src={member.profilePic}
-                  alt={`${member.userName}'s profile`}
-                  className="w-12 h-12 rounded-full mr-4"
-                />
-                <div>
-                  <span className="text-lg font-bold">{member.userName}</span>
-                  <p className="text-sm text-content2 ">{member.email}</p>
-                </div>
-                {/* Remove Member Button */}
-                <button
-                  className="ml-auto bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 text-sm text-white"
-                  onClick={() => openRemoveModal(member)}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
+<div className="mt-6 ml-4">
+  <h2 className="md:text-xl text-base font-bold mb-2">Group Members</h2>
+  <ul className="space-y-4">
+    {groupMembers.map((member) => (
+      <li key={member.id} className="flex items-center justify-between p-2 rounded-lg">
+        <div className="flex items-center">
+          <img
+            src={member.profilePic}
+            alt={`${member.userName}'s profile`}
+            className="w-12 h-12 rounded-full mr-4"
+          />
+          <div>
+            <span className="text-lg font-bold">{member.userName}</span>
+            <p className="md:text-sm text-xs text-content2">{member.email}</p>
+          </div>
         </div>
+        {/* Remove Member Button */}
+        <button
+    className="absolute right-4 bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg sm:px-2 px-4 py-2 md:text-sm text-xs text-white md:static md:ml-4" // md:static resets to normal flow on larger screens
+    onClick={() => openRemoveModal(member)}
+>
+  Remove
+</button>
+      </li>
+    ))}
+  </ul>
+</div>
+
       </div>
 
       {/* Render Modal */}

@@ -10,7 +10,7 @@ const Legend = ({ items }: { items: Array<{ icon: string; name: string }> }) => 
 
   return (
 
-    <div className="legend bg-nav">
+    <div className="legend bg-nav hover:bg-white hover:text-navBkg">
       <h3 onClick={toggleLegend} style={{ cursor: 'pointer' }}>
         Legend {isExpanded ? '▲' : '▼'}
       </h3>

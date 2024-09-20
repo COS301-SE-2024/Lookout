@@ -91,7 +91,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
   );
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto min-h-screen">
       {error && <div className="text-red-500 mb-4">{error}</div>}
       {loading ? (
         <GroupsGridSkeleton />
@@ -100,7 +100,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
           {filteredGroups.map((group) => (
             <div
               key={group.id}
-              className="flex items-center p-4 bg-hver border border-hver rounded-lg shadow-sm group-item cursor-pointer hover:bg-bkg" // Use items-center to center items vertically
+              className="ml-2 mr-2 flex items-center p-4 bg-hver border border-hver rounded-lg shadow-sm group-item cursor-pointer hover:bg-bkg" // Use items-center to center items vertically
               onClick={() => handleGroupClick(group)}
             >
               {/* Group image */}

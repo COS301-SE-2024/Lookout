@@ -165,7 +165,7 @@ const GroupDetail: React.FC = () => {
 
 
 	return (
-		<div className="p-4 scrollbar-hide flex flex-col h-screen bg-bkg">
+		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg ">
 			<style>
 				{`
 			.scrollbar-hide::-webkit-scrollbar {
@@ -179,7 +179,7 @@ const GroupDetail: React.FC = () => {
 			</style>
 			<button
 				onClick={() => navigate(-1)}
-				className="absolute top-14 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 rounded-full p-2"
+				className="absolute top-11 left-4 md:top-10 md:left-8 text-navBkg hover:text-icon z-50 rounded-full p-2"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -198,13 +198,13 @@ const GroupDetail: React.FC = () => {
 					<img
 						src={group?.picture}
 						alt={`${group?.name} logo`}
-						className="w-56 h-56 object-cover mb-4 md:mb-0 md:mr-8"
+						className="w-56 h-56 object-cover mb-4 md:mb-0 md:mr-8 "
 						style={{ borderRadius: '8px' }}
 					/>
 
 					<div className="text-center md:text-left flex flex-col items-center md:items-start">
-						<h1 className="text-2xl text-content font-bold mb-2">{group?.name}</h1>
-						<p className="text-content text-ml mb-2">
+						<h1 className="text-2xl md:text-4xl text-content font-bold mb-2">{group?.name}</h1>
+						<p className="text-content  md:text-xl text-md mb-2">
 							{group?.description?.split(' ').map((word, index) =>
 								(index + 1) % 10 === 0 ? `${word} ` : `${word} `
 							).reduce<React.ReactNode[]>((acc, curr, index) => (
@@ -215,13 +215,13 @@ const GroupDetail: React.FC = () => {
 
 						<div className="flex flex-col md:flex-row items-center mb-2">
 							<div className="flex flex-row items-center">
-								<span className="text-content text-sm">{posts.length} Posts</span>
+								<span className="text-content md:text-xl text-md">{posts.length} Posts</span>
 								<div className="w-px h-6 bg-gray-300 mx-2"></div>
-								<span className="text-content text-sm">{groupMembers.length} Members</span>
+								<span className="text-content md:text-xl text-md">{groupMembers.length} Members</span>
 								</div>
 						</div>
 
-						<span className="text-content2 text-sm">
+						<span className="text-content2 md:text-md text-base">
 
 							{group?.createdAt ? (
 								`${getDayWithSuffix(new Date(group.createdAt))} ${new Date(group.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`
@@ -232,13 +232,13 @@ const GroupDetail: React.FC = () => {
 						<div className="flex gap-1 mt-4">
 							<button
 								onClick={handleViewOnMapClick}
-								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
+								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 md:text-md text-base"
 							>
 								View on map
 							</button>
 							<button
 								className={`px-4 py-2 rounded-lg ${joinedGroups.includes(group?.id ?? 0)
-										? "bg-gray-200 text-black border-gray-200 border rounded-lg text-sm hover:bg-white hover:text-navBkg hover:border-gray-300"
+										? "bg-gray-200 text-black border-gray-200 border rounded-lg md:text-md text-base hover:bg-white hover:text-navBkg hover:border-gray-300"
 										: "bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg text-sm"
 									}`}
 								onClick={() => handleJoinClick(group?.id ?? 0)}
@@ -253,8 +253,8 @@ const GroupDetail: React.FC = () => {
 
 				<div className="mt-8">
 					<div className="flex justify-between items-center mb-4">
-						<h1 className="text-lm font-bold ml-4">Posts in this group</h1>
-						<Link to={`/group/${id}/posts`} className="text-sm text-content hover:text-gray-800 underline">View All</Link>
+						<h1 className="md:text-xl text-base font-bold ml-4">Posts in this group</h1>
+						<Link to={`/group/${id}/posts`} className="md:text-base text text-content hover:text-gray-800 underline">View All</Link>
 					</div>
 					{posts.length === 0 ? (
 						<div className="text-center">
@@ -271,8 +271,8 @@ const GroupDetail: React.FC = () => {
 				</div>
 
 				<div className="flex justify-between items-center mb-4 mt-4 ml-4">
-					<h1 className="text-ml font-bold">About the owner</h1>
-					<Link to={`/profileView/${owner?.id}`} className="text-sm text-content underline hover:text-gray-800">
+					<h1 className="md:text-xl text-base font-bold">About the owner</h1>
+					<Link to={`/profileView/${owner?.id}`} className="md:text-base text text-content underline hover:text-gray-800">
 						View their profile
 					</Link>
 				</div>

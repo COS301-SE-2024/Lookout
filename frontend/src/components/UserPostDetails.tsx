@@ -265,9 +265,8 @@ const PinDetail: React.FC = () => {
   if (!post) {
     return <p>Post not found.</p>;
   }
-
   return (
-    <div className="p-4 scrollbar-hide flex flex-col h-screen bg-bkg">
+    <div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg"> {/* Ensure the container fills the whole screen */}
       <style>
         {`
           .scrollbar-hide::-webkit-scrollbar {
@@ -301,6 +300,7 @@ const PinDetail: React.FC = () => {
           }
         `}
       </style>
+
       <button
         onClick={() => navigate(-1)}
         className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2"
@@ -321,16 +321,17 @@ const PinDetail: React.FC = () => {
           />
         </svg>
       </button>
+
       {isEditing ? (
         <>
           <button
-            className="absolute top-10 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:right-28"
+            className="absolute top-10 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
             onClick={handleDoneClick}
           >
             Done
           </button>
           <button
-            className="absolute top-10 left-24  text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer  md:top-24 md:left-28"
+            className="absolute top-10 left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
             onClick={handleCancelClick}
           >
             Cancel
@@ -338,15 +339,15 @@ const PinDetail: React.FC = () => {
         </>
       ) : (
         <FaEdit
-          className="absolute top-12 right-8 text-xl text-content cursor-pointer text-navBkg md:top-24 md:right-8  hover:text-icon"
+          className="absolute top-12 right-8 text-xl text-content cursor-pointer text-navBkg md:top-24 md:right-8 hover:text-icon"
           onClick={handleEditClick}
           size={30}
         />
       )}
 
-      <div className="container mx-auto p-4 mt-16">
-        <div className="card bg-base-100 shadow-xl shadow  rounded-lg flex flex-col md:flex-row">
-          <figure className="rounded-t-lg overflow-hidden md:w-1/2 h-auto">
+      <div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
+        <div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row h-full min-h-[550px]"> {/* Minimum height added */}
+          <figure className="rounded-t-lg overflow-hidden md:w-1/2">
             <img
               src={post.picture}
               alt={post.title}
@@ -354,17 +355,17 @@ const PinDetail: React.FC = () => {
             />
           </figure>
 
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow"> {/* flex-grow added */}
+            <div className="flex items-center justify-between mt-2 mb-4">
               {isEditing ? (
                 <input
                   type="text"
-                  className="md:text-3xl font-bold italic bg-bkg "
+                  className="text-2xl md:text-4xl font-bold italic bg-bkg w-full"
                   value={editableTitle}
                   onChange={(e) => setEditableTitle(DOMPurify.sanitize(e.target.value))}
                 />
               ) : (
-                <h1 className="text-2xl md:text-3xl  font-bold">{post.title}</h1>
+                <h1 className="text-2xl md:text-4xl font-bold">{post.title}</h1>
               )}
               <div className="flex items-center">
                 {isSaved ? (
@@ -380,29 +381,29 @@ const PinDetail: React.FC = () => {
                     size={24}
                   />
                 )}
-                <span className="ml-2">{saves} saves</span>
+                <span className="ml-2 md:text-xl text-base text-center">{saves} saves</span>
               </div>
             </div>
 
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-6">
               <img
                 src={user?.profilePic}
                 alt={post.username}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-full mr-4"
+                className="w-20 h-20 md:w-24 md:h-24  rounded-full mr-4"
               />
               <div>
-                <h2 className="text-lg font-bold">{post.username}</h2>
+                <h2 className="text-content text-xl md:text-2xl font-bold">{post.username}</h2>
 
                 {isEditing ? (
                   <input
                     type="text"
-                    className="text-content text-sm italic resize-none bg-bkg"
+                    className="text-content md:text-xl text-md italic resize-none bg-bkg w-full"
                     value={editableCaption}
                     onChange={(e) => setEditableCaption(DOMPurify.sanitize(e.target.value))}
                   />
                 ) : (
-                  <p className="text-content text-sm">{post.caption}</p>
-                )} 
+                  <p className="text-content md:text-xl text-md">{post.caption}</p>
+                )}
 
                 <div className="mt-2">
                   <CategoryPill categoryId={post.categoryId} />
@@ -410,15 +411,15 @@ const PinDetail: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-center mt-4 space-x-2">
+            <div className="flex justify-center mt-6 space-x-2">
               <button
-								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"
                 onClick={() => navigate(`/map`, { state: { post, apicode } })}
               >
                 View on Map
               </button>
               <button
-								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white rounded-lg px-4 py-2 text-sm"
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"
                 onClick={() =>
                   navigate(`/group/${post.groupId}`, {
                     state: { group: post.group },
@@ -429,8 +430,8 @@ const PinDetail: React.FC = () => {
               </button>
             </div>
 
-            <div className="mt-8">
-              <h1 className="text-lg font-semibold">See more posts like this:</h1>
+            <div className="mt-10">
+              <h1 className="text-lg md:text-xl font-semibold">See more posts like this:</h1>
 
               <HorizontalCarousel>
                 {relatedPosts.map((relatedPost) => (

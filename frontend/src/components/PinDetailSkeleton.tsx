@@ -4,12 +4,13 @@ const PinDetailSkeleton: React.FC = () => {
   return (
     <div className="p-4 mx-auto max-w-screen-lg flex flex-col h-screen bg-bkg">
       <div className="relative mb-8">
+        {/* You can add a placeholder for any additional header elements here */}
       </div>
 
-      <div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row">
-        <div className="w-full md:w-1/2 h-72 md:h-96 bg-gray-300 animate-pulse rounded-t-lg md:rounded-t-none md:rounded-l-lg"></div>
+      <div className="card bg-base-100 shadow-xl rounded-lg flex flex-col h-full md:flex-row min-h-[550px]">
+        <div className="w-full md:w-1/2 h-72 md:h-96 bg-gray-300 animate-pulse min-h-[550px] rounded-t-lg md:rounded-t-none md:rounded-l-lg"></div>
         
-        <div className="card-body p-6 md:w-1/2">
+        <div className="card-body p-6 md:w-1/2 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div className="w-1/2 h-10 bg-gray-300 animate-pulse rounded-md"></div>
             <div className="flex items-center">
@@ -19,8 +20,8 @@ const PinDetailSkeleton: React.FC = () => {
           </div>
 
           <div className="flex items-center mb-6">
-            <div className="w-20 h-20 bg-gray-300 animate-pulse rounded-full mr-6"></div>
-            <div>
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-300 animate-pulse rounded-full mr-6"></div>
+            <div className="flex flex-col justify-between">
               <div className="h-8 w-48 bg-gray-300 animate-pulse rounded-md"></div>
               <div className="mt-3 h-6 w-32 bg-gray-300 animate-pulse rounded-md"></div>
             </div>
