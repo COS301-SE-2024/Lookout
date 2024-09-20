@@ -10,6 +10,7 @@ import {
   GoogleMapApiLoader,
   MarkerClusterer,
   Marker,
+  InfoWindow,
 } from "react-google-map-wrapper";
 import "../assets/styles/home.css";
 import HomePins from "../components/HomePins";
