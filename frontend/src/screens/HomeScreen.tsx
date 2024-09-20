@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
 import {
 	HeatmapLayer,
@@ -39,10 +38,10 @@ const customGradient = [
 ];
 
 function MapContent() {
-  const [show, setShow] = useState(false);
-  const [gradient, setGradient] = useState<string[] | null>(null);
-  const [radius, setRadius] = useState<number | null>(null);
-  const [opacity, setOpacity] = useState<number | null>(null);
+	const [show, setShow] = useState(false);
+	const [gradient, setGradient] = useState<string[] | null>(null);
+	const [radius, setRadius] = useState<number | null>(null);
+	const [opacity, setOpacity] = useState<number | null>(null);
 
 	const data = useMemo(getData, []);
 
@@ -224,7 +223,7 @@ const HomeScreen: React.FC = () => {
 	const defaultCenter = { lat: -28, lng: 23 };
 	const [center, setCenter] = useState(defaultCenter);
 
-	const [searchTerm, setSearchTerm] = useState<string>('');
+	const [searchTerm, setSearchTerm] = useState<string>("");
 
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -263,29 +262,27 @@ const HomeScreen: React.FC = () => {
 	const [dragpinlatitude, setdragpinLatitude] = useState(latitude);
 	const [dragpinlongitude, setdragpinLongitude] = useState(longitude);
 
-	const navigate = useNavigate();
-
 	//map search
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const searchValue = event.target.value.toLowerCase();
 		setSearchTerm(searchValue);
-		
-		const filtered = pins.filter(pin => 
-			pin.caption.toLowerCase().includes(searchValue) ||
-			pin.category.toLowerCase().includes(searchValue)
+
+		const filtered = pins.filter(
+			(pin) =>
+				pin.caption.toLowerCase().includes(searchValue) ||
+				pin.category.toLowerCase().includes(searchValue)
 		);
 
-		const filterreserve = locations.filter(pin => 
-			pin.label.toLowerCase().includes(searchValue) ||
-			pin.details.toLowerCase().includes(searchValue)
+		const filterreserve = locations.filter(
+			(pin) =>
+				pin.label.toLowerCase().includes(searchValue) ||
+				pin.details.toLowerCase().includes(searchValue)
 		);
 
 		setFilteredPins(filtered);
 		setReservePins(filterreserve);
 	};
-	
-	
 
 	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -333,13 +330,66 @@ const HomeScreen: React.FC = () => {
 		}
 	};
 
+	const postOfflinePin = async (params: string, key: string) => {
+		if (navigator.onLine) {
+			const myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+			myHeaders.append("Cache-Control", "no-cache");
+
+			const stuff = JSON.stringify({
+				caption: "1232",
+				title: "321",
+				categoryid: "2",
+				userid: "112",
+				groupid: "8",
+				picture:
+					"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79",
+				latitude: "-25.41",
+				longitude: "25.41"
+			});
+
+			const response = await fetch("/api/posts/CreatePost", {
+				method: "POST",
+				headers: myHeaders,
+				body: stuff
+			});
+
+			if (response.ok) {
+				alert("Post created successfully!");
+
+				localStorage.removeItem(key);
+				setCurrentNumberPins(currentNumberPins + 1);
+				await fetchPins();
+			}
+		}
+	};
+
+	useEffect(() => {
+		const processOfflinePins = async () => {
+			if (navigator.onLine) {
+				for (let i = 0; i < localStorage.length; i++) {
+					let key = localStorage.key(i);
+					if (key !== null && key.includes("pin-offline")) {
+						const value = localStorage.getItem(key);
+						if (value !== null) {
+							await postOfflinePin(value, key);
+						}
+					}
+				}
+			}
+		};
+
+		processOfflinePins();
+	});
+
 	const [pins, setPins] = useState<myPin[]>([]);
 	const fetchPins = async () => {
 		try {
 			const response = await fetch("/api/posts", {
 				method: "GET",
 				headers: {
-					"Content-Type": "application/json"
+					"Content-Type": "application/json",
+					"Cache-Control": "no-cache"
 				}
 			});
 
@@ -351,11 +401,10 @@ const HomeScreen: React.FC = () => {
 
 			const currentTime = new Date().getTime();
 
-			const TimepinsData = pinsData.content.filter((pin:any) => {
+			const TimepinsData = pinsData.content.filter((pin: any) => {
 				const pinTime = new Date(pin.createdAt).getTime();
 				const timeDifference = currentTime - pinTime; // Difference in milliseconds
-				
-	
+
 				if (pin.categoryId === 1) {
 					// For "animals" category, check if it's within 24 hours
 					return timeDifference <= 86400000;
@@ -376,7 +425,7 @@ const HomeScreen: React.FC = () => {
 
 			setPins(formattedPins);
 			setFilteredPins(formattedPins);
-			
+
 			setCurrentNumberPins(formattedPins.length);
 		} catch (error) {
 			console.error("Error fetching pins:", error);
@@ -393,13 +442,13 @@ const HomeScreen: React.FC = () => {
 		}
 	}, [newNumberPins, currentNumberPins]);
 
-	useEffect(() => {
-		const intervalId = setInterval(() => {
-			fetchPins();
-		}, 15000);
+	// useEffect(() => {
+	// 	const intervalId = setInterval(() => {
+	// 		fetchPins();
+	// 	}, 15000);
 
-		return () => clearInterval(intervalId);
-	}, []);
+	// 	return () => clearInterval(intervalId);
+	// }, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
@@ -472,18 +521,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude:
-				dragpinlatitude !== null &&
-				dragpinlatitude !== undefined &&
-				dragpinlatitude !== 0
-					? dragpinlatitude
-					: latitude,
-			longitude:
-				dragpinlongitude !== null &&
-				dragpinlongitude !== undefined &&
-				dragpinlongitude !== 0
-					? dragpinlongitude
-					: longitude
+			latitude: -27.18,
+			longitude: 25.41
 		});
 
 		const requestOptions = {
@@ -492,20 +531,54 @@ const HomeScreen: React.FC = () => {
 			body: raw
 		};
 
-		try {
-			//old way
-			// const response = await fetch("/api/image/create", requestOptions);
-			console.log("raw", raw);
-			const response = await fetch(
-				"/api/posts/CreatePost",
-				requestOptions
+		if (navigator.onLine) {
+			try {
+				//old way
+				// const response = await fetch("/api/image/create", requestOptions);
+				console.log("requestOptions", requestOptions);
+
+				const response = await fetch(
+					"/api/posts/CreatePost",
+					requestOptions
+				);
+
+				if (!response.ok) {
+					throw new Error("Error");
+				}
+				setCaption("");
+				setTitle("");
+				setPicture("");
+				setSelectedGroup(null);
+				setSelectedCategory(null);
+				closeModal();
+
+				setIsSuccessModalOpen(true); // Open success modal
+				setNewNumberPins(newNumberPins + 1);
+				await fetchPins();
+				// setIsModalOpen(false); // Close modal after successful pin addition
+				// setIsSuccessModalOpen(true); // Open success modal
+			} catch (error) {
+				console.error("Error creating post:", error);
+			}
+		} else {
+			const now = new Date();
+
+			const formattedDateTime =
+				now.getFullYear() +
+				"-" +
+				String(now.getMonth() + 1).padStart(2, "0") +
+				"-" +
+				String(now.getDate()).padStart(2, "0") +
+				"T" +
+				String(now.getHours()).padStart(2, "0") +
+				":" +
+				String(now.getMinutes()).padStart(2, "0");
+
+			localStorage.setItem(
+				"pin-offline-" + formattedDateTime,
+				JSON.stringify(raw)
 			);
 
-			if (!response.ok) {
-				throw new Error("Error");
-			}
-			console.log("title", title);
-			
 			setCaption("");
 			setTitle("");
 			setPicture("");
@@ -513,12 +586,7 @@ const HomeScreen: React.FC = () => {
 			setSelectedCategory(null);
 			closeModal();
 
-			setIsSuccessModalOpen(true); // Open success modal
-			setNewNumberPins(newNumberPins + 1);
-			// setIsModalOpen(false); // Close modal after successful pin addition
-			// setIsSuccessModalOpen(true); // Open success modal
-		} catch (error) {
-			console.error("Error creating post:", error);
+			setIsSuccessModalOpen(true);
 		}
 	};
 
@@ -761,37 +829,32 @@ const HomeScreen: React.FC = () => {
 	];
 
 	const resetForm = () => {
-		setCenter(defaultCenter); 
-		setSelectedCategory(null); 
-		setCategoryExpanded(false); 
-		setSelectedGroup(null); 
-		setGroupExpanded(false); 
-		setPicture(""); 
-		setImageExpanded(false); 
-		setTitle(''); 
-		setTitleExpanded(false); 
-		setShowRecommendedTitle(false); 
-		setCaption(''); 
-		setCaptionExpanded(false); 
-		setDragPinExpanded(false);  
-		setLatitude(0); 
+		setCenter(defaultCenter);
+		setSelectedCategory(null);
+		setCategoryExpanded(false);
+		setSelectedGroup(null);
+		setGroupExpanded(false);
+		setPicture("");
+		setImageExpanded(false);
+		setTitle("");
+		setTitleExpanded(false);
+		setShowRecommendedTitle(false);
+		setCaption("");
+		setCaptionExpanded(false);
+		setDragPinExpanded(false);
+		setLatitude(0);
 		setLongitude(0);
-		setCurrentNumberPins(0); 
+		setCurrentNumberPins(0);
 		setNewNumberPins(0);
 		setPredictResult("");
-		setIsModalOpen(false); 
+		setIsModalOpen(false);
 		setIsMenuModalOpen(false);
-		setIsPhotoOptionsModalOpen(false); 
-		setIsCameraModalOpen(false); 
+		setIsPhotoOptionsModalOpen(false);
+		setIsCameraModalOpen(false);
 	};
-	
-	  
 
 	return (
-		<GoogleMapApiLoader
-			apiKey={apicode || ""}
-			suspense>
-			
+		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
 			<div className="map-container h-screen">
 				<GoogleMap
 					className="h-full w-full"
@@ -812,14 +875,14 @@ const HomeScreen: React.FC = () => {
 				<Legend items={legendItems} />
 			</div>
 			<div className="fixed top-20 left-48 transform -translate-x-1/2 z-10">
-        <input
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="search-bar p-2 border rounded-md left-3"
-        />
-    </div>
+				<input
+					type="text"
+					placeholder="Search..."
+					value={searchTerm}
+					onChange={handleSearchChange}
+					className="search-bar p-2 border rounded-md left-3"
+				/>
+			</div>
 			<div className="fixed top-12 left-4 z-10" id="menu">
 				<IoMenu size={32} onClick={openMenuModal} />
 			</div>
@@ -949,7 +1012,7 @@ const HomeScreen: React.FC = () => {
 											<img
 												src={picture}
 												alt="Selected"
-												className="w-32 h-32 mt-2 mx-auto"
+												className="max-h-64 w-auto mt-2 mx-auto object-contain rounded-md"
 											/>
 										)}
 									</div>
@@ -1207,7 +1270,7 @@ const HomeScreen: React.FC = () => {
 														);
 
 														console.log(
-															`Marker dropped at: Latitude ${newLat}, Longitude ${newLng}`
+															`Marker dropped at: Latitude ${dragpinlatitude}, Longitude ${dragpinlongitude}`
 														);
 													}}
 												/>
@@ -1257,8 +1320,6 @@ const HomeScreen: React.FC = () => {
 							className="block mx-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
 							onClick={() => {
 								setIsSuccessModalOpen(false);
-
-								navigate("/");
 							}}
 						>
 							Okay
@@ -1398,8 +1459,6 @@ const HomeScreen: React.FC = () => {
 };
 
 const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
-
-	
 	const [activeMarker, setActiveMarker] = useState<string | null>(null);
 
 	const handleMarkerClick = (id: string) => {
@@ -1410,46 +1469,54 @@ const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
 		setActiveMarker(null);
 	};
 
-	function Content({ category, caption }: { category: string; caption: string }) {
+	function Content({
+		category,
+		caption
+	}: {
+		category: string;
+		caption: string;
+	}) {
 		return (
-		  <div id='content'>
-		  <div className="bg-white rounded-lg shadow-md p-4 max-w-xs">
-			<h1 className="text-2xl font-semibold text-black">{category}</h1>
-				<div id='bodyContent'>
-				<p className="text-gray-700 mt-2 text-xl">{caption}</p>
-				<div className="flex justify-center">
-						   
+			<div id="content">
+				<div className="bg-white rounded-lg shadow-md p-4 max-w-xs">
+					<h1 className="text-2xl font-semibold text-black">
+						{category}
+					</h1>
+					<div id="bodyContent">
+						<p className="text-gray-700 mt-2 text-xl">{caption}</p>
+						<div className="flex justify-center"></div>
 					</div>
-			  </div>
-		  </div>
-		  </div>
+				</div>
+			</div>
 		);
-	  }
+	}
 
 	return (
 		<>
-		  {pois.map((poi:any) => (
-			<React.Fragment key={poi.key}>
-			  <Marker
-				lat={poi.location.lat}
-				lng={poi.location.lng}
-				title={poi.label}
-				onClick={() => handleMarkerClick(poi.key)}
-			  />
-			  <InfoWindow 
-				position={poi.location}
-				open={activeMarker === poi.key} 
-				ariaLabel={poi.details}
-				content={<Content 
-				  category={poi.label}  
-				  caption={poi.details} 
-				/>}
-				onCloseClick={handleCloseClick}
-			  />
-			</React.Fragment>
-		  ))}
+			{pois.map((poi: any) => (
+				<React.Fragment key={poi.key}>
+					<Marker
+						lat={poi.location.lat}
+						lng={poi.location.lng}
+						title={poi.label}
+						onClick={() => handleMarkerClick(poi.key)}
+					/>
+					<InfoWindow
+						position={poi.location}
+						open={activeMarker === poi.key}
+						ariaLabel={poi.details}
+						content={
+							<Content
+								category={poi.label}
+								caption={poi.details}
+							/>
+						}
+						onCloseClick={handleCloseClick}
+					/>
+				</React.Fragment>
+			))}
 		</>
-	  );
+	);
 };
 
 export default HomeScreen;

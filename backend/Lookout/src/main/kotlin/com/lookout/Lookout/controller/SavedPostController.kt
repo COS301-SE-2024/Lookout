@@ -7,11 +7,12 @@ import com.lookout.Lookout.service.SavedPostsService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/savedPosts")
-class SavedPostController(private val savedPostsService: SavedPostsService) {
+class SavedPostController(private val savedPostsService: SavedPostsService,  private val messagingTemplate: SimpMessagingTemplate) {
 
 //    @GetMapping("/all")
 //    fun getAllSavedPostsWithUsers(): ResponseEntity<List<SavedPostDto>> {
@@ -49,9 +50,29 @@ class SavedPostController(private val savedPostsService: SavedPostsService) {
     @PostMapping("/SavePost")
     fun savePost(@RequestBody reqPost: SavePostRequest): ResponseEntity<String> {
         return try {
+
             val savedPost = savedPostsService.savePost(reqPost.userId, reqPost.postId)
+
+
+            val saveCount = savedPostsService.countSavesByPostId(reqPost.postId)
+
+            val messagePayload = mapOf(
+                "postId" to reqPost.postId,
+                "saves" to saveCount,
+                "isSaved" to true,
+                "userId" to reqPost.userId
+            )
+
+
+            println("Sending WebSocket message to /post/${reqPost.postId} with payload: $messagePayload")
+
+
+            messagingTemplate.convertAndSend("/post/${reqPost.postId}", messagePayload)
+
+
             ResponseEntity.status(HttpStatus.CREATED).body("Successfully saved post")
         } catch (e: IllegalArgumentException) {
+
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString())
         }
     }
@@ -61,6 +82,17 @@ class SavedPostController(private val savedPostsService: SavedPostsService) {
         return try {
             val result = savedPostsService.unsavePost(reqPost.userId, reqPost.postId)
             if (result) {
+
+                val saveCount = savedPostsService.countSavesByPostId(reqPost.postId)
+                val messagePayload = mapOf(
+                    "postId" to reqPost.postId,
+                    "saves" to saveCount,
+                    "isSaved" to false,
+                    "userId" to reqPost.userId
+                )
+                println("Sending WebSocket message to /post/${reqPost.postId} with payload: $messagePayload")
+                messagingTemplate.convertAndSend("/post/${reqPost.postId}", messagePayload)
+
                 ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully unsaved post")
             } else {
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post is not saved by user")
