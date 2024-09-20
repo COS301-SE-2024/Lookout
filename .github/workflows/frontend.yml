@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Frontend CI/CD
 
 on:
@@ -15,37 +12,59 @@ on:
       - main
       - dev
       - devV2
-      
 
 jobs:
-
-  setup:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v2
-
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - name: Check Out Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'  # Replace with your local Node.js version
+        cache: 'npm'
 
+    # Clean npm cache and remove node_modules
+    - name: Clean npm cache and remove node_modules
+      run: |
+        npm cache clean --force
+        rm -rf frontend/node_modules
+
+    # Cache node modules
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    # Install dependencies with verbose logging
     - name: Install dependencies
-      run: npm ci
       working-directory: frontend
-      
+      run: npm install --verbose
+
+    # Verify sockjs-client Installation
+    - name: Verify sockjs-client Installation
+      working-directory: frontend
+      run: |
+        if [ -d "node_modules/sockjs-client" ]; then echo "sockjs-client is installed"; else echo "sockjs-client is missing"; fi
+
+    # Compile Project with verbose logging
     - name: Compile Project
-      run: npm run build --if-present
       working-directory: frontend
+      run: npm run build --if-present --verbose
 
-
+    # Check TypeScript Compilation
     - name: Check TypeScript Compilation
-      run: npx tsc --noEmit
       working-directory: frontend
+      run: npx tsc --noEmit
       continue-on-error: true
+
+    # List installed modules
+    - name: List Installed Modules
+      working-directory: frontend
+      run: ls -la node_modules
