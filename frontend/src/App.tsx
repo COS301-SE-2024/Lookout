@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 
 import "./assets/styles/nav.css";
 import EmailHandler from "./components/EmailHandler";
-import WebSocketTest from "./components/WebSocketTest";
 
 const App = () => {
 	return (
