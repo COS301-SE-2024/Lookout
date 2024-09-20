@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { IoMenu } from "react-icons/io5";
 import {
 	HeatmapLayer,
@@ -39,10 +38,10 @@ const customGradient = [
 ];
 
 function MapContent() {
-  const [show, setShow] = useState(false);
-  const [gradient, setGradient] = useState<string[] | null>(null);
-  const [radius, setRadius] = useState<number | null>(null);
-  const [opacity, setOpacity] = useState<number | null>(null);
+	const [show, setShow] = useState(false);
+	const [gradient, setGradient] = useState<string[] | null>(null);
+	const [radius, setRadius] = useState<number | null>(null);
+	const [opacity, setOpacity] = useState<number | null>(null);
 
 	const data = useMemo(getData, []);
 
@@ -224,7 +223,7 @@ const HomeScreen: React.FC = () => {
 	const defaultCenter = { lat: -28, lng: 23 };
 	const [center, setCenter] = useState(defaultCenter);
 
-	const [searchTerm, setSearchTerm] = useState<string>('');
+	const [searchTerm, setSearchTerm] = useState<string>("");
 
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -263,29 +262,27 @@ const HomeScreen: React.FC = () => {
 	const [dragpinlatitude, setdragpinLatitude] = useState(latitude);
 	const [dragpinlongitude, setdragpinLongitude] = useState(longitude);
 
-	const navigate = useNavigate();
-
 	//map search
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const searchValue = event.target.value.toLowerCase();
 		setSearchTerm(searchValue);
-		
-		const filtered = pins.filter(pin => 
-			pin.caption.toLowerCase().includes(searchValue) ||
-			pin.category.toLowerCase().includes(searchValue)
+
+		const filtered = pins.filter(
+			(pin) =>
+				pin.caption.toLowerCase().includes(searchValue) ||
+				pin.category.toLowerCase().includes(searchValue)
 		);
 
-		const filterreserve = locations.filter(pin => 
-			pin.label.toLowerCase().includes(searchValue) ||
-			pin.details.toLowerCase().includes(searchValue)
+		const filterreserve = locations.filter(
+			(pin) =>
+				pin.label.toLowerCase().includes(searchValue) ||
+				pin.details.toLowerCase().includes(searchValue)
 		);
 
 		setFilteredPins(filtered);
 		setReservePins(filterreserve);
 	};
-	
-	
 
 	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -383,7 +380,7 @@ const HomeScreen: React.FC = () => {
 		};
 
 		processOfflinePins();
-	}, []);
+	});
 
 	const [pins, setPins] = useState<myPin[]>([]);
 	const fetchPins = async () => {
@@ -404,11 +401,10 @@ const HomeScreen: React.FC = () => {
 
 			const currentTime = new Date().getTime();
 
-			const TimepinsData = pinsData.content.filter((pin:any) => {
+			const TimepinsData = pinsData.content.filter((pin: any) => {
 				const pinTime = new Date(pin.createdAt).getTime();
 				const timeDifference = currentTime - pinTime; // Difference in milliseconds
-				
-	
+
 				if (pin.categoryId === 1) {
 					// For "animals" category, check if it's within 24 hours
 					return timeDifference <= 86400000;
@@ -429,7 +425,7 @@ const HomeScreen: React.FC = () => {
 
 			setPins(formattedPins);
 			setFilteredPins(formattedPins);
-			
+
 			setCurrentNumberPins(formattedPins.length);
 		} catch (error) {
 			console.error("Error fetching pins:", error);
@@ -564,7 +560,6 @@ const HomeScreen: React.FC = () => {
 			} catch (error) {
 				console.error("Error creating post:", error);
 			}
-
 		} else {
 			const now = new Date();
 
@@ -583,7 +578,6 @@ const HomeScreen: React.FC = () => {
 				"pin-offline-" + formattedDateTime,
 				JSON.stringify(raw)
 			);
-
 
 			setCaption("");
 			setTitle("");
@@ -835,37 +829,32 @@ const HomeScreen: React.FC = () => {
 	];
 
 	const resetForm = () => {
-		setCenter(defaultCenter); 
-		setSelectedCategory(null); 
-		setCategoryExpanded(false); 
-		setSelectedGroup(null); 
-		setGroupExpanded(false); 
-		setPicture(""); 
-		setImageExpanded(false); 
-		setTitle(''); 
-		setTitleExpanded(false); 
-		setShowRecommendedTitle(false); 
-		setCaption(''); 
-		setCaptionExpanded(false); 
-		setDragPinExpanded(false);  
-		setLatitude(0); 
+		setCenter(defaultCenter);
+		setSelectedCategory(null);
+		setCategoryExpanded(false);
+		setSelectedGroup(null);
+		setGroupExpanded(false);
+		setPicture("");
+		setImageExpanded(false);
+		setTitle("");
+		setTitleExpanded(false);
+		setShowRecommendedTitle(false);
+		setCaption("");
+		setCaptionExpanded(false);
+		setDragPinExpanded(false);
+		setLatitude(0);
 		setLongitude(0);
-		setCurrentNumberPins(0); 
+		setCurrentNumberPins(0);
 		setNewNumberPins(0);
 		setPredictResult("");
-		setIsModalOpen(false); 
+		setIsModalOpen(false);
 		setIsMenuModalOpen(false);
-		setIsPhotoOptionsModalOpen(false); 
-		setIsCameraModalOpen(false); 
+		setIsPhotoOptionsModalOpen(false);
+		setIsCameraModalOpen(false);
 	};
-	
-	  
 
 	return (
-		<GoogleMapApiLoader
-			apiKey={apicode || ""}
-			suspense>
-			
+		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
 			<div className="map-container h-screen">
 				<GoogleMap
 					className="h-full w-full"
@@ -886,14 +875,14 @@ const HomeScreen: React.FC = () => {
 				<Legend items={legendItems} />
 			</div>
 			<div className="fixed top-20 left-48 transform -translate-x-1/2 z-10">
-        <input
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="search-bar p-2 border rounded-md left-3"
-        />
-    </div>
+				<input
+					type="text"
+					placeholder="Search..."
+					value={searchTerm}
+					onChange={handleSearchChange}
+					className="search-bar p-2 border rounded-md left-3"
+				/>
+			</div>
 			<div className="fixed top-12 left-4 z-10" id="menu">
 				<IoMenu size={32} onClick={openMenuModal} />
 			</div>
@@ -1281,7 +1270,7 @@ const HomeScreen: React.FC = () => {
 														);
 
 														console.log(
-															`Marker dropped at: Latitude ${newLat}, Longitude ${newLng}`
+															`Marker dropped at: Latitude ${dragpinlatitude}, Longitude ${dragpinlongitude}`
 														);
 													}}
 												/>
@@ -1470,8 +1459,6 @@ const HomeScreen: React.FC = () => {
 };
 
 const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
-
-	
 	const [activeMarker, setActiveMarker] = useState<string | null>(null);
 
 	const handleMarkerClick = (id: string) => {
@@ -1482,46 +1469,54 @@ const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
 		setActiveMarker(null);
 	};
 
-	function Content({ category, caption }: { category: string; caption: string }) {
+	function Content({
+		category,
+		caption
+	}: {
+		category: string;
+		caption: string;
+	}) {
 		return (
-		  <div id='content'>
-		  <div className="bg-white rounded-lg shadow-md p-4 max-w-xs">
-			<h1 className="text-2xl font-semibold text-black">{category}</h1>
-				<div id='bodyContent'>
-				<p className="text-gray-700 mt-2 text-xl">{caption}</p>
-				<div className="flex justify-center">
-						   
+			<div id="content">
+				<div className="bg-white rounded-lg shadow-md p-4 max-w-xs">
+					<h1 className="text-2xl font-semibold text-black">
+						{category}
+					</h1>
+					<div id="bodyContent">
+						<p className="text-gray-700 mt-2 text-xl">{caption}</p>
+						<div className="flex justify-center"></div>
 					</div>
-			  </div>
-		  </div>
-		  </div>
+				</div>
+			</div>
 		);
-	  }
+	}
 
 	return (
 		<>
-		  {pois.map((poi:any) => (
-			<React.Fragment key={poi.key}>
-			  <Marker
-				lat={poi.location.lat}
-				lng={poi.location.lng}
-				title={poi.label}
-				onClick={() => handleMarkerClick(poi.key)}
-			  />
-			  <InfoWindow 
-				position={poi.location}
-				open={activeMarker === poi.key} 
-				ariaLabel={poi.details}
-				content={<Content 
-				  category={poi.label}  
-				  caption={poi.details} 
-				/>}
-				onCloseClick={handleCloseClick}
-			  />
-			</React.Fragment>
-		  ))}
+			{pois.map((poi: any) => (
+				<React.Fragment key={poi.key}>
+					<Marker
+						lat={poi.location.lat}
+						lng={poi.location.lng}
+						title={poi.label}
+						onClick={() => handleMarkerClick(poi.key)}
+					/>
+					<InfoWindow
+						position={poi.location}
+						open={activeMarker === poi.key}
+						ariaLabel={poi.details}
+						content={
+							<Content
+								category={poi.label}
+								caption={poi.details}
+							/>
+						}
+						onCloseClick={handleCloseClick}
+					/>
+				</React.Fragment>
+			))}
 		</>
-	  );
+	);
 };
 
 export default HomeScreen;
