@@ -13,7 +13,8 @@ module.exports = {
 		  icon: "rgb(var(--color-icon) / <alpha-value>)",
 		  iconShadow: "rgb(var(--color-icon-shadow) / <alpha-value>)",
 		  txtBtn: "rgb(var(--color-btntxt) / <alpha-value>)",
-		  hver: "rgb(var(--color-hver) / <alpha-value>)"
+		  hver: "rgb(var(--color-hver) / <alpha-value>)",
+		  navSelect: "rgb(var(--color-navHighlight) / <alpha-value>)",
 		},
 		fontFamily: {
 		  custom: ['CustomFont']  // Add your custom font family here

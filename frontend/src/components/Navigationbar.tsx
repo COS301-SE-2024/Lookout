@@ -40,6 +40,11 @@ const Navigationbar = () => {
 		setShowHelpCentre(false);
 	};
 
+	// Define a helper function to get the color based on the current path
+	const getIconColor = (path: string) => {
+		return location.pathname === path ? 'text-navBkg2 bg-iconShadow ' : 'text-icon';
+	};
+
 	return (
 		<>
 			{isAuthed && (
@@ -55,20 +60,20 @@ const Navigationbar = () => {
 
 						{/* Bottom navigation for icons */}
 						<nav className="fixed bottom-0 w-full bg-nav shadow-lg py-2 flex justify-around">
-							<Link to="/" className="text-icon flex flex-col items-center justify-center">
-								<FaMap size={24} />
+							<Link to="/" className="flex flex-col items-center justify-center">
+								<FaMap size={24} className={getIconColor('/')} />
 								<span className="text-xs">Map</span>
 							</Link>
-							<Link to="/explore" className="text-icon flex flex-col items-center justify-center">
-								<FaBinoculars size={24} />
+							<Link to="/explore" className="flex flex-col items-center justify-center">
+								<FaBinoculars size={24} className={getIconColor('/explore')} />
 								<span className="text-xs">Explore</span>
 							</Link>
-							<Link to="/profile" className="text-icon flex flex-col items-center justify-center">
-								<FaUser size={24} />
+							<Link to="/profile" className="flex flex-col items-center justify-center">
+								<FaUser size={24} className={getIconColor('/profile')} />
 								<span className="text-xs">Profile</span>
 							</Link>
-							<Link to="/settings" className="text-icon flex flex-col items-center justify-center">
-								<FaGear size={24} />
+							<Link to="/settings" className="flex flex-col items-center justify-center">
+								<FaGear size={24} className={getIconColor('/settings')} />
 								<span className="text-xs">Settings</span>
 							</Link>
 						</nav>
@@ -96,7 +101,7 @@ const Navigationbar = () => {
 
 								{/* Right side icons */}
 								<ul className="flex ml-auto md:justify-end justify-center items-center space-x-2 md:mr-8 mt-2 md:mt-0">
-								<li>
+									<li>
 										<FaQuestion
 											size={42}
 											className="text-icon p-2 rounded-full cursor-pointer hover:bg-iconShadow hover:text-navBkg2"
@@ -104,22 +109,22 @@ const Navigationbar = () => {
 										/>
 									</li>
 									<li>
-										<Link to="/" className="text-icon flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300">
+										<Link to="/" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/')}`}>
 											<FaMap size={26} />
 										</Link>
 									</li>
 									<li>
-										<Link to="/explore" className="text-icon flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300">
+										<Link to="/explore" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/explore')}`}>
 											<FaBinoculars size={26} />
 										</Link>
 									</li>
 									<li>
-										<Link to="/profile" className="text-icon flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300">
+										<Link to="/profile" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/profile')}`}>
 											<FaUser size={26} />
 										</Link>
 									</li>
 									<li>
-										<Link to="/settings" className="text-icon flex items-center justify-center hover:text-navBkg2 w-12 h-12 rounded-full hover:bg-iconShadow transition-all duration-300">
+										<Link to="/settings" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/settings')}`}>
 											<FaGear size={26} />
 										</Link>
 									</li>
