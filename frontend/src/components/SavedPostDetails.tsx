@@ -376,7 +376,7 @@ const PinDetail: React.FC = () => {
 
             <div className="flex items-center mb-4">
               <img
-                src={user?.profilePic}
+                src={post?.user?.profilepic}
                 alt={post?.username}
                 className="w-16 h-16 rounded-full mr-4"
               />
