@@ -48,6 +48,7 @@ class LookoutApplicationTests {
             .andExpect(status().isOk)
     }
 
+
 //////////////////////////////Get groups by owner id//////////////////////////////
 
     @Test
@@ -63,6 +64,7 @@ class LookoutApplicationTests {
     }
 
     
+
 //////////////////////////////get groups by id//////////////////////////////////////=
     @Test
     fun `get group by id test`() {
@@ -395,7 +397,7 @@ class LookoutApplicationTests {
     }
             
         """.trimIndent()
-    
+
             mockMvc.perform(
                 post("/api/auth/register")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -476,21 +478,21 @@ class LookoutApplicationTests {
 
 
 ///////////////////////////DELETES/////////////////////////////////////////
-// DONT UNCOMMENT MAKE ACTUAL CHANGES TO DB
 
 
-    // @Test
-    // fun `delete invalid group test`() {
-    //     mockMvc.perform(delete("/api/groups/-4"))
-    //         .andExpect(status().isNotFound)
-    // }
+
+     @Test
+     fun `delete invalid group test`() {
+         mockMvc.perform(delete("/api/groups/-4"))
+             .andExpect(status().isNotFound)
+     }
 
 
-    // @Test
-    // fun `delete invalid post test`() {
-    //     mockMvc.perform(delete("/api/posts/4"))
-    //         .andExpect(status().isNotFound)
-    // }
+     @Test
+     fun `delete invalid post test`() {
+         mockMvc.perform(delete("/api/posts/-4"))
+             .andExpect(status().isNotFound)
+     }
 
 
 /////////////////////////////////Save a post////////////////////////////////////////
@@ -615,15 +617,6 @@ class LookoutApplicationTests {
 
 
 
-// companion object {
-//         @JvmStatic
-//         @BeforeAll
-//         fun setup() {
-//             // No need to load .env, environment variables should be available from GitHub Actions
-//             println("DB_URL: ${System.getenv("DB_URL")}")
-//         }
-//     }
-
 
 
 
@@ -642,7 +635,18 @@ class LookoutApplicationTests {
              dotenv["DB_PASS"]?.let { System.setProperty("DB_PASS", it) }
         }
     }
-fun addRandomValuesToJson(json: String): String {
+
+
+    // companion object {
+//         @JvmStatic
+//         @BeforeAll
+//         fun setup() {
+//             // No need to load .env, environment variables should be available from GitHub Actions
+//             println("DB_URL: ${System.getenv("DB_URL")}")
+//         }
+//     }
+
+    fun addRandomValuesToJson(json: String): String {
     val randomSuffix = Random.nextInt(1000, 9999)
 
     val updatedEmail = json.replace("\"email\": \"(.*?)\"".toRegex()) {

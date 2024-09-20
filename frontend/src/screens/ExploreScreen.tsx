@@ -10,46 +10,47 @@ import ExploreArticles from "../components/ExploreArticles";
 import DOMPurify from 'dompurify';
 
 interface User {
-  userName: string;
-  email: string;
-  passcode: string;
-  role: string;
-  isEnabled: boolean;
-  password: string;
-  username: string;
-  authorities: { authority: string }[];
-  isAccountNonLocked: boolean;
-  isCredentialsNonExpired: boolean;
-  isAccountNonExpired: boolean;
+	userName: string;
+	email: string;
+	passcode: string;
+	role: string;
+	isEnabled: boolean;
+	password: string;
+	username: string;
+	authorities: { authority: string }[];
+	isAccountNonLocked: boolean;
+	isCredentialsNonExpired: boolean;
+	isAccountNonExpired: boolean;
 }
 
 interface Group {
-  id: number;
-  name: string;
-  description: string;
-  isPrivate: boolean;
-  user: User | null;
-  picture: string;
-  createdAt: string;
+	id: number;
+	name: string;
+	description: string;
+	isPrivate: boolean;
+	user: User | null;
+	picture: string;
+	createdAt: string;
 }
 
 interface Post {
-  id: number;
-  userId: number;
-  user: User;
-  group: Group;
-  description: String;
-  title: string;
-  category: { id: number; description: string };
-  picture: string;
-  latitude: number;
-  longitude: number;
-  caption: string;
-  createdAt: string;
-  categoryId: any;
+	id: number;
+	userId: number;
+	user: User;
+	group: Group;
+	description: String;
+	title: string;
+	category: { id: number; description: string };
+	picture: string;
+	latitude: number;
+	longitude: number;
+	caption: string;
+	createdAt: string;
+	categoryId: any;
 }
 
 const ExploreScreen: React.FC = () => {
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [animalPosts, setAnimalPosts] = useState<Post[]>([]);
   const [campingPosts, setCampingPosts] = useState<Post[]>([]);
@@ -245,6 +246,7 @@ const ExploreScreen: React.FC = () => {
     <div className="p-4 scrollbar-hide">
       <style>
         {`
+
           .scrollbar-hide::-webkit-scrollbar {
             display: none;
           }
@@ -275,6 +277,7 @@ const ExploreScreen: React.FC = () => {
             }
           }
         `}
+
       </style>
 
       <div className="mb-4 w-full">

@@ -48,6 +48,7 @@ const Navigationbar = () => {
 	return (
 		<>
 			{isAuthed && (
+
 				<header className="w-full min-w-full relative">
 					{/* Mobile View */}
 					<div className="md:hidden flex flex-col items-center relative">
@@ -106,6 +107,7 @@ const Navigationbar = () => {
 											size={42}
 											className="text-icon p-2 rounded-full cursor-pointer hover:bg-iconShadow hover:text-navBkg2"
 											onClick={handleHelpCentreClick}
+
 										/>
 									</li>
 									<li>
