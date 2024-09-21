@@ -74,7 +74,7 @@ const CategoryPostsPage: React.FC = () => {
   const fetchPosts = useCallback(async (page: number) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=12`);
+      const response = await fetch(`/api/posts/category/${categoryId}?page=${page}&size=30`);
       const data = await response.json();
       if (page === 0) {
         setPosts(data.content);
@@ -122,10 +122,27 @@ const CategoryPostsPage: React.FC = () => {
   }, [fetchPosts, page, categoryId]);
 
   const handleScroll = useCallback(() => {
-    if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100 && hasMore && !loading) {
-      setPage((prevPage) => prevPage + 1);
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight - 100
+    ) {
+      if (hasMore && !loading) {
+        setPage((prevPage) => {
+          if (prevPage === page) return prevPage; // Avoid triggering if the page hasn't changed
+          return prevPage + 1;
+        });
+      }
     }
-  }, [hasMore, loading]);
+  }, [hasMore, loading, page]);
+  
+
+  useEffect(() => {
+    const scrollY = window.scrollY;
+    return () => {
+      window.scrollTo(0, scrollY); // Preserve scroll position
+    };
+  }, [loading]);
+  
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -172,13 +189,16 @@ const CategoryPostsPage: React.FC = () => {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <button onClick={() => navigate('/explore')} className="text-blue-500">
-            <MdKeyboardArrowLeft size={42} color="green" />
+          <button onClick={() => navigate('/explore')} className="text-navBkg hover:text-icon">
+            <MdKeyboardArrowLeft size={42}  />
           </button>
           <h1 className="text-2xl font-bold ml-2">{categoryName}</h1>
         </div>
         {categoryId !== "6" && (
-          <select value={sortOrder} onChange={handleSortChange} className="border border-gray-300 rounded-md p-2">
+          <select 
+          value={sortOrder} 
+          onChange={handleSortChange} 
+          className="bg-nav border border-nav rounded-md p-2">
             <option value="newest">
               <FaSortAmountDown className="inline-block mr-2" />
               Newest

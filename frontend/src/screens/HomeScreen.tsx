@@ -1,43 +1,150 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { IoMenu } from "react-icons/io5";
+import React, { useEffect, //useMemo, 
+	useState } from "react";
+import { FiFilter } from "react-icons/fi";
 import {
+	//HeatmapLayer,
+	//Control,
+	GoogleMap,
+	GoogleMapApiLoader,
+	MarkerClusterer,
+	Marker,
+	InfoWindow,
+} from "react-google-map-wrapper";
+import "../assets/styles/home.css";
+import HomePins from "../components/HomePins";
+import { FaFolder, FaCamera, FaTimes, FaPlus //FaFilter 
+	} from "react-icons/fa";
 
-  APIProvider,
-  Map,
-  AdvancedMarker,
-  useMap,
-  Pin
-} from '@vis.gl/react-google-maps';
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import type { Marker } from '@googlemaps/markerclusterer';
-import '../assets/styles/home.css'
-import HomePins from '../components/HomePins';
-import { FaFolder, FaCamera, FaTimes, FaPlus } from 'react-icons/fa'
-import Legend from '../components/Legend';
-
-import CameraComponent from '../components/CameraComponent'; // Ensure this path is correct
-import campIcon from '../assets/icons/camping-zone.png';
-import AnimalIcon from '../assets/icons/zoo.png';
-import HikingIcon from '../assets/icons/mountain.png';
-import POIIcon from '../assets/icons/point-of-interest.png';
-import SecurityIcon from '../assets/icons/danger.png';
+import Legend from "../components/Legend";
+import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
+import campIcon from "../assets/icons/camping-zone.png";
+import AnimalIcon from "../assets/icons/zoo.png";
+import HikingIcon from "../assets/icons/mountain.png";
+import POIIcon from "../assets/icons/point-of-interest.png";
+import SecurityIcon from "../assets/icons/danger.png";
+import DOMPurify from "dompurify";
 // import { url } from "inspector";
 import AWS from "aws-sdk";
 
 
 
+// ##############################  HEAT MAP STUFF!!
+// const getData = () => [
+// 	new google.maps.LatLng(-27.782551, 22.445368),
+// 	new google.maps.LatLng(-27.782745, 22.444586),
+// 	new google.maps.LatLng(-27.752986, 22.403112),
+// 	new google.maps.LatLng(-27.751266, 22.403355)
+// ];
 
-type Poi ={ key: string, location: google.maps.LatLngLiteral, label: string, details: string }
-type myPin ={ id: string, location: google.maps.LatLngLiteral, caption: string, category: string, image: string, categoryId: number }
+// const customGradient = [
+// 	"rgba(0, 255, 255, 0)",
+// 	"rgba(0, 255, 255, 1)",
+// 	"rgba(191, 0, 31, 1)",
+// 	"rgba(255, 0, 0, 1)"
+// ];
+
+// function MapContent() {
+// 	const [show, setShow] = useState(false);
+// 	const [, setGradient] = useState<string[] | null>(null);
+// 	const [radius, setRadius] = useState<number | null>(null);
+// 	const [opacity, setOpacity] = useState<number | null>(null);
+
+	//const data = useMemo(getData, []);
+
+	// const toggleHeatmap = () => {
+	// 	setShow(!show);
+	// };
+
+	// const changeGradient = () => {
+	// 	setGradient((prev) => (prev ? null : customGradient));
+	// };
+
+	// const changeRadius = () => {
+	// 	setRadius(radius ? null : 20);
+	// };
+
+	// const changeOpacity = () => {
+	// 	setOpacity(opacity ? null : 0.2);
+	// };
+
+// 	return (
+// 		<>
+// 			{/* <HeatmapLayer
+// 				data={data}
+// 				gradient={gradient}
+// 				radius={radius}
+// 				opacity={opacity}
+// 				hidden={!show}
+// 			/> */}
+// 			{/* <Control position={google.maps.ControlPosition.TOP_CENTER}>
+// 				<div
+// 					id="floating-panel"
+// 					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
+// 				>
+// 					<button
+// 						id="toggle-heatmap"
+// 						onClick={toggleHeatmap}
+// 						className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+// 					>
+// 						Toggle Heatmap
+// 					</button>
+// 					<button
+// 						id="change-gradient"
+// 						onClick={changeGradient}
+// 						className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+// 					>
+// 						Change Gradient
+// 					</button>
+// 					<button
+// 						id="change-radius"
+// 						onClick={changeRadius}
+// 						className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+// 					>
+// 						Change Radius
+// 					</button>
+// 					<button
+// 						id="change-opacity"
+// 						onClick={changeOpacity}
+// 						className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+// 					>
+// 						Change Opacity
+// 					</button>
+// 				</div>
+// 			</Control> */}
+// 		</>
+// 	);
+
+// }
+
+// #################### END OF HEAT MAP STUFF
+
+type Poi = {
+
+	key: string;
+	location: google.maps.LatLngLiteral;
+	label: string;
+	details: string;
+};
+type myPin = {
+	id: string;
+	location: google.maps.LatLngLiteral;
+	caption: string;
+	category: string;
+	image: string;
+	categoryId: number;
+};
 
 const legendItems = [
-  { name: 'Nature Reserves', icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' },
-  { name: 'Camp Sites', icon: campIcon },
-  { name: 'Animal', icon: AnimalIcon },
-  { name: 'Hiking', icon: HikingIcon },
-  { name: 'POI', icon: POIIcon },
-  { name: 'Security Risk', icon: SecurityIcon },
+	{
+		name: "Nature Reserves",
+		icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+	},
+	{ name: "Camp Sites", icon: campIcon },
+	{ name: "Animal", icon: AnimalIcon },
+	{ name: "Hiking", icon: HikingIcon },
+	{ name: "POI", icon: POIIcon },
+	{ name: "Security Risk", icon: SecurityIcon }
+
 ];
 
 const locations: Poi[] = [
@@ -46,71 +153,71 @@ const locations: Poi[] = [
 		location: { lat: -23.9884, lng: 31.5547 },
 		label: "Kruger National Park",
 		details:
-			"One of Africa's largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos."
+			"One of Africa's largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos.",
 	},
 	{
 		key: "addoElephantPark",
 		location: { lat: -33.4468, lng: 25.7484 },
 		label: "Addo Elephant Park",
 		details:
-			"Famous for its large population of elephants, as well as lions, hyenas, and various antelope species."
+			"Famous for its large population of elephants, as well as lions, hyenas, and various antelope species.",
 	},
 	{
 		key: "tableMountainNationalPark",
 		location: { lat: -34.0104, lng: 18.3736 },
 		label: "Table Mountain National Park",
 		details:
-			"Known for its rich biodiversity, including the unique fynbos vegetation and various bird species."
+			"Known for its rich biodiversity, including the unique fynbos vegetation and various bird species.",
 	},
 	{
 		key: "iSimangalisoWetlandPark",
 		location: { lat: -28.382, lng: 32.4143 },
 		label: "iSimangaliso Wetland Park",
 		details:
-			"A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species."
+			"A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species.",
 	},
 	{
 		key: "kgalagadiTransfrontierPark",
 		location: { lat: -26.2825, lng: 20.615 },
 		label: "Kgalagadi Transfrontier Park",
 		details:
-			"Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok."
+			"Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok.",
 	},
 	{
 		key: "karooNationalPark",
 		location: { lat: -32.2968, lng: 22.5287 },
 		label: "Karoo National Park",
 		details:
-			"Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life."
+			"Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life.",
 	},
 	{
 		key: "hluhluweImfoloziPark",
 		location: { lat: -28.0493, lng: 31.9189 },
 		label: "Hluhluwe-Imfolozi Park",
 		details:
-			"The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five."
+			"The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five.",
 	},
 	{
 		key: "madikweGameReserve",
 		location: { lat: -24.7486, lng: 26.2418 },
 		label: "Madikwe Game Reserve",
 		details:
-			"A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species."
+			"A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species.",
 	},
 	{
 		key: "goldenGateHighlandsNationalPark",
 		location: { lat: -28.5145, lng: 28.608 },
 		label: "Golden Gate Highlands National Park",
 		details:
-			"Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures."
+			"Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures.",
 	},
 	{
 		key: "bouldersBeachPenguinColony",
 		location: { lat: -34.1975, lng: 18.451 },
 		label: "Boulders Beach Penguin Colony",
 		details:
-			"A protected area known for its colony of African penguins, as well as scenic coastal views."
-	}
+			"A protected area known for its colony of African penguins, as well as scenic coastal views.",
+	},
 ];
 
 type Group = {
@@ -122,6 +229,14 @@ type Group = {
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC = () => {
+
+	const defaultCenter = { lat: -28, lng: 23 };
+	const [center, setCenter] = useState(defaultCenter);
+
+	const defaultZoom = 5;
+	const [zoom, setZoom] = useState(defaultZoom);
+
+	const [searchTerm, setSearchTerm] = useState<string>("");
 
 	//const id = 2;
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,10 +258,67 @@ const HomeScreen: React.FC = () => {
 	const [selectCategory, setSelectCategory] = useState(null);
 	const [filteredPins, setFilteredPins] = useState<myPin[]>([]);
 
-	const navigate = useNavigate();
+	const [reservePins, setReservePins] = useState<Poi[]>(locations);
+
+	const [categoryExpanded, setCategoryExpanded] = useState(false);
+	const [groupExpanded, setGroupExpanded] = useState(false);
+	const [imageExpanded, setImageExpanded] = useState(false);
+	const [titleExpanded, setTitleExpanded] = useState(false);
+	const [captionExpanded, setCaptionExpanded] = useState(false);
+	const [dragpinExpanded, setDragPinExpanded] = useState(false);
+	const [showRecommendedTitle, setShowRecommendedTitle] = useState(false);
+	const [predictResult, setPredictResult] = useState("");
+
+	const [currentNumberPins, setCurrentNumberPins] = useState<number>(0);
+	const [newNumberPins, setNewNumberPins] = useState<number>(0);
+
+	const [dragpinlatitude, setdragpinLatitude] = useState(latitude);
+	const [dragpinlongitude, setdragpinLongitude] = useState(longitude);
+
+	//map search
+
+	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const searchValue = event.target.value.toLowerCase();
+		setSearchTerm(searchValue);
+
+		const filtered = pins.filter(
+			(pin) =>
+				pin.caption.toLowerCase().includes(searchValue) ||
+				pin.category.toLowerCase().includes(searchValue)
+		);
+
+		const filterreserve = locations.filter(
+			(pin) =>
+				pin.label.toLowerCase().includes(searchValue) ||
+				pin.details.toLowerCase().includes(searchValue)
+		);
+
+		setFilteredPins(filtered);
+		setReservePins(filterreserve);
+	};
 
 	const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
+	// get curretn for map
+
+	useEffect(() => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					setCenter({
+						lat: position.coords.latitude,
+						lng: position.coords.longitude
+					});
+				},
+				(error) => {
+					console.error("Error getting user's location:", error);
+					// If user denies location access or an error occurs, retain the default center
+				}
+			);
+		}
+	}, []);
+
+	// get for posts
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
@@ -171,49 +343,137 @@ const HomeScreen: React.FC = () => {
 		}
 	};
 
-	const [pins, setPins] = useState<myPin[]>([]);
+	const postOfflinePin = async (params: string, key: string) => {
+		if (navigator.onLine) {
+			const myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+			myHeaders.append("Cache-Control", "no-cache");
+
+			const stuff = JSON.stringify({
+				caption: "1232",
+				title: "321",
+				categoryid: "2",
+				userid: "112",
+				groupid: "8",
+				picture:
+					"https://lookout-bucket-capstone.s3.eu-west-1.amazonaws.com/e11bc6637155cb79",
+				latitude: "-25.41",
+				longitude: "25.41"
+			});
+
+			const response = await fetch("/api/posts/CreatePost", {
+				method: "POST",
+				headers: myHeaders,
+				body: stuff
+			});
+
+			if (response.ok) {
+				alert("Post created successfully!");
+
+				localStorage.removeItem(key);
+				setCurrentNumberPins(currentNumberPins + 1);
+				await fetchPins();
+			}
+		}
+	};
 
 	useEffect(() => {
-		const fetchPins = async () => {
-			try {
-				const response = await fetch("/api/posts", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json"
+		const processOfflinePins = async () => {
+			if (navigator.onLine) {
+				for (let i = 0; i < localStorage.length; i++) {
+					let key = localStorage.key(i);
+					if (key !== null && key.includes("pin-offline")) {
+						const value = localStorage.getItem(key);
+						if (value !== null) {
+							await postOfflinePin(value, key);
+						}
 					}
-				});
-
-				if (!response.ok) {
-					throw new Error("Failed to fetch pins");
 				}
-
-				const pinsData = await response.json();
-				console.log(pinsData);
-				const formattedPins = pinsData.content.map((pin: any) => ({
-					id: pin.id,
-					location: { lat: pin.latitude, lng: pin.longitude },
-					caption: pin.caption,
-					category: pin.title,
-					categoryId: pin.categoryId,
-					image: pin.picture
-				}));
-				setPins(formattedPins);
-				setFilteredPins(formattedPins);
-				console.log(formattedPins);
-			} catch (error) {
-				console.error("Error fetching pins:", error);
 			}
 		};
 
+		processOfflinePins();
+	});
+
+	const [pins, setPins] = useState<myPin[]>([]);
+	const fetchPins = async () => {
+		try {
+			const response = await fetch("/api/posts", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Cache-Control": "no-cache"
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch pins");
+			}
+
+			const pinsData = await response.json();
+
+			const currentTime = new Date().getTime();
+
+			const TimepinsData = pinsData.content.filter((pin: any) => {
+				const pinTime = new Date(pin.createdAt).getTime();
+				const timeDifference = currentTime - pinTime; // Difference in milliseconds
+
+				if (pin.categoryId === 1) {
+					// For "animals" category, check if it's within 24 hours
+					return timeDifference <= 86400000;
+				} else {
+					// For other categories
+					return timeDifference;
+				}
+			});
+
+			const formattedPins = TimepinsData.map((pin: any) => ({
+				id: pin.id,
+				location: { lat: pin.latitude, lng: pin.longitude },
+				caption: pin.caption,
+				category: pin.title,
+				categoryId: pin.categoryId,
+				image: pin.picture
+			}));
+
+			setPins(formattedPins);
+			setFilteredPins(formattedPins);
+
+			setCurrentNumberPins(formattedPins.length);
+		} catch (error) {
+			console.error("Error fetching pins:", error);
+		}
+	};
+	useEffect(() => {
 		fetchPins();
 	}, []);
+
+	useEffect(() => {
+		if (newNumberPins > currentNumberPins) {
+			setCurrentNumberPins(newNumberPins);
+			fetchPins();
+		}
+	}, [newNumberPins, currentNumberPins]);
+
+	// useEffect(() => {
+	// 	const intervalId = setInterval(() => {
+	// 		fetchPins();
+	// 	}, 15000);
+
+	// 	return () => clearInterval(intervalId);
+	// }, []);
 
 	useEffect(() => {
 		if (selectCategory === null) {
 			setFilteredPins(pins);
 		} else {
+			const categoryId =
+				typeof selectCategory === "number"
+					? selectCategory
+					: Number(selectCategory);
+
 			setFilteredPins(
-				pins.filter((pin) => pin.categoryId === selectCategory)
+				pins.filter((pin) => pin.categoryId === categoryId)
 			);
 		}
 	}, [selectCategory, pins]);
@@ -274,8 +534,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude: latitude,
-			longitude: longitude
+			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
+        	longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
 		});
 
 		const requestOptions = {
@@ -284,19 +544,61 @@ const HomeScreen: React.FC = () => {
 			body: raw
 		};
 
-		try {
-			//old way
-			// const response = await fetch("/api/image/create", requestOptions);
-			console.log("raw", raw);
-			const response = await fetch(
-				"/api/posts/CreatePost",
-				requestOptions
+		if (navigator.onLine) {
+			try {
+				//old way
+				// const response = await fetch("/api/image/create", requestOptions);
+				console.log("requestOptions", requestOptions);
+
+				const response = await fetch(
+					"/api/posts/CreatePost",
+					requestOptions
+				);
+
+				if (!response.ok) {
+					throw new Error("Error");
+				}
+				setCaption("");
+				setTitle("");
+				setPicture("");
+				setSelectedGroup(null);
+				setSelectedCategory(null);
+				closeModal();
+
+				setIsSuccessModalOpen(true); // Open success modal
+				setNewNumberPins(newNumberPins + 1);
+				await fetchPins();
+
+				setCenter({
+					lat: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
+					lng: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
+				}); 
+
+				setZoom(15);
+				// setIsModalOpen(false); // Close modal after successful pin addition
+				// setIsSuccessModalOpen(true); // Open success modal
+			} catch (error) {
+				console.error("Error creating post:", error);
+			}
+		} else {
+			const now = new Date();
+
+			const formattedDateTime =
+				now.getFullYear() +
+				"-" +
+				String(now.getMonth() + 1).padStart(2, "0") +
+				"-" +
+				String(now.getDate()).padStart(2, "0") +
+				"T" +
+				String(now.getHours()).padStart(2, "0") +
+				":" +
+				String(now.getMinutes()).padStart(2, "0");
+
+			localStorage.setItem(
+				"pin-offline-" + formattedDateTime,
+				JSON.stringify(raw)
 			);
 
-			if (!response.ok) {
-				throw new Error("Error");
-			}
-			console.log("title", title);
 			setCaption("");
 			setTitle("");
 			setPicture("");
@@ -304,11 +606,7 @@ const HomeScreen: React.FC = () => {
 			setSelectedCategory(null);
 			closeModal();
 
-			setIsSuccessModalOpen(true); // Open success modal
-			// setIsModalOpen(false); // Close modal after successful pin addition
-			// setIsSuccessModalOpen(true); // Open success modal
-		} catch (error) {
-			console.error("Error creating post:", error);
+			setIsSuccessModalOpen(true);
 		}
 	};
 
@@ -386,6 +684,31 @@ const HomeScreen: React.FC = () => {
 			});
 
 			setPicture(uploadURL.split("?")[0]);
+			if (showRecommendedTitle) {
+				const formdata = new FormData();
+
+				// Append file to FormData, ensuring the file is present
+				formdata.append("image", file);
+
+				const requestOptions = {
+					method: "POST",
+					body: formdata
+				};
+
+				try {
+					const response = await fetch(
+						"http://localhost:5000/predict",
+						requestOptions
+					);
+					const result = await response.json();
+
+					setPredictResult(result.predicted_class);
+					setTitle(result.predicted_class);
+					console.log(result);
+				} catch (error) {
+					console.error("Error during prediction:", error);
+				}
+			}
 			console.log(
 				"Image uploaded and profile picture updated successfully.",
 				uploadURL.split("?")[0]
@@ -437,6 +760,36 @@ const HomeScreen: React.FC = () => {
 				body: binaryData
 			});
 			await setPicture(uploadURL.split("?")[0]);
+
+			if (showRecommendedTitle) {
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+
+				const raw = JSON.stringify({
+					image_url: uploadURL.split("?")[0]
+				});
+
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw
+				};
+
+				try {
+					const response = await fetch(
+						"http://localhost:5000/predict",
+						requestOptions
+					);
+					const result = await response.json();
+					setPredictResult(result.predicted_class);
+					setTitle(result.predicted_class);
+					console.log(result);
+				} catch (error) {
+					console.error(error);
+				}
+			}
+			console.log(uploadURL.split("?")[0]);
+			console.log(picture);
 			console.log(
 				"Image uploaded and profile picture updated successfully."
 			);
@@ -461,6 +814,7 @@ const HomeScreen: React.FC = () => {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
+		resetForm();
 	};
 
 	const openMenuModal = () => {
@@ -494,189 +848,525 @@ const HomeScreen: React.FC = () => {
 		{ id: 5, name: "Security Concern" }
 	];
 
+	const resetForm = () => {
+		setCenter(defaultCenter);
+		setSelectedCategory(null);
+		setCategoryExpanded(false);
+		setSelectedGroup(null);
+		setGroupExpanded(false);
+		setPicture("");
+		setImageExpanded(false);
+		setTitle("");
+		setTitleExpanded(false);
+		setShowRecommendedTitle(false);
+		setCaption("");
+		setCaptionExpanded(false);
+		setDragPinExpanded(false);
+		setLatitude(0);
+		setLongitude(0);
+		setCurrentNumberPins(0);
+		setNewNumberPins(0);
+		setPredictResult("");
+		setIsModalOpen(false);
+		setIsMenuModalOpen(false);
+		setIsPhotoOptionsModalOpen(false);
+		setIsCameraModalOpen(false);
+	};
+
 	return (
-		<APIProvider
-			apiKey={apicode || ""}
-			onLoad={() => console.log("Maps API has loaded.")}
-		>
-			<div className="map-container">
-				<Map
-					defaultZoom={5}
-					defaultCenter={{ lat: -28, lng: 23 }}
-					mapId="dde51c47799889c4"
+		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
+			<div className="map-container h-screen">
+				<GoogleMap
+					className="h-full w-full"
+					zoom={zoom}
+					center={center}
+					mapOptions={{
+						disableDefaultUI: true,
+						zoomControl: true,
+						mapId: "dde51c47799889c4"
+					}}
 				>
-					<PoiMarkers pois={locations} />
-					<HomePins pin={filteredPins} />
-				</Map>
+					<MarkerClusterer>
+						<PoiMarkers pois={reservePins} />
+						<HomePins pin={filteredPins} />
+					</MarkerClusterer>
+					{/* <MapContent /> */}
+				</GoogleMap>
 				<Legend items={legendItems} />
 			</div>
-			<div className="fixed top-12 left-4 z-10" id="menu">
-				<IoMenu size={32} onClick={openMenuModal} />
+			<div className="fixed top-3 md:top-20 left-1/2 transform -translate-x-1/2 z-10 w-50%">
+				<input
+					type="text"
+					placeholder="Search..."
+					value={searchTerm}
+					onChange={handleSearchChange}
+					className="search-bar p-2 border border-nav rounded-full"
+				/>
 			</div>
+
 			<button
-				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-800 sm:bottom-24 md:bottom-20"
+				className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-navBkg  hover:text-white"
+				onClick={openMenuModal}
+			>
+				<FiFilter size={25} />
+			</button>
+			<button
+				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:text-white hover:bg-navBkg sm:bottom-24 md:bottom-20"
 				onClick={openModal}
 			>
-				+
+				<FaPlus />
 			</button>
+
 
 			{/* Add pin modal */}
 			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+							<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto">
 						<button
-							className="absolute top-2 right-2 text-xl"
+							className=" absolute top-2 right-2 text-xl"
 							onClick={closeModal}
 						>
 							&times;
 						</button>
-						<h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
+						<h2 className="text-2xl text-content font-bold mb-4 ">Add a Pin</h2>
 
-						<div className="flex justify-center mb-3">
-							<button
-								className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-								onClick={openPhotoModal}
-							>
-								<FaPlus />
-							</button>
-						</div>
-
-						<div className="text-center mb-3">
-							<span className="text-lg">Add a photo</span>
-							<input
-								type="file"
-								accept="image/jpeg, image/png"
-								style={{ display: "none" }}
-								ref={fileInputRef}
-								onChange={handleFileChange}
-							/>
-							{picture && (
-								<img
-									src={picture}
-									alt="Selected"
-									className="w-32 h-32 mt-2 mx-auto"
-								/>
-							)}
-						</div>
 
 						<form>
-							<div className="mb-3">
-								<label
-									htmlFor="groupSelect"
-									className="block text-sm font-medium text-gray-700"
-								>
-									Select Group:
-								</label>
-								<select
-									id="groupSelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedGroup ?? ""}
-									onChange={(e) =>
-										setSelectedGroup(Number(e.target.value))
-									}
-								>
-									<option value="" disabled>
-										Select a group
-									</option>
-									{groups.map((group) => (
-										<option key={group.id} value={group.id}>
-											{group.name}
-										</option>
-									))}
-								</select>
-							</div>
-
-							<div className="mb-3">
+							{/* Collapsible Category Section */}
+							<div className="mb-3 border border-content text-gray-500 rounded-md p-3">
 								<label
 									htmlFor="categorySelect"
-									className="block text-sm font-medium text-gray-700"
+									className="block text-sm font-medium text-content cursor-pointer"
+									onClick={() =>
+										setCategoryExpanded(!categoryExpanded)
+									}
 								>
 									Select Category:
 								</label>
-								<select
-									id="categorySelect"
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									value={selectedCategory ?? ""}
-									onChange={(e) =>
-										setSelectedCategory(
-											Number(e.target.value)
-										)
-									}
-								>
-									<option value="" disabled>
-										Select a category
-									</option>
-									{categories.map((category) => (
-										<option
-											key={category.id}
-											value={category.id}
-										>
-											{category.name}
+								{categoryExpanded && (
+									<select
+										id="categorySelect"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+										value={selectedCategory ?? ""}
+										onChange={(e) =>
+											setSelectedCategory(
+												Number(e.target.value)
+											)
+										}
+									>
+										<option className="text-gray-500" value="" disabled>
+											Select a category
 										</option>
-									))}
-								</select>
+										{categories.map((category) => (
+											<option
+												key={category.id}
+												value={category.id}
+											>
+												{category.name}
+											</option>
+										))}
+									</select>
+								)}
 							</div>
 
-							<div className="mb-3">
+
+							{/* Collapsible Group Section */}
+							<div className="mb-3 border text-gray-500 border-content rounded-md p-3">
 								<label
-									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
+									htmlFor="groupSelect"
+									className="block text-sm text-content font-medium text-content cursor-pointer"
+									onClick={() =>
+										setGroupExpanded(!groupExpanded)
+									}
+
+								>
+									Select Group:
+								</label>
+
+								{groupExpanded && (
+									<select
+										id="groupSelect"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										value={selectedGroup ?? ""}
+										onChange={(e) =>
+											setSelectedGroup(
+												Number(e.target.value)
+											)
+										}
+									>
+										<option value="" disabled>
+											Select a group
+										</option>
+										{groups.map((group) => (
+											<option
+												key={group.id}
+												value={group.id}
+											>
+												{group.name}
+											</option>
+										))}
+									</select>
+								)}
+							</div>
+
+							{/* Collapsible Image Section */}
+							<div className="mb-3 border border-content rounded-md p-3">
+								<label
+									className="block text-sm font-medium text-content cursor-pointer"
+									onClick={() =>
+										setImageExpanded(!imageExpanded)
+									}
+								>
+									Add Image:
+								</label>
+								{imageExpanded && (
+									<div className="flex justify-center mb-3">
+										{!picture && (
+											<button
+												type="button"
+												className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+												onClick={openPhotoModal}
+											>
+												<FaPlus />
+											</button>
+										)}
+										<input
+											type="file"
+											accept="image/jpeg, image/png"
+											style={{ display: "none" }}
+											ref={fileInputRef}
+											onChange={handleFileChange}
+										/>
+										{picture && (
+											<img
+												src={picture}
+												alt="Selected"
+												className="max-h-64 w-auto mt-2 mx-auto object-contain rounded-md"
+											/>
+										)}
+									</div>
+								)}
+							</div>
+
+							{/* Title Section with Slider */}
+							<div className="mb-3 border border-content rounded-md p-3">
+								<div className="flex items-center justify-between">
+									<label
+										htmlFor="formTitle"
+										className="block text-sm text-content font-medium cursor-pointer"
+										onClick={() =>
+											setTitleExpanded(!titleExpanded)
+										}
+									>
+										Title:
+									</label>
+
+									{/* Slider for Recommended Title */}
+									{selectedCategory === 1 && (
+										<div className="flex items-center">
+											<span className="text-sm mr-2">
+												Recommended
+											</span>
+											<label className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+												<input
+													type="checkbox"
+													className="toggle-checkbox"
+													checked={
+														showRecommendedTitle
+													}
+													onChange={async () => {
+														// Toggle the checkbox state
+														const newShowRecommendedTitle =
+															!showRecommendedTitle;
+														setShowRecommendedTitle(
+															newShowRecommendedTitle
+														);
+
+														if (
+															newShowRecommendedTitle &&
+															!predictResult &&
+															fileInputRef.current
+																?.files &&
+															fileInputRef.current
+																.files[0]
+														) {
+															const formdata =
+																new FormData();
+															const file =
+																fileInputRef
+																	.current
+																	.files[0];
+															formdata.append(
+																"image",
+																file
+															);
+
+															const requestOptions =
+															{
+																method: "POST",
+																body: formdata
+															};
+
+															try {
+																const response =
+																	await fetch(
+																		"http://localhost:5000/predict",
+																		requestOptions
+																	);
+																const result =
+																	await response.json();
+
+																setPredictResult(
+																	result.predicted_class
+																);
+
+																setTitle(
+																	result.predicted_class
+																);
+
+																console.log(
+																	result
+																);
+															} catch (error) {
+																console.error(
+																	"Error during prediction:",
+																	error
+																);
+															}
+														} else if (
+															newShowRecommendedTitle &&
+															!predictResult
+														) {
+															const myHeaders =
+																new Headers();
+															myHeaders.append(
+																"Content-Type",
+																"application/json"
+															);
+
+															const raw =
+																JSON.stringify({
+																	image_url:
+																		picture
+																});
+
+															const requestOptions =
+															{
+																method: "POST",
+																headers:
+																	myHeaders,
+																body: raw
+															};
+
+															try {
+																const response =
+																	await fetch(
+																		"http://localhost:5000/predict",
+																		requestOptions
+																	);
+																const result =
+																	await response.json();
+																setPredictResult(
+																	result.predicted_class
+																);
+																setTitle(
+																	result.predicted_class
+																);
+																console.log(
+																	result
+																);
+															} catch (error) {
+																console.error(
+																	error
+																);
+															}
+														} else if (
+															!newShowRecommendedTitle
+														) {
+															// If the checkbox is unchecked, clear the title
+															setTitle("");
+														} else if (
+															newShowRecommendedTitle
+														) {
+															setTitle(
+																predictResult
+															);
+														}
+													}}
+												/>
+												<span className="toggle-label"></span>
+											</label>
+										</div>
+									)}
+								</div>
+
+								{/* Expandable Text Area for Title */}
+								{titleExpanded && (
+									<div className="mt-2">
+										<textarea
+											id="formTitle"
+											rows={2}
+											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+											placeholder="Enter title"
+											value={title}
+											onChange={(e) =>
+												setTitle(e.target.value)
+											}
+										></textarea>
+									</div>
+								)}
+
+							</div>
+
+							{/* Collapsible Caption Section */}
+							<div className="mb-3 border border-content rounded-md p-3">
+								<label
+
+									htmlFor="formCaption"
+									className="block text-sm font-medium text-content cursor-pointer"
+									onClick={() =>
+										setCaptionExpanded(!captionExpanded)
+									}
 								>
 									Caption:
 								</label>
-								<textarea
-									id="formDescription"
-									rows={4}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
-									value={caption}
-									onChange={(e) => setCaption(e.target.value)}
-								></textarea>
+								{captionExpanded && (
+									<textarea
+										id="formCaption"
+										rows={4}
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+										placeholder="Enter description"
+										value={caption}
+										onChange={(e) =>
+											setCaption(e.target.value)
+										}
+									></textarea>
+								)}
+
 							</div>
 
-							<div className="mb-3">
+							<div className="mb-3 border border-content rounded-md p-3">
 								<label
 									htmlFor="formDescription"
-									className="block text-sm font-medium text-gray-700"
+
+									className="block text-sm font-medium text-content cursor-pointer"
+									onClick={() =>
+										setDragPinExpanded(!dragpinExpanded)
+									}
+
 								>
-									Title:
+									Sighting Location:
 								</label>
+
 								<textarea
 									id="formDescription"
 									rows={2}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-									placeholder="Enter description"
+									className="mt-1 block w-full text-gray-600 px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+									placeholder="Enter title"
 									value={title}
-									onChange={(e) => setTitle(e.target.value)}
+									onChange={(e) => setTitle(DOMPurify.sanitize(e.target.value))}
 								></textarea>
+
+								{dragpinExpanded && (
+									<div id="sightlocation">
+										<GoogleMapApiLoader
+											apiKey={apicode || ""}
+											suspense
+										>
+											<GoogleMap
+												className="h-full w-full"
+												zoom={15}
+												center={center}
+												mapOptions={{
+													disableDefaultUI: true,
+													zoomControl: true,
+													mapId: "dde51c47799889c4"
+												}}
+											>
+												{" "}
+												{/* draggable */}
+												<Marker
+													lat={latitude}
+													lng={longitude}
+													title={"Sighting Location"}
+													draggable
+													onDragEnd={(event) => {
+														const newPosition =
+															event.getPosition();
+														const newLat =
+															newPosition?.lat();
+														const newLng =
+															newPosition?.lng();
+
+														setdragpinLatitude(
+															newLat !== null &&
+																newLat !==
+																undefined
+																? newLat
+																: latitude
+														);
+														setdragpinLongitude(
+															newLng !== null &&
+																newLng !==
+																undefined
+																? newLng
+																: longitude
+														);
+
+														console.log(
+															`Marker dropped at: Latitude ${dragpinlatitude}, Longitude ${dragpinlongitude}`
+														);
+													}}
+												/>
+											</GoogleMap>
+										</GoogleMapApiLoader>
+									</div>
+								)}
+
+							</div>
+
+
+							{/* Submit button only enabled when all fields are filled */}
+							<div>
+								<button
+									className={`font-bold w-full px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content  ${!selectedCategory ||
+											!selectedGroup ||
+											!picture ||
+											!title ||
+											!caption
+											? " cursor-not-allowed"
+											: ""
+										}`}
+									onClick={handleAddPinClick}
+									disabled={
+										!selectedCategory ||
+										!selectedGroup ||
+										!picture ||
+										!title ||
+										!caption
+									}
+								>
+									Add Pin
+								</button>
 							</div>
 						</form>
 
-						<div>
-							<button
-								className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-								onClick={handleAddPinClick}
-							>
-								Add Pin
-							</button>
-						</div>
 					</div>
 				</div>
 			)}
 
 			{/* Success modal */}
 			{isSuccessModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50">
+					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
 						<h2 className="text-2xl font-bold mb-4 text-center">
 							Post Created Successfully!
 						</h2>
 						<button
-							className="block mx-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+							className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
 							onClick={() => {
 								setIsSuccessModalOpen(false);
 
-								navigate("/");
 							}}
 						>
 							Okay
@@ -685,10 +1375,11 @@ const HomeScreen: React.FC = () => {
 				</div>
 			)}
 
+
 			{/* PhotoOptions modal */}
 			{isPhotoOptionsModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto relative">
+				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
+					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto relative">
 						<h2 className="text-2xl font-bold mb-4 text-center">
 							Photo
 						</h2>
@@ -725,15 +1416,15 @@ const HomeScreen: React.FC = () => {
 
 			{/* Camera modal */}
 			{isCameraModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="relative bg-white p-6 rounded-lg w-full max-w-sm mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
+					<div className="relative bg-bkg p-6 rounded-lg w-full max-w-sm mx-auto">
 						<button
 							className="absolute top-2 right-2 text-xl"
 							onClick={() => setIsCameraModalOpen(false)}
 						>
 							&times;
 						</button>
-						<h2 className="text-2xl font-bold mb-4">
+						<h2 className="flex items-center justify-center text-2xl font-bold mb-4">
 							Take A Photo
 						</h2>
 						<CameraComponent
@@ -752,32 +1443,45 @@ const HomeScreen: React.FC = () => {
 
 			{/* Menu modal */}
 			{isMenuModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
 					<div
-						className="relative bg-white p-4 rounded-lg"
+						className="relative bg-white p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
 						style={{
-							width: "80%",
+							width: "90%",
+							maxWidth: "500px",
 							maxHeight: "80vh",
-							overflowY: "auto"
+							overflowY: "auto",
 						}}
 					>
 						<button
-							className="absolute top-0 left-0 mt-1 ml-1 p-2"
+							className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition-colors duration-200"
 							onClick={closeMenuModal}
 						>
-							X
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-6 w-6"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								strokeWidth="2"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
 						</button>
-						<div className="mt-4">
-							<h2 className="text-lg font-semibold">
+						<div className="mt-6">
+							<h2 className="text-xl font-bold text-gray-800 text-center">
 								Pins Displaying
 							</h2>
-							<div className="mt-2">
+							<div className="mt-4 space-y-3">
 								<button
-									className={`w-full text-left p-2 rounded mb-2 ${
-										selectCategory === null
-											? "bg-gray-400"
-											: "bg-gray-200"
-									}`}
+									className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === null
+											? "bg-navSelect border border-nav text-nav"
+											: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
+										}`}
 									onClick={() => handleCategoryClick(null)}
 								>
 									All Pins
@@ -785,125 +1489,93 @@ const HomeScreen: React.FC = () => {
 								{categories.map((category) => (
 									<div key={category.id}>
 										<button
-											className={`w-full text-left p-2 rounded mb-2 ${
-												selectCategory === category.id
-													? "bg-gray-400"
-													: "bg-gray-200"
-											}`}
-											onClick={() =>
-												handleCategoryClick(category.id)
-											}
+											className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === category.id
+													? "bg-navSelect border border-nav text-nav"
+													: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
+												}`}
+											onClick={() => handleCategoryClick(category.id)}
 										>
 											{category.name}
 										</button>
 									</div>
 								))}
 							</div>
-							<div className="flex justify-center mt-4">
-								<button
-									className="py-2 px-4 bg-gray-500 text-white rounded-full hover:bg-gray-800"
-									onClick={closeMenuModal}
-								>
-									Save
-								</button>
+							<div className="flex justify-center mt-6">
+								{/* <button
+                  className="py-2 px-6 bg-green-600 text-white font-semibold rounded-full shadow-md hover:bg-green-700 transition-colors duration-300"
+                  onClick={closeMenuModal}
+                >
+                  Save
+                </button> */}
 							</div>
 						</div>
 					</div>
 				</div>
 			)}
-		</APIProvider>
+		</GoogleMapApiLoader>
 	);
-
 };
 
-const PoiMarkers = (props: { pois: Poi[] }) => {
-	const map = useMap();
-	const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
-	const clusterer = useRef<MarkerClusterer | null>(null);
+const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
+	const [activeMarker, setActiveMarker] = useState<string | null>(null);
 
-	// Initialize MarkerClusterer, if the map has changed
-	useEffect(() => {
-		if (!map) return;
-		if (!clusterer.current) {
-			clusterer.current = new MarkerClusterer({ map });
-		}
-	}, [map]);
-
-	// Update markers, if the markers array has changed
-	useEffect(() => {
-		clusterer.current?.clearMarkers();
-		clusterer.current?.addMarkers(Object.values(markers));
-	}, [markers]);
-
-	const setMarkerRef = (marker: Marker | null, key: string) => {
-		if (marker && markers[key]) return;
-		if (!marker && !markers[key]) return;
-
-		setMarkers((prev) => {
-			if (marker) {
-				return { ...prev, [key]: marker };
-			} else {
-				const newMarkers = { ...prev };
-				delete newMarkers[key];
-				return newMarkers;
-			}
-		});
+	const handleMarkerClick = (id: string) => {
+		setActiveMarker(id);
 	};
 
-	const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
-		null
-	);
+	const handleCloseClick = () => {
+		setActiveMarker(null);
+	};
 
-	useEffect(() => {
-		if (map) {
-			setInfoWindow(new google.maps.InfoWindow());
-		}
-	}, [map]);
-
-	const handleMarkerClick = useCallback(
-		(key: string) => {
-			const clickedMarker = markers[key];
-			if (clickedMarker && infoWindow) {
-				const clickedPoi = locations.find((poi) => poi.key === key);
-				if (clickedPoi) {
-					infoWindow.close();
-					const contentString = `
-        <div id="content">
-          <div id="siteNotice" style="color: black;>
-            <h1 id="firstHeading" class="firstHeading"><b>${clickedPoi.label}</b></h1>
-            <p>${clickedPoi.details}</p>
-          </div>
-        </div>
-      `;
-
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(clickedPoi.location);
-					infoWindow.open(map, clickedMarker);
-				}
-			}
-		},
-		[markers, infoWindow, map]
-	);
+	function Content({
+		category,
+		caption
+	}: {
+		category: string;
+		caption: string;
+	}) {
+		return (
+			<div id="content">
+				<div className="bg-white rounded-lg shadow-md p-4 max-w-xs">
+					<h1 className="text-2xl font-semibold text-black">
+						{category}
+					</h1>
+					<div id="bodyContent">
+						<p className="text-gray-700 mt-2 text-xl">{caption}</p>
+						<div className="flex justify-center"></div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<>
-			{props.pois.map((poi: Poi) => (
-				<AdvancedMarker
-					key={poi.key}
-					position={poi.location}
-					ref={(marker) => setMarkerRef(marker, poi.key)}
-					clickable={true}
-					onClick={() => handleMarkerClick(poi.key)}
-				>
-					<Pin
-						background={"#FBBC04"}
-						glyphColor={"#000"}
-						borderColor={"#000"}
+			{pois.map((poi: any) => (
+				<React.Fragment key={poi.key}>
+					<Marker
+						lat={poi.location.lat}
+						lng={poi.location.lng}
+						title={poi.label}
+						onClick={() => handleMarkerClick(poi.key)}
 					/>
-				</AdvancedMarker>
+					<InfoWindow
+						position={poi.location}
+						open={activeMarker === poi.key}
+						ariaLabel={poi.details}
+						content={
+							<Content
+								category={poi.label}
+								caption={poi.details}
+							/>
+						}
+						onCloseClick={handleCloseClick}
+					/>
+				</React.Fragment>
 			))}
 		</>
 	);
+
 };
 
 export default HomeScreen;

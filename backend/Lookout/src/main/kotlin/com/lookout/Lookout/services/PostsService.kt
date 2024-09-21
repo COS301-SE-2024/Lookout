@@ -44,6 +44,7 @@ class PostsService(
             longitude = createPost.longitude,
             caption = createPost.caption,
             createdAt = Instant.now(),
+            title = createPost.title
         )
         return postRepository.save(post)
     }

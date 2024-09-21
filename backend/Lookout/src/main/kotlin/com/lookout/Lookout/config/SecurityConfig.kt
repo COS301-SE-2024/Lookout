@@ -20,9 +20,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
+
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
-    @Autowired lateinit var userService: UserService
+
+
+    @Autowired
+    lateinit var userService: UserService
+
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -31,7 +36,7 @@ class SecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
-                        "/api/auth/**", "/login",
+                        "/api/auth/**", "/login","/ws/**",
                         "/sw.js", "/static/**", "/resources/**",
                         "/webjars/**", "/css/**", "/js/**", "/images/**",
                         "/index.html", "/", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js",
@@ -54,7 +59,6 @@ class SecurityConfig {
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-
 
 
         return http.build()

@@ -4,6 +4,11 @@ GET http://localhost:8080/api/groups
 Accept: application/json
 ###
 
+### Get all groups by owner ID
+GET http://localhost:8080/api/groups/owner/2
+Accept: application/json
+###
+
 ### Get a group by ID
 GET http://localhost:8080/api/groups/2
 Accept: application/json
@@ -44,14 +49,19 @@ GET http://localhost:8080/api/groups/user/2
 Accept: application/json
 ###
 
+### Get all members of a group
+GET http://localhost:8080/api/groups/users/4
+Accept: application/json
+###
+
 ###Add member to a group
 POST /api/groups/AddMemberToGroup HTTP/1.1
 Host: localhost:8080
 Content-Type: application/json
 
 {
-  "groupId": 2,
-  "userId": 52
+  "groupId": 5,
+  "userId": 1
 }
 ###
 
@@ -62,7 +72,8 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-  "groupId": 2,
-  "userId": 52
+  "groupId": 5,
+  "userId": 455
+
 }
 ###

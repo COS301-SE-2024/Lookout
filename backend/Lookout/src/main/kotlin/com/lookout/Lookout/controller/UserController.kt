@@ -8,9 +8,18 @@ import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.service.UserService
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
+
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+import java.io.PrintWriter
+
+
 
 
 @RestController
@@ -24,6 +33,30 @@ class UserController (private val userService: UserService){
             email = user.email,
             profilePic = user.profilePic
         )
+    }
+
+//    @GetMapping("/all")
+//    fun getAllUsers(): ResponseEntity<List<UserDto>> {
+//        val users = userService.findAllUsers()
+//        val userDtos = users.map { convertToDto(it) }
+//        return ResponseEntity.ok(userDtos)
+//    }
+
+    @GetMapping("/all", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun getAllUsers(): ResponseEntity<String> {
+        val users = userService.findAllUsers()
+        val userDtos = users.map { convertToDto(it) }
+
+        // Create CSV content
+        val csvBuilder = StringBuilder()
+        csvBuilder.append("id,userName,email,profilePic\n")
+        userDtos.forEach { dto ->
+            csvBuilder.append("${dto.id},${dto.userName},${dto.email},${dto.profilePic}\n")
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            .body(csvBuilder.toString())
     }
 
     @GetMapping("user")
