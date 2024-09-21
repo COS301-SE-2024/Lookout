@@ -11,7 +11,6 @@ const App = () => {
 				<div className="container mx-0 w-full min-w-full">
 					<Navigationbar />
 					<Outlet />
-					<EmailHandler />
 				</div>
 			</main>
 		</>
