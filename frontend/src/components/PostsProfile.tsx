@@ -7,7 +7,7 @@ const PostsProfile = () => {
   const [selectedOption, setSelectedOption] = useState(() => {
     return localStorage.getItem("selectedPostOption") || "yourPosts";
   });
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, ] = useState<string>("");
 
   // Update localStorage whenever selectedOption changes
   useEffect(() => {

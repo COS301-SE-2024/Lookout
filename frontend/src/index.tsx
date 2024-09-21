@@ -112,12 +112,13 @@ function Main() {
 						path="/recommend/groups"
 						element={<ExploreRecommend />}
 					/>{" "}
-				</Route>
+				
 
 					{/* <Route 
 						path="/" 
 						element={<ProtectedRoute element={ExploreScreen} />} /> */}
-					<Route
+					
+				<Route
 						path="/category/:categoryId"
 						element={<ProtectedRoute element={CategoryPostsPage} />}
 					/>

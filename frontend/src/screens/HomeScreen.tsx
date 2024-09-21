@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, //useMemo, 
+	useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import {
-	HeatmapLayer,
-	Control,
+	//HeatmapLayer,
+	//Control,
 	GoogleMap,
 	GoogleMapApiLoader,
 	MarkerClusterer,
@@ -11,7 +12,8 @@ import {
 } from "react-google-map-wrapper";
 import "../assets/styles/home.css";
 import HomePins from "../components/HomePins";
-import { FaFolder, FaCamera, FaTimes, FaPlus, FaFilter } from "react-icons/fa";
+import { FaFolder, FaCamera, FaTimes, FaPlus //FaFilter 
+	} from "react-icons/fa";
 
 import Legend from "../components/Legend";
 import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
@@ -27,92 +29,92 @@ import AWS from "aws-sdk";
 
 
 // ##############################  HEAT MAP STUFF!!
-const getData = () => [
-	new google.maps.LatLng(-27.782551, 22.445368),
-	new google.maps.LatLng(-27.782745, 22.444586),
-	new google.maps.LatLng(-27.752986, 22.403112),
-	new google.maps.LatLng(-27.751266, 22.403355)
-];
+// const getData = () => [
+// 	new google.maps.LatLng(-27.782551, 22.445368),
+// 	new google.maps.LatLng(-27.782745, 22.444586),
+// 	new google.maps.LatLng(-27.752986, 22.403112),
+// 	new google.maps.LatLng(-27.751266, 22.403355)
+// ];
 
-const customGradient = [
-	"rgba(0, 255, 255, 0)",
-	"rgba(0, 255, 255, 1)",
-	"rgba(191, 0, 31, 1)",
-	"rgba(255, 0, 0, 1)"
-];
+// const customGradient = [
+// 	"rgba(0, 255, 255, 0)",
+// 	"rgba(0, 255, 255, 1)",
+// 	"rgba(191, 0, 31, 1)",
+// 	"rgba(255, 0, 0, 1)"
+// ];
 
-function MapContent() {
-	const [show, setShow] = useState(false);
-	const [gradient, setGradient] = useState<string[] | null>(null);
-	const [radius, setRadius] = useState<number | null>(null);
-	const [opacity, setOpacity] = useState<number | null>(null);
+// function MapContent() {
+// 	const [show, setShow] = useState(false);
+// 	const [, setGradient] = useState<string[] | null>(null);
+// 	const [radius, setRadius] = useState<number | null>(null);
+// 	const [opacity, setOpacity] = useState<number | null>(null);
 
-	const data = useMemo(getData, []);
+	//const data = useMemo(getData, []);
 
-	const toggleHeatmap = () => {
-		setShow(!show);
-	};
+	// const toggleHeatmap = () => {
+	// 	setShow(!show);
+	// };
 
-	const changeGradient = () => {
-		setGradient((prev) => (prev ? null : customGradient));
-	};
+	// const changeGradient = () => {
+	// 	setGradient((prev) => (prev ? null : customGradient));
+	// };
 
-	const changeRadius = () => {
-		setRadius(radius ? null : 20);
-	};
+	// const changeRadius = () => {
+	// 	setRadius(radius ? null : 20);
+	// };
 
-	const changeOpacity = () => {
-		setOpacity(opacity ? null : 0.2);
-	};
+	// const changeOpacity = () => {
+	// 	setOpacity(opacity ? null : 0.2);
+	// };
 
-	return (
-		<>
-			{/* <HeatmapLayer
-				data={data}
-				gradient={gradient}
-				radius={radius}
-				opacity={opacity}
-				hidden={!show}
-			/> */}
-			{/* <Control position={google.maps.ControlPosition.TOP_CENTER}>
-				<div
-					id="floating-panel"
-					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
-				>
-					<button
-						id="toggle-heatmap"
-						onClick={toggleHeatmap}
-						className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-					>
-						Toggle Heatmap
-					</button>
-					<button
-						id="change-gradient"
-						onClick={changeGradient}
-						className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
-					>
-						Change Gradient
-					</button>
-					<button
-						id="change-radius"
-						onClick={changeRadius}
-						className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-					>
-						Change Radius
-					</button>
-					<button
-						id="change-opacity"
-						onClick={changeOpacity}
-						className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
-					>
-						Change Opacity
-					</button>
-				</div>
-			</Control> */}
-		</>
-	);
+// 	return (
+// 		<>
+// 			{/* <HeatmapLayer
+// 				data={data}
+// 				gradient={gradient}
+// 				radius={radius}
+// 				opacity={opacity}
+// 				hidden={!show}
+// 			/> */}
+// 			{/* <Control position={google.maps.ControlPosition.TOP_CENTER}>
+// 				<div
+// 					id="floating-panel"
+// 					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
+// 				>
+// 					<button
+// 						id="toggle-heatmap"
+// 						onClick={toggleHeatmap}
+// 						className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+// 					>
+// 						Toggle Heatmap
+// 					</button>
+// 					<button
+// 						id="change-gradient"
+// 						onClick={changeGradient}
+// 						className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+// 					>
+// 						Change Gradient
+// 					</button>
+// 					<button
+// 						id="change-radius"
+// 						onClick={changeRadius}
+// 						className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+// 					>
+// 						Change Radius
+// 					</button>
+// 					<button
+// 						id="change-opacity"
+// 						onClick={changeOpacity}
+// 						className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+// 					>
+// 						Change Opacity
+// 					</button>
+// 				</div>
+// 			</Control> */}
+// 		</>
+// 	);
 
-}
+// }
 
 // #################### END OF HEAT MAP STUFF
 
@@ -876,7 +878,7 @@ const HomeScreen: React.FC = () => {
 			<div className="map-container h-screen">
 				<GoogleMap
 					className="h-full w-full"
-					zoom={5}
+					zoom={zoom}
 					center={center}
 					mapOptions={{
 						disableDefaultUI: true,
@@ -888,7 +890,7 @@ const HomeScreen: React.FC = () => {
 						<PoiMarkers pois={reservePins} />
 						<HomePins pin={filteredPins} />
 					</MarkerClusterer>
-					<MapContent />
+					{/* <MapContent /> */}
 				</GoogleMap>
 				<Legend items={legendItems} />
 			</div>

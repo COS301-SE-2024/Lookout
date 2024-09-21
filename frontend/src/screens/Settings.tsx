@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import EditProfile from "../components/EditProfile";
 import Tutorials from "../components/Tutorials";
 import FAQ from "../components/FAQ";
-import { FaArrowLeft, FaChevronLeft } from "react-icons/fa"; // Import icons
+import { FaArrowLeft,// FaChevronLeft 
+} from "react-icons/fa"; // Import icons
 import { useNavigate } from "react-router-dom";
 import { getEmailFromLocalStorage } from "../utils/auth";
 import { LuLogOut } from "react-icons/lu";
@@ -24,7 +25,7 @@ const Settings = () => {
 
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<number | null>(menuItems[0].id);
-  const [isDarkTheme, setIsDarkTheme] = useState(
+  const [isDarkTheme, ] = useState(
     localStorage.getItem("data-theme") === "dark"
   );
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
@@ -70,46 +71,46 @@ const Settings = () => {
     }
   };
 
-  const handleToggle = (isToggled: boolean) => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      isToggled ? "dark" : "light"
-    );
-    localStorage.setItem("data-theme", isToggled ? "dark" : "light");
-  };
+  // const handleToggle = (isToggled: boolean) => {
+  //   document.documentElement.setAttribute(
+  //     "data-theme",
+  //     isToggled ? "dark" : "light"
+  //   );
+  //   localStorage.setItem("data-theme", isToggled ? "dark" : "light");
+  // };
 
-  const [showHelpCentre, setShowHelpCentre] = useState(false);
+  //const [, setShowHelpCentre] = useState(false);
 
-  const handleHelpCentreClick = () => {
-    setShowHelpCentre(true);
-  };
+  // const handleHelpCentreClick = () => {
+  //   setShowHelpCentre(true);
+  // };
 
-  const handleCloseHelpCentre = () => {
-    setShowHelpCentre(false);
-  };
+  // const handleCloseHelpCentre = () => {
+  //   setShowHelpCentre(false);
+  // };
 
-  const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
-    undefined
-  );
+  // const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
+  //   undefined
+  // );
 
-  const jsx = useMemo(() => {
-    if (selectedIndex === undefined) {
-      return undefined;
-    }
-    if (selectedIndex === 0) {
-      return (
-        <div>
-          <div
-            className="cursor-pointer"
-            onClick={() => setSelectedIndex(undefined)}
-          >
-            <FaChevronLeft size={24} />
-          </div>
-          <EditProfile />
-        </div>
-      );
-    }
-  }, [selectedIndex]);
+  // const jsx = useMemo(() => {
+  //   if (selectedIndex === undefined) {
+  //     return undefined;
+  //   }
+  //   if (selectedIndex === 0) {
+  //     return (
+  //       <div>
+  //         <div
+  //           className="cursor-pointer"
+  //           onClick={() => setSelectedIndex(undefined)}
+  //         >
+  //           <FaChevronLeft size={24} />
+  //         </div>
+  //         <EditProfile />
+  //       </div>
+  //     );
+  //   }
+  // }, [selectedIndex]);
 
   const renderContent = () => {
     switch (activeMenu) {

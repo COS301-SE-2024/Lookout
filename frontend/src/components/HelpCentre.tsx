@@ -1,5 +1,5 @@
 import React from "react";
-import { FaArrowLeft } from "react-icons/fa";
+//import { FaArrowLeft } from "react-icons/fa";
 import images from "../assets/styles/images/images"; // Adjust the path as necessary
 
 const HelpCentreScreen: React.FC = () => {

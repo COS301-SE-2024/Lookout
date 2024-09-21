@@ -17,8 +17,8 @@ const Profile = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
   const location = useLocation();
   const { state } = location;
-  const [modalOpen, setModalOpen] = useState(false);
-  const [message, setMessage] = useState("");
+  const [, setModalOpen] = useState(false);
+  const [, setMessage] = useState("");
   const [open, setOpen] = useState<boolean>(false);
   const [, setPreviewUrl] = useState<string | undefined>(undefined);
   const previewURL = localStorage.getItem("previewUrl");
@@ -70,10 +70,10 @@ const Profile = () => {
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]);
 
-  const closeModal = () => {
-    setModalOpen(false);
-    setMessage("");
-  };
+  // const closeModal = () => {
+  //   setModalOpen(false);
+  //   setMessage("");
+  // };
 
   const togglePhotoClick = () => {
     setOpen(!open);

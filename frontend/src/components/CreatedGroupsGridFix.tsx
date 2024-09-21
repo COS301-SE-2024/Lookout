@@ -127,8 +127,8 @@ export default CreatedGroupsGridFix;
 
 
 // <div className="flex-1 ml-2 flex flex-col justify-between">
-{/* <div>
-<div className="text-lg font-semibold">{group.name}</div>
-<p className="text-gray-600 text-xs mt-1 truncate">{group.description}</p>
-</div>
-</div> */}
+// {/* <div>
+// <div className="text-lg font-semibold">{group.name}</div>
+// <p className="text-gray-600 text-xs mt-1 truncate">{group.description}</p>
+// </div>
+// </div> */}

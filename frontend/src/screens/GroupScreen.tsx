@@ -28,9 +28,9 @@ const GroupScreen = () => {
 	}, []);
 	
 
-	const handleAddGroup = (newGroup: Group) => {
-		setGroups(prevGroups => [...prevGroups, newGroup]);
-	};
+	// const handleAddGroup = (newGroup: Group) => {
+	// 	setGroups(prevGroups => [...prevGroups, newGroup]);
+	// };
 
 	return (
 		<div className="container mx-auto p-4">

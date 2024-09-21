@@ -9,7 +9,7 @@ const GroupsProfile = () => {
   const [selectedOption, setSelectedOption] = useState(() => {
     return localStorage.getItem("selectedOption") || "groups";
   });
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, ] = useState<string>("");
   const [isCreateGroupsOpen, setIsCreateGroupsOpen] = useState<boolean>(false);
 
   // Update localStorage whenever selectedOption changes

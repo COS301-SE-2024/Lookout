@@ -47,7 +47,7 @@ const GroupPosts: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [group, setGroup] = useState<Group | null>(null);
+  const [, setGroup] = useState<Group | null>(null);
   const [postsLoaded, setPostsLoaded] = useState(false);
 
   useEffect(() => {

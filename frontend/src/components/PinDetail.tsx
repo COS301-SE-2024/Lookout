@@ -89,7 +89,7 @@ const PinDetail: React.FC = () => {
 	const [saves, setSaves] = useState<number>(0);
 	const [userId] = useState<number>(2);
 	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
-	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+	//const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 	useEffect(() => {
 		const localStoreTheme = localStorage.getItem("data-theme") || "default";

@@ -6,7 +6,7 @@ import ExploreGroup from "../components/ExploreGroup";
 import RecommendGroup from "../components/RecommendGroup";
 import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 import HorizontalCarousel from "../components/HorizontalCarousel";
-import ExploreArticles from "../components/ExploreArticles";
+//import ExploreArticles from "../components/ExploreArticles";
 import DOMPurify from 'dompurify';
 
 interface User {
