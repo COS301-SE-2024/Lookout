@@ -231,6 +231,9 @@ const HomeScreen: React.FC = () => {
 	const defaultCenter = { lat: -28, lng: 23 };
 	const [center, setCenter] = useState(defaultCenter);
 
+	const defaultZoom = 5;
+	const [zoom, setZoom] = useState(defaultZoom);
+
 	const [searchTerm, setSearchTerm] = useState<string>("");
 
 	//const id = 2;
@@ -529,8 +532,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude: -27.18,
-			longitude: 25.41
+			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
+        	longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
 		});
 
 		const requestOptions = {
@@ -563,6 +566,13 @@ const HomeScreen: React.FC = () => {
 				setIsSuccessModalOpen(true); // Open success modal
 				setNewNumberPins(newNumberPins + 1);
 				await fetchPins();
+
+				setCenter({
+					lat: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
+					lng: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
+				}); 
+
+				setZoom(15);
 				// setIsModalOpen(false); // Close modal after successful pin addition
 				// setIsSuccessModalOpen(true); // Open success modal
 			} catch (error) {
