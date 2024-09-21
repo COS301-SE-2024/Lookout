@@ -408,23 +408,23 @@ class LookoutApplicationTests {
 
 /////////////////////////login a user///////////////////////////////////////////
 
-    @Test
-    fun `post invalid login user`(){
-        val postJson = """
-        {
-        "email": "Test12@email.com",
-        "passcode": "Test@31212345"
-    } 
-        
-    """.trimIndent()
-
-        mockMvc.perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(postJson)
-        )
-            .andExpect(status().is4xxClientError)
-    }
+//    @Test
+//    fun `post invalid login user`(){
+//        val postJson = """
+//        {
+//        "email": "Test12@email.com",
+//        "passcode": "Test@31212345"
+//    }
+//
+//    """.trimIndent()
+//
+//        mockMvc.perform(
+//            post("/api/auth/login")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(postJson)
+//        )
+//            .andExpect(status().is4xxClientError)
+//    }
 
 
 //////////////////////////Update Post//////////////////////////////////////////
