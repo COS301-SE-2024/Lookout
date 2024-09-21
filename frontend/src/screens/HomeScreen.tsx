@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import {
-  HeatmapLayer,
-  Control,
-  GoogleMap,
-  GoogleMapApiLoader,
-  MarkerClusterer,
-  Marker,
-  InfoWindow,
+	HeatmapLayer,
+	Control,
+	GoogleMap,
+	GoogleMapApiLoader,
+	MarkerClusterer,
+	Marker,
+	InfoWindow,
 } from "react-google-map-wrapper";
 import "../assets/styles/home.css";
 import HomePins from "../components/HomePins";
@@ -67,14 +67,14 @@ function MapContent() {
 
 	return (
 		<>
-			<HeatmapLayer
+			{/* <HeatmapLayer
 				data={data}
 				gradient={gradient}
 				radius={radius}
 				opacity={opacity}
 				hidden={!show}
-			/>
-			<Control position={google.maps.ControlPosition.TOP_CENTER}>
+			/> */}
+			{/* <Control position={google.maps.ControlPosition.TOP_CENTER}>
 				<div
 					id="floating-panel"
 					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
@@ -108,7 +108,7 @@ function MapContent() {
 						Change Opacity
 					</button>
 				</div>
-			</Control>
+			</Control> */}
 		</>
 	);
 
@@ -146,82 +146,82 @@ const legendItems = [
 ];
 
 const locations: Poi[] = [
-  {
-    key: "krugerNationalPark",
-    location: { lat: -23.9884, lng: 31.5547 },
-    label: "Kruger National Park",
-    details:
-      "One of Africa's largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos.",
-  },
-  {
-    key: "addoElephantPark",
-    location: { lat: -33.4468, lng: 25.7484 },
-    label: "Addo Elephant Park",
-    details:
-      "Famous for its large population of elephants, as well as lions, hyenas, and various antelope species.",
-  },
-  {
-    key: "tableMountainNationalPark",
-    location: { lat: -34.0104, lng: 18.3736 },
-    label: "Table Mountain National Park",
-    details:
-      "Known for its rich biodiversity, including the unique fynbos vegetation and various bird species.",
-  },
-  {
-    key: "iSimangalisoWetlandPark",
-    location: { lat: -28.382, lng: 32.4143 },
-    label: "iSimangaliso Wetland Park",
-    details:
-      "A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species.",
-  },
-  {
-    key: "kgalagadiTransfrontierPark",
-    location: { lat: -26.2825, lng: 20.615 },
-    label: "Kgalagadi Transfrontier Park",
-    details:
-      "Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok.",
-  },
-  {
-    key: "karooNationalPark",
-    location: { lat: -32.2968, lng: 22.5287 },
-    label: "Karoo National Park",
-    details:
-      "Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life.",
-  },
-  {
-    key: "hluhluweImfoloziPark",
-    location: { lat: -28.0493, lng: 31.9189 },
-    label: "Hluhluwe-Imfolozi Park",
-    details:
-      "The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five.",
-  },
-  {
-    key: "madikweGameReserve",
-    location: { lat: -24.7486, lng: 26.2418 },
-    label: "Madikwe Game Reserve",
-    details:
-      "A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species.",
-  },
-  {
-    key: "goldenGateHighlandsNationalPark",
-    location: { lat: -28.5145, lng: 28.608 },
-    label: "Golden Gate Highlands National Park",
-    details:
-      "Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures.",
-  },
-  {
-    key: "bouldersBeachPenguinColony",
-    location: { lat: -34.1975, lng: 18.451 },
-    label: "Boulders Beach Penguin Colony",
-    details:
-      "A protected area known for its colony of African penguins, as well as scenic coastal views.",
-  },
+	{
+		key: "krugerNationalPark",
+		location: { lat: -23.9884, lng: 31.5547 },
+		label: "Kruger National Park",
+		details:
+			"One of Africa's largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos.",
+	},
+	{
+		key: "addoElephantPark",
+		location: { lat: -33.4468, lng: 25.7484 },
+		label: "Addo Elephant Park",
+		details:
+			"Famous for its large population of elephants, as well as lions, hyenas, and various antelope species.",
+	},
+	{
+		key: "tableMountainNationalPark",
+		location: { lat: -34.0104, lng: 18.3736 },
+		label: "Table Mountain National Park",
+		details:
+			"Known for its rich biodiversity, including the unique fynbos vegetation and various bird species.",
+	},
+	{
+		key: "iSimangalisoWetlandPark",
+		location: { lat: -28.382, lng: 32.4143 },
+		label: "iSimangaliso Wetland Park",
+		details:
+			"A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species.",
+	},
+	{
+		key: "kgalagadiTransfrontierPark",
+		location: { lat: -26.2825, lng: 20.615 },
+		label: "Kgalagadi Transfrontier Park",
+		details:
+			"Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok.",
+	},
+	{
+		key: "karooNationalPark",
+		location: { lat: -32.2968, lng: 22.5287 },
+		label: "Karoo National Park",
+		details:
+			"Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life.",
+	},
+	{
+		key: "hluhluweImfoloziPark",
+		location: { lat: -28.0493, lng: 31.9189 },
+		label: "Hluhluwe-Imfolozi Park",
+		details:
+			"The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five.",
+	},
+	{
+		key: "madikweGameReserve",
+		location: { lat: -24.7486, lng: 26.2418 },
+		label: "Madikwe Game Reserve",
+		details:
+			"A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species.",
+	},
+	{
+		key: "goldenGateHighlandsNationalPark",
+		location: { lat: -28.5145, lng: 28.608 },
+		label: "Golden Gate Highlands National Park",
+		details:
+			"Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures.",
+	},
+	{
+		key: "bouldersBeachPenguinColony",
+		location: { lat: -34.1975, lng: 18.451 },
+		label: "Boulders Beach Penguin Colony",
+		details:
+			"A protected area known for its colony of African penguins, as well as scenic coastal views.",
+	},
 ];
 
 type Group = {
-  id: number;
-  name: string;
-  categories: { id: number; name: string }[];
+	id: number;
+	name: string;
+	categories: { id: number; name: string }[];
 };
 
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -882,23 +882,24 @@ const HomeScreen: React.FC = () => {
 				</GoogleMap>
 				<Legend items={legendItems} />
 			</div>
-			<div className="fixed top-20 left-48 transform -translate-x-1/2 z-10">
+			<div className="fixed top-3 md:top-20 left-1/2 transform -translate-x-1/2 z-10 w-50%">
 				<input
 					type="text"
 					placeholder="Search..."
 					value={searchTerm}
 					onChange={handleSearchChange}
-					className="search-bar p-2 border rounded-md left-3"
+					className="search-bar p-2 border border-nav rounded-full"
 				/>
 			</div>
-			  <button
-        className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-gray-200 hover:text-gray-500"
-        onClick={openMenuModal}
-      >
-        <FiFilter size={25} />
-      </button>
+
 			<button
-				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-800 sm:bottom-24 md:bottom-20"
+				className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-navBkg  hover:text-white"
+				onClick={openMenuModal}
+			>
+				<FiFilter size={25} />
+			</button>
+			<button
+				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:text-white hover:bg-navBkg sm:bottom-24 md:bottom-20"
 				onClick={openModal}
 			>
 				<FaPlus />
@@ -907,23 +908,23 @@ const HomeScreen: React.FC = () => {
 
 			{/* Add pin modal */}
 			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-					<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+							<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto">
 						<button
-							className="absolute top-2 right-2 text-xl"
+							className=" absolute top-2 right-2 text-xl"
 							onClick={closeModal}
 						>
 							&times;
 						</button>
-						<h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
+						<h2 className="text-2xl text-content font-bold mb-4 ">Add a Pin</h2>
 
 
 						<form>
 							{/* Collapsible Category Section */}
-							<div className="mb-3 border-2 border-black rounded-md p-3">
+							<div className="mb-3 border border-content text-gray-500 rounded-md p-3">
 								<label
 									htmlFor="categorySelect"
-									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									className="block text-sm font-medium text-content cursor-pointer"
 									onClick={() =>
 										setCategoryExpanded(!categoryExpanded)
 									}
@@ -933,7 +934,7 @@ const HomeScreen: React.FC = () => {
 								{categoryExpanded && (
 									<select
 										id="categorySelect"
-										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
 										value={selectedCategory ?? ""}
 										onChange={(e) =>
 											setSelectedCategory(
@@ -941,7 +942,7 @@ const HomeScreen: React.FC = () => {
 											)
 										}
 									>
-										<option value="" disabled>
+										<option className="text-gray-500" value="" disabled>
 											Select a category
 										</option>
 										{categories.map((category) => (
@@ -958,10 +959,10 @@ const HomeScreen: React.FC = () => {
 
 
 							{/* Collapsible Group Section */}
-							<div className="mb-3 border-2 border-black rounded-md p-3">
+							<div className="mb-3 border text-gray-500 border-content rounded-md p-3">
 								<label
 									htmlFor="groupSelect"
-									className="block text-sm font-medium text-content cursor-pointer"
+									className="block text-sm text-content font-medium text-content cursor-pointer"
 									onClick={() =>
 										setGroupExpanded(!groupExpanded)
 									}
@@ -997,9 +998,9 @@ const HomeScreen: React.FC = () => {
 							</div>
 
 							{/* Collapsible Image Section */}
-							<div className="mb-3 border-2 border-black rounded-md p-3">
+							<div className="mb-3 border border-content rounded-md p-3">
 								<label
-									className="block text-sm font-medium text-gray-700 cursor-pointer"
+									className="block text-sm font-medium text-content cursor-pointer"
 									onClick={() =>
 										setImageExpanded(!imageExpanded)
 									}
@@ -1036,11 +1037,11 @@ const HomeScreen: React.FC = () => {
 							</div>
 
 							{/* Title Section with Slider */}
-							<div className="mb-3 border-2 border-black rounded-md p-3">
+							<div className="mb-3 border border-content rounded-md p-3">
 								<div className="flex items-center justify-between">
 									<label
 										htmlFor="formTitle"
-										className="block text-sm font-medium text-gray-700 cursor-pointer"
+										className="block text-sm text-content font-medium cursor-pointer"
 										onClick={() =>
 											setTitleExpanded(!titleExpanded)
 										}
@@ -1089,10 +1090,10 @@ const HomeScreen: React.FC = () => {
 															);
 
 															const requestOptions =
-																{
-																	method: "POST",
-																	body: formdata
-																};
+															{
+																method: "POST",
+																body: formdata
+															};
 
 															try {
 																const response =
@@ -1138,12 +1139,12 @@ const HomeScreen: React.FC = () => {
 																});
 
 															const requestOptions =
-																{
-																	method: "POST",
-																	headers:
-																		myHeaders,
-																	body: raw
-																};
+															{
+																method: "POST",
+																headers:
+																	myHeaders,
+																body: raw
+															};
 
 															try {
 																const response =
@@ -1193,7 +1194,7 @@ const HomeScreen: React.FC = () => {
 										<textarea
 											id="formTitle"
 											rows={2}
-											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
 											placeholder="Enter title"
 											value={title}
 											onChange={(e) =>
@@ -1206,7 +1207,7 @@ const HomeScreen: React.FC = () => {
 							</div>
 
 							{/* Collapsible Caption Section */}
-							<div className="mb-3 border-2 border-black rounded-md p-3">
+							<div className="mb-3 border border-content rounded-md p-3">
 								<label
 
 									htmlFor="formCaption"
@@ -1221,7 +1222,7 @@ const HomeScreen: React.FC = () => {
 									<textarea
 										id="formCaption"
 										rows={4}
-										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
 										placeholder="Enter description"
 										value={caption}
 										onChange={(e) =>
@@ -1232,7 +1233,7 @@ const HomeScreen: React.FC = () => {
 
 							</div>
 
-							<div className="mb-3 border-2 border-black rounded-md p-3">
+							<div className="mb-3 border border-content rounded-md p-3">
 								<label
 									htmlFor="formDescription"
 
@@ -1248,7 +1249,7 @@ const HomeScreen: React.FC = () => {
 								<textarea
 									id="formDescription"
 									rows={2}
-									className="mt-1 block w-full text-gray-600 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="mt-1 block w-full text-gray-600 px-3 py-2 border border-gray-300 rounded-md shadow-sm "
 									placeholder="Enter title"
 									value={title}
 									onChange={(e) => setTitle(DOMPurify.sanitize(e.target.value))}
@@ -1288,14 +1289,14 @@ const HomeScreen: React.FC = () => {
 														setdragpinLatitude(
 															newLat !== null &&
 																newLat !==
-																	undefined
+																undefined
 																? newLat
 																: latitude
 														);
 														setdragpinLongitude(
 															newLng !== null &&
 																newLng !==
-																	undefined
+																undefined
 																? newLng
 																: longitude
 														);
@@ -1316,15 +1317,14 @@ const HomeScreen: React.FC = () => {
 							{/* Submit button only enabled when all fields are filled */}
 							<div>
 								<button
-									className={`w-full px-4 py-2 bg-navBkg text-txtBtn rounded-md hover:bg-iconShadow focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-										!selectedCategory ||
-										!selectedGroup ||
-										!picture ||
-										!title ||
-										!caption
-											? "opacity-50 cursor-not-allowed"
+									className={`font-bold w-full px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content  ${!selectedCategory ||
+											!selectedGroup ||
+											!picture ||
+											!title ||
+											!caption
+											? " cursor-not-allowed"
 											: ""
-									}`}
+										}`}
 									onClick={handleAddPinClick}
 									disabled={
 										!selectedCategory ||
@@ -1351,7 +1351,7 @@ const HomeScreen: React.FC = () => {
 							Post Created Successfully!
 						</h2>
 						<button
-							className="block mx-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+							className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
 							onClick={() => {
 								setIsSuccessModalOpen(false);
 
@@ -1366,7 +1366,7 @@ const HomeScreen: React.FC = () => {
 
 			{/* PhotoOptions modal */}
 			{isPhotoOptionsModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50">
+				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
 					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto relative">
 						<h2 className="text-2xl font-bold mb-4 text-center">
 							Photo
@@ -1390,21 +1390,21 @@ const HomeScreen: React.FC = () => {
 								</span>
 							</button>
 
-              <button
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
-                onClick={handleTakePhotoClick}
-              >
-                <FaCamera size={20} />
-                <span className="text-base">Take A Photo</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+							<button
+								className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
+								onClick={handleTakePhotoClick}
+							>
+								<FaCamera size={20} />
+								<span className="text-base">Take A Photo</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 
 			{/* Camera modal */}
 			{isCameraModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
 					<div className="relative bg-bkg p-6 rounded-lg w-full max-w-sm mx-auto">
 						<button
 							className="absolute top-2 right-2 text-xl"
@@ -1419,91 +1419,89 @@ const HomeScreen: React.FC = () => {
 							onCapture={(url) => {
 								// shortenURL(url);
 
-                // setPicture(url);
-                setPicture(url);
-                uploadBase64ImageToS3(url);
-                setIsCameraModalOpen(false);
-              }}
-            />
-          </div>
-        </div>
-      )}
+								// setPicture(url);
+								setPicture(url);
+								uploadBase64ImageToS3(url);
+								setIsCameraModalOpen(false);
+							}}
+						/>
+					</div>
+				</div>
+			)}
 
-      {/* Menu modal */}
-      {isMenuModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
-          <div
-            className="relative bg-white p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
-            style={{
-              width: "90%",
-              maxWidth: "500px",
-              maxHeight: "80vh",
-              overflowY: "auto",
-            }}
-          >
-            <button
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition-colors duration-200"
-              onClick={closeMenuModal}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-            <div className="mt-6">
-              <h2 className="text-xl font-bold text-gray-800 text-center">
-                Pins Displaying
-              </h2>
-              <div className="mt-4 space-y-3">
-                <button
-                  className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${
-                    selectCategory === null
-                      ? "bg-green-700 text-white"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
-                  onClick={() => handleCategoryClick(null)}
-                >
-                  All Pins
-                </button>
-                {categories.map((category) => (
-                  <div key={category.id}>
-                    <button
-                      className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${
-                        selectCategory === category.id
-                          ? "bg-green-700 text-white"
-                          : "bg-gray-100 hover:bg-gray-200"
-                      }`}
-                      onClick={() => handleCategoryClick(category.id)}
-                    >
-                      {category.name}
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <div className="flex justify-center mt-6">
-                {/* <button
+			{/* Menu modal */}
+			{isMenuModalOpen && (
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
+					<div
+						className="relative bg-white p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
+						style={{
+							width: "90%",
+							maxWidth: "500px",
+							maxHeight: "80vh",
+							overflowY: "auto",
+						}}
+					>
+						<button
+							className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition-colors duration-200"
+							onClick={closeMenuModal}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-6 w-6"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								strokeWidth="2"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+						<div className="mt-6">
+							<h2 className="text-xl font-bold text-gray-800 text-center">
+								Pins Displaying
+							</h2>
+							<div className="mt-4 space-y-3">
+								<button
+									className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === null
+											? "bg-navSelect border border-nav text-nav"
+											: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
+										}`}
+									onClick={() => handleCategoryClick(null)}
+								>
+									All Pins
+								</button>
+								{categories.map((category) => (
+									<div key={category.id}>
+										<button
+											className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === category.id
+													? "bg-navSelect border border-nav text-nav"
+													: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
+												}`}
+											onClick={() => handleCategoryClick(category.id)}
+										>
+											{category.name}
+										</button>
+									</div>
+								))}
+							</div>
+							<div className="flex justify-center mt-6">
+								{/* <button
                   className="py-2 px-6 bg-green-600 text-white font-semibold rounded-full shadow-md hover:bg-green-700 transition-colors duration-300"
                   onClick={closeMenuModal}
                 >
                   Save
                 </button> */}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </GoogleMapApiLoader>
-  );
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
+		</GoogleMapApiLoader>
+	);
 };
 
 const PoiMarkers = ({ pois }: { pois: Poi[] }) => {

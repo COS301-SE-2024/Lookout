@@ -63,12 +63,28 @@ interface Post {
 	createdAt: string;
 }
 
+interface User {
+	userName: string;
+	email: string;
+	passcode: string;
+	role: string;
+	isEnabled: boolean;
+	password: string;
+	username: string;
+	profilePic: string;
+	authorities: { authority: string }[];
+	isAccountNonLocked: boolean;
+	isCredentialsNonExpired: boolean;
+	isAccountNonExpired: boolean;
+  }
+
 const PinDetail: React.FC = () => {
 	const userId = 1;
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [theme, setTheme] = useState("default");
 	const [post, setPost] = useState<Post | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const [loadingPost, setLoadingPost] = useState(true);
 	const [loadingRelatedPost, setLoadingRelatedPost] = useState(true);
 	const [loadingSaved, setLoadingSaved] = useState(true);
@@ -76,6 +92,7 @@ const PinDetail: React.FC = () => {
 	const [isSaved, setIsSaved] = useState<boolean>(false);
 	const [saves, setSaves] = useState<number>(0);
 	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
+	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 	useEffect(() => {
 		const localStoreTheme = localStorage.getItem("data-theme") || "default";
@@ -114,6 +131,11 @@ const PinDetail: React.FC = () => {
 				const relatedData = await relatedResponse.json();
 				setRelatedPosts(relatedData.content);
 				setLoadingRelatedPost(false);
+
+				 // Fetch user details using post.userId
+				 const userResponse = await fetch(`/api/users/${data.userId}`);
+				 const userData = await userResponse.json();
+				 setUser(userData); // Store user data including profile picture
 			} catch (error) {
 				console.error("Error fetching post or related posts:", error);
 				setLoadingPost(false);
@@ -270,78 +292,141 @@ const PinDetail: React.FC = () => {
 	}
 
 	return (
-		<div className="container mx-auto p-4 relative max-h-screen overflow-y-auto">
-			{/* Button to go back */}
-			<button
-				onClick={() => navigate(-1)}
-				className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2"
-				style={{ zIndex: 50 }}
+		<div className="p-4 scrollbar-hide flex flex-col md:h-screen min-h-screen bg-bkg">
+		  <style>
+			{`
+			  .scrollbar-hide::-webkit-scrollbar {
+				display: none;
+			  }
+			  .scrollbar-hide {
+				-ms-overflow-style: none;
+				scrollbar-width: none;
+			  }
+			  .search-results-container {
+				display: grid;
+				gap: 16px;
+				justify-items: start;
+			  }
+			  .search-results-container .search-result-card {
+				width: 100%;
+				margin: 0;
+			  }
+			  @media (min-width: 768px) {
+				.search-results-container {
+				  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				}
+			  }
+			  @media (max-width: 767px) {
+				.search-results-container {
+				  grid-template-columns: 1fr;
+				}
+				.search-bar {
+				  width: 100%;
+				}
+			  }
+			`}
+		  </style>
+		  <button
+			onClick={() => navigate(-1)}
+			className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2"
+			style={{ zIndex: 50 }}
+		  >
+			<svg
+			  xmlns="http://www.w3.org/2000/svg"
+			  className="h-8 w-8"
+			  fill="none"
+			  viewBox="0 0 24 24"
+			  stroke="currentColor"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					className="h-8 w-8"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth="2"
-						d="M15 19l-7-7 7-7"
-					/>
-				</svg>
-			</button>
-
-			{/* Post details */}
-			<div className="grid md:grid-cols-2 mt-10 relative">
-				{/* Left Section (Image) */}
-				<div className="rounded-l-lg">
-					<img
-						src={post?.picture}
-						alt={post?.title}
-						className="rounded-lg max-h-96 w-full object-cover object-center"
-					/>
+			  <path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				strokeWidth="2"
+				d="M15 19l-7-7 7-7"
+			  />
+			</svg>
+		  </button>
+	
+		  <div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
+			<div className="card bg-base-100 shadow-xl shadow rounded-lg flex flex-col md:flex-row min-h-[550px]">
+			  <figure className="rounded-t-lg overflow-hidden md:w-1/2 h-auto">
+				<img
+				  src={post?.picture}
+				  alt={post?.title}
+				  className="w-full h-full object-cover"
+				/>
+			  </figure>
+	
+			  <div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow"> {/* flex-grow added */}
+				<div className="flex items-center justify-between mt-2 mb-4">
+				  <h1 className="text-2xl md:text-4xl font-bold">{post?.title}</h1>
+				  <div className="flex items-center">
+					{isSaved ? (
+					  <FaBookmark
+					  className="text-navBkg cursor-pointer"
+					  onClick={handleSaveIconClick}
+						size={24}
+					  />
+					) : (
+					  <FaRegBookmark
+					  className="text-navBkg cursor-pointer"
+					  onClick={handleSaveIconClick}
+						size={24}
+					  />
+					)}
+					<span className="ml-2 md:text-xl text-base text-center">{saves} saves</span>
+				  </div>
 				</div>
-
-				{/* Right Section (Post Content) */}
-				<div className="p-4 flex flex-col">
-					<h1 className="text-4xl font-bold">{post?.title}</h1>
-					<p className="mt-4 text-lg">{post?.description}</p>
-
-					{/* Category pill */}
-					<div>
-						<h2 className="text-lg font-bold">{post?.username}</h2>
-						<p className="text-gray-600 text-sm">{post?.caption}</p>
-						<CategoryPill categoryId={post?.categoryId} />
-					</div>
-
-					{/* Save Button */}
-					<div className="mt-6 flex items-center">
-						{isSaved ? (
-							<FaBookmark
-								className="text-4xl text-green-600 hover:text-green-400 cursor-pointer"
-								onClick={handleSaveIconClick}
-							/>
-						) : (
-							<FaRegBookmark
-								className="text-4xl text-gray-500 hover:text-gray-300 cursor-pointer"
-								onClick={handleSaveIconClick}
-							/>
-						)}
-						<span className="ml-3 text-lg">{saves} Saves</span>
-					</div>
+	
+				<div className="flex items-center mb-4">
+				  <img
+					src={user?.profilePic}
+					alt={post?.username}
+					className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4"
+				  />
+				  <div>
+					<h2 className="text-content text-xl md:text-2xl font-bold">{post?.username}</h2>
+					<p className="text-content md:text-xl text-md">{post?.caption}</p>
+					<CategoryPill categoryId={post?.categoryId} />
+				  </div>
 				</div>
+	
+				<div className="flex justify-start mt-4 space-x-4">
+				  <button
+className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"					
+onClick={() => navigate(`/map`, { state: { post, apicode } })}
+				  >
+					View on Map
+				  </button>
+				  <button
+className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"										
+onClick={() =>
+					  navigate(`/group/${post?.groupId}`, {
+						state: { group: post?.group },
+					  })
+					}
+				  >
+					View Group
+				  </button>
+				</div>
+	
+				<div className="mt-8">
+				  <h1 className="text-lg md:text-xl font-semibold">
+					See more posts like this:
+				  </h1>
+	
+				  <HorizontalCarousel>
+					{relatedPosts.map((relatedPost) => (
+					  <PinDetailPost key={relatedPost.id} post={relatedPost} />
+					))}
+				  </HorizontalCarousel>
+				</div>
+			  </div>
 			</div>
-
-			{/* Related Posts */}
-			<HorizontalCarousel>
-				{relatedPosts.map((relatedPost) => (
-					<PinDetailPost key={relatedPost.id} post={relatedPost} />
-				))}
-			</HorizontalCarousel>
+		  </div>
 		</div>
-	);
-};
-
-export default PinDetail;
+	  );
+	};
+	
+	export default PinDetail;
+	

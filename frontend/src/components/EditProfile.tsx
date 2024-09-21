@@ -162,7 +162,7 @@ export const EditProfile = () => {
             This is your email address you use to log in.
           </p>
 
-          <li className="flex flex-col py-2">
+          <li className="flex flex-col py-2 mr-4">
             <div className={modalStyles.buttonContainer}>
               <button
                 className="bg-navBkg hover:bg-gray-400 text-txtBtn font-bold py-2 px-4 rounded transition ease-in-out"

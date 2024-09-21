@@ -20,7 +20,7 @@ interface PostsGridFixProps {
 
 const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
   // ADD IN FROM LOGIN LATER
-  const userId = 2;
+  const userId = 1;
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true); // Add loading state
