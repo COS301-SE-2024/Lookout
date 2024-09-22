@@ -54,7 +54,7 @@ const getDayWithSuffix = (date: Date) => {
 };
 
 const GroupDetail: React.FC = () => {
-	const userId = 1;
+	
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 	const [group, setGroup] = useState<Group | null>(null);
@@ -77,7 +77,7 @@ const GroupDetail: React.FC = () => {
 				const groupData = await groupResponse.json();
 				setGroup(groupData);
 
-				const userResponse = await fetch(`/api/users/${groupData.userId}`, {
+				const userResponse = await fetch(`/api/users/`, {
 					method: 'GET',
 					headers: { 'Accept': 'application/json' },
 				});
@@ -93,7 +93,7 @@ const GroupDetail: React.FC = () => {
 				setPosts(postsData.content);
 				setPostsLoaded(true);
 
-				const userGroupsResponse = await fetch(`/api/groups/user/${userId}`, {
+				const userGroupsResponse = await fetch(`/api/groups/user`, {
 					method: "GET",
 					headers: { Accept: "application/json" }
 				});
@@ -131,7 +131,7 @@ const GroupDetail: React.FC = () => {
 
 		const requestBody = {
 			groupId,
-			userId: userId
+			
 		};
 
 		fetch(apiUrl, {

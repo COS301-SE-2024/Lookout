@@ -5,6 +5,10 @@ import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.*
 import com.lookout.Lookout.service.GroupService
+import com.lookout.Lookout.service.JwtService
+import com.lookout.Lookout.service.UserService
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,7 +19,11 @@ import org.springframework.http.MediaType
 
 @RestController
 @RequestMapping("/api/groups")
-class GroupController(private val groupService: GroupService) {
+class GroupController(
+    private val groupService: GroupService,
+    private val jwtService: JwtService,
+    private val userService: UserService
+) {
 
     fun convertToDto(group: Groups): GroupDto {
         return GroupDto(
@@ -122,9 +130,20 @@ class GroupController(private val groupService: GroupService) {
         }
     }
 
-    @GetMapping("/user/{userid}")
-    fun getGroupsByUserId(@PathVariable userid: Long): ResponseEntity<List<GroupDto>> {
-        val groups = groupService.findGroupsByUserId(userid).map { group -> convertToDto(group)}
+    @GetMapping("/user")
+    fun getGroupsByUserId(request: HttpServletRequest): ResponseEntity<List<GroupDto>> {
+        var userId: Long = 0
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val groups = groupService.findGroupsByUserId(userId).map { group -> convertToDto(group)}
         return if (groups.isNotEmpty()) {
             ResponseEntity.ok(groups)
         } else {
@@ -133,10 +152,21 @@ class GroupController(private val groupService: GroupService) {
     }
 
     @PostMapping("/AddMemberToGroup")
-    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<String> {
+    fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup,
+                         requestid: HttpServletRequest): ResponseEntity<String> {
         return try {
+            var userId: Long = 0
+            val jwt = extractJwtFromCookies(requestid.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
             val groupId = request.groupId
-            val userId = request.userId
             if (groupId != null && userId != null) {
                 groupService.addMember(groupId, userId)
                 ResponseEntity.noContent().build()
@@ -149,10 +179,22 @@ class GroupController(private val groupService: GroupService) {
     }
 
     @PostMapping("/RemoveMemberFromGroup")
-    fun removeMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<String> {
+    fun removeMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup,
+                              requestid: HttpServletRequest): ResponseEntity<String> {
         return try {
+            var userId: Long = 0
+            val jwt = extractJwtFromCookies(requestid.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
             val groupId = request.groupId
-            val userId = request.userId
+
             if (groupId != null && userId != null) {
                 groupService.removeMember(groupId, userId)
                 ResponseEntity.noContent().build()
@@ -209,6 +251,9 @@ class GroupController(private val groupService: GroupService) {
         }
     }
 
-
+    // Helper method to extract JWT from request cookies
+    private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
+        return cookies?.firstOrNull { it.name == "jwt" }?.value
+    }
     
 }

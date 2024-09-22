@@ -28,7 +28,7 @@ const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`/api/posts/user/${userId}`, {
+        const response = await fetch(`/api/posts/user`, {
           headers: {
             'Accept': 'application/json',
           },

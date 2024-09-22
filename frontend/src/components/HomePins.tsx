@@ -24,6 +24,7 @@ type myPin = {
 
 const HomePins = (props: { pin: myPin[]}) => {
 
+
   const navigate = useNavigate();
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
 

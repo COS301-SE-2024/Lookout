@@ -59,7 +59,7 @@ const Navigationbar = () => {
 
 						{/* Bottom navigation for icons */}
 						<nav className="fixed bottom-0 w-full bg-nav shadow-lg py-2 flex justify-around">
-							<Link to="/" className="flex flex-col items-center justify-center">
+							<Link to="/home" className="flex flex-col items-center justify-center">
 								<FaMap size={24} className={getIconColor('/')} />
 								<span className="text-xs">Map</span>
 							</Link>

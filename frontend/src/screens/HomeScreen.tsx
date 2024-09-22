@@ -531,7 +531,6 @@ const HomeScreen: React.FC = () => {
 			caption: caption,
 			title: title,
 			categoryid: selectedCategory,
-			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
 			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
@@ -1257,15 +1256,6 @@ const HomeScreen: React.FC = () => {
 								>
 									Sighting Location:
 								</label>
-
-								<textarea
-									id="formDescription"
-									rows={2}
-									className="mt-1 block w-full text-gray-600 px-3 py-2 border border-gray-300 rounded-md shadow-sm "
-									placeholder="Enter title"
-									value={title}
-									onChange={(e) => setTitle(DOMPurify.sanitize(e.target.value))}
-								></textarea>
 
 								{dragpinExpanded && (
 									<div id="sightlocation">

@@ -22,8 +22,8 @@ class PostsService(
     private val categoryRepository: CategoryRepository
 ) {
 
-    fun createPost(createPost: CreatePost): Posts {
-        val user = userRepository.findById(createPost.userid).orElse(null)
+    fun createPost(createPost: CreatePost, userId: Long): Posts {
+        val user = userRepository.findById(userId).orElse(null)
         if (user == null) {
             throw IllegalArgumentException("User not found")
         }

@@ -1,13 +1,13 @@
 package com.lookout.Lookout.controller
 
-import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.dto.UpdateEmailRequest
 import com.lookout.Lookout.dto.UpdateUsernameRequest
 import com.lookout.Lookout.dto.UserDto
-import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.service.JwtService
 import com.lookout.Lookout.service.UserService
-import org.springframework.http.HttpStatus
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-import java.io.PrintWriter
-
-
-
 
 @RestController
 @RequestMapping("/api/users")
-class UserController (private val userService: UserService){
+class UserController(
+    private val userService: UserService,
+    private val jwtService: JwtService
+){
 
     fun convertToDto(user: User): UserDto {
         return UserDto(
@@ -82,38 +81,75 @@ class UserController (private val userService: UserService){
         return ResponseEntity.ok(updatedUser)
     }
 
-    @GetMapping("/{id}")
-    fun getUserByID(@PathVariable id: Long): ResponseEntity<UserDto> {
-        val user = userService.findById(id)
-        return if (user.isPresent) {
-            ResponseEntity.ok(convertToDto(user.get()))
+    @GetMapping("/")
+    fun getUserByID(request: HttpServletRequest): ResponseEntity<UserDto> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val userresult = userService.findById(userId)
+        return if (userresult.isPresent) {
+            ResponseEntity.ok(convertToDto(userresult.get()))
         } else {
             ResponseEntity.notFound().build()
         }
     }
 
-    @GetMapping("/postsCount/{id}")
-    fun getUserPostsCount(@PathVariable id: Long): ResponseEntity<Int> {
+    @GetMapping("/postsCount")
+    fun getUserPostsCount(request: HttpServletRequest): ResponseEntity<Int> {
+        var userId: Long = 0
         try {
-            userService.findById(id)
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+            userService.findById(userId)
         } catch (e: NoSuchElementException) {
             return ResponseEntity.notFound().build()
         }
-        val postsCount = userService.getUserPostsCount(id)
+        val postsCount = userService.getUserPostsCount(userId)
         return ResponseEntity.ok(postsCount)
     }
 
 
 
-    @GetMapping("/groupsCount/{id}")
-    fun getUserGroupsCount(@PathVariable id: Long): ResponseEntity<Int> {
+    @GetMapping("/groupsCount")
+    fun getUserGroupsCount(request: HttpServletRequest): ResponseEntity<Int> {
+        var userId: Long = 0
         try {
-            userService.findById(id)
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+            userService.findById(userId)
         } catch (e: NoSuchElementException) {
             return ResponseEntity.notFound().build()
         }
-        val groupsCount = userService.getUserGroupsCount(id)
+        val groupsCount = userService.getUserGroupsCount(userId)
         return ResponseEntity.ok(groupsCount)
+    }
+
+    // Helper method to extract JWT from request cookies
+    private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
+        return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
 }
 

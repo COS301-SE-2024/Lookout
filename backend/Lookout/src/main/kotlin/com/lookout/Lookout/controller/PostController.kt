@@ -1,15 +1,16 @@
 package com.lookout.Lookout.controller
 
 
-import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.dto.PostDto
 import com.lookout.Lookout.entity.CreatePost
 import com.lookout.Lookout.entity.UpdatePost
-import com.lookout.Lookout.entity.Groups
-import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.entity.Posts
-import com.lookout.Lookout.repository.GroupRepository
+import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.service.JwtService
 import com.lookout.Lookout.service.PostsService
+import com.lookout.Lookout.service.UserService
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 //import com.lookout.Lookout.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,10 +19,15 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
+import org.springframework.security.core.userdetails.UserDetails
 
 @RestController
 @RequestMapping("/api/posts")
-class PostController(private val postService: PostsService) {
+class PostController(
+    private val postService: PostsService,
+    private val jwtService: JwtService,
+    private val userService: UserService
+) {
 
     fun convertToDto(post: Posts): PostDto {
         return PostDto(
@@ -58,9 +64,19 @@ class PostController(private val postService: PostsService) {
 
     // Create a post
     @PostMapping ("/CreatePost")
-    fun createPost(@RequestBody post: CreatePost): ResponseEntity<PostDto> {
+    fun createPost(@RequestBody post: CreatePost, request: HttpServletRequest,): ResponseEntity<PostDto> {
         try {
-            val savedPost = postService.createPost(post)
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+            var userId: Long = 0
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+            val savedPost = postService.createPost(post, userId)
             return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(savedPost))
         } catch (e: IllegalArgumentException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
@@ -113,14 +129,26 @@ class PostController(private val postService: PostsService) {
     }
 
     // Get posts by User ID
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     fun getPostsByUserId(
-        @PathVariable userId: Long,
+        request: HttpServletRequest,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
     ): ResponseEntity<Page<PostDto>> {
+
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+
         val pageable: Pageable = PageRequest.of(page, size)
-        val posts = postService.findByUserId(userId, pageable).map { post -> convertToDto(post)}
+        val posts = userId?.let { postService.findByUserId(it, pageable).map { post -> convertToDto(post)} }
         return ResponseEntity.ok(posts)
     }
 
@@ -157,6 +185,11 @@ class PostController(private val postService: PostsService) {
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
         }
+    }
+
+    // Helper method to extract JWT from request cookies
+    private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
+        return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
 
 

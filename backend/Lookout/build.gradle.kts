@@ -43,7 +43,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-configuration-processor")
 	implementation ("org.apache.commons:commons-csv:1.10.0")
 	implementation ("org.springframework.boot:spring-boot-starter-web")
-
+	implementation ("org.springframework.boot:spring-boot-starter-logging")
 
 }
 

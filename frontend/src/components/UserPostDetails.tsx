@@ -134,7 +134,7 @@ const PinDetail: React.FC = () => {
         setRelatedPosts(relatedData.content);
 
         // Fetch user details using post.userId
-        const userResponse = await fetch(`/api/users/${data.userId}`);
+        const userResponse = await fetch(`/api/users/`);
         const userData = await userResponse.json();
         setUser(userData);  // Store user data including profile picture
 

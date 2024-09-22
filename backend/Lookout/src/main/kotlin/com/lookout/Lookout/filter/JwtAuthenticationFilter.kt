@@ -62,8 +62,6 @@ class JwtAuthenticationFilter(
             } else {
                 logger.warn("Username is null or authentication is already set")
             }
-        } else {
-            logger.warn("No JWT Token found in cookies")
         }
         filterChain.doFilter(request, response)
     }

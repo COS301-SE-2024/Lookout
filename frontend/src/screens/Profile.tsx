@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
 
 const Profile = () => {
-  const userId = 1;
+  
   const [activeTab, setActiveTab] = useState(() => {
     // Check localStorage for the active tab, default to "posts"
     return localStorage.getItem("activeTab") || "posts";
@@ -34,9 +34,9 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const [userResponse, postsCountResponse, groupsCountResponse] = await Promise.all([
-          fetch(`/api/users/${userId}`, { headers: { Accept: "application/json" } }),
-          fetch(`/api/users/postsCount/${userId}`, { headers: { Accept: "application/json" } }),
-          fetch(`/api/users/groupsCount/${userId}`, { headers: { Accept: "application/json" } }),
+          fetch(`/api/users/`, { headers: { Accept: "application/json" } }),
+          fetch(`/api/users/postsCount`, { headers: { Accept: "application/json" } }),
+          fetch(`/api/users/groupsCount`, { headers: { Accept: "application/json" } }),
         ]);
 
         const userData = await userResponse.json();
