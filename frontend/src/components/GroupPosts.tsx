@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ViewAllSkeleton from "../components/ViewAllSkeleton";
 import GroupPost from "./GroupsPostFix"; // Assuming you have a component to display individual posts
 
 interface User {
@@ -47,8 +46,7 @@ const GroupPosts: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [, setGroup] = useState<Group | null>(null);
-  const [postsLoaded, setPostsLoaded] = useState(false);
+  const [group, setGroup] = useState<Group | null>(null);
 
   useEffect(() => {
     const fetchGroupPosts = async () => {
@@ -66,7 +64,6 @@ const GroupPosts: React.FC = () => {
         });
         const postsData = await postsResponse.json();
         setPosts(postsData.content);
-        setPostsLoaded(true);
       } catch (error) {
         console.error("Error fetching group posts:", error);
       }
@@ -75,16 +72,16 @@ const GroupPosts: React.FC = () => {
     fetchGroupPosts();
   }, [id]);
 
-  if (!postsLoaded) {
-    return <ViewAllSkeleton />;
+  if (!group) {
+    return <p>Loading...</p>; // You can use a skeleton loader or spinner here
   }
 
   return (
-    <div className="container mx-auto p-4 relative flex flex-col min-h-screen bg-bkg">
+    <div className="container mx-auto p-4 relative ">
       {/* Back Arrow */}
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 text-navBkg hover:text-icon z-50 "
+        className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 "
         style={{ zIndex: 50 }}
       >
         <svg
@@ -109,6 +106,11 @@ const GroupPosts: React.FC = () => {
 
       {posts.length === 0 ? (
         <div className="text-center mt-4">
+          <img
+            src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
+            alt="No posts"
+            className="w-68 h-64 mx-auto mb-4"
+          />
           <p className="text-gray-600">There are no posts in this group yet.</p>
         </div>
       ) : (

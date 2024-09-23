@@ -20,13 +20,17 @@ class AuthenticationService(
     private val jwtService: JwtService,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager
+
 ) {
 
-    fun addNewUser(request: User): AuthenticationResponse {
+
+    fun addNewUser(request: User): AuthenticationResponse{
+        // Check if user already exists. If exists then authenticate the user
         if (request.email?.let { userRepository.findByEmail(it).isPresent } == true) {
             return AuthenticationResponse(null, ResponseConstant.USER_ALREADY_EXIST)
         }
 
+        // Check if the parameters are all set
         if (request.email.isNullOrBlank()) {
             return AuthenticationResponse(null, ResponseConstant.REQUIRED_PARAMETERS_NOT_SET)
         }
@@ -38,28 +42,27 @@ class AuthenticationService(
             role = request.role
         )
 
+
         val savedUser = userRepository.save(user)
+
         val jwt = jwtService.generateToken(savedUser)
 
         return AuthenticationResponse(jwt, "User registration was successful")
+
     }
 
     fun authenticate(request: User): AuthenticationResponse {
-        try {
-            authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken(
-                    request.email,
-                    request.passcode
-                )
+        authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                request.email,
+                request.password
             )
-        } catch (e: Exception) {
-            return AuthenticationResponse(null, "Authentication failed: ${e.message}")
-        }
+        )
 
-        val user = userRepository.findByEmail(request.email!!).orElseThrow {
-            RuntimeException("User not found")
-        }
-        val jwt = jwtService.generateToken(user)
+        //val user = request.email.let { request.email?.let { it1 -> userRepository.findByEmail(it1).orElseThrow() } }
+        val user = userRepository.findByEmail(request.email!!).orElseThrow()
+        val jwt = user?.let { jwtService.generateToken(it) }
+
 
         return AuthenticationResponse(jwt, "User login was successful")
     }
@@ -67,6 +70,9 @@ class AuthenticationService(
     fun logout(request: User): AuthenticationResponse {
         val userOptional = request.email?.let { userRepository.findByEmail(it) }
         val user = userOptional?.orElseThrow { IllegalArgumentException("User not found") }
+        if (user == null) {
+            return AuthenticationResponse(null, "User not found")
+        }
         return AuthenticationResponse(null, "Logout Successful!")
     }
 
@@ -84,7 +90,7 @@ class AuthenticationService(
             "code" to code,
             "client_id" to clientId,
             "client_secret" to clientSecret,
-            "redirect_uri" to "https://lookoutcapstone.xyz/api/auth/signup/google",
+            "redirect_uri" to "http://localhost:8080/api/auth/signup/google",
             "grant_type" to "authorization_code"
         )
         val response = restTemplate.postForObject(
@@ -112,19 +118,21 @@ class AuthenticationService(
             userRepository.save(newUser)
         }
 
+        // Generate JWT token
         val jwt = jwtService.generateToken(user)
 
+        // Set JWT token as a cookie
         val cookie: ResponseCookie = ResponseCookie.from("jwt", jwt)
             .httpOnly(true)
-            .secure(true)
             .path("/")
             .maxAge(60 * 60 * 10)
             .build()
 
-        val redirectUrl = "https://lookoutcapstone.xyz/email-handler?email=$email"
 
-        return ResponseEntity.status(HttpStatus.FOUND)
-            .header(HttpHeaders.SET_COOKIE, cookie.toString())
+        val redirectUrl = "http://localhost:3000/?email=$email"
+
+        return ResponseEntity.status(HttpStatus.FOUND) 
+            .header(HttpHeaders.SET_COOKIE, cookie.toString()) 
             .header(HttpHeaders.LOCATION, redirectUrl)
             .build()
     }
@@ -142,4 +150,7 @@ class AuthenticationService(
         )
         return response.body as? Map<String, Any> ?: emptyMap()
     }
+
+
+
 }

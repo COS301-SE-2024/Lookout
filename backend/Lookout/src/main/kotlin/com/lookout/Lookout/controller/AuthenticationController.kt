@@ -23,7 +23,6 @@ class AuthenticationController(private val authService: AuthenticationService, r
             // set accessToken to cookie header
             val cookie: ResponseCookie = ResponseCookie.from("jwt", authResponse.token)
                 .httpOnly(true)
-                .secure(true)
                 .path("/")
                 .maxAge(60*60*1000)
                 .build()
@@ -39,7 +38,6 @@ class AuthenticationController(private val authService: AuthenticationService, r
             // set accessToken to cookie header
             val cookie: ResponseCookie = ResponseCookie.from("jwt", authResponse.token)
                 .httpOnly(true)
-                .secure(true)
                 .path("/")
                 .maxAge(60*60*10)
                 .build()
@@ -53,7 +51,6 @@ class AuthenticationController(private val authService: AuthenticationService, r
         val authResponse = authService.logout(request)
         val cookie = ResponseCookie.from("jwt", "")
             .httpOnly(true)
-            .secure(true)
             .path("/")
             .maxAge(0)
             .build()
@@ -73,7 +70,7 @@ class AuthenticationController(private val authService: AuthenticationService, r
         if (error != null) {
 
             return ResponseEntity.status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, "https://lookoutcapstone.xyz/login")
+                .header(HttpHeaders.LOCATION, "http://localhost:3000/login")
                 .build()
         }
         return authService.processGrantCode(code)

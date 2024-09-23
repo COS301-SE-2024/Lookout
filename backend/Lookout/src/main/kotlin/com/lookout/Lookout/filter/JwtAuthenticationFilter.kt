@@ -12,78 +12,59 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
-import jakarta.servlet.http.Cookie
 import org.springframework.web.filter.OncePerRequestFilter
-
-import org.slf4j.LoggerFactory
+import java.io.IOException
 
 @Component
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
-    private val userService: UserService
-) : OncePerRequestFilter() {
+    private val userDetailsService: UserService
 
-    private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
+): OncePerRequestFilter() {
+    @Throws(ServletException::class, IOException::class)
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
 
-    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
+        var token: String? = null
+        var username: String? = null
 
-        if (request.requestURI == "/login") {
-            filterChain.doFilter(request, response)
-            return
+        if (request.cookies != null) {
+            for (cookie in request.cookies) {
+                if (cookie.name.equals("jwt")) {
+                    token = cookie.value
+                }
+            }
         }
 
-        val jwt = extractJwtFromCookies(request.cookies)
-        if (jwt != null) {
-            logger.info("JWT Token found in cookie: $jwt")
-            val username = jwtService.extractUserEmail(jwt)
-            if (username != null && SecurityContextHolder.getContext().authentication == null) {
-                logger.info("Username extracted from token: $username")
-                val userDetails: UserDetails
-                try {
-                    userDetails = userService.loadUserByUsername(username)
-                } catch (e: UsernameNotFoundException) {
-                    logger.error("User not found: $username", e)
-                    filterChain.doFilter(request, response)
-                    return
-                }
-                if (jwtService.validateToken(jwt, userDetails)) {
-                    logger.info("JWT Token is valid for user: $username")
-                    val newAuthToken = UsernamePasswordAuthenticationToken(
+        if(token == null){
+            filterChain.doFilter(request, response)
+            return;
+        }
+
+        username = jwtService.extractUserEmail(token)
+
+        if (username != null) {
+            try {
+                val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
+
+                if (jwtService.isValid(token, userDetails)) {
+                    val authToken = UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.authorities
-                    ).apply {
-                        details = WebAuthenticationDetailsSource().buildDetails(request)
-                    }
-                    SecurityContextHolder.getContext().authentication = newAuthToken
-                } else {
-                    logger.warn("Invalid JWT Token for user: $username")
-//                    redirectToLogin(response)
-//                    return
+                    )
+
+                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+
+                    SecurityContextHolder.getContext().authentication = authToken
+
                 }
-            } else {
-                logger.warn("Username is null or authentication is already set")
+            } catch (e: UsernameNotFoundException) {
+                logger.error("User not found: $username")
             }
-        } else {
-            logger.warn("No JWT Token found in cookies")
         }
         filterChain.doFilter(request, response)
     }
 
-    private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
-        return cookies?.firstOrNull { it.name == "jwt" }?.value
-    }
-
-    private fun redirectToLogin(response: HttpServletResponse) {
-        // Check if the request is for an actual page rather than a resource
-        val requestUri = response.encodeRedirectURL(response.toString())
-        if (!requestUri.endsWith(".js") && !requestUri.endsWith(".css") && !requestUri.endsWith(".json")) {
-            response.sendRedirect("/login")
-        } else {
-            response.status = HttpServletResponse.SC_UNAUTHORIZED
-        }
-    }
-
 }
-
-
-
-

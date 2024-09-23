@@ -53,7 +53,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
 			localStorage.setItem("authToken", "");
 			localStorage.removeItem("userEmail");
-			localStorage.removeItem("authToken");
 			navigate("/login");
 			window.location.reload();
 		} catch (error) {

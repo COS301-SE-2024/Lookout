@@ -37,7 +37,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
       working-directory: frontend
       
     - name: Compile Project

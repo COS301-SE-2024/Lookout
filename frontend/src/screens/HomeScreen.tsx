@@ -1,20 +1,17 @@
-import React, { useEffect, //useMemo, 
-	useState } from "react";
-import { FiFilter } from "react-icons/fi";
+import React, { useEffect, useMemo, useState } from "react";
+import { IoMenu } from "react-icons/io5";
 import {
-	//HeatmapLayer,
-	//Control,
+	HeatmapLayer,
+	Control,
 	GoogleMap,
 	GoogleMapApiLoader,
 	MarkerClusterer,
 	Marker,
-	InfoWindow,
+	InfoWindow
 } from "react-google-map-wrapper";
 import "../assets/styles/home.css";
 import HomePins from "../components/HomePins";
-import { FaFolder, FaCamera, FaTimes, FaPlus //FaFilter 
-	} from "react-icons/fa";
-
+import { FaFolder, FaCamera, FaTimes, FaPlus } from "react-icons/fa";
 import Legend from "../components/Legend";
 import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
 import campIcon from "../assets/icons/camping-zone.png";
@@ -22,104 +19,99 @@ import AnimalIcon from "../assets/icons/zoo.png";
 import HikingIcon from "../assets/icons/mountain.png";
 import POIIcon from "../assets/icons/point-of-interest.png";
 import SecurityIcon from "../assets/icons/danger.png";
-import DOMPurify from "dompurify";
 // import { url } from "inspector";
 import AWS from "aws-sdk";
 
-
-
 // ##############################  HEAT MAP STUFF!!
-// const getData = () => [
-// 	new google.maps.LatLng(-27.782551, 22.445368),
-// 	new google.maps.LatLng(-27.782745, 22.444586),
-// 	new google.maps.LatLng(-27.752986, 22.403112),
-// 	new google.maps.LatLng(-27.751266, 22.403355)
-// ];
+const getData = () => [
+	new google.maps.LatLng(-27.782551, 22.445368),
+	new google.maps.LatLng(-27.782745, 22.444586),
+	new google.maps.LatLng(-27.752986, 22.403112),
+	new google.maps.LatLng(-27.751266, 22.403355)
+];
 
-// const customGradient = [
-// 	"rgba(0, 255, 255, 0)",
-// 	"rgba(0, 255, 255, 1)",
-// 	"rgba(191, 0, 31, 1)",
-// 	"rgba(255, 0, 0, 1)"
-// ];
+const customGradient = [
+	"rgba(0, 255, 255, 0)",
+	"rgba(0, 255, 255, 1)",
+	"rgba(191, 0, 31, 1)",
+	"rgba(255, 0, 0, 1)"
+];
 
-// function MapContent() {
-// 	const [show, setShow] = useState(false);
-// 	const [, setGradient] = useState<string[] | null>(null);
-// 	const [radius, setRadius] = useState<number | null>(null);
-// 	const [opacity, setOpacity] = useState<number | null>(null);
+function MapContent() {
+	const [show, setShow] = useState(false);
+	const [gradient, setGradient] = useState<string[] | null>(null);
+	const [radius, setRadius] = useState<number | null>(null);
+	const [opacity, setOpacity] = useState<number | null>(null);
 
-	//const data = useMemo(getData, []);
+	const data = useMemo(getData, []);
 
-	// const toggleHeatmap = () => {
-	// 	setShow(!show);
-	// };
+	const toggleHeatmap = () => {
+		setShow(!show);
+	};
 
-	// const changeGradient = () => {
-	// 	setGradient((prev) => (prev ? null : customGradient));
-	// };
+	const changeGradient = () => {
+		setGradient((prev) => (prev ? null : customGradient));
+	};
 
-	// const changeRadius = () => {
-	// 	setRadius(radius ? null : 20);
-	// };
+	const changeRadius = () => {
+		setRadius(radius ? null : 20);
+	};
 
-	// const changeOpacity = () => {
-	// 	setOpacity(opacity ? null : 0.2);
-	// };
+	const changeOpacity = () => {
+		setOpacity(opacity ? null : 0.2);
+	};
 
-// 	return (
-// 		<>
-// 			{/* <HeatmapLayer
-// 				data={data}
-// 				gradient={gradient}
-// 				radius={radius}
-// 				opacity={opacity}
-// 				hidden={!show}
-// 			/> */}
-// 			{/* <Control position={google.maps.ControlPosition.TOP_CENTER}>
-// 				<div
-// 					id="floating-panel"
-// 					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
-// 				>
-// 					<button
-// 						id="toggle-heatmap"
-// 						onClick={toggleHeatmap}
-// 						className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-// 					>
-// 						Toggle Heatmap
-// 					</button>
-// 					<button
-// 						id="change-gradient"
-// 						onClick={changeGradient}
-// 						className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
-// 					>
-// 						Change Gradient
-// 					</button>
-// 					<button
-// 						id="change-radius"
-// 						onClick={changeRadius}
-// 						className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-// 					>
-// 						Change Radius
-// 					</button>
-// 					<button
-// 						id="change-opacity"
-// 						onClick={changeOpacity}
-// 						className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
-// 					>
-// 						Change Opacity
-// 					</button>
-// 				</div>
-// 			</Control> */}
-// 		</>
-// 	);
-
-// }
+	return (
+		<>
+			<HeatmapLayer
+				data={data}
+				gradient={gradient}
+				radius={radius}
+				opacity={opacity}
+				hidden={!show}
+			/>
+			<Control position={google.maps.ControlPosition.TOP_CENTER}>
+				<div
+					id="floating-panel"
+					className="flex space-x-2 p-3 bg-white bg-opacity-80 rounded-lg shadow-lg"
+				>
+					<button
+						id="toggle-heatmap"
+						onClick={toggleHeatmap}
+						className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+					>
+						Toggle Heatmap
+					</button>
+					<button
+						id="change-gradient"
+						onClick={changeGradient}
+						className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+					>
+						Change Gradient
+					</button>
+					<button
+						id="change-radius"
+						onClick={changeRadius}
+						className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+					>
+						Change Radius
+					</button>
+					<button
+						id="change-opacity"
+						onClick={changeOpacity}
+						className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+					>
+						Change Opacity
+					</button>
+				</div>
+			</Control>
+		</>
+	);
+}
 
 // #################### END OF HEAT MAP STUFF
 
 type Poi = {
-
 	key: string;
 	location: google.maps.LatLngLiteral;
 	label: string;
@@ -144,7 +136,6 @@ const legendItems = [
 	{ name: "Hiking", icon: HikingIcon },
 	{ name: "POI", icon: POIIcon },
 	{ name: "Security Risk", icon: SecurityIcon }
-
 ];
 
 const locations: Poi[] = [
@@ -153,71 +144,71 @@ const locations: Poi[] = [
 		location: { lat: -23.9884, lng: 31.5547 },
 		label: "Kruger National Park",
 		details:
-			"One of Africa's largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos.",
+			"One of Africa's largest game reserves, home to the Big Five: lions, leopards, rhinos, elephants, and buffalos."
 	},
 	{
 		key: "addoElephantPark",
 		location: { lat: -33.4468, lng: 25.7484 },
 		label: "Addo Elephant Park",
 		details:
-			"Famous for its large population of elephants, as well as lions, hyenas, and various antelope species.",
+			"Famous for its large population of elephants, as well as lions, hyenas, and various antelope species."
 	},
 	{
 		key: "tableMountainNationalPark",
 		location: { lat: -34.0104, lng: 18.3736 },
 		label: "Table Mountain National Park",
 		details:
-			"Known for its rich biodiversity, including the unique fynbos vegetation and various bird species.",
+			"Known for its rich biodiversity, including the unique fynbos vegetation and various bird species."
 	},
 	{
 		key: "iSimangalisoWetlandPark",
 		location: { lat: -28.382, lng: 32.4143 },
 		label: "iSimangaliso Wetland Park",
 		details:
-			"A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species.",
+			"A UNESCO World Heritage Site with diverse ecosystems, including estuaries, lakes, and wetlands, home to hippos, crocodiles, and numerous bird species."
 	},
 	{
 		key: "kgalagadiTransfrontierPark",
 		location: { lat: -26.2825, lng: 20.615 },
 		label: "Kgalagadi Transfrontier Park",
 		details:
-			"Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok.",
+			"Known for its large predators, including lions, cheetahs, and leopards, as well as herds of wildebeest and springbok."
 	},
 	{
 		key: "karooNationalPark",
 		location: { lat: -32.2968, lng: 22.5287 },
 		label: "Karoo National Park",
 		details:
-			"Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life.",
+			"Home to a variety of desert-adapted wildlife, including gemsbok, mountain zebra, and a rich diversity of plant life."
 	},
 	{
 		key: "hluhluweImfoloziPark",
 		location: { lat: -28.0493, lng: 31.9189 },
 		label: "Hluhluwe-Imfolozi Park",
 		details:
-			"The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five.",
+			"The oldest proclaimed nature reserve in Africa, famous for its conservation of the white rhinoceros and also home to the Big Five."
 	},
 	{
 		key: "madikweGameReserve",
 		location: { lat: -24.7486, lng: 26.2418 },
 		label: "Madikwe Game Reserve",
 		details:
-			"A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species.",
+			"A malaria-free game reserve that offers sightings of the Big Five, wild dogs, and a variety of bird species."
 	},
 	{
 		key: "goldenGateHighlandsNationalPark",
 		location: { lat: -28.5145, lng: 28.608 },
 		label: "Golden Gate Highlands National Park",
 		details:
-			"Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures.",
+			"Famed for its stunning sandstone formations and diverse wildlife, including elands, zebras, and vultures."
 	},
 	{
 		key: "bouldersBeachPenguinColony",
 		location: { lat: -34.1975, lng: 18.451 },
 		label: "Boulders Beach Penguin Colony",
 		details:
-			"A protected area known for its colony of African penguins, as well as scenic coastal views.",
-	},
+			"A protected area known for its colony of African penguins, as well as scenic coastal views."
+	}
 ];
 
 type Group = {
@@ -229,12 +220,8 @@ type Group = {
 const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const HomeScreen: React.FC = () => {
-
 	const defaultCenter = { lat: -28, lng: 23 };
 	const [center, setCenter] = useState(defaultCenter);
-
-	const defaultZoom = 5;
-	const [zoom, setZoom] = useState(defaultZoom);
 
 	const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -534,8 +521,8 @@ const HomeScreen: React.FC = () => {
 			userid: 112,
 			groupid: selectedGroup,
 			picture: picture,
-			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
-        	longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
+			latitude: -27.18,
+			longitude: 25.41
 		});
 
 		const requestOptions = {
@@ -568,13 +555,6 @@ const HomeScreen: React.FC = () => {
 				setIsSuccessModalOpen(true); // Open success modal
 				setNewNumberPins(newNumberPins + 1);
 				await fetchPins();
-
-				setCenter({
-					lat: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
-					lng: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
-				}); 
-
-				setZoom(15);
 				// setIsModalOpen(false); // Close modal after successful pin addition
 				// setIsSuccessModalOpen(true); // Open success modal
 			} catch (error) {
@@ -878,7 +858,7 @@ const HomeScreen: React.FC = () => {
 			<div className="map-container h-screen">
 				<GoogleMap
 					className="h-full w-full"
-					zoom={zoom}
+					zoom={5}
 					center={center}
 					mapOptions={{
 						disableDefaultUI: true,
@@ -890,53 +870,47 @@ const HomeScreen: React.FC = () => {
 						<PoiMarkers pois={reservePins} />
 						<HomePins pin={filteredPins} />
 					</MarkerClusterer>
-					{/* <MapContent /> */}
+					<MapContent />
 				</GoogleMap>
 				<Legend items={legendItems} />
 			</div>
-			<div className="fixed top-3 md:top-20 left-1/2 transform -translate-x-1/2 z-10 w-50%">
+			<div className="fixed top-20 left-48 transform -translate-x-1/2 z-10">
 				<input
 					type="text"
 					placeholder="Search..."
 					value={searchTerm}
 					onChange={handleSearchChange}
-					className="search-bar p-2 border border-nav rounded-full"
+					className="search-bar p-2 border rounded-md left-3"
 				/>
 			</div>
-
+			<div className="fixed top-12 left-4 z-10" id="menu">
+				<IoMenu size={32} onClick={openMenuModal} />
+			</div>
 			<button
-				className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-navBkg  hover:text-white"
-				onClick={openMenuModal}
-			>
-				<FiFilter size={25} />
-			</button>
-			<button
-				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:text-white hover:bg-navBkg sm:bottom-24 md:bottom-20"
+				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-800 sm:bottom-24 md:bottom-20"
 				onClick={openModal}
 			>
-				<FaPlus />
+				+
 			</button>
-
 
 			{/* Add pin modal */}
 			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-							<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+					<div className="relative bg-white p-6 rounded-lg w-full max-w-md mx-auto">
 						<button
-							className=" absolute top-2 right-2 text-xl"
+							className="absolute top-2 right-2 text-xl"
 							onClick={closeModal}
 						>
 							&times;
 						</button>
-						<h2 className="text-2xl text-content font-bold mb-4 ">Add a Pin</h2>
-
+						<h2 className="text-2xl font-bold mb-4">Add a Pin</h2>
 
 						<form>
 							{/* Collapsible Category Section */}
-							<div className="mb-3 border border-content text-gray-500 rounded-md p-3">
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
 									htmlFor="categorySelect"
-									className="block text-sm font-medium text-content cursor-pointer"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
 									onClick={() =>
 										setCategoryExpanded(!categoryExpanded)
 									}
@@ -946,7 +920,7 @@ const HomeScreen: React.FC = () => {
 								{categoryExpanded && (
 									<select
 										id="categorySelect"
-										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 										value={selectedCategory ?? ""}
 										onChange={(e) =>
 											setSelectedCategory(
@@ -954,7 +928,7 @@ const HomeScreen: React.FC = () => {
 											)
 										}
 									>
-										<option className="text-gray-500" value="" disabled>
+										<option value="" disabled>
 											Select a category
 										</option>
 										{categories.map((category) => (
@@ -969,20 +943,17 @@ const HomeScreen: React.FC = () => {
 								)}
 							</div>
 
-
 							{/* Collapsible Group Section */}
-							<div className="mb-3 border text-gray-500 border-content rounded-md p-3">
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
 									htmlFor="groupSelect"
-									className="block text-sm text-content font-medium text-content cursor-pointer"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
 									onClick={() =>
 										setGroupExpanded(!groupExpanded)
 									}
-
 								>
 									Select Group:
 								</label>
-
 								{groupExpanded && (
 									<select
 										id="groupSelect"
@@ -1010,9 +981,9 @@ const HomeScreen: React.FC = () => {
 							</div>
 
 							{/* Collapsible Image Section */}
-							<div className="mb-3 border border-content rounded-md p-3">
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
-									className="block text-sm font-medium text-content cursor-pointer"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
 									onClick={() =>
 										setImageExpanded(!imageExpanded)
 									}
@@ -1049,11 +1020,11 @@ const HomeScreen: React.FC = () => {
 							</div>
 
 							{/* Title Section with Slider */}
-							<div className="mb-3 border border-content rounded-md p-3">
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<div className="flex items-center justify-between">
 									<label
 										htmlFor="formTitle"
-										className="block text-sm text-content font-medium cursor-pointer"
+										className="block text-sm font-medium text-gray-700 cursor-pointer"
 										onClick={() =>
 											setTitleExpanded(!titleExpanded)
 										}
@@ -1102,10 +1073,10 @@ const HomeScreen: React.FC = () => {
 															);
 
 															const requestOptions =
-															{
-																method: "POST",
-																body: formdata
-															};
+																{
+																	method: "POST",
+																	body: formdata
+																};
 
 															try {
 																const response =
@@ -1151,12 +1122,12 @@ const HomeScreen: React.FC = () => {
 																});
 
 															const requestOptions =
-															{
-																method: "POST",
-																headers:
-																	myHeaders,
-																body: raw
-															};
+																{
+																	method: "POST",
+																	headers:
+																		myHeaders,
+																	body: raw
+																};
 
 															try {
 																const response =
@@ -1206,7 +1177,7 @@ const HomeScreen: React.FC = () => {
 										<textarea
 											id="formTitle"
 											rows={2}
-											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 											placeholder="Enter title"
 											value={title}
 											onChange={(e) =>
@@ -1215,15 +1186,13 @@ const HomeScreen: React.FC = () => {
 										></textarea>
 									</div>
 								)}
-
 							</div>
 
 							{/* Collapsible Caption Section */}
-							<div className="mb-3 border border-content rounded-md p-3">
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
-
 									htmlFor="formCaption"
-									className="block text-sm font-medium text-content cursor-pointer"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
 									onClick={() =>
 										setCaptionExpanded(!captionExpanded)
 									}
@@ -1234,7 +1203,7 @@ const HomeScreen: React.FC = () => {
 									<textarea
 										id="formCaption"
 										rows={4}
-										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 										placeholder="Enter description"
 										value={caption}
 										onChange={(e) =>
@@ -1242,31 +1211,18 @@ const HomeScreen: React.FC = () => {
 										}
 									></textarea>
 								)}
-
 							</div>
 
-							<div className="mb-3 border border-content rounded-md p-3">
+							<div className="mb-3 border-2 border-black rounded-md p-3">
 								<label
 									htmlFor="formDescription"
-
-									className="block text-sm font-medium text-content cursor-pointer"
+									className="block text-sm font-medium text-gray-700 cursor-pointer"
 									onClick={() =>
 										setDragPinExpanded(!dragpinExpanded)
 									}
-
 								>
 									Sighting Location:
 								</label>
-
-								<textarea
-									id="formDescription"
-									rows={2}
-									className="mt-1 block w-full text-gray-600 px-3 py-2 border border-gray-300 rounded-md shadow-sm "
-									placeholder="Enter title"
-									value={title}
-									onChange={(e) => setTitle(DOMPurify.sanitize(e.target.value))}
-								></textarea>
-
 								{dragpinExpanded && (
 									<div id="sightlocation">
 										<GoogleMapApiLoader
@@ -1301,14 +1257,14 @@ const HomeScreen: React.FC = () => {
 														setdragpinLatitude(
 															newLat !== null &&
 																newLat !==
-																undefined
+																	undefined
 																? newLat
 																: latitude
 														);
 														setdragpinLongitude(
 															newLng !== null &&
 																newLng !==
-																undefined
+																	undefined
 																? newLng
 																: longitude
 														);
@@ -1322,21 +1278,20 @@ const HomeScreen: React.FC = () => {
 										</GoogleMapApiLoader>
 									</div>
 								)}
-
 							</div>
-
 
 							{/* Submit button only enabled when all fields are filled */}
 							<div>
 								<button
-									className={`font-bold w-full px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content  ${!selectedCategory ||
-											!selectedGroup ||
-											!picture ||
-											!title ||
-											!caption
-											? " cursor-not-allowed"
+									className={`w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+										!selectedCategory ||
+										!selectedGroup ||
+										!picture ||
+										!title ||
+										!caption
+											? "opacity-50 cursor-not-allowed"
 											: ""
-										}`}
+									}`}
 									onClick={handleAddPinClick}
 									disabled={
 										!selectedCategory ||
@@ -1350,23 +1305,21 @@ const HomeScreen: React.FC = () => {
 								</button>
 							</div>
 						</form>
-
 					</div>
 				</div>
 			)}
 
 			{/* Success modal */}
 			{isSuccessModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50">
-					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+					<div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
 						<h2 className="text-2xl font-bold mb-4 text-center">
 							Post Created Successfully!
 						</h2>
 						<button
-							className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
+							className="block mx-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
 							onClick={() => {
 								setIsSuccessModalOpen(false);
-
 							}}
 						>
 							Okay
@@ -1375,11 +1328,10 @@ const HomeScreen: React.FC = () => {
 				</div>
 			)}
 
-
 			{/* PhotoOptions modal */}
 			{isPhotoOptionsModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
-					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto relative">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+					<div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto relative">
 						<h2 className="text-2xl font-bold mb-4 text-center">
 							Photo
 						</h2>
@@ -1416,15 +1368,15 @@ const HomeScreen: React.FC = () => {
 
 			{/* Camera modal */}
 			{isCameraModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
-					<div className="relative bg-bkg p-6 rounded-lg w-full max-w-sm mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+					<div className="relative bg-white p-6 rounded-lg w-full max-w-sm mx-auto">
 						<button
 							className="absolute top-2 right-2 text-xl"
 							onClick={() => setIsCameraModalOpen(false)}
 						>
 							&times;
 						</button>
-						<h2 className="flex items-center justify-center text-2xl font-bold mb-4">
+						<h2 className="text-2xl font-bold mb-4">
 							Take A Photo
 						</h2>
 						<CameraComponent
@@ -1443,45 +1395,32 @@ const HomeScreen: React.FC = () => {
 
 			{/* Menu modal */}
 			{isMenuModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
 					<div
-						className="relative bg-white p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
+						className="relative bg-white p-4 rounded-lg"
 						style={{
-							width: "90%",
-							maxWidth: "500px",
+							width: "80%",
 							maxHeight: "80vh",
-							overflowY: "auto",
+							overflowY: "auto"
 						}}
 					>
 						<button
-							className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition-colors duration-200"
+							className="absolute top-0 left-0 mt-1 ml-1 p-2"
 							onClick={closeMenuModal}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-6 w-6"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								strokeWidth="2"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
+							X
 						</button>
-						<div className="mt-6">
-							<h2 className="text-xl font-bold text-gray-800 text-center">
+						<div className="mt-4">
+							<h2 className="text-lg font-semibold">
 								Pins Displaying
 							</h2>
-							<div className="mt-4 space-y-3">
+							<div className="mt-2">
 								<button
-									className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === null
-											? "bg-navSelect border border-nav text-nav"
-											: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
-										}`}
+									className={`w-full text-left p-2 rounded mb-2 ${
+										selectCategory === null
+											? "bg-gray-400"
+											: "bg-gray-200"
+									}`}
 									onClick={() => handleCategoryClick(null)}
 								>
 									All Pins
@@ -1489,24 +1428,27 @@ const HomeScreen: React.FC = () => {
 								{categories.map((category) => (
 									<div key={category.id}>
 										<button
-											className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === category.id
-													? "bg-navSelect border border-nav text-nav"
-													: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
-												}`}
-											onClick={() => handleCategoryClick(category.id)}
+											className={`w-full text-left p-2 rounded mb-2 ${
+												selectCategory === category.id
+													? "bg-gray-400"
+													: "bg-gray-200"
+											}`}
+											onClick={() =>
+												handleCategoryClick(category.id)
+											}
 										>
 											{category.name}
 										</button>
 									</div>
 								))}
 							</div>
-							<div className="flex justify-center mt-6">
-								{/* <button
-                  className="py-2 px-6 bg-green-600 text-white font-semibold rounded-full shadow-md hover:bg-green-700 transition-colors duration-300"
-                  onClick={closeMenuModal}
-                >
-                  Save
-                </button> */}
+							<div className="flex justify-center mt-4">
+								<button
+									className="py-2 px-4 bg-gray-500 text-white rounded-full hover:bg-gray-800"
+									onClick={closeMenuModal}
+								>
+									Save
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1575,7 +1517,6 @@ const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
 			))}
 		</>
 	);
-
 };
 
 export default HomeScreen;

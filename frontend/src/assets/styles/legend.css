@@ -1,9 +1,9 @@
 /* src/components/Legend.css */
 
 .legend {
-    background: nav;
+    background: white;
     padding: 10px;
-    border: 1px solid nav;
+    border: 1px solid #ccc;
     border-radius: 4px;
     position: absolute;
     top: 10%; 
@@ -13,7 +13,7 @@
   }
   
   .legend h3 {
-    margin: 0 0 3px;
+    margin: 0 0 10px;
   }
   
   .legend-item {

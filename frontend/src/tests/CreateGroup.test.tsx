@@ -28,17 +28,13 @@ afterEach(() => {
 
 describe('CreateGroups', () => {
   test('renders CreateGroups component', () => {
-    render(<CreateGroups onCreateGroup={mockOnCreateGroup} onClose={function (): void {
-        throw new Error('Function not implemented.');
-    } } />);
+    render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
     const createElements = screen.getAllByText('Create');
     expect(createElements.length).toBeGreaterThan(0);
   });
 
   test('handles form input', () => {
-    render(<CreateGroups onCreateGroup={mockOnCreateGroup} onClose={function (): void {
-        throw new Error('Function not implemented.');
-    } } />);
+    render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
 
     const titleInput = screen.getByLabelText(/title/i);
     const descriptionInput = screen.getByLabelText(/description/i);
@@ -50,10 +46,19 @@ describe('CreateGroups', () => {
     expect(descriptionInput).toHaveValue('Test Description');
   });
 
+  test('handles toggle switch', () => {
+    render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
+
+    const toggleSwitch = screen.getByRole('switch', { name: /visibility - set your group to private:/i });
+    fireEvent.click(toggleSwitch);
+    expect(toggleSwitch).toBeChecked();
+
+    fireEvent.click(toggleSwitch);
+    expect(toggleSwitch).not.toBeChecked();
+  });
+
   test('submits form and calls API', async () => {
-    render(<CreateGroups onCreateGroup={mockOnCreateGroup} onClose={function (): void {
-        throw new Error('Function not implemented.');
-    } } />);
+    render(<CreateGroups onCreateGroup={mockOnCreateGroup} />);
 
     const titleInput = screen.getByLabelText(/title/i);
     const descriptionInput = screen.getByLabelText(/description/i);
@@ -84,4 +89,3 @@ describe('CreateGroups', () => {
     })));
   });
 });
-export{}
