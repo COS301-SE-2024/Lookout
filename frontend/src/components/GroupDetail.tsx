@@ -9,7 +9,7 @@ interface User {
 	id: number;
 	userName: string;
 	email: string;
-	picture?: string;
+	profilePic: string;
 	role: string;
 	isEnabled: boolean;
 	username: string;
@@ -45,6 +45,15 @@ interface Post {
 	title: string;
 }
 
+const getDayWithSuffix = (date: Date) => {
+	const day = date.getDate();
+	const suffix =
+		day % 10 === 1 && day !== 11 ? 'st' :
+			day % 10 === 2 && day !== 12 ? 'nd' :
+				day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+	return `${day}${suffix}`;
+};
+
 const GroupDetail: React.FC = () => {
 	const userId = 2; // Hardcoded current user's ID as 2
 	const navigate = useNavigate();
@@ -52,11 +61,13 @@ const GroupDetail: React.FC = () => {
 	const [group, setGroup] = useState<Group | null>(null);
 	const [owner, setOwner] = useState<User | null>(null);
 	const [posts, setPosts] = useState<Post[]>([]);
+	const [groupMembers, setMembers] = useState<User[]>([]);
 	const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 	const [groupLoaded, setGroupLoaded] = useState(false);
 	const [ownerLoaded, setOwnerLoaded] = useState(false);
 	const [postsLoaded, setPostsLoaded] = useState(false);
 	const [groupsLoaded, setGroupsLoaded] = useState(false);
+
 	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 	const defaultImage =
 		"https://i.pinimg.com/originals/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg";
@@ -65,129 +76,6 @@ const GroupDetail: React.FC = () => {
 	const [uploadedPictureUrl, setUploadedPictureUrl] = useState("");
 	const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-
-	useEffect(() => {
-		const fetchGroupDetails = async () => {
-			try {
-				const groupResponse = await fetch(`/api/groups/${id}`, {
-					method: "GET",
-					headers: { Accept: "application/json" }
-				});
-				const groupData = await groupResponse.json();
-				setGroup(groupData);
-
-				const userResponse = await fetch(
-					`/api/users/${groupData.userId}`,
-					{
-						method: "GET",
-						headers: { Accept: "application/json" }
-					}
-				);
-				const userData = await userResponse.json();
-				setOwner(userData);
-				setOwnerLoaded(true);
-
-				const postsResponse = await fetch(
-					`/api/posts/group/${id}?page=0&size=10`,
-					{
-						method: "GET",
-						headers: { Accept: "application/json" }
-					}
-				);
-				const postsData = await postsResponse.json();
-				setPosts(postsData.content);
-				setPostsLoaded(true);
-
-				const userGroupsResponse = await fetch(
-					`/api/groups/user/${userId}`,
-					{
-						method: "GET",
-						headers: { Accept: "application/json" }
-					}
-				);
-				const userGroupsData = await userGroupsResponse.json();
-				const isUserInGroup = userGroupsData.some(
-					(userGroup: { id: number }) => userGroup.id === Number(id)
-				);
-				if (isUserInGroup) {
-					setJoinedGroups((prevGroups: any) => [
-						...prevGroups,
-						Number(id)
-					]);
-				}
-				setGroupsLoaded(true);
-				setGroupLoaded(true);
-			} catch (error) {
-				console.error("Error fetching group details:", error);
-				setGroupLoaded(true);
-				setOwnerLoaded(true);
-				setPostsLoaded(true);
-				setGroupsLoaded(true);
-			}
-		};
-
-		fetchGroupDetails();
-	}, [id, userId]);
-
-	const handleJoinClick = (groupId: number) => {
-		const apiUrl = joinedGroups.includes(groupId)
-			? "/api/groups/RemoveMemberFromGroup"
-			: "/api/groups/AddMemberToGroup";
-
-		const requestBody = {
-			groupId,
-			userId: userId
-		};
-
-		fetch(apiUrl, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(requestBody)
-		})
-			.then((response) => {
-				if (response.status === 204) {
-					setJoinedGroups((prevGroups) =>
-						joinedGroups.includes(groupId)
-							? prevGroups.filter((id) => id !== groupId)
-							: [...prevGroups, groupId]
-					);
-				} else if (response.status === 400) {
-					response
-						.text()
-						.then((errorMessage) => console.error(errorMessage));
-				} else {
-					throw new Error("Failed to update group membership");
-				}
-			})
-			.catch((error) =>
-				console.error("Error updating group membership:", error)
-			);
-	};
-
-	// S3 Configuration
-	const region = "eu-west-1";
-	const bucketName = "lookout-bucket-capstone";
-	const accessKeyId = process.env.REACT_APP_AWS_S3_ACCESS_ID || "";
-	const secretAccessKey =
-		process.env.REACT_APP_AWS_S3_SECRET_ACCESS_KEY || "";
-
-	// Initialize AWS S3
-	const s3 = new AWS.S3({
-		region,
-		accessKeyId,
-		secretAccessKey,
-		signatureVersion: "v4"
-	});
-
-	// Helper function to generate a random string for unique file names
-	const generateRandomString = (length: number): string => {
-		const array = new Uint8Array(length / 2);
-		window.crypto.getRandomValues(array);
-		return Array.from(array, (byte) =>
-			("0" + byte.toString(16)).slice(-2)
-		).join("");
-	};
-
 	const generateUploadURL = async (): Promise<string> => {
 		const randomBytes = generateRandomString(16);
 		const imageName = randomBytes.toString();
@@ -273,13 +161,16 @@ const GroupDetail: React.FC = () => {
 		if (fileInputRef.current) {
 			fileInputRef.current.click();
 		}
+
 	};
 
 	if (!(groupLoaded && ownerLoaded && postsLoaded && groupsLoaded)) {
 		return <GroupDetailSkeleton />;
 	}
 
+
 	return (
+
 		<div className="relative">
 			<div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-800 to-green-800 clip-path-custom-arch z-0"></div>
 			<div className="container mx-auto p-4 relative z-10">
@@ -424,11 +315,13 @@ const GroupDetail: React.FC = () => {
 						to={`/profileView/${owner?.id}`}
 						className="text-sm text-black-200 underline"
 					>
+
 						View their profile
 					</Link>
 				</div>
-				<div className="mt-4">
+				<div className="mt-4 ml-4">
 					<div className="flex items-center mb-4">
+
 						<img
 							src={owner?.picture || defaultImage}
 							alt={owner?.userName}
@@ -444,12 +337,17 @@ const GroupDetail: React.FC = () => {
 							<p className="text-gray-600 text-sm">
 								{owner?.role || "No Role"}
 							</p>
+
+
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
 	);
 };
 
 export default GroupDetail;
+
+

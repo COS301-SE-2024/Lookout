@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+
 import { FaToggleOn, FaToggleOff, FaPlus } from "react-icons/fa";
 import AWS from "aws-sdk"; // Import AWS SDK
 
 interface CreateGroupsProps {
 	onCreateGroup: (newGroup: Group) => void;
+
 }
 
 interface Group {
@@ -15,6 +17,7 @@ interface Group {
 	isPrivate: boolean;
 	createdAt: string;
 }
+
 
 const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup }) => {
 	const [isToggled, setIsToggled] = useState(false);

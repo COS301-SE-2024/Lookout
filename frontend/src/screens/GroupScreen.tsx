@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import SearchGroups from "../components/SearchGroups";
-import CreateGroups from "../components/CreateGroups";
 import GroupsList from '../components/GroupsList';
 
 type Group = {
@@ -29,9 +28,9 @@ const GroupScreen = () => {
 	}, []);
 	
 
-	const handleAddGroup = (newGroup: Group) => {
-		setGroups(prevGroups => [...prevGroups, newGroup]);
-	};
+	// const handleAddGroup = (newGroup: Group) => {
+	// 	setGroups(prevGroups => [...prevGroups, newGroup]);
+	// };
 
 	return (
 		<div className="container mx-auto p-4">
@@ -78,7 +77,7 @@ const GroupScreen = () => {
 			<div className="tab-content">
 				{activeTab === "your-groups" && <GroupsList />}
 				{activeTab === "search" && <SearchGroups />}
-				{activeTab === "create" && <CreateGroups onCreateGroup={handleAddGroup} />}
+				{/* {activeTab === "create" && <CreateGroups onCreateGroup={handleAddGroup} />} */}
 			</div>
 		</div>
 	);

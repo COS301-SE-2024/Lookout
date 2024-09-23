@@ -35,7 +35,7 @@ const ExploreGroup: React.FC<{ group: Group }> = ({ group }) => {
 
   return (
     <div
-      className="min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+      className="min-w-[300px] h-96 ml-8 bg-nav rounded-lg shadow-md overflow-hidden cursor-pointer"
       onClick={() => handleGroupClick(group)}
     >
       <img
@@ -45,7 +45,7 @@ const ExploreGroup: React.FC<{ group: Group }> = ({ group }) => {
       />
       <div className="p-4">
         <h2 className="text-xl font-semibold">{group.name}</h2>
-        <p className="text-gray-700">{group.description}</p>
+        <p className="text-content2 line-clamp-3 ">{group.description}</p> 
         <CategoryPill categoryId={6} /> 
       </div>
     </div>

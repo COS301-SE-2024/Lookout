@@ -52,7 +52,7 @@ const RecommendPost: React.FC<{ post: Post; rank?: number }> = ({ post, rank }) 
 
   return (
     <div
-      className="relative min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+      className="relative min-w-[300px] h-96 ml-8 bg-nav rounded-lg shadow-md overflow-hidden cursor-pointer"
       onClick={() => handlePostClick(post)}
     >
       <img
@@ -61,16 +61,16 @@ const RecommendPost: React.FC<{ post: Post; rank?: number }> = ({ post, rank }) 
         className="w-full h-48 object-cover"
       />
       {rank !== undefined && (
-        <div className="absolute top-2 left-2 bg-green-800 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
+        <div className="absolute top-2 left-2 bg-navBkg text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
           {rank}
         </div>
       )}
       <div className="p-4">
         <h2 className="text-xl font-semibold">{post.title}</h2>
-        <p className="text-gray-700">{post.caption}</p>
-        <p className="text-gray-500 text-sm flex items-center">
+        <p className="text-content2">{post.caption}</p>
+        <p className="text-content2 text-sm flex items-center">
           <IoLocationOutline className="h-4 w-4 mr-1" />
-          <p className="text-gray-700">{post.latitude}, {post.longitude}</p>
+          <p className="text-content2">{post.latitude}, {post.longitude}</p>
         </p>
         <CategoryPill categoryId={post.categoryId} />
       </div>

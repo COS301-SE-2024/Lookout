@@ -52,7 +52,7 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
 
   return (
     <div
-      className="relative min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+      className="relative min-w-[300px] h-96 ml-8 bg-nav rounded-lg shadow-md overflow-hidden cursor-pointer"
       onClick={() => handlePostClick(post)}
     >
       <img
@@ -62,10 +62,10 @@ const ExplorePost: React.FC<{ post: Post }> = ({ post }) => {
       />
       <div className="p-4">
         <h2 className="text-xl font-semibold">{post.title}</h2>
-        <p className="text-gray-700">{post.caption}</p>
-        <p className="text-gray-500 text-sm flex items-center">
+        <p className="text-content2">{post.caption}</p>
+        <p className="text-content2 text-sm flex items-center">
           <IoLocationOutline className="h-4 w-4 mr-1" />
-          <p className="text-gray-700">{post.latitude}, {post.longitude}</p>
+          <p className="text-content2">{post.latitude}, {post.longitude}</p>
         </p>
         <CategoryPill categoryId={post.categoryId} />
       </div>

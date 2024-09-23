@@ -1,6 +1,8 @@
 {
+
 	"dependencies": {
 		"@heroicons/react": "^2.1.4",
+      "@radix-ui/react-dropdown-menu": "^2.1.1",
 		"@react-google-maps/api": "^2.19.3",
 		"@stomp/stompjs": "^7.0.0",
 		"@types/aws-sdk": "^2.7.0",
@@ -16,8 +18,14 @@
 		"sockjs-client": "^1.6.1",
 		"tailwind": "^4.0.0",
 		"tailwind-clip-path": "^1.0.0",
+    "tailwind-scrollbar": "^3.1.0",
 		"tailwindcss": "^3.4.7",
 		"typescript": "^5.6.2",
 		"universal-cookie": "^7.2.0"
 	}
+,
+  "devDependencies": {
+    "@types/dompurify": "^3.0.5"
+  }
+
 }

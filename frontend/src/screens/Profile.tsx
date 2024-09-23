@@ -3,13 +3,11 @@ import AWS from "aws-sdk";
 import ProfileSkeleton from "../components/ProfileSkeleton";
 import PostsProfile from "../components/PostsProfile";
 import GroupsProfile from "../components/GroupsProfile";
-import { FaCog } from "react-icons/fa";
-import SettingsModal from "../components/SettingsModal";
 import { useLocation } from "react-router-dom";
-import Modal from "../components/Modal";
 import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
 
 const Profile = () => {
+
 	const userId = 1;
 	const [activeTab, setActiveTab] = useState("posts");
 	const [showSettings, setShowSettings] = useState(false);
@@ -308,6 +306,7 @@ const Profile = () => {
 			)}
 		</div>
 	);
+
 };
 
 export default Profile;

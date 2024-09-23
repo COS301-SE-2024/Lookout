@@ -28,6 +28,11 @@ import ExploreGroups from "./components/ExploreGroups";
 import PinMap from "./components/PinMap";
 import CreatedGroupDetail from "./components/CreatedGroupDetail";
 import Landing from "./screens/Landing";
+import Settings from "./screens/SettingsScreen";
+import Settings2 from "./screens/Settings";
+
+import EmailHandler from "./components/EmailHandler";
+
 
 function Main() {
 	useEffect(() => {
@@ -57,6 +62,14 @@ function Main() {
 					element={<ProtectedRoute element={GroupScreen} />}
 				/>
 				<Route
+					path="/settings2"
+					element={<ProtectedRoute element={Settings} />}
+				/>
+				<Route
+					path="/settings"
+					element={<ProtectedRoute element={Settings2} />}
+				/>
+				<Route
 					path="/groupMap"
 					element={<ProtectedRoute element={GroupsMap} />}
 				/>
@@ -66,11 +79,15 @@ function Main() {
 				/>
 				<Route path="/login" element={<LoginScreen />} />{" "}
 				<Route path="/signup" element={<SignUpScreen />} />{" "}
+				<Route path="/email-handler" element={<EmailHandler />} />
 				<Route
 					path="/group/:id"
 					element={<ProtectedRoute element={GroupDetail} />}
 				/>
-				<Route path="/group/:id/posts" element={<GroupPosts />} />
+				<Route 
+					path="/group/:id/posts" 
+					element={<ProtectedRoute element={GroupPosts} />} 
+				/>
 				<Route
 					path="/post/:id"
 					element={<ProtectedRoute element={PinDetail} />}
@@ -87,12 +104,6 @@ function Main() {
 					path="/saved_post/:id"
 					element={<ProtectedRoute element={SavedPostDetails} />}
 				/>
-				<Route>
-					{/* <Route path="/" element={<ExploreScreen />} /> */}
-					<Route
-						path="/category/:categoryId"
-						element={<CategoryPostsPage />}
-					/>{" "}
 					<Route
 						path="/recommend/posts"
 						element={<ExploreRecommend />}
@@ -101,18 +112,33 @@ function Main() {
 						path="/recommend/groups"
 						element={<ExploreRecommend />}
 					/>{" "}
-				</Route>
+				
+
+					{/* <Route 
+						path="/" 
+						element={<ProtectedRoute element={ExploreScreen} />} /> */}
+					
+				<Route
+						path="/category/:categoryId"
+						element={<ProtectedRoute element={CategoryPostsPage} />}
+					/>
+
 				<Route
 					path="/createdGroup/:id"
 					element={<ProtectedRoute element={CreatedGroupDetail} />}
 				/>
+
 				<Route path="/Landing" element={<Landing />} />
-				<Route
-					path="/profileView/:id"
-					element={<ProfileDetail />}
-				/>{" "}
-				{/* Define route for profile detail */}
-				<Route path="/map" element={<PinMap />} />
+
+				<Route 
+					path="/profileView/:id" 
+					element={<ProtectedRoute element={ProfileDetail} />} 
+				/>
+				<Route 
+					path="/map" 
+					element={<ProtectedRoute element={PinMap} />} 
+				/>
+
 			</Route>
 		)
 	);

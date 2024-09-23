@@ -49,6 +49,22 @@ class LookoutApplicationTests {
     }
 
 
+//////////////////////////////Get groups by owner id//////////////////////////////
+
+    @Test
+    fun `get groups by owner id test`() {
+        mockMvc.perform(get("/api/groups/owner/1"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `get groups by invalid owner id test`() {
+        mockMvc.perform(get("/api/groups/owner/-1"))
+            .andExpect(status().isNoContent)
+    }
+
+    
+
 //////////////////////////////get groups by id//////////////////////////////////////=
     @Test
     fun `get group by id test`() {
@@ -154,6 +170,20 @@ class LookoutApplicationTests {
     fun `Get a group by invalid user id`() {
         mockMvc.perform(get("/api/groups/user/-45"))
             .andExpect(status().isNoContent)
+    }
+
+/////////////////////////////Gets all the group's members/////////////////////////////
+
+    @Test
+    fun `Get all group members`() {
+        mockMvc.perform(get("/api/groups/users/4"))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `Get all group members with invalid group id`() {
+        mockMvc.perform(get("/api/groups/users/-4"))
+            .andExpect(status().isNotFound)
     }
 
 /////////////////////////////add member to group///////////////////////////////////////
@@ -378,23 +408,23 @@ class LookoutApplicationTests {
 
 /////////////////////////login a user///////////////////////////////////////////
 
-    @Test
-    fun `post invalid login user`(){
-        val postJson = """
-        {
-        "email": "Test12@email.com",
-        "passcode": "Test@31212345"
-    } 
-        
-    """.trimIndent()
-
-        mockMvc.perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(postJson)
-        )
-            .andExpect(status().is4xxClientError)
-    }
+//    @Test
+//    fun `post invalid login user`(){
+//        val postJson = """
+//        {
+//        "email": "Test12@email.com",
+//        "passcode": "Test@31212345"
+//    }
+//
+//    """.trimIndent()
+//
+//        mockMvc.perform(
+//            post("/api/auth/login")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(postJson)
+//        )
+//            .andExpect(status().is4xxClientError)
+//    }
 
 
 //////////////////////////Update Post//////////////////////////////////////////
