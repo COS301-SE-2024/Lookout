@@ -21,7 +21,7 @@ const Profile = () => {
 	const { state } = location;
 	const [modalOpen, setModalOpen] = useState(false);
 	const [message, setMessage] = useState("");
-	const [uploadedPictureUrl, setUploadedPictureUrl] = useState("");
+
 	const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [profilePic, setProfilePic] = useState<string | null>(null);
@@ -149,7 +149,6 @@ const Profile = () => {
 			});
 
 			const imageUrl = uploadURL.split("?")[0];
-			setUploadedPictureUrl(imageUrl);
 			setIsUploadingPicture(false);
 
 			console.log("Image uploaded successfully.", imageUrl);

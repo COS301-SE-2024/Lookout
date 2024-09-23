@@ -62,7 +62,6 @@ const GroupDetail: React.FC = () => {
 		"https://i.pinimg.com/originals/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg";
 
 	// S3 States
-	const [uploadedPictureUrl, setUploadedPictureUrl] = useState("");
 	const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -219,7 +218,6 @@ const GroupDetail: React.FC = () => {
 			});
 
 			const imageUrl = uploadURL.split("?")[0];
-			setUploadedPictureUrl(imageUrl);
 			setIsUploadingPicture(false);
 
 			console.log("Image uploaded successfully.", imageUrl);
