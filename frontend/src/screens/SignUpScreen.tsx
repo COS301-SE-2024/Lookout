@@ -28,7 +28,7 @@ const SignUpScreen = () => {
 
   useEffect(() => {
     if (token !== "" && token !== null) {
-      navigate("/");
+      navigate("/home");
       window.location.reload();
     }
   }, [token, navigate]);

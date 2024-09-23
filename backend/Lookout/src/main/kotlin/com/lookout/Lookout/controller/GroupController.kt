@@ -151,6 +151,27 @@ class GroupController(
         }
     }
 
+    @GetMapping("/user/createdBy")
+    fun getGroupsByUserCreate(request: HttpServletRequest): ResponseEntity<List<GroupDto>> {
+        var userId: Long = 0
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val groups = groupService.findGroupsByOwnerId(userId).map { group -> convertToDto(group)}
+        return if (groups.isNotEmpty()) {
+            ResponseEntity.ok(groups)
+        } else {
+            ResponseEntity.noContent().build()
+        }
+    }
+
     @PostMapping("/AddMemberToGroup")
     fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup,
                          requestid: HttpServletRequest): ResponseEntity<String> {

@@ -19,7 +19,7 @@ interface GroupsGridFixProps {
 }
 
 const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
-  const userId = 1;
+  
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
     const fetchGroups = async () => {
       setLoading(true);
       try {
-        const joinedGroupsResponse = await fetch(`/api/groups/user/${userId}`, {
+        const joinedGroupsResponse = await fetch(`/api/groups/user`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -40,17 +40,19 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
         }
         const joinedGroups = await joinedGroupsResponse.json();
 
-        const createdGroupsResponse = await fetch('/api/groups', {
+        const createdGroupsResponse = await fetch('/api/groups/user/createdBy', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
           },
         });
+        console.log("created Groups response", createdGroupsResponse)
         if (!createdGroupsResponse.ok) {
           throw new Error('Failed to fetch all groups');
         }
         const allGroups = await createdGroupsResponse.json();
-        const createdGroups = allGroups.content.filter((group: Group) => group.userId === userId);
+        console.log("All groups/ created groups response: ", allGroups)
+        const createdGroups = allGroups.content;
 
         const combinedGroups = [...joinedGroups, ...createdGroups];
         const uniqueGroups = combinedGroups.reduce((acc: Group[], current: Group) => {
@@ -79,7 +81,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
     return () => {
       setGroups([]);
     };
-  }, [userId]);
+  }, []);
 
   const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });

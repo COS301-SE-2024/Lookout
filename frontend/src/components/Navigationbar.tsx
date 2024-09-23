@@ -109,7 +109,7 @@ const Navigationbar = () => {
 										/>
 									</li>
 									<li>
-										<Link to="/" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/')}`}>
+										<Link to="/home" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/')}`}>
 											<FaMap size={26} />
 										</Link>
 									</li>
