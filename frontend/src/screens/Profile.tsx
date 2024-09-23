@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import AWS from "aws-sdk";
 import ProfileSkeleton from "../components/ProfileSkeleton";
 import PostsProfile from "../components/PostsProfile";
 import GroupsProfile from "../components/GroupsProfile";
@@ -7,7 +8,6 @@ import SettingsModal from "../components/SettingsModal";
 import { useLocation } from "react-router-dom";
 import Modal from "../components/Modal";
 import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
-import S3Uploader from "../components/S3Uploader";
 
 const Profile = () => {
 	const userId = 1;
@@ -21,6 +21,10 @@ const Profile = () => {
 	const { state } = location;
 	const [modalOpen, setModalOpen] = useState(false);
 	const [message, setMessage] = useState("");
+	const [uploadedPictureUrl, setUploadedPictureUrl] = useState("");
+	const [isUploadingPicture, setIsUploadingPicture] = useState(false);
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [profilePic, setProfilePic] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (state?.message) {
@@ -28,10 +32,6 @@ const Profile = () => {
 			setModalOpen(true);
 		}
 	}, [state]);
-
-	const [open, setOpen] = useState<boolean>(false);
-	const [, setPreviewUrl] = useState<string | undefined>(undefined);
-	const previewURL = localStorage.getItem("previewUrl");
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -44,6 +44,7 @@ const Profile = () => {
 				});
 				const userData = await userResponse.json();
 				setUsername(userData.userName || "Unknown User");
+				setProfilePic(userData.profilePic || null);
 
 				// Fetch posts count
 				const postsCountResponse = await fetch(
@@ -69,17 +70,6 @@ const Profile = () => {
 				const groupsCountData = await groupsCountResponse.json();
 				setGroupsCount(groupsCountData);
 
-				// Fetch profile picture
-				const profilePicResponse = await fetch(`/api/users/${userId}`);
-				const profilePicData = await profilePicResponse.json();
-				if (profilePicData.profilePic !== null) {
-					localStorage.setItem(
-						"previewUrl",
-						profilePicData.profilePic
-					);
-					setPreviewUrl(profilePicData.profilePic);
-				}
-
 				setDataLoaded(true); // Set data loaded to true
 			} catch (error) {
 				console.error("Error fetching data:", error);
@@ -98,8 +88,113 @@ const Profile = () => {
 		setMessage("");
 	};
 
-	const togglePhotoClick = () => {
-		setOpen(!open);
+	const handleImageClick = () => {
+		if (fileInputRef.current) {
+			fileInputRef.current.click();
+		}
+	};
+
+	// AWS S3 Configuration
+	const region = "eu-west-1";
+	const bucketName = "lookout-bucket-capstone";
+	const accessKeyId = process.env.REACT_APP_AWS_S3_ACCESS_ID || "";
+	const secretAccessKey =
+		process.env.REACT_APP_AWS_S3_SECRET_ACCESS_KEY || "";
+
+	// Initialize AWS S3
+	const s3 = new AWS.S3({
+		region,
+		accessKeyId,
+		secretAccessKey,
+		signatureVersion: "v4"
+	});
+
+	// Helper function to generate a random string for unique file names
+	const generateRandomString = (length: number): string => {
+		const array = new Uint8Array(length / 2);
+		window.crypto.getRandomValues(array);
+		return Array.from(array, (byte) =>
+			("0" + byte.toString(16)).slice(-2)
+		).join("");
+	};
+
+	const generateUploadURL = async (): Promise<string> => {
+		const randomBytes = generateRandomString(16);
+		const imageName = randomBytes.toString();
+
+		const params = {
+			Bucket: bucketName,
+			Key: imageName,
+			Expires: 60
+		};
+
+		const uploadURL = await s3.getSignedUrlPromise("putObject", params);
+		return uploadURL;
+	};
+
+	const uploadImageFileToS3 = async (file: File): Promise<void> => {
+		if (!file) {
+			throw new Error("No file provided for upload.");
+		}
+
+		try {
+			const uploadURL = await generateUploadURL();
+
+			await fetch(uploadURL, {
+				method: "PUT",
+				headers: {
+					"Content-Type": file.type
+				},
+				body: file
+			});
+
+			const imageUrl = uploadURL.split("?")[0];
+			setUploadedPictureUrl(imageUrl);
+			setIsUploadingPicture(false);
+
+			console.log("Image uploaded successfully.", imageUrl);
+
+			// Update the user's profile picture in the backend
+			await updateUserPicture(imageUrl);
+		} catch (error) {
+			console.error("Error uploading file:", error);
+			setIsUploadingPicture(false);
+		}
+	};
+
+	const updateUserPicture = async (pictureUrl: string) => {
+		try {
+			const response = await fetch(`/api/users/${userId}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ profilePic: pictureUrl })
+			});
+			if (!response.ok) {
+				throw new Error("Failed to update user picture");
+			}
+			// Update the profilePic state with the new picture
+			setProfilePic(pictureUrl);
+		} catch (error) {
+			console.error("Error updating user picture:", error);
+		}
+	};
+
+	const handleFileChange = async (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		const file = event.target.files?.[0];
+		if (file) {
+			setIsUploadingPicture(true);
+			try {
+				await uploadImageFileToS3(file);
+			} catch (error) {
+				console.error("Error uploading picture:", error);
+			} finally {
+				setIsUploadingPicture(false);
+			}
+		}
 	};
 
 	return (
@@ -116,14 +211,47 @@ const Profile = () => {
 					</div>
 
 					{/* Profile Picture */}
-					<div className="mt-10 cursor-pointer">
+					<div
+						className="mt-10 cursor-pointer relative"
+						style={{ width: "96px", height: "96px" }}
+					>
 						<img
-							className="w-24 h-24 rounded-full bg-gray-300 mb-2 cursor-pointer"
-							src={previewURL || profilePhoto}
-							alt="Preview"
-							onClick={togglePhotoClick}
+							className="w-24 h-24 rounded-full bg-gray-300 mb-2 cursor-pointer object-cover"
+							src={profilePic || profilePhoto}
+							alt="Profile"
+							onClick={handleImageClick}
 						/>
-						{open && <S3Uploader setOpen={setOpen} />}
+						{isUploadingPicture && (
+							<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+								<svg
+									className="animate-spin h-8 w-8 text-white"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									></circle>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8v8H4z"
+									></path>
+								</svg>
+							</div>
+						)}
+						<input
+							type="file"
+							accept="image/*"
+							onChange={handleFileChange}
+							ref={fileInputRef}
+							style={{ display: "none" }}
+						/>
 					</div>
 
 					{/* Username */}
