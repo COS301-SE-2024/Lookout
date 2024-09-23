@@ -189,16 +189,13 @@ const CategoryPostsPage: React.FC = () => {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <button onClick={() => navigate('/explore')} className="text-navBkg hover:text-icon">
-            <MdKeyboardArrowLeft size={42}  />
+          <button onClick={() => navigate('/explore')} className="text-blue-500">
+            <MdKeyboardArrowLeft size={42} color="green" />
           </button>
           <h1 className="text-2xl font-bold ml-2">{categoryName}</h1>
         </div>
         {categoryId !== "6" && (
-          <select 
-          value={sortOrder} 
-          onChange={handleSortChange} 
-          className="bg-nav border border-nav rounded-md p-2">
+          <select value={sortOrder} onChange={handleSortChange} className="border border-gray-300 rounded-md p-2">
             <option value="newest">
               <FaSortAmountDown className="inline-block mr-2" />
               Newest

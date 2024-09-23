@@ -1,54 +1,55 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PostsGridFix from "./PostsGridFix";
 import SavedPostsGridFix from "./SavedPostsGridFix";
 
-const PostsProfile = () => {
-  // Initialize selectedOption from localStorage or default to "yourPosts"
-  const [selectedOption, setSelectedOption] = useState(() => {
-    return localStorage.getItem("selectedPostOption") || "yourPosts";
-  });
-  const [searchQuery, ] = useState<string>("");
-
-  // Update localStorage whenever selectedOption changes
-  useEffect(() => {
-    localStorage.setItem("selectedPostOption", selectedOption);
-  }, [selectedOption]);
+const Profile = () => {
+  const [selectedOption, setSelectedOption] = useState<string>('yourPosts');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
 
+  const placeholderText = selectedOption === 'yourPosts'
+    ? 'Search your posts'
+    : 'Search saved posts';
 
   return (
-    <div className="w-full"> {/* Full width with smaller padding */}
-    <div className="mb-4 flex flex-col space-y-4"> {/* Removed unnecessary ml-4 */}
-    <div className="flex items-center justify-between space-x-2 ">
-      {/* Filter Dropdown */}
-      <select
-        id="postFilter"
-        value={selectedOption}
-        onChange={handleChange}
-        className="border p-2 rounded bg-gray-200 bg-hver border-hver"
-      >
-        <option value="yourPosts">Your posts</option>
-        <option value="savedPosts">Saved posts</option>
-      </select>
-    </div>
+    <div className="container mx-auto p-4">
+      <div className="mb-1 flex flex-col space-y-4 ml-4">
+        {/* Search Bar */}
+        <div className="flex items-center space-x-2">
+          <input
+            type="text"
+            placeholder={placeholderText}
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="border p-2 rounded w-full max-w-md bg-gray-200"
+          />
+        </div>
 
-        {/* Apply styling here */}
-        <div className="w-full flex justify-center"> {/* Center the content */}
-          <div className="w-full max-w-6xl"> {/* Larger grid area */}
-            {selectedOption === 'yourPosts' ? (
-              <PostsGridFix searchQuery={searchQuery} />
-            ) : (
-              <SavedPostsGridFix searchQuery={searchQuery} />
-            )}
-          </div>
+        {/* Filter Dropdown */}
+        <div className="flex items-center space-x-2">
+          <select
+            id="postFilter"
+            value={selectedOption}
+            onChange={handleChange}
+            className="border p-2 rounded bg-gray-200"
+          >
+            <option value="yourPosts">Your posts</option>
+            <option value="savedPosts">Saved posts</option>
+          </select>
         </div>
       </div>
+
+      {/* Display Posts */}
+      {selectedOption === 'yourPosts' ? <PostsGridFix searchQuery={searchQuery} /> : <SavedPostsGridFix searchQuery={searchQuery} />}
     </div>
   );
 };
 
-export default PostsProfile;
+export default Profile;

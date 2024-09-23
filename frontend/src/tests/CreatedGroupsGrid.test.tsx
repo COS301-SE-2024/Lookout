@@ -32,13 +32,12 @@ const mockGroups = [
 beforeEach(() => {
   global.fetch = jest.fn((url) => {
     return Promise.resolve(
-      new Response(JSON.stringify(mockGroups), { // Remove the content wrapper here
+      new Response(JSON.stringify({ content: mockGroups }), {
         headers: { 'Content-Type': 'application/json' },
       })
     );
   });
 });
-
 
 afterEach(() => {
   jest.clearAllMocks();

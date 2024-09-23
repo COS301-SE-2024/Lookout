@@ -63,33 +63,17 @@ interface Post {
 	createdAt: string;
 }
 
-interface User {
-	userName: string;
-	email: string;
-	passcode: string;
-	role: string;
-	isEnabled: boolean;
-	password: string;
-	username: string;
-	profilePic: string;
-	authorities: { authority: string }[];
-	isAccountNonLocked: boolean;
-	isCredentialsNonExpired: boolean;
-	isAccountNonExpired: boolean;
-  }
-
 const PinDetail: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [theme, setTheme] = useState("default");
 	const [post, setPost] = useState<Post | null>(null);
-	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [isSaved, setIsSaved] = useState<boolean>(false);
 	const [saves, setSaves] = useState<number>(0);
 	const [userId] = useState<number>(2);
 	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
-	//const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 	useEffect(() => {
 		const localStoreTheme = localStorage.getItem("data-theme") || "default";
@@ -131,11 +115,6 @@ const PinDetail: React.FC = () => {
 				);
 				const relatedData = await relatedResponse.json();
 				setRelatedPosts(relatedData.content);
-
-				const userResponse = await fetch(`/api/users/${data.userId}`);
-				const userData = await userResponse.json();
-				setUser(userData);
-		
 			} catch (error) {
 				console.error("Error fetching post or related posts:", error);
 				setLoading(false);
@@ -289,130 +268,156 @@ const PinDetail: React.FC = () => {
 		return <SkeletonPinDetail />;
 	}
 
-	if (!post || !user) {
-		return <SkeletonPinDetail />;
-	  }
-	 
+	if (!post) {
+		return <p>Post not found.</p>;
+	}
 
-	  return (
-		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg"> {/* Ensure the container fills the whole screen */}
-		  <style>
-			{`
-			  .scrollbar-hide::-webkit-scrollbar {
-				display: none;
-			  }
-			  .scrollbar-hide {
-				-ms-overflow-style: none;
-				scrollbar-width: none;
-			  }
-			  .search-results-container {
-				display: grid;
-				gap: 16px;
-				justify-items: start;
-			  }
-			  .search-results-container .search-result-card {
-				width: 100%;
-				margin: 0;
-			  }
-			  @media (min-width: 768px) {
-				.search-results-container {
-				  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-				}
-			  }
-			  @media (max-width: 767px) {
-				.search-results-container {
-				  grid-template-columns: 1fr;
-				}
-				.search-bar {
-				  width: 100%;
-				}
-			  }
-			`}
-		  </style>
-		  <button
-			onClick={() => navigate(-1)}
-			className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2 "
-			style={{ zIndex: 50 }}
-		  >
-			<svg
-			  xmlns="http://www.w3.org/2000/svg"
-			  className="h-8 w-8"
-			  fill="none"
-			  viewBox="0 0 24 24"
-			  stroke="currentColor"
+	return (
+		<div className="p-4 scrollbar-hide">
+			<style>
+				{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .search-results-container {
+            display: grid;
+            gap: 16px;
+            justify-items: start;
+          }
+          .search-results-container .search-result-card {
+            width: 100%;
+            margin: 0;
+          }
+          @media (min-width: 768px) {
+            .search-results-container {
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+          }
+          @media (max-width: 767px) {
+            .search-results-container {
+              grid-template-columns: 1fr;
+            }
+            .search-bar {
+              width: 100%;
+            }
+          }
+        `}
+			</style>
+			<button
+				onClick={() => navigate(-1)}
+				className="fixed top-8 left-4 md:top-20 md:left-8 text-green-700 hover:text-green-500 z-50 mt-2 rounded-full p-2 shadow-md"
+				style={{ zIndex: 50 }}
 			>
-			  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-			</svg>
-		  </button>
-	  
-		  <div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
-			<div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row h-full min-h-[550px]"> {/* Minimum height added */}
-			  <figure className="rounded-t-lg overflow-hidden md:w-1/2">
-				<img
-				  src={post.picture}
-				  alt={post.title}
-				  className="w-full h-full object-cover"
-				/>
-			  </figure>
-	  
-			  <div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow"> {/* flex-grow added */}
-				<div className="flex items-center justify-between mt-2 mb-4">
-				  <h1 className="text-2xl md:text-4xl font-bold">{post.title}</h1>
-				  <div className="flex items-center">
-					{isSaved ? (
-					  <FaBookmark
-						className="text-navBkg cursor-pointer"
-						onClick={handleSaveIconClick}
-						size={28} // Larger size
-					  />
-					) : (
-					  <FaRegBookmark
-						className="text-navBkg cursor-pointer"
-						onClick={handleSaveIconClick}
-						size={28} // Larger size
-					  />
-					)}
-					<span className="ml-2 md:text-xl text-base text-center">{saves} saves</span>
-				  </div>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					className="h-8 w-8"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="2"
+						d="M15 19l-7-7 7-7"
+					/>
+				</svg>
+			</button>
+
+			<div className="container mx-auto p-4 mt-16">
+				<div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row">
+					<figure className="rounded-t-lg overflow-hidden md:w-1/2">
+						<img
+							src={post.picture}
+							alt={post.title}
+							className="w-full h-full object-cover"
+						/>
+					</figure>
+
+					<div className="card-body p-4 md:w-1/2">
+						<div className="flex items-center justify-between mt-2 mb-4">
+							<h1 className="text-2xl font-bold">{post.title}</h1>
+							<div className="flex items-center">
+								{isSaved ? (
+									<FaBookmark
+										className="text-green-800 cursor-pointer"
+										onClick={handleSaveIconClick}
+										size={24}
+									/>
+								) : (
+									<FaRegBookmark
+										className="text-green-800 cursor-pointer"
+										onClick={handleSaveIconClick}
+										size={24}
+									/>
+								)}
+								<span className="ml-2">{saves} saves</span>
+							</div>
+						</div>
+
+						<div className="flex items-center mb-4">
+							<img
+								src="https://i.pinimg.com/originals/b8/5d/8c/b85d8c909a1ada6d7414aa47695d7298.jpg"
+								alt={post.username}
+								className="w-16 h-16 rounded-full mr-4"
+							/>
+							<div>
+								<h2 className="text-lg font-bold">
+									{post.username}
+								</h2>
+								<p className="text-gray-600 text-sm">
+									{post.caption}
+								</p>
+								<CategoryPill categoryId={post.categoryId} />
+							</div>
+						</div>
+
+						<div className="flex justify-start mt-4 space-x-4">
+							<button
+								className="px-4 py-2 rounded-full bg-green-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+								onClick={() =>
+									navigate(`/map`, {
+										state: { post, apicode }
+									})
+								}
+							>
+								View on Map
+							</button>
+							<button
+								className="px-4 py-2 rounded-full bg-green-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+								onClick={() =>
+									navigate(`/group/${post.groupId}`, {
+										state: { group: post.group }
+									})
+								}
+							>
+								View Group
+							</button>
+						</div>
+
+						<div className="mt-8">
+							<h1 className="text-lg font-semibold">
+								See more posts like this:
+							</h1>
+
+							<HorizontalCarousel>
+								{relatedPosts.map((relatedPost) => (
+									<PinDetailPost
+										key={relatedPost.id}
+										post={relatedPost}
+									/>
+								))}
+							</HorizontalCarousel>
+						</div>
+					</div>
 				</div>
-	  
-				<div className="flex items-center mb-4">
-				  <img
-					src={user.profilePic}
-					alt={post.username}
-					className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4" 
-				  />
-				  <div>
-					<h2 className="text-content text-xl md:text-2xl font-bold">{post.username}</h2>
-					<p className="text-content md:text-xl text-md">{post.caption}</p>
-					<CategoryPill categoryId={post.categoryId} />
-				  </div>
-				</div>
-	  
-				<div className="flex justify-start mt-4 space-x-4">
-				<button className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml">
-					View on Map
-				  </button>
-				  <button className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml">
-					View Group
-				  </button>
-				</div>
-	  
-				<div className="mt-8">
-				  <h1 className="text-lg font-semibold md:text-xl ">See more posts like this:</h1>
-	  
-				  <HorizontalCarousel>
-					{relatedPosts.map((relatedPost) => (
-					  <PinDetailPost key={relatedPost.id} post={relatedPost} />
-					))}
-				  </HorizontalCarousel>
-				</div>
-			  </div>
 			</div>
-		  </div>
 		</div>
-	  );
-	  
+	);
 };
 
 export default PinDetail;

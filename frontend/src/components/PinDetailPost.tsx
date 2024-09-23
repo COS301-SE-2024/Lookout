@@ -73,7 +73,7 @@ const GroupsPost: React.FC<{ post: Post }> = ({ post }) => {
       <img
         src={post.picture}
         alt={post.caption}
-        className="min-h-[150px] w-full h-32 object-cover"
+        className="w-full h-32 object-cover"
       />
     </div>
   );

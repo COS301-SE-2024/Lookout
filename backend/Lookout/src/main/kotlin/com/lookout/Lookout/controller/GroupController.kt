@@ -67,17 +67,6 @@ class GroupController(private val groupService: GroupService) {
             .body(csvBuilder.toString())
     }
 
-    @GetMapping("/owner/{ownerId}")
-    fun getGroupsByOwnerId(@PathVariable ownerId: Long): ResponseEntity<List<GroupDto>> {
-        val groups = groupService.findGroupsByOwnerId(ownerId).map { group -> convertToDto(group) }
-        return if (groups.isNotEmpty()) {
-            ResponseEntity.ok(groups)
-        } else {
-            ResponseEntity.noContent().build()
-        }
-    }
-
-
 
     @GetMapping("/{id}")
     fun getGroupById(@PathVariable id: Long): ResponseEntity<GroupDto> {
@@ -176,18 +165,13 @@ class GroupController(private val groupService: GroupService) {
 
     @GetMapping("/users/{groupId}")
     fun getGroupMembers(@PathVariable groupId: Long): ResponseEntity<List<UserDto>> {
-        return try {
-            val groupMembers = groupService.getGroupMembers(groupId).map { user -> convertToUserDto(user) }
-            if (groupMembers.isNotEmpty()) {
-                ResponseEntity.ok(groupMembers)
-            } else {
-                ResponseEntity.noContent().build()
-            }
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity.notFound().build() // Return 404 if group not found
+        val groupMembers = groupService.getGroupMembers(groupId).map { user -> convertToUserDto(user) }
+        return if (groupMembers.isNotEmpty()) {
+            ResponseEntity.ok(groupMembers)
+        } else {
+            ResponseEntity.noContent().build()
         }
     }
-
 
     @GetMapping("/joinedGroups/all", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun getAllGroupMembersCsv(): ResponseEntity<String> {

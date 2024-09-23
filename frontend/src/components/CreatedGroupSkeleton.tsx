@@ -2,7 +2,7 @@ import React from 'react';
 
 const CreatedGroupDetailSkeleton: React.FC = () => {
   return (
-    <div className="relative flex flex-col h-screen bg-bkg">
+    <div className="relative">
       <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-gray-300 to-gray-100 clip-path-custom-arch z-0"></div>
       <div className="container mx-auto p-4 relative z-10">
         {/* Back Button */}

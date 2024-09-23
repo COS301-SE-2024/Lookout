@@ -35,7 +35,7 @@ const RecommendGroup: React.FC<{ group: Group; rank?: number }> = ({ group, rank
 
   return (
     <div
-      className="relative min-w-[300px] h-96 ml-8 bg-nav rounded-lg shadow-md overflow-hidden cursor-pointer"
+      className="relative min-w-[300px] h-96 ml-8 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
       onClick={() => handleGroupClick(group)}
     >
       <img
@@ -44,13 +44,13 @@ const RecommendGroup: React.FC<{ group: Group; rank?: number }> = ({ group, rank
         className="w-full h-48 object-cover"
       />
       {rank !== undefined && (
-        <div className="absolute top-2 left-2 bg-navBkg text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
+        <div className="absolute top-2 left-2 bg-green-800 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
           {rank}
         </div>
       )}
       <div className="p-4">
-        <h2 className="text-xl font-semibold ">{group.name}</h2>
-        <p className="line-clamp-3 text-content2">{group.description}</p>
+        <h2 className="text-xl font-semibold">{group.name}</h2>
+        <p className="text-gray-700">{group.description}</p>
         <CategoryPill categoryId={6} />
       </div>
     </div>

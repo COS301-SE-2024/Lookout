@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import HorizontalCarousel from './HorizontalCarousel';
+import CreatedGroupDetailSkeleton from '../components/CreatedGroupSkeleton';
 import { FaEdit } from 'react-icons/fa';
 import GroupsPost from './GroupsPostFix';
-import DOMPurify from 'dompurify';
-import GroupDetailSkeleton from './GroupDetailSkeleton';
 
 interface User {
   id: number;
   userName: string;
   email: string;
-  profilePic: string;
+  picture?: string;
   role: string;
   isEnabled: boolean;
   username: string;
@@ -46,31 +45,18 @@ interface Post {
   title: string;
 }
 
-const getDayWithSuffix = (date: Date) => {
-  const day = date.getDate();
-  const suffix =
-    day % 10 === 1 && day !== 11 ? 'st' :
-      day % 10 === 2 && day !== 12 ? 'nd' :
-        day % 10 === 3 && day !== 13 ? 'rd' : 'th';
-  return `${day}${suffix}`;
-};
-
 const CreatedGroupDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [group, setGroup] = useState<Group | null>(null);
   const [owner, setOwner] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [groupMembers, setMembers] = useState<User[]>([]);
+  const [, setMembers] = useState<User[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [postsLoaded, setPostsLoaded] = useState(false);
   const [groupLoaded, setGroupLoaded] = useState(false);
   const [editableName, setEditableName] = useState('');
   const [editableDescription, setEditableDescription] = useState('');
-
-  // Modal State
-  const [showRemoveModal, setShowRemoveModal] = useState(false);
-  const [memberToRemove, setMemberToRemove] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchGroupDetails = async () => {
@@ -107,62 +93,43 @@ const CreatedGroupDetail: React.FC = () => {
           headers: { Accept: 'application/json' },
         });
         const memberData = await memberResponse.json();
-        const members = memberData.filter((m: User) => m.id !== groupData.userId);
-        setMembers(members);
-
+        setMembers(memberData);
       } catch (error) {
         console.error('Error fetching group details:', error);
         setGroupLoaded(true);
         setPostsLoaded(true);
+
       }
     };
 
     fetchGroupDetails();
   }, [id]);
 
+  // const handleRemoveMember = (userId: number) => {
+  //   if (group) {
+  //     const requestBody = {
+  //       groupId: group.id,
+  //       userId: userId,
+  //     };
+
+  //     fetch('/api/groups/RemoveMemberFromGroup', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(requestBody),
+  //     })
+  //       .then((response) => {
+  //         if (response.ok) {
+  //           setMembers((prevMembers) => prevMembers.filter((member) => member.id !== userId));
+  //         } else {
+  //           response.text().then((errorMessage) => console.error(errorMessage));
+  //         }
+  //       })
+  //       .catch((error) => console.error('Error removing member:', error));
+  //   }
+  // };
+
   const handleViewOnMapClick = () => {
     navigate(`/groupMap/${id}`);
-  };
-
-  // Open Modal
-  const openRemoveModal = (member: User) => {
-    setMemberToRemove(member);
-    setShowRemoveModal(true);
-  };
-
-  // Confirm Removal
-  const confirmRemoveMember = async () => {
-    if (!group || !memberToRemove) return;
-
-    try {
-      const response = await fetch('/api/groups/RemoveMemberFromGroup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          groupId: group.id,
-          userId: memberToRemove.id
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to remove member');
-      }
-
-      setMembers(groupMembers.filter((m) => m.id !== memberToRemove.id));
-      setShowRemoveModal(false);
-      setMemberToRemove(null);
-    } catch (error) {
-      console.error('Error removing member:', error);
-      alert('Failed to remove member. Please try again.');
-    }
-  };
-
-  // Close Modal
-  const closeRemoveModal = () => {
-    setShowRemoveModal(false);
-    setMemberToRemove(null);
   };
 
   const handleEditClick = () => {
@@ -214,249 +181,111 @@ const CreatedGroupDetail: React.FC = () => {
     setIsEditing(false);
   };
 
-  const handleDeleteClick = async () => {
-    const confirmed = window.confirm("Are you sure you want to delete this group?");
-    if (confirmed && group) {
-      try {
-        const response = await fetch(`/api/groups/${group.id}`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete group');
-        }
-
-        // Navigate to home page after deletion
-        navigate('/profile');
-      } catch (error) {
-        console.error('Error deleting group:', error);
-      }
-    }
-  };
-
-  if (!group || !owner || !groupLoaded || !postsLoaded) {
-    return <GroupDetailSkeleton />;
+  if (!group || !owner || !groupLoaded || !postsLoaded ) {
+    return <CreatedGroupDetailSkeleton />;
   }
 
-  // Modal Component
-  const RemoveMemberModal: React.FC<{ member: User; onConfirm: () => void; onCancel: () => void }> = ({ member, onConfirm, onCancel }) => (
-    <div className="fixed inset-0 flex items-center justify-center bg-navBkg bg-opacity-50 z-50">
-      <div className="bg-bkg p-6 rounded-lg shadow-lg max-w-sm w-full text-white">
-        <h2 className="text-content text-xl font-bold mb-4">Confirm Removal</h2>
-        <p  className="text-content">Are you sure you want to remove <span className="font-semibold">{member.userName}</span> from the group?</p>
-        <div className="flex justify-center items-center mt-6">
-          <button
-            onClick={onCancel}
-            className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg px-4 py-2 rounded"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg relative">
-      <style>
-        {`
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-        `}
-      </style>
-
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="absolute top-11 left-4 md:top-10 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-8 w-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+    <div className="relative">
+      <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-800 to-green-100 clip-path-custom-arch z-0"></div>
+      <div className="container mx-auto p-4 relative z-10">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-4 left-4 text-white hover:text-blue-700"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-
-      {/* Edit and Cancel/Done Buttons */}
-      {isEditing ? (
-        <>
-          <button
-            className="absolute top-20 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
-            onClick={handleDoneClick}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-8 w-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            Done
-          </button>
-          <button
-            className="absolute top-20 left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </button>
-        </>
-      ) : (
-        <>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        {isEditing ? (
+          <>
+            <button
+              className="absolute top-4 right-6 text-white bg-green-800 hover:bg-white hover:text-green-800 border border-green-800 rounded-full px-4 py-2 cursor-pointer"
+              onClick={handleDoneClick}
+            >
+              Done
+            </button>
+            <button
+              className="absolute top-4 left-6 text-green-800 bg-white border border-green-800 hover:bg-green-800 hover:text-white rounded-full px-4 py-2 cursor-pointer"
+              onClick={handleCancelClick}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
           <FaEdit
-            className="absolute top-14 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon md:top-10 md:right-8"
+            className="absolute top-4 right-4 text-xl text-green-700 cursor-pointer mr-3"
             onClick={handleEditClick}
+            color='white'
             size={24}
           />
-        </>
-      )}
-
-      <div className="container mx-auto p-4 mt-10">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-center items-center">
+        )}
+        <div className="text-center mb-4">
+          {isEditing ? (
+            <textarea
+              className="text-white text-xl w-80 rounded-full text-center bg-transparent"
+              style={{ paddingTop: '10px' }}
+              value={editableName}
+              onChange={(e) => setEditableName(e.target.value)}
+            />
+          ) : (
+            <h1 className="text-2xl text-white font-bold mb-4">{group.name}</h1>
+          )}
           <img
             src={group.picture}
             alt={`${group.name} logo`}
-            className="w-56 h-56 object-cover mb-4 md:mb-0 md:mr-8"
-            style={{ borderRadius: '8px' }}
+            className="rounded-full mx-auto mb-4"
+            style={{ width: '130px', height: '130px' }}
           />
-
-          <div className="text-center md:text-left flex flex-col items-center md:items-start">
-            {isEditing ? (
-              <input
-                type="text"
-                className="text-content text-2xl italic font-bold bg-transparent mb-2 border-b border-gray-300 focus:outline-none"
-                value={editableName}
-                onChange={(e) => setEditableName(DOMPurify.sanitize(e.target.value))}
-              />
-            ) : (
-              <h1 className="text-2xl md:text-4xl text-content font-bold mb-2">{group.name}</h1>
-            )}
-
-            {isEditing ? (
-              <input
-                type="text"
-                className="text-content md:text-xl text-md italic w-80 bg-transparent border-b border-gray-300 focus:outline-none mb-2"
-                value={editableDescription}
-                onChange={(e) => setEditableDescription(DOMPurify.sanitize(e.target.value))}
-              />
-            ) : (
-              <p className="text-content md:text-xl text-base mb-2">
-                {group?.description?.split(' ').map((word, index) =>
-                  (index + 1) % 10 === 0 ? `${word} ` : `${word} `
-                ).reduce<React.ReactNode[]>((acc, curr, index) => (
-                  (index + 1) % 10 === 0 ? [...acc, curr, <br key={index} />] : [...acc, curr]
-                ), [])}
-              </p>
-            )}
-
-            <div className="flex flex-col md:flex-row items-center mb-2">
-              <div className="flex flex-row items-center">
-                <span className="text-content md:text-xl text-md">{posts.length} Posts</span>
-                <div className="w-px h-6 bg-gray-300 mx-2"></div>
-                <span className="text-content md:text-xl text-md">{groupMembers.length} Members</span>
-              </div>
-            </div>
-
-            <span className="text-content2 md:text-md text-base">
-              {group.createdAt ? (
-                `${getDayWithSuffix(new Date(group.createdAt))} ${new Date(group.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`
-              ) : 'Unknown'}
-            </span>
-
-            <div className="flex gap-1 mt-4">
-              <button
-                onClick={handleViewOnMapClick}
-                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 md:text-md text-base text-white"
-              >
-                View on map
-              </button>
-              <button
-                onClick={handleDeleteClick}
-                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg px-4 py-2 md:text-md text-base text-white"
-              >
-                Delete group
-              </button>
-            </div>
+          {isEditing ? (
+            <textarea
+              className="text-black text-sm w-80 rounded-full text-center bg-transparent"
+              style={{ paddingTop: '10px' }}
+              value={editableDescription}
+              onChange={(e) => setEditableDescription(e.target.value)}
+            />
+          ) : (
+            <p className="text-gray-600 text-sm mt-1">{group.description}</p>
+          )}
+        </div>
+        <div className="flex justify-center gap-1 mb-4">
+          <button
+            onClick={handleViewOnMapClick}
+            className="px-4 py-1 rounded-full bg-green-800 text-white border-black-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          >
+            View on Map
+          </button>
+        </div>
+        <div className="flex justify-center items-center mb-8">
+          <div className="flex flex-col items-center">
+            <span className="text-gray-600">{posts.length} Posts</span>
+          </div>
+          <div className="w-px h-6 bg-gray-300 mx-4"></div>
+          <div className="flex flex-col items-center">
+            <span className="text-gray-600">7 Followers</span>
           </div>
         </div>
-
-        {/* Posts Section */}
-        <div className="mt-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="md:text-xl text-base font-bold ml-4">Posts in this group</h1>
-            <Link to={`/group/${id}/posts`} className="md:text-base text-sm text-content underline hover:text-gray-800">View All</Link>
-          </div>
-          <HorizontalCarousel>
-            {posts.map((post) => (
-              <GroupsPost key={post.id} post={post} />
-            ))}
-          </HorizontalCarousel>
-        </div>
-
-        {/* About the Owner Section */}
-        <div className="flex justify-between items-center mb-4 mt-4 ml-4">
-          <h1 className="md:text-xl text-base font-bold">About the owner</h1>
-          <Link to={`/profileView/${owner?.id}`} className="text-content md:text-base text-sm hover:text-gray-800 underline">
-            View their profile
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-xl font-bold">Posts in this group</h1>
+          <Link to="/" className="text-green-800 hover:text-gray-600">
+            View all
           </Link>
         </div>
-
-        <div className="mt-4 ml-4">
-          <div className="flex items-center mb-4">
-            <img src={owner?.profilePic} alt="" className="w-20 h-20 rounded-full mr-6" />
-            <div>
-              <h2 className="text-content text-lg font-bold">{owner?.userName || 'No Name'}</h2>
-              <p className="text-content text-sm">{owner?.email || 'No Email'}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Group Members List */}
-<div className="mt-6 ml-4">
-  <h2 className="md:text-xl text-base font-bold mb-2">Group Members</h2>
-  <ul className="space-y-4">
-    {groupMembers.map((member) => (
-      <li key={member.id} className="flex items-center justify-between p-2 rounded-lg">
-        <div className="flex items-center">
-          <img
-            src={member.profilePic}
-            alt={`${member.userName}'s profile`}
-            className="w-12 h-12 rounded-full mr-4"
-          />
-          <div>
-            <span className="text-lg font-bold">{member.userName}</span>
-            <p className="md:text-sm text-xs text-content2">{member.email}</p>
-          </div>
-        </div>
-        {/* Remove Member Button */}
-        <button
-    className="absolute right-4 bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-lg sm:px-2 px-4 py-2 md:text-sm text-xs text-white md:static md:ml-4" // md:static resets to normal flow on larger screens
-    onClick={() => openRemoveModal(member)}
->
-  Remove
-</button>
-      </li>
-    ))}
-  </ul>
-</div>
-
+        <HorizontalCarousel>
+          {posts.map((post) => (
+            <GroupsPost
+              key={post.id}
+              post={post}
+            />
+          ))}
+        </HorizontalCarousel>
       </div>
-
-      {/* Render Modal */}
-      {showRemoveModal && memberToRemove && (
-        <RemoveMemberModal
-          member={memberToRemove}
-          onConfirm={confirmRemoveMember}
-          onCancel={closeRemoveModal}
-        />
-      )}
     </div>
   );
 };
