@@ -30,7 +30,7 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
     const fetchGroups = async () => {
       setLoading(true); 
       try {
-        const response = await fetch(`/api/groups/owner/${userId}`, {
+        const response = await fetch('/api/groups/user/createdBy', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',

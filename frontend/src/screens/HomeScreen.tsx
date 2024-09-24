@@ -776,7 +776,7 @@ const HomeScreen: React.FC = () => {
 
 				try {
 					const response = await fetch(
-						"http://localhost:5000/predict",
+						"/predict",
 						requestOptions
 					);
 					const result = await response.json();
@@ -825,7 +825,7 @@ const HomeScreen: React.FC = () => {
 	};
 
 	useEffect(() => {
-		fetch(`/api/groups/user/1`, {
+		fetch(`/api/groups/user`, {
 			method: "GET",
 			headers: {
 				Accept: "application/json"

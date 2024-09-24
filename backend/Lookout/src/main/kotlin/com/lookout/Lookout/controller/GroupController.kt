@@ -165,11 +165,7 @@ class GroupController(
             userId = user.id
         }
         val groups = groupService.findGroupsByOwnerId(userId).map { group -> convertToDto(group)}
-        return if (groups.isNotEmpty()) {
-            ResponseEntity.ok(groups)
-        } else {
-            ResponseEntity.noContent().build()
-        }
+        return ResponseEntity.ok(groups)
     }
 
     @PostMapping("/AddMemberToGroup")

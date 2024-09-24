@@ -46,13 +46,13 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
             'Accept': 'application/json',
           },
         });
-        console.log("created Groups response", createdGroupsResponse)
+        
         if (!createdGroupsResponse.ok) {
           throw new Error('Failed to fetch all groups');
         }
         const allGroups = await createdGroupsResponse.json();
-        console.log("All groups/ created groups response: ", allGroups)
-        const createdGroups = allGroups.content;
+        
+        const createdGroups = allGroups;
 
         const combinedGroups = [...joinedGroups, ...createdGroups];
         const uniqueGroups = combinedGroups.reduce((acc: Group[], current: Group) => {
