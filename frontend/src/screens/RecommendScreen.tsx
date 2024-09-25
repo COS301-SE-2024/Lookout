@@ -64,7 +64,7 @@ const RecommendScreen: React.FC = () => {
       const fetchRecommendedPosts = async () => {
         try {
           const response = await fetch(
-            "http://127.0.0.1:5000/recommend_posts?user_id=1&top_n=10"
+            "/recommend_posts?user_id=1&top_n=10"
           );
           const recommendedData = await response.json();
           const postIds = recommendedData.map((post: { id: number }) => post.id);
@@ -93,7 +93,7 @@ const RecommendScreen: React.FC = () => {
       const fetchRecommendedGroups = async () => {
         try {
           const response = await fetch(
-            "http://127.0.0.1:5000/recommend_groups?user_id=1&top_n=10"
+            "/recommend_groups?user_id=1&top_n=10"
           );
           const recommendedData = await response.json();
           const groupIds = recommendedData.map((group: { id: number }) => group.id);

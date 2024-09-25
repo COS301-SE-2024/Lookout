@@ -125,6 +125,8 @@ const PinDetail: React.FC = () => {
 				setPost(data);
 				setLoadingPost(false);
 
+				console.log("Post data:", data);
+
 				const relatedResponse = await fetch(
 					`/api/posts/group/${data.groupId}?page=0&size=10`
 				);
@@ -132,9 +134,12 @@ const PinDetail: React.FC = () => {
 				setRelatedPosts(relatedData.content);
 				setLoadingRelatedPost(false);
 
+				console.log("Related posts data:", relatedData);
+
 				 // Fetch user details using post.userId
-				 const userResponse = await fetch(`/api/users/${data.userId}`);
+				 const userResponse = await fetch(`/api/users/`);
 				 const userData = await userResponse.json();
+				 console.log("User data:", userData);
 				 setUser(userData); // Store user data including profile picture
 			} catch (error) {
 				console.error("Error fetching post or related posts:", error);
@@ -145,7 +150,7 @@ const PinDetail: React.FC = () => {
 		const checkIfSaved = async () => {
 			try {
 				const response = await fetch(
-					`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`
+					`/api/savedPosts/isPostSaved?postId=${id}`
 				);
 				const data = await response.json();
 				setIsSaved(data);
@@ -173,7 +178,7 @@ const PinDetail: React.FC = () => {
 		fetchPost();
 		checkIfSaved();
 		getCountSaves();
-	}, [id, userId]);
+	}, [id]);
 
 	useEffect(() => {
 		if (!post?.id) {
@@ -226,7 +231,6 @@ const PinDetail: React.FC = () => {
 
 	const handleSaveClick = async () => {
 		const requestBody = {
-			userId,
 			postId: post?.id
 		};
 
@@ -252,7 +256,6 @@ const PinDetail: React.FC = () => {
 
 	const handleUnsaveClick = async () => {
 		const requestBody = {
-			userId,
 			postId: post?.id
 		};
 

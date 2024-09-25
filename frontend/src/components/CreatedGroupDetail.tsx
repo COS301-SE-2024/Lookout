@@ -82,7 +82,7 @@ const CreatedGroupDetail: React.FC = () => {
         const groupData = await groupResponse.json();
 
         if (groupData.userId) {
-          const userResponse = await fetch(`/api/users/${groupData.userId}`, {
+          const userResponse = await fetch(`/api/users/`, {
             method: 'GET',
             headers: { Accept: 'application/json' },
           });

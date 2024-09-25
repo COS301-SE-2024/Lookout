@@ -2,6 +2,7 @@ package com.lookout.Lookout.config
 
 import com.lookout.Lookout.filter.JwtAuthenticationFilter
 import com.lookout.Lookout.service.UserService
+import jakarta.servlet.http.Cookie
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
@@ -46,12 +46,22 @@ class SecurityConfig {
             .exceptionHandling { exceptions ->
                 // Handle 401 Unauthorized errors
                 exceptions.authenticationEntryPoint { request, response, authException ->
-                    response.sendRedirect("/login")
+                    val cookie: Cookie = Cookie("jwt", null) // Null value to remove it
+                    cookie.setPath("/")
+                    cookie.setHttpOnly(true) // Match your original cookie settings
+                    cookie.setMaxAge(0) // Immediate expiration
+                    response.addCookie(cookie)
+                    response.sendRedirect("/login?cleardata=true")
                 }
                 // Handle 403 Forbidden errors
                 exceptions.accessDeniedHandler { request, response, accessDeniedException ->
                     if (request.requestURI != "/login") {
-                        response.sendRedirect("/login")
+                        val cookie = Cookie("jwt", null) // Null value to remove it
+                        cookie.path = "/"
+                        cookie.isHttpOnly = true // Match your original cookie settings
+                        cookie.maxAge = 0 // Immediate expiration
+                        response.addCookie(cookie)
+                        response.sendRedirect("/login?cleardata=true")
                     } else {
                         response.status = HttpStatus.FORBIDDEN.value()
                     }

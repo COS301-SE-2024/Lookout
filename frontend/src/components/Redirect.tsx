@@ -1,28 +1,30 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ClearDataOnRedirect = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.pathname === "/login") {
+    // Check if "cleardata=true" is in the query string
+    const urlParams = new URLSearchParams(location.search);
+    const clearData = urlParams.get('cleardata');
+
+    if (clearData === 'true') {
       // Clear localStorage
       localStorage.clear();
 
       // Clear sessionStorage
       sessionStorage.clear();
 
-      // Clear cookies
-      document.cookie.split(";").forEach((cookie) => {
-        document.cookie = cookie
-          .replace(/^ +/, "")
-          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
-
-      // Optionally refresh the page
-      window.location.reload();
+      // Remove "cleardata=true" from the URL to prevent loop
+      urlParams.delete('cleardata');
+      navigate({
+        pathname: '/login',
+        search: urlParams.toString()
+      }, { replace: true });
     }
-  }, [location]);
+  }, [location, navigate]);
 
   return null;
 };

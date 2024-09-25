@@ -46,7 +46,7 @@ interface SavedPostsGridFixProps {
 }
 
 const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) => {
-  const userId = 1; // This should be dynamically set based on the logged-in user
+  
   const navigate = useNavigate();
   const [savedPosts, setSavedPosts] = useState<SavedPost[]>([]);
   const [loading, setLoading] = useState(true); // Add loading state
@@ -124,7 +124,7 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
     return () => {
       setSavedPosts([]);
     };
-  }, [userId]);
+  }, []);
 
   const handlePostClick = (post: Post) => {
     navigate(`/saved_post/${post.id}`, { state: { post } });

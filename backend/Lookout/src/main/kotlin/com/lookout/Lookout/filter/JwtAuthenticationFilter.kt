@@ -70,16 +70,6 @@ class JwtAuthenticationFilter(
         return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
 
-    private fun redirectToLogin(response: HttpServletResponse) {
-        // Check if the request is for an actual page rather than a resource
-        val requestUri = response.encodeRedirectURL(response.toString())
-        if (!requestUri.endsWith(".js") && !requestUri.endsWith(".css") && !requestUri.endsWith(".json")) {
-            response.sendRedirect("/login")
-        } else {
-            response.status = HttpServletResponse.SC_UNAUTHORIZED
-        }
-    }
-
 }
 
 
