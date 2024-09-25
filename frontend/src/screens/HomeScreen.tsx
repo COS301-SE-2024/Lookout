@@ -696,7 +696,7 @@ const HomeScreen: React.FC = () => {
 
 				try {
 					const response = await fetch(
-						"http://localhost:5000/predict",
+						"/predict",
 						requestOptions
 					);
 					const result = await response.json();
@@ -1109,7 +1109,7 @@ const HomeScreen: React.FC = () => {
 															try {
 																const response =
 																	await fetch(
-																		"http://localhost:5000/predict",
+																		"/predict",
 																		requestOptions
 																	);
 																const result =
@@ -1160,7 +1160,7 @@ const HomeScreen: React.FC = () => {
 															try {
 																const response =
 																	await fetch(
-																		"http://localhost:5000/predict",
+																		"/predict",
 																		requestOptions
 																	);
 																const result =

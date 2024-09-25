@@ -1,5 +1,6 @@
 import Navigationbar from "./components/Navigationbar";
 import { Outlet } from "react-router-dom";
+import ClearDataOnRedirect from "./components/Redirect";
 
 import "./assets/styles/nav.css";
 //import EmailHandler from "./components/EmailHandler";
@@ -7,8 +8,10 @@ import "./assets/styles/nav.css";
 const App = () => {
 	return (
 		<>
+		<ClearDataOnRedirect />
 			<main className="bg-bkg text-content">
 				<div className="container mx-0 w-full min-w-full">
+				
 					<Navigationbar />
 					<Outlet />
 				</div>

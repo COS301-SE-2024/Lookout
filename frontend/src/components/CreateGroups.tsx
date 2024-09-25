@@ -29,8 +29,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({ onCreateGroup, onClose }) =
       name: title,
       description: description,
       picture: picture || "https://animalmicrochips.co.uk/images/default_no_animal.jpg",
-      isPrivate: isToggled,
-      userId: 2 // Replace with the actual user ID
+      isPrivate: isToggled
     };
 
     try {

@@ -55,7 +55,7 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
   useEffect(() => {
     const fetchSavedPosts = async () => {
       try {
-        const response = await fetch(`/api/savedPosts/user/${userId}`);
+        const response = await fetch(`/api/savedPosts/user`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

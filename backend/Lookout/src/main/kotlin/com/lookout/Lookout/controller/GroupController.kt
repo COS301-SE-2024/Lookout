@@ -98,9 +98,20 @@ class GroupController(
     }
 
     @PostMapping
-    fun createGroup(@RequestBody createGroupDto: CreateGroupDto): ResponseEntity<GroupDto> {
+    fun createGroup(@RequestBody createGroupDto: CreateGroupDto,request: HttpServletRequest): ResponseEntity<GroupDto> {
         try {
-            val savedGroup = groupService.savedto(createGroupDto)
+            var userId: Long = 0
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+            val savedGroup = groupService.savedto(createGroupDto, userId)
             return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(savedGroup))
         } catch (e: IllegalArgumentException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
