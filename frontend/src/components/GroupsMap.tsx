@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import {useLocation } from 'react-router-dom';
 import {
@@ -23,9 +23,9 @@ type myPin = {
 const GroupsMap: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  //const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const [pins, setPins] = useState<myPin[]>([]);
-  const { group } = location.state as { group: any };
+  const { group } = location.state || {};
 
 
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -34,7 +34,7 @@ const GroupsMap: React.FC = () => {
   useEffect(() => {
     const fetchPins = async () => {
       try {
-        const response = await fetch(`/api/posts/group/${group.id}?page=0&size=10`, {
+        const response = await fetch(`/api/posts/group/${id}?page=0&size=10`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json"
@@ -65,7 +65,7 @@ const GroupsMap: React.FC = () => {
     };
 
     fetchPins();
-  }, [group.id]);
+  }, [group?.id]);
 
   // console.log("Pins State:", pins); // Log pins state
 

@@ -31,7 +31,7 @@ console.log(id)
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await fetch(`/api/users/${id}`, {
+        const userResponse = await fetch(`/api/users/`, {
           headers: { Accept: "application/json" },
         });
         console.log(userResponse)
@@ -39,7 +39,7 @@ console.log(id)
         setUser(userData);
 
         // Fetch posts count
-        const postsCountResponse = await fetch(`/api/users/postsCount/${id}`, {
+        const postsCountResponse = await fetch(`/api/users/postsCount`, {
           headers: {
             Accept: "application/json"
           }
@@ -48,7 +48,7 @@ console.log(id)
         setPostsCount(postsCountData);
 
         // Fetch groups count
-        const groupsCountResponse = await fetch(`/api/users/groupsCount/${id}`, {
+        const groupsCountResponse = await fetch(`/api/users/groupsCount`, {
           headers: {
             Accept: "application/json"
           }
@@ -64,7 +64,7 @@ console.log(id)
     };
 
     fetchUserData();
-  }, [id]);
+  }, []);
 
   if (!dataLoaded) {
     return <ProfileSkeleton />;

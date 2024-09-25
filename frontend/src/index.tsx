@@ -69,7 +69,7 @@ function Main() {
 					element={<ProtectedRoute element={Settings2} />}
 				/>
 				<Route
-					path="/groupMap"
+					path="/groupMap/:id"
 					element={<ProtectedRoute element={GroupsMap} />}
 				/>
 				<Route

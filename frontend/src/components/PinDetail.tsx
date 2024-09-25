@@ -89,7 +89,7 @@ const PinDetail: React.FC = () => {
 	const [saves, setSaves] = useState<number>(0);
 	const [userId] = useState<number>(2);
 	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
-	//const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 	useEffect(() => {
 		const localStoreTheme = localStorage.getItem("data-theme") || "default";
@@ -132,7 +132,7 @@ const PinDetail: React.FC = () => {
 				const relatedData = await relatedResponse.json();
 				setRelatedPosts(relatedData.content);
 
-				const userResponse = await fetch(`/api/users/${data.userId}`);
+				const userResponse = await fetch(`/api/users/`);
 				const userData = await userResponse.json();
 				setUser(userData);
 		
@@ -145,7 +145,7 @@ const PinDetail: React.FC = () => {
 		const checkIfSaved = async () => {
 			try {
 				const response = await fetch(
-					`/api/savedPosts/isPostSaved?userId=${userId}&postId=${id}`
+					`/api/savedPosts/isPostSaved?postId=${id}`
 				);
 				const data = await response.json();
 				setIsSaved(data);
@@ -169,7 +169,7 @@ const PinDetail: React.FC = () => {
 		fetchPost();
 		checkIfSaved();
 		getCountSaves();
-	}, [id, userId]);
+	}, [id]);
 
 	useEffect(() => {
 		if (!post?.id) {
@@ -222,7 +222,6 @@ const PinDetail: React.FC = () => {
 
 	const handleSaveClick = async () => {
 		const requestBody = {
-			userId,
 			postId: post?.id
 		};
 
@@ -250,7 +249,6 @@ const PinDetail: React.FC = () => {
 
 	const handleUnsaveClick = async () => {
 		const requestBody = {
-			userId,
 			postId: post?.id
 		};
 
@@ -390,10 +388,20 @@ const PinDetail: React.FC = () => {
 				</div>
 	  
 				<div className="flex justify-start mt-4 space-x-4">
-				<button className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml">
+				<button
+className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"					
+onClick={() => navigate(`/map`, { state: { post, apicode } })}
+				  >
 					View on Map
 				  </button>
-				  <button className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml">
+				  <button
+className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"										
+onClick={() =>
+					  navigate(`/group/${post?.groupId}`, {
+						state: { group: post?.group },
+					  })
+					}
+				  >
 					View Group
 				  </button>
 				</div>

@@ -89,7 +89,7 @@ const Navigationbar = () => {
 								<ul className="flex md:justify-start justify-center items-center space-x-2 md:ml-8">
 									{/* Icon and text for LOOKOUT */}
 									<li className="flex items-center space-x-2 hover:scale-105 transform transition-transform duration-300">
-										<Link to="/" className="flex items-center space-x-2">
+										<Link to="/home" className="flex items-center space-x-2">
 											<FaBinoculars size={32} className="text-navBkg2 hover:text-navBkg-dark transition-colors duration-300" />
 											<h1 className="text-navBkg2 font-extrabold text-3xl hover:text-navBkg-dark transition-transform duration-300">
 												LOOKOUT

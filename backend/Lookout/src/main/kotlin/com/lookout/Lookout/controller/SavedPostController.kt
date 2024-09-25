@@ -3,7 +3,12 @@ package com.lookout.Lookout.controller
 import com.lookout.Lookout.dto.SavePostRequest
 import com.lookout.Lookout.dto.SavedPostDto
 import com.lookout.Lookout.entity.SavedPosts
+import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.service.JwtService
 import com.lookout.Lookout.service.SavedPostsService
+import com.lookout.Lookout.service.UserService
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -12,7 +17,12 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/savedPosts")
-class SavedPostController(private val savedPostsService: SavedPostsService,  private val messagingTemplate: SimpMessagingTemplate) {
+class SavedPostController(
+    private val savedPostsService: SavedPostsService,
+    private val messagingTemplate: SimpMessagingTemplate,
+    private val jwtService: JwtService,
+    private val userService: UserService
+) {
 
 //    @GetMapping("/all")
 //    fun getAllSavedPostsWithUsers(): ResponseEntity<List<SavedPostDto>> {
@@ -48,10 +58,22 @@ class SavedPostController(private val savedPostsService: SavedPostsService,  pri
     }
 
     @PostMapping("/SavePost")
-    fun savePost(@RequestBody reqPost: SavePostRequest): ResponseEntity<String> {
+    fun savePost(@RequestBody reqPost: SavePostRequest, request: HttpServletRequest): ResponseEntity<String> {
         return try {
 
-            val savedPost = savedPostsService.savePost(reqPost.userId, reqPost.postId)
+            var userId: Long = 0
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+
+            val savedPost = savedPostsService.savePost(userId, reqPost.postId)
 
 
             val saveCount = savedPostsService.countSavesByPostId(reqPost.postId)
@@ -60,7 +82,7 @@ class SavedPostController(private val savedPostsService: SavedPostsService,  pri
                 "postId" to reqPost.postId,
                 "saves" to saveCount,
                 "isSaved" to true,
-                "userId" to reqPost.userId
+                "userId" to userId
             )
 
 
@@ -78,9 +100,20 @@ class SavedPostController(private val savedPostsService: SavedPostsService,  pri
     }
 
     @DeleteMapping("/UnsavePost")
-    fun unsavePost(@RequestBody reqPost: SavePostRequest): ResponseEntity<String> {
+    fun unsavePost(@RequestBody reqPost: SavePostRequest, request: HttpServletRequest): ResponseEntity<String> {
         return try {
-            val result = savedPostsService.unsavePost(reqPost.userId, reqPost.postId)
+            var userId: Long = 0
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+            val result = savedPostsService.unsavePost(userId, reqPost.postId)
             if (result) {
 
                 val saveCount = savedPostsService.countSavesByPostId(reqPost.postId)
@@ -88,7 +121,7 @@ class SavedPostController(private val savedPostsService: SavedPostsService,  pri
                     "postId" to reqPost.postId,
                     "saves" to saveCount,
                     "isSaved" to false,
-                    "userId" to reqPost.userId
+                    "userId" to userId
                 )
                 println("Sending WebSocket message to /post/${reqPost.postId} with payload: $messagePayload")
                 messagingTemplate.convertAndSend("/post/${reqPost.postId}", messagePayload)
@@ -112,9 +145,20 @@ class SavedPostController(private val savedPostsService: SavedPostsService,  pri
 //        }
 //    }
 
-    @GetMapping("/user/{userId}")
-    fun getSavedPostsByUser(@PathVariable userId: Long): ResponseEntity<List<SavedPostDto>> {
+    @GetMapping("/user")
+    fun getSavedPostsByUser(request: HttpServletRequest): ResponseEntity<List<SavedPostDto>> {
         return try {
+            var userId: Long = 0
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
             val savedPosts = savedPostsService.getSavedPostsByUser(userId)
             val savedPostDtos = savedPosts.map { convertToDto(it) }
             ResponseEntity.ok(savedPostDtos)
@@ -151,8 +195,19 @@ class SavedPostController(private val savedPostsService: SavedPostsService,  pri
 
 
     @GetMapping("/isPostSaved")
-    fun isPostSavedByUser(@RequestParam userId: Long, @RequestParam postId: Long): ResponseEntity<Boolean> {
+    fun isPostSavedByUser(@RequestParam postId: Long, request: HttpServletRequest): ResponseEntity<Boolean> {
         return try {
+            var userId: Long = 0
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
             val isSaved = savedPostsService.isPostSavedByUser(userId, postId)
             ResponseEntity.ok(isSaved)
         } catch (e: IllegalArgumentException) {
@@ -168,6 +223,11 @@ class SavedPostController(private val savedPostsService: SavedPostsService,  pri
         } catch (e: IllegalArgumentException) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
+    }
+
+    // Helper method to extract JWT from request cookies
+    private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
+        return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
 
 }
