@@ -54,7 +54,7 @@ const Profile = () => {
 
 				if (userData.profilePic !== null) {
 					localStorage.setItem("previewUrl", userData.profilePic);
-					setPreviewUrl(userData.profilePic);
+					
 					setProfilePic(userData.profilePic);
 				}
 
