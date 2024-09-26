@@ -10,9 +10,11 @@ import Modal from "../components/Modal";
 import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
 
 const Profile = () => {
-	const userId = 1;
-	const [activeTab, setActiveTab] = useState("posts");
-	const [showSettings, setShowSettings] = useState(false);
+	// State variables
+	const [activeTab, setActiveTab] = useState(() => {
+		// Check localStorage for the active tab, default to "posts"
+		return localStorage.getItem("activeTab") || "posts";
+	});
 	const [username, setUsername] = useState("Loading...");
 	const [postsCount, setPostsCount] = useState(0);
 	const [groupsCount, setGroupsCount] = useState(0);
@@ -21,11 +23,12 @@ const Profile = () => {
 	const { state } = location;
 	const [modalOpen, setModalOpen] = useState(false);
 	const [message, setMessage] = useState("");
-	const [, setPreviewUrl] = useState<string | undefined>(undefined);
-
+	const [showSettings, setShowSettings] = useState(false);
 	const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [profilePic, setProfilePic] = useState<string | null>(null);
+	const [, setPreviewUrl] = useState<string | undefined>(undefined);
+	const previewURL = localStorage.getItem("previewUrl");
 
 	useEffect(() => {
 		if (state?.message) {
@@ -39,13 +42,13 @@ const Profile = () => {
 			try {
 				const [userResponse, postsCountResponse, groupsCountResponse] =
 					await Promise.all([
-						fetch(`/api/users/`, {
+						fetch("/api/users/", {
 							headers: { Accept: "application/json" }
 						}),
-						fetch(`/api/users/postsCount`, {
+						fetch("/api/users/postsCount", {
 							headers: { Accept: "application/json" }
 						}),
-						fetch(`/api/users/groupsCount`, {
+						fetch("/api/users/groupsCount", {
 							headers: { Accept: "application/json" }
 						})
 					]);
@@ -60,7 +63,7 @@ const Profile = () => {
 
 				if (userData.profilePic !== null) {
 					localStorage.setItem("previewUrl", userData.profilePic);
-					setPreviewUrl(userData.profilePic);
+					setProfilePic(userData.profilePic);
 				}
 
 				setDataLoaded(true);
@@ -76,10 +79,10 @@ const Profile = () => {
 		fetchData();
 	}, []);
 
-	const closeModal = () => {
-		setModalOpen(false);
-		setMessage("");
-	};
+	useEffect(() => {
+		// Store active tab in localStorage whenever it changes
+		localStorage.setItem("activeTab", activeTab);
+	}, [activeTab]);
 
 	const handleImageClick = () => {
 		if (fileInputRef.current) {
@@ -156,7 +159,7 @@ const Profile = () => {
 
 	const updateUserPicture = async (pictureUrl: string) => {
 		try {
-			const response = await fetch(`/api/users/update-profile-pic`, {
+			const response = await fetch("/api/users/update-profile-pic", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json"
@@ -190,7 +193,7 @@ const Profile = () => {
 	};
 
 	return (
-		<div className="relative flex flex-col items-center w-full min-h-screen">
+		<div className="relative flex flex-col items-center w-full min-h-screen p-4 sm:p-8">
 			{dataLoaded ? (
 				<>
 					{/* Settings Icon */}
@@ -203,12 +206,9 @@ const Profile = () => {
 					</div>
 
 					{/* Profile Picture */}
-					<div
-						className="mt-10 cursor-pointer relative"
-						style={{ width: "96px", height: "96px" }}
-					>
+					<div className="cursor-pointer relative">
 						<img
-							className="w-24 h-24 rounded-full bg-gray-300 mb-2 cursor-pointer object-cover"
+							className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-300 mb-4 object-cover"
 							src={profilePic || profilePhoto}
 							alt="Profile"
 							onClick={handleImageClick}
@@ -247,22 +247,29 @@ const Profile = () => {
 					</div>
 
 					{/* Username */}
-					<div className="mt-4 text-center">
-						<h1 className="text-xl font-bold">{username}</h1>
+					<div className="mt-2 text-center">
+						<h1 className="text-2xl sm:text-3xl font-bold">
+							{username}
+						</h1>
 					</div>
 
-					{/* Followers and Following */}
-					<div className="mt-2 text-center">
-						<span className="font-bold">{postsCount}</span> posts |{" "}
-						<span className="font-bold">{groupsCount}</span> groups
+					{/* Posts and Groups Count */}
+					<div className="flex flex-row items-center space-x-4 mt-2">
+						<span className="text-md sm:text-lg">
+							{postsCount} Posts
+						</span>
+						<div className="w-px h-8 bg-content"></div>
+						<span className="text-md sm:text-lg">
+							{groupsCount} Groups
+						</span>
 					</div>
 
 					{/* Mini Navbar */}
-					<div className="flex mt-6 text-base space-x-8">
+					<div className="flex mt-4 space-x-8 sm:space-x-12">
 						<button
-							className={`px-4 py-2 focus:outline-none ${
+							className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${
 								activeTab === "posts"
-									? "border-b-4 border-[#6A994E] font-bold"
+									? "border-b-4 border-navBkg font-bold"
 									: "text-gray-500"
 							}`}
 							onClick={() => setActiveTab("posts")}
@@ -270,9 +277,9 @@ const Profile = () => {
 							Posts
 						</button>
 						<button
-							className={`px-4 py-2 focus:outline-none ${
+							className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${
 								activeTab === "groups"
-									? "border-b-4 border-[#6A994E] font-bold"
+									? "border-b-4 border-navBkg font-bold"
 									: "text-gray-500"
 							}`}
 							onClick={() => setActiveTab("groups")}
@@ -282,16 +289,18 @@ const Profile = () => {
 					</div>
 
 					{/* Content */}
-					<div className="text-sm w-full max-w-screen-lg mx-auto mt-4">
+					<div className="w-full max-w-6xl mx-auto mt-4 sm:mt-6 px-2">
 						{activeTab === "posts" && <PostsProfile />}
 						{activeTab === "groups" && <GroupsProfile />}
 					</div>
+
 					{showSettings && (
 						<SettingsModal onClose={() => setShowSettings(false)} />
 					)}
+
 					<Modal
 						isOpen={modalOpen}
-						onClose={closeModal}
+						onClose={() => setModalOpen(false)}
 						message={message}
 					/>
 				</>
