@@ -63,6 +63,15 @@ model_posts = tf.keras.models.load_model('Post_Model/post_recommendation_model.k
 model_groups = tf.keras.models.load_model('Groups_Model/group_recommendation_model.keras')
 
 ############################################# RECOMMEND POSTS ##################################################
+def most_saved_posts():
+    top_n = request.args.get('top_n', default=10, type=int)
+    post_save_counts = saved_posts_df.groupby('postid').size().reset_index(name='save_count')
+    top_saved_posts = post_save_counts.sort_values('save_count', ascending=False).head(top_n)
+    top_post_details = posts_df[posts_df['id'].isin(top_saved_posts['postid'])]
+    result = pd.merge(top_post_details, top_saved_posts, left_on='id', right_on='postid')
+    result = result[['id', 'userid', 'groupId', 'categoryId', 'title', 'caption', 'picture', 'latitude', 'longitude', 'save_count']].sort_values('save_count', ascending=False)
+
+    return jsonify(result.to_dict(orient='records'))
 
 def recommend_posts(user_id, top_n=10):
     internal_user_id = user_encoder_posts.transform([user_id])[0]
@@ -90,9 +99,19 @@ def recommend():
         recommended_posts = recommend_posts(user_id=user_id, top_n=top_n)
         return jsonify(recommended_posts)
     except ValueError:
-        return jsonify({'error': 'Invalid user_id provided'}), 400
+        recommended_posts = most_saved_posts()
+        return recommended_posts
 
 ############################################# RECOMMEND GROUPS ##################################################
+def most_joined_groups():
+
+    top_n = request.args.get('top_n', default=10, type=int)
+    group_join_counts = joined_groups_df.groupby('groupid').size().reset_index(name='join_count')
+    top_joined_groups = group_join_counts.sort_values('join_count', ascending=False).head(top_n)
+    top_group_details = groups_df[groups_df['id'].isin(top_joined_groups['groupid'])]
+    result = pd.merge(top_group_details, top_joined_groups, left_on='id', right_on='groupid')
+    result = result[['id', 'name', 'description', 'join_count']].sort_values('join_count', ascending=False)
+    return result.to_dict(orient='records')
 
 def recommend_groups(user_id, top_n=10):
     internal_user_id = user_encoder_groups.transform([user_id])[0]
@@ -120,7 +139,8 @@ def recommend_groups_route():
         recommended_groups = recommend_groups(user_id=user_id, top_n=top_n)
         return jsonify(recommended_groups)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        recommended_groups = most_joined_groups()
+        return jsonify(recommended_groups)
 
 if __name__ == '__main__':
     app.run(debug=True)

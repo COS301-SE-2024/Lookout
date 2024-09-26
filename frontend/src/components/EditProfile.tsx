@@ -29,7 +29,7 @@ export const EditProfile = () => {
   const patchNewUsername = async () => {
     const newUsername = inputUsernameValue;
 
-    const url = `api/users/1/update-username`;
+    const url = `api/users/update-username`;
 
     const requestBody = {
       newUsername: newUsername,
@@ -60,7 +60,7 @@ export const EditProfile = () => {
   const patchNewEmail = async () => {
     const newEmail = inputEmailValue; // Assuming inputEmailValue is defined and holds the new email value
 
-    const url = `/api/users/1/update-username`;
+    const url = `/api/users/update-email`;
 
     const requestBody = {
       newEmail: newEmail,
@@ -109,7 +109,7 @@ export const EditProfile = () => {
       inputUsernameValue !== null
     )
       patchNewUsername();
-    alert("WHEN AUTH FIXED, UPDATE TO DYNAMIC ID's");
+    
   };
 
   return (

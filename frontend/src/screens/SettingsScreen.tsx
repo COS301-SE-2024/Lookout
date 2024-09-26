@@ -41,8 +41,11 @@ const SettingsScreen: React.FC = () => {
                 throw new Error("Logout failed!");
             }
 
-            localStorage.setItem("authToken", "");
-            localStorage.removeItem("userEmail");
+            // Clear localStorage
+            localStorage.clear();
+
+            // Clear sessionStorage
+            sessionStorage.clear();
             navigate("/login");
             window.location.reload();
         } catch (error) {

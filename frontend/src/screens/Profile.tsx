@@ -156,12 +156,12 @@ const Profile = () => {
 
 	const updateUserPicture = async (pictureUrl: string) => {
 		try {
-			const response = await fetch(`/api/users/`, {
+			const response = await fetch(`/api/users/update-profile-pic`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify({ profilePic: pictureUrl })
+				body: JSON.stringify({ newProfilePicUrl: pictureUrl })
 			});
 			if (!response.ok) {
 				throw new Error("Failed to update user picture");

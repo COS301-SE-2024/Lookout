@@ -79,7 +79,7 @@ interface User {
   }
 
 const PinDetail: React.FC = () => {
-	const userId = 1;
+	//const userId = 1;
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [theme, setTheme] = useState("default");
@@ -180,54 +180,54 @@ const PinDetail: React.FC = () => {
 		getCountSaves();
 	}, [id]);
 
-	useEffect(() => {
-		if (!post?.id) {
-			console.log("Post ID is not available yet.");
-			return;
-		}
+	// useEffect(() => {
+	// 	if (!post?.id) {
+	// 		console.log("Post ID is not available yet.");
+	// 		return;
+	// 	}
 
-		let subscription: any = null;
+	// 	let subscription: any = null;
 
-		webSocketService
-			.connect(localStorage.getItem("authToken")!!)
-			.then(() => {
-				console.log("WebSocket connected");
+	// 	webSocketService
+	// 		.connect(localStorage.getItem("authToken")!!)
+	// 		.then(() => {
+	// 			console.log("WebSocket connected");
 
-				subscription = webSocketService.subscribe(
-					`/post/${post.id}`,
-					(message: any) => {
-						console.log(
-							`Message received on /post/${post.id}:`,
-							message
-						);
+	// 			subscription = webSocketService.subscribe(
+	// 				`/post/${post.id}`,
+	// 				(message: any) => {
+	// 					console.log(
+	// 						`Message received on /post/${post.id}:`,
+	// 						message
+	// 					);
 
-						try {
-							const savedPostData = JSON.parse(message.body);
-							console.log("Parsed message data:", savedPostData);
+	// 					try {
+	// 						const savedPostData = JSON.parse(message.body);
+	// 						console.log("Parsed message data:", savedPostData);
 
-							if (savedPostData.postId === post.id) {
-								if (savedPostData.userId !== userId) {
-									setSaves(savedPostData.saves);
-								}
-							}
-						} catch (error) {
-							console.error("Error parsing message:", error);
-						}
-					}
-				);
-			})
-			.catch((error) => {
-				console.error("WebSocket connection error:", error);
-			});
+	// 						if (savedPostData.postId === post.id) {
+	// 							//if (savedPostData.userId !== userId) {
+	// 								setSaves(savedPostData.saves);
+	// 							//}
+	// 						}
+	// 					} catch (error) {
+	// 						console.error("Error parsing message:", error);
+	// 					}
+	// 				}
+	// 			);
+	// 		})
+	// 		.catch((error) => {
+	// 			console.error("WebSocket connection error:", error);
+	// 		});
 
-		return () => {
-			if (subscription) {
-				console.log(`Unsubscribing from /post/${post.id}`);
-				webSocketService.unsubscribe(subscription);
-			}
-			webSocketService.disconnect();
-		};
-	}, [post?.id, userId]);
+	// 	return () => {
+	// 		if (subscription) {
+	// 			console.log(`Unsubscribing from /post/${post.id}`);
+	// 			webSocketService.unsubscribe(subscription);
+	// 		}
+	// 		webSocketService.disconnect();
+	// 	};
+	// }, [post?.id, userId]);
 
 	const handleSaveClick = async () => {
 		const requestBody = {

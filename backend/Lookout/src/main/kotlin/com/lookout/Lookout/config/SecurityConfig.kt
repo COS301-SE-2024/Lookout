@@ -46,7 +46,7 @@ class SecurityConfig {
             .exceptionHandling { exceptions ->
                 // Handle 401 Unauthorized errors
                 exceptions.authenticationEntryPoint { request, response, authException ->
-                    val cookie: Cookie = Cookie("jwt", null) // Null value to remove it
+                    val cookie = Cookie("jwt", null) // Null value to remove it
                     cookie.setPath("/")
                     cookie.setHttpOnly(true) // Match your original cookie settings
                     cookie.setMaxAge(0) // Immediate expiration

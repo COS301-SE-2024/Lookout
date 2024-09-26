@@ -97,15 +97,17 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
         }));
 
         // Remove duplicate posts based on post ID
-        const uniquePosts = transformedData.reduce((acc: SavedPost[], current: SavedPost) => {
-          const x = acc.find(item => item.post?.id === current.post?.id);
-          if (!x) {
-            acc.push(current);
-          }
-          return acc;
-        }, []);
+        // const uniquePosts = transformedData.reduce((acc: SavedPost[], current: SavedPost) => {
+        //   const x = acc.find(item => item.post?.id === current.post?.id);
+        //   if (!x) {
+        //     acc.push(current);
+        //   }
+        //   return acc;
+        // }, []);
 
-        setSavedPosts(uniquePosts);
+        console.log(transformedData);
+
+        setSavedPosts(transformedData);
       } catch (error) {
         if (error instanceof Error) {
           setError('Error fetching saved posts: ' + error.message);

@@ -64,20 +64,50 @@ class UserController(
     }
 
     @PutMapping("/update-profile-pic")
-    fun updateProfilePic(@RequestBody updateProfilePicRequest: UpdateProfilePicRequest): ResponseEntity<User> {
-        val updatedUser = userService.updateProfilePic(updateProfilePicRequest.userId, updateProfilePicRequest.newProfilePicUrl)
+    fun updateProfilePic(@RequestBody updateProfilePicRequest: UpdateProfilePicRequest, request: HttpServletRequest): ResponseEntity<User> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val updatedUser = userService.updateProfilePic(userId, updateProfilePicRequest.newProfilePicUrl)
         return ResponseEntity.ok(updatedUser)
     }
 
-    @PutMapping("/{id}/update-username")
-    fun updateUsername(@PathVariable id: Long, @RequestBody updateRequest: UpdateUsernameRequest): ResponseEntity<User> {
-        val updatedUser = userService.updateUsername(id, updateRequest.newUsername)
+    @PutMapping("/update-username")
+    fun updateUsername(@RequestBody updateRequest: UpdateUsernameRequest, request: HttpServletRequest): ResponseEntity<User> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val updatedUser = userService.updateUsername(userId, updateRequest.newUsername)
         return ResponseEntity.ok(updatedUser)
     }
 
-    @PutMapping("/{id}/update-email")
-    fun updateEmail(@PathVariable id: Long, @RequestBody updateRequest: UpdateEmailRequest): ResponseEntity<User> {
-        val updatedUser = userService.updateEmail(id, updateRequest.newEmail)
+    @PutMapping("/update-email")
+    fun updateEmail(@RequestBody updateRequest: UpdateEmailRequest, request: HttpServletRequest): ResponseEntity<User> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val updatedUser = userService.updateEmail(userId, updateRequest.newEmail)
         return ResponseEntity.ok(updatedUser)
     }
 
