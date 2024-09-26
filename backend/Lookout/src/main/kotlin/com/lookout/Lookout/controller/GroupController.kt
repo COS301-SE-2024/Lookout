@@ -154,13 +154,14 @@ class GroupController(
             println("User ID: ${user.id}")
             userId = user.id
         }
-        val groups = groupService.findGroupsByUserId(userId).map { group -> convertToDto(group)}
-        return if (groups.isNotEmpty()) {
-            ResponseEntity.ok(groups)
-        } else {
-            ResponseEntity.noContent().build()
-        }
+
+        // Ensure an empty list is returned if no groups are found
+        val groups = groupService.findGroupsByUserId(userId)
+        val groupDtos = groups.map { group -> convertToDto(group) }
+
+        return ResponseEntity.ok(groupDtos.ifEmpty { listOf() })
     }
+
 
     @GetMapping("/user/createdBy")
     fun getGroupsByUserCreate(request: HttpServletRequest): ResponseEntity<List<GroupDto>> {

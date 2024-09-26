@@ -55,12 +55,14 @@ const Profile = () => {
 				const groupsCountData = await groupsCountResponse.json();
 
 				setUsername(userData.userName || "Unknown User");
+				
 				setPostsCount(postsCountData);
 				setGroupsCount(groupsCountData);
 
 				if (userData.profilePic !== null) {
 					localStorage.setItem("previewUrl", userData.profilePic);
 					setPreviewUrl(userData.profilePic);
+					setProfilePic(userData.profilePic);
 				}
 
 				setDataLoaded(true);
