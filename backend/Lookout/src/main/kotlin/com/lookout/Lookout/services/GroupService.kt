@@ -35,6 +35,8 @@ class GroupService(
         return groupRepository.save(group)
     }
 
+
+
     fun savedto(createGroupDto: CreateGroupDto, userId: Long): Groups {
         val user = userService.findById(userId).orElseThrow {
             IllegalArgumentException("User not found with id: ${userId}")

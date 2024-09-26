@@ -207,6 +207,39 @@ class GroupController(
         }
     }
 
+    @PutMapping("/{id}/update-picture")
+    fun updateGroupPicture(
+        @PathVariable id: Long,
+        @RequestBody updatePictureRequest: UpdatePictureRequest,
+        request: HttpServletRequest
+    ): ResponseEntity<GroupDto> {
+        try {
+            val jwt = extractJwtFromCookies(request.cookies)
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user !is User) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            }
+
+            val group = groupService.findById(id) ?: return ResponseEntity.notFound().build()
+
+
+            if (group.user?.id != user.id) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+            }
+
+            group.picture = updatePictureRequest.newPictureUrl
+            val updatedGroup = groupService.save(group)
+
+            return ResponseEntity.ok(convertToDto(updatedGroup))
+        } catch (e: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+    }
+
+    data class UpdatePictureRequest(val newPictureUrl: String)
+
     @PostMapping("/RemoveMemberFromGroup")
     fun removeMemberFromGroup(@RequestBody request: AddOrRemoveMemberFromGroup,
                               requestid: HttpServletRequest): ResponseEntity<String> {
