@@ -1,11 +1,11 @@
 package com.lookout.Lookout.service
 
 import com.lookout.Lookout.dto.CreateGroupDto
-import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.repository.GroupRepository
 import com.lookout.Lookout.entity.UpdateGroup
 import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.repository.GroupMembersRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -13,7 +13,11 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-class GroupService(private val groupRepository: GroupRepository, private val userService: UserService) {
+class GroupService(
+    private val groupRepository: GroupRepository,
+    private val userService: UserService,
+    private val groupMembersRepository: GroupMembersRepository
+) {
 
     fun findAll(pageable: Pageable): Page<Groups> = groupRepository.findAll(pageable)
 
@@ -46,8 +50,12 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         return groupRepository.save(group)
     }
 
-
-    fun deleteById(groupId: Long) = groupRepository.deleteById(groupId)
+    @Transactional
+    fun deleteById(groupId: Long) {
+        // Remove all group members before deleting the group
+        groupMembersRepository.deleteByGroupId(groupId)
+        groupRepository.deleteById(groupId)
+    }
 
     fun findGroupsByUserId(userid: Long): List<Groups> = groupRepository.findGroupsByUserId(userid)
 

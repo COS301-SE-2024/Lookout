@@ -1,4 +1,4 @@
-import React, { useEffect, //useMemo, 
+import React, { Suspense, useEffect, //useMemo, 
 	useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import {
@@ -260,11 +260,8 @@ const HomeScreen: React.FC = () => {
 
 	const [reservePins, setReservePins] = useState<Poi[]>(locations);
 
-	const [categoryExpanded, setCategoryExpanded] = useState(false);
-	const [groupExpanded, setGroupExpanded] = useState(false);
-	const [imageExpanded, setImageExpanded] = useState(false);
-	const [titleExpanded, setTitleExpanded] = useState(false);
-	const [captionExpanded, setCaptionExpanded] = useState(false);
+	const [imageExpanded, setImageExpanded] = useState(true);
+	const [captionExpanded, setCaptionExpanded] = useState(true);
 	const [dragpinExpanded, setDragPinExpanded] = useState(false);
 	const [showRecommendedTitle, setShowRecommendedTitle] = useState(false);
 	const [predictResult, setPredictResult] = useState("");
@@ -850,16 +847,15 @@ const HomeScreen: React.FC = () => {
 	const resetForm = () => {
 		setCenter(defaultCenter);
 		setSelectedCategory(null);
-		setCategoryExpanded(false);
+		
 		setSelectedGroup(null);
-		setGroupExpanded(false);
+		
 		setPicture("");
-		setImageExpanded(false);
+		setImageExpanded(true);
 		setTitle("");
-		setTitleExpanded(false);
 		setShowRecommendedTitle(false);
 		setCaption("");
-		setCaptionExpanded(false);
+		setCaptionExpanded(true);
 		setDragPinExpanded(false);
 		setLatitude(0);
 		setLongitude(0);
@@ -873,6 +869,7 @@ const HomeScreen: React.FC = () => {
 	};
 
 	return (
+		<Suspense fallback={<div>Loading map...</div>}>
 		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
 			<div className="map-container h-screen">
 				<GoogleMap
@@ -919,8 +916,9 @@ const HomeScreen: React.FC = () => {
 
 			{/* Add pin modal */}
 			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-							<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto">
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 ">
+							<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto h-96 overflow-y-auto">
+
 						<button
 							className=" absolute top-2 right-2 text-xl"
 							onClick={closeModal}
@@ -936,13 +934,9 @@ const HomeScreen: React.FC = () => {
 								<label
 									htmlFor="categorySelect"
 									className="block text-sm font-medium text-content cursor-pointer"
-									onClick={() =>
-										setCategoryExpanded(!categoryExpanded)
-									}
-								>
+									>
 									Select Category:
 								</label>
-								{categoryExpanded && (
 									<select
 										id="categorySelect"
 										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
@@ -965,25 +959,20 @@ const HomeScreen: React.FC = () => {
 											</option>
 										))}
 									</select>
-								)}
+								
 							</div>
 
 
-							{/* Collapsible Group Section */}
+							
 							<div className="mb-3 border text-gray-500 border-content rounded-md p-3">
 								<label
 									htmlFor="groupSelect"
 									className="block text-sm text-content font-medium text-content cursor-pointer"
-									onClick={() =>
-										setGroupExpanded(!groupExpanded)
-									}
-
-								>
+									>
 									Select Group:
 								</label>
 
-								{groupExpanded && (
-									<select
+								<select
 										id="groupSelect"
 										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 										value={selectedGroup ?? ""}
@@ -1005,7 +994,6 @@ const HomeScreen: React.FC = () => {
 											</option>
 										))}
 									</select>
-								)}
 							</div>
 
 							{/* Collapsible Image Section */}
@@ -1052,10 +1040,7 @@ const HomeScreen: React.FC = () => {
 								<div className="flex items-center justify-between">
 									<label
 										htmlFor="formTitle"
-										className="block text-sm text-content font-medium cursor-pointer"
-										onClick={() =>
-											setTitleExpanded(!titleExpanded)
-										}
+										className="block text-sm text-content font-medium cursor-pointer"	
 									>
 										Title:
 									</label>
@@ -1199,8 +1184,6 @@ const HomeScreen: React.FC = () => {
 									)}
 								</div>
 
-								{/* Expandable Text Area for Title */}
-								{titleExpanded && (
 									<div className="mt-2">
 										<textarea
 											id="formTitle"
@@ -1213,7 +1196,6 @@ const HomeScreen: React.FC = () => {
 											}
 										></textarea>
 									</div>
-								)}
 
 							</div>
 
@@ -1503,6 +1485,7 @@ const HomeScreen: React.FC = () => {
 				</div>
 			)}
 		</GoogleMapApiLoader>
+		</Suspense>
 	);
 };
 
