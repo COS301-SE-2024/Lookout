@@ -48,13 +48,13 @@ const Profile = () => {
 				const groupsCountData = await groupsCountResponse.json();
 
 				setUsername(userData.userName || "Unknown User");
-				
+
 				setPostsCount(postsCountData);
 				setGroupsCount(groupsCountData);
 
 				if (userData.profilePic !== null) {
 					localStorage.setItem("previewUrl", userData.profilePic);
-					
+
 					setProfilePic(userData.profilePic);
 				}
 
@@ -191,17 +191,16 @@ const Profile = () => {
 		<div className="relative flex flex-col items-center w-full min-h-screen p-4 sm:p-8">
 			{/* Profile Picture */}
 			<div
-				className="cursor-pointer relative"
-				style={{ width: "128px", height: "128px" }}
+				className="cursor-pointer relative group w-24 h-24 sm:w-32 sm:h-32 mb-4"
+				onClick={handleImageClick}
 			>
 				<img
-					className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-300 mb-4 cursor-pointer object-cover"
+					className="w-full h-full rounded-full bg-gray-300 object-cover"
 					src={profilePic || profilePhoto}
 					alt="Profile"
-					onClick={handleImageClick}
 				/>
 				{isUploadingPicture && (
-					<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+					<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full z-20">
 						<svg
 							className="animate-spin h-8 w-8 text-white"
 							xmlns="http://www.w3.org/2000/svg"
@@ -224,6 +223,10 @@ const Profile = () => {
 						</svg>
 					</div>
 				)}
+				{/* Overlay div */}
+				<div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full z-10">
+					Change Profile Picture
+				</div>
 				<input
 					type="file"
 					accept="image/*"
