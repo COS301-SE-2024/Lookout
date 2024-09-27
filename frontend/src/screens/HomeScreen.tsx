@@ -1,5 +1,7 @@
-import React, { Suspense, useEffect, //useMemo, 
-	useState } from "react";
+import React, {
+	Suspense, useEffect, //useMemo, 
+	useState
+} from "react";
 import { FiFilter } from "react-icons/fi";
 import {
 	//HeatmapLayer,
@@ -12,8 +14,9 @@ import {
 } from "react-google-map-wrapper";
 import "../assets/styles/home.css";
 import HomePins from "../components/HomePins";
-import { FaFolder, FaCamera, FaTimes, FaPlus //FaFilter 
-	} from "react-icons/fa";
+import {
+	FaFolder, FaCamera, FaTimes, FaPlus //FaFilter 
+} from "react-icons/fa";
 
 import Legend from "../components/Legend";
 import CameraComponent from "../components/CameraComponent"; // Ensure this path is correct
@@ -49,23 +52,23 @@ import AWS from "aws-sdk";
 // 	const [radius, setRadius] = useState<number | null>(null);
 // 	const [opacity, setOpacity] = useState<number | null>(null);
 
-	//const data = useMemo(getData, []);
+//const data = useMemo(getData, []);
 
-	// const toggleHeatmap = () => {
-	// 	setShow(!show);
-	// };
+// const toggleHeatmap = () => {
+// 	setShow(!show);
+// };
 
-	// const changeGradient = () => {
-	// 	setGradient((prev) => (prev ? null : customGradient));
-	// };
+// const changeGradient = () => {
+// 	setGradient((prev) => (prev ? null : customGradient));
+// };
 
-	// const changeRadius = () => {
-	// 	setRadius(radius ? null : 20);
-	// };
+// const changeRadius = () => {
+// 	setRadius(radius ? null : 20);
+// };
 
-	// const changeOpacity = () => {
-	// 	setOpacity(opacity ? null : 0.2);
-	// };
+// const changeOpacity = () => {
+// 	setOpacity(opacity ? null : 0.2);
+// };
 
 // 	return (
 // 		<>
@@ -531,7 +534,7 @@ const HomeScreen: React.FC = () => {
 			groupid: selectedGroup,
 			picture: picture,
 			latitude: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
-        	longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
+			longitude: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
 		});
 
 		const requestOptions = {
@@ -568,7 +571,7 @@ const HomeScreen: React.FC = () => {
 				setCenter({
 					lat: dragpinlatitude !== null && dragpinlatitude !== undefined && dragpinlatitude !== 0 ? dragpinlatitude : latitude,
 					lng: dragpinlongitude !== null && dragpinlongitude !== undefined && dragpinlongitude !== 0 ? dragpinlongitude : longitude
-				}); 
+				});
 
 				setZoom(15);
 				// setIsModalOpen(false); // Close modal after successful pin addition
@@ -847,9 +850,9 @@ const HomeScreen: React.FC = () => {
 	const resetForm = () => {
 		setCenter(defaultCenter);
 		setSelectedCategory(null);
-		
+
 		setSelectedGroup(null);
-		
+
 		setPicture("");
 		setImageExpanded(true);
 		setTitle("");
@@ -870,73 +873,73 @@ const HomeScreen: React.FC = () => {
 
 	return (
 		<Suspense fallback={<div>Loading map...</div>}>
-		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
-			<div className="map-container h-screen bg-nav">
-				<GoogleMap
-					className="h-full w-full"
-					zoom={zoom}
-					center={center}
-					mapOptions={{
-						disableDefaultUI: true,
-						zoomControl: true,
-						mapId: "dde51c47799889c4"
-					}}
+			<GoogleMapApiLoader apiKey={apicode || ""} suspense>
+				<div className="map-container h-screen bg-nav">
+					<GoogleMap
+						className="h-full w-full"
+						zoom={zoom}
+						center={center}
+						mapOptions={{
+							disableDefaultUI: true,
+							zoomControl: true,
+							mapId: "dde51c47799889c4"
+						}}
+					>
+						<MarkerClusterer>
+							<PoiMarkers pois={reservePins} />
+							<HomePins pin={filteredPins} />
+						</MarkerClusterer>
+						{/* <MapContent /> */}
+					</GoogleMap>
+					<Legend items={legendItems} />
+				</div>
+				<div className="fixed top-3 md:top-20 left-1/2 transform -translate-x-1/2 z-10 w-50%">
+					<input
+						type="text"
+						placeholder="Search for a pin..."
+						value={searchTerm}
+						onChange={handleSearchChange}
+						className="search-bar text-black p-2 border border-nav rounded-full"
+					/>
+				</div>
+
+				<button
+					className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-navBkg  hover:text-white"
+					onClick={openMenuModal}
 				>
-					<MarkerClusterer>
-						<PoiMarkers pois={reservePins} />
-						<HomePins pin={filteredPins} />
-					</MarkerClusterer>
-					{/* <MapContent /> */}
-				</GoogleMap>
-				<Legend items={legendItems} />
-			</div>
-			<div className="fixed top-3 md:top-20 left-1/2 transform -translate-x-1/2 z-10 w-50%">
-				<input
-					type="text"
-					placeholder="Search for a pin..."
-					value={searchTerm}
-					onChange={handleSearchChange}
-					className="search-bar text-black p-2 border border-nav rounded-full"
-				/>
-			</div>
-
-			<button
-				className="fixed top-3 left-2 md:top-20 md:left-7 z-50 bg-gray-500 text-white p-2 rounded-full hover:bg-navBkg  hover:text-white"
-				onClick={openMenuModal}
-			>
-				<FiFilter size={25} />
-			</button>
-			<button
-				className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:text-white hover:bg-navBkg sm:bottom-24 md:bottom-20"
-				onClick={openModal}
-			>
-				<FaPlus />
-			</button>
+					<FiFilter size={25} />
+				</button>
+				<button
+					className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white py-2 px-4 rounded-full hover:text-white hover:bg-navBkg sm:bottom-24 md:bottom-20"
+					onClick={openModal}
+				>
+					<FaPlus />
+				</button>
 
 
-			{/* Add pin modal */}
-			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 ">
-							<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto h-96 overflow-y-auto">
+				{/* Add pin modal */}
+				{isModalOpen && (
+					<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 ">
+						<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto h-96 overflow-y-auto">
 
-						<button
-							className=" absolute top-2 right-2 text-xl"
-							onClick={closeModal}
-						>
-							&times;
-						</button>
-						<h2 className="text-2xl text-content font-bold mb-4 ">Add a Pin</h2>
+							<button
+								className=" text-navBkg hover:text-icon absolute top-2 right-2 text-xl"
+								onClick={closeModal}
+							>
+								&times;
+							</button>
+							<h2 className="text-2xl text-content font-bold mb-4 ">Add a Pin</h2>
 
 
-						<form>
-							{/* Collapsible Category Section */}
-							<div className="mb-3 border border-content text-gray-500 rounded-md p-3">
-								<label
-									htmlFor="categorySelect"
-									className="block text-sm font-medium text-content cursor-pointer"
+							<form>
+								{/* Collapsible Category Section */}
+								<div className="mb-3 border border-content text-gray-500 rounded-md p-3">
+									<label
+										htmlFor="categorySelect"
+										className="block text-sm font-medium text-content cursor-pointer"
 									>
-									Select Category:
-								</label>
+										Select Category:
+									</label>
 									<select
 										id="categorySelect"
 										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
@@ -959,20 +962,20 @@ const HomeScreen: React.FC = () => {
 											</option>
 										))}
 									</select>
-								
-							</div>
+
+								</div>
 
 
-							
-							<div className="mb-3 border text-gray-500 border-content rounded-md p-3">
-								<label
-									htmlFor="groupSelect"
-									className="block text-sm text-content font-medium text-content cursor-pointer"
+
+								<div className="mb-3 border text-gray-500 border-content rounded-md p-3">
+									<label
+										htmlFor="groupSelect"
+										className="block text-sm text-content font-medium text-content cursor-pointer"
 									>
-									Select Group:
-								</label>
+										Select Group:
+									</label>
 
-								<select
+									<select
 										id="groupSelect"
 										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 										value={selectedGroup ?? ""}
@@ -994,195 +997,202 @@ const HomeScreen: React.FC = () => {
 											</option>
 										))}
 									</select>
-							</div>
+								</div>
 
-							{/* Collapsible Image Section */}
-							<div className="mb-3 border border-content rounded-md p-3">
-								<label
-									className="block text-sm font-medium text-content cursor-pointer"
-									onClick={() =>
-										setImageExpanded(!imageExpanded)
-									}
-								>
-									Add Image:
-								</label>
-								{imageExpanded && (
-									<div className="flex justify-center mb-3">
-										{!picture && (
-											<button
-												type="button"
-												className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
-												onClick={openPhotoModal}
-											>
-												<FaPlus />
-											</button>
-										)}
-										<input
-											type="file"
-											accept="image/jpeg, image/png"
-											style={{ display: "none" }}
-											ref={fileInputRef}
-											onChange={handleFileChange}
-										/>
-										{picture && (
-											<img
-												src={picture}
-												alt="Selected"
-												className="max-h-64 w-auto mt-2 mx-auto object-contain rounded-md"
-											/>
-										)}
-									</div>
-								)}
-							</div>
-
-							{/* Title Section with Slider */}
-							<div className="mb-3 border border-content rounded-md p-3">
-								<div className="flex items-center justify-between">
+								{/* Collapsible Image Section */}
+								<div className="mb-3 border border-content rounded-md p-3 relative">
 									<label
-										htmlFor="formTitle"
-										className="block text-sm text-content font-medium cursor-pointer"	
+										className="block text-sm font-medium text-content cursor-pointer"
+										onClick={() => setImageExpanded(!imageExpanded)}
 									>
-										Title:
+										Add Image:
 									</label>
-
-									{/* Slider for Recommended Title */}
-									{selectedCategory === 1 && (
-										<div className="flex items-center">
-											<span className="text-sm mr-2">
-												Recommended
-											</span>
-											<label className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
-												<input
-													type="checkbox"
-													className="toggle-checkbox"
-													checked={
-														showRecommendedTitle
-													}
-													onChange={async () => {
-														// Toggle the checkbox state
-														const newShowRecommendedTitle =
-															!showRecommendedTitle;
-														setShowRecommendedTitle(
-															newShowRecommendedTitle
-														);
-
-														if (
-															newShowRecommendedTitle &&
-															!predictResult &&
-															fileInputRef.current
-																?.files &&
-															fileInputRef.current
-																.files[0]
-														) {
-															const formdata =
-																new FormData();
-															const file =
-																fileInputRef
-																	.current
-																	.files[0];
-															formdata.append(
-																"image",
-																file
-															);
-
-															const requestOptions =
-															{
-																method: "POST",
-																body: formdata
-															};
-
-															try {
-																const response =
-																	await fetch(
-																		"/predict",
-																		requestOptions
-																	);
-																const result =
-																	await response.json();
-
-																setPredictResult(
-																	result.predicted_class
-																);
-
-																setTitle(
-																	result.predicted_class
-																);
-
-																console.log(
-																	result
-																);
-															} catch (error) {
-																console.error(
-																	"Error during prediction:",
-																	error
-																);
-															}
-														} else if (
-															newShowRecommendedTitle &&
-															!predictResult
-														) {
-															const myHeaders =
-																new Headers();
-															myHeaders.append(
-																"Content-Type",
-																"application/json"
-															);
-
-															const raw =
-																JSON.stringify({
-																	image_url:
-																		picture
-																});
-
-															const requestOptions =
-															{
-																method: "POST",
-																headers:
-																	myHeaders,
-																body: raw
-															};
-
-															try {
-																const response =
-																	await fetch(
-																		"/predict",
-																		requestOptions
-																	);
-																const result =
-																	await response.json();
-																setPredictResult(
-																	result.predicted_class
-																);
-																setTitle(
-																	result.predicted_class
-																);
-																console.log(
-																	result
-																);
-															} catch (error) {
-																console.error(
-																	error
-																);
-															}
-														} else if (
-															!newShowRecommendedTitle
-														) {
-															// If the checkbox is unchecked, clear the title
-															setTitle("");
-														} else if (
-															newShowRecommendedTitle
-														) {
-															setTitle(
-																predictResult
-															);
-														}
-													}}
-												/>
-												<span className="toggle-label"></span>
-											</label>
+									{imageExpanded && (
+										<div className="flex justify-center mb-3 relative">
+											{!picture && (
+												<button
+													type="button"
+													className="flex items-center justify-center w-12 h-12 border border-gray-300 rounded-lg"
+													onClick={openPhotoModal}
+												>
+													<FaPlus />
+												</button>
+											)}
+											<input
+												type="file"
+												accept="image/jpeg, image/png"
+												style={{ display: "none" }}
+												ref={fileInputRef}
+												onChange={handleFileChange}
+											/>
+											{picture && (
+												<div className="relative">
+													{/* X button to clear the image */}
+													<button
+														className="absolute top-0 right-0 text-navBkg hover:text-icon"
+														onClick={() => setPicture("")}
+													>
+														&times;
+													</button>
+													<img
+														src={picture}
+														alt="Selected"
+														className="max-h-64 w-auto mt-2 mx-auto object-contain rounded-md"
+													/>
+												</div>
+											)}
 										</div>
 									)}
 								</div>
+
+								{/* Title Section with Slider */}
+								<div className="mb-3 border border-content rounded-md p-3">
+									<div className="flex items-center justify-between">
+										<label
+											htmlFor="formTitle"
+											className="block text-sm text-content font-medium cursor-pointer"
+										>
+											Title:
+										</label>
+
+										{/* Slider for Recommended Title */}
+										{selectedCategory === 1 && (
+											<div className="flex items-center">
+												<span className="text-sm mr-2">
+													Recommended
+												</span>
+												<label className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+													<input
+														type="checkbox"
+														className="toggle-checkbox"
+														checked={
+															showRecommendedTitle
+														}
+														onChange={async () => {
+															// Toggle the checkbox state
+															const newShowRecommendedTitle =
+																!showRecommendedTitle;
+															setShowRecommendedTitle(
+																newShowRecommendedTitle
+															);
+
+															if (
+																newShowRecommendedTitle &&
+																!predictResult &&
+																fileInputRef.current
+																	?.files &&
+																fileInputRef.current
+																	.files[0]
+															) {
+																const formdata =
+																	new FormData();
+																const file =
+																	fileInputRef
+																		.current
+																		.files[0];
+																formdata.append(
+																	"image",
+																	file
+																);
+
+																const requestOptions =
+																{
+																	method: "POST",
+																	body: formdata
+																};
+
+																try {
+																	const response =
+																		await fetch(
+																			"/predict",
+																			requestOptions
+																		);
+																	const result =
+																		await response.json();
+
+																	setPredictResult(
+																		result.predicted_class
+																	);
+
+																	setTitle(
+																		result.predicted_class
+																	);
+
+																	console.log(
+																		result
+																	);
+																} catch (error) {
+																	console.error(
+																		"Error during prediction:",
+																		error
+																	);
+																}
+															} else if (
+																newShowRecommendedTitle &&
+																!predictResult
+															) {
+																const myHeaders =
+																	new Headers();
+																myHeaders.append(
+																	"Content-Type",
+																	"application/json"
+																);
+
+																const raw =
+																	JSON.stringify({
+																		image_url:
+																			picture
+																	});
+
+																const requestOptions =
+																{
+																	method: "POST",
+																	headers:
+																		myHeaders,
+																	body: raw
+																};
+
+																try {
+																	const response =
+																		await fetch(
+																			"/predict",
+																			requestOptions
+																		);
+																	const result =
+																		await response.json();
+																	setPredictResult(
+																		result.predicted_class
+																	);
+																	setTitle(
+																		result.predicted_class
+																	);
+																	console.log(
+																		result
+																	);
+																} catch (error) {
+																	console.error(
+																		error
+																	);
+																}
+															} else if (
+																!newShowRecommendedTitle
+															) {
+																// If the checkbox is unchecked, clear the title
+																setTitle("");
+															} else if (
+																newShowRecommendedTitle
+															) {
+																setTitle(
+																	predictResult
+																);
+															}
+														}}
+													/>
+													<span className="toggle-label"></span>
+												</label>
+											</div>
+										)}
+									</div>
 
 									<div className="mt-2">
 										<textarea
@@ -1197,294 +1207,294 @@ const HomeScreen: React.FC = () => {
 										></textarea>
 									</div>
 
-							</div>
+								</div>
 
-							{/* Collapsible Caption Section */}
-							<div className="mb-3 border border-content rounded-md p-3">
-								<label
+								{/* Collapsible Caption Section */}
+								<div className="mb-3 border border-content rounded-md p-3">
+									<label
 
-									htmlFor="formCaption"
-									className="block text-sm font-medium text-content cursor-pointer"
-									onClick={() =>
-										setCaptionExpanded(!captionExpanded)
-									}
-								>
-									Caption:
-								</label>
-								{captionExpanded && (
-									<textarea
-										id="formCaption"
-										rows={4}
-										className="mt-1 text-gray-500 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
-										placeholder="Enter description"
-										value={caption}
-										onChange={(e) =>
-											setCaption(e.target.value)
+										htmlFor="formCaption"
+										className="block text-sm font-medium text-content cursor-pointer"
+										onClick={() =>
+											setCaptionExpanded(!captionExpanded)
 										}
-									></textarea>
-								)}
+									>
+										Caption:
+									</label>
+									{captionExpanded && (
+										<textarea
+											id="formCaption"
+											rows={4}
+											className="mt-1 text-gray-500 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+											placeholder="Enter description"
+											value={caption}
+											onChange={(e) =>
+												setCaption(e.target.value)
+											}
+										></textarea>
+									)}
 
-							</div>
+								</div>
 
-							<div className="mb-3 border border-content rounded-md p-3">
-								<label
-									htmlFor="formDescription"
+								<div className="mb-3 border border-content rounded-md p-3">
+									<label
+										htmlFor="formDescription"
 
-									className="block text-sm font-medium text-content cursor-pointer"
-									onClick={() =>
-										setDragPinExpanded(!dragpinExpanded)
-									}
+										className="block text-sm font-medium text-content cursor-pointer"
+										onClick={() =>
+											setDragPinExpanded(!dragpinExpanded)
+										}
 
-								>
-									Sighting Location:
-								</label>
+									>
+										Sighting Location:
+									</label>
 
-								{dragpinExpanded && (
-									<div id="sightlocation">
-										<GoogleMapApiLoader
-											apiKey={apicode || ""}
-											suspense
-										>
-											<GoogleMap
-												className="h-full w-full"
-												zoom={15}
-												center={center}
-												mapOptions={{
-													disableDefaultUI: true,
-													zoomControl: true,
-													mapId: "dde51c47799889c4"
-												}}
+									{dragpinExpanded && (
+										<div id="sightlocation">
+											<GoogleMapApiLoader
+												apiKey={apicode || ""}
+												suspense
 											>
-												{" "}
-												{/* draggable */}
-												<Marker
-													lat={latitude}
-													lng={longitude}
-													title={"Sighting Location"}
-													draggable
-													onDragEnd={(event) => {
-														const newPosition =
-															event.getPosition();
-														const newLat =
-															newPosition?.lat();
-														const newLng =
-															newPosition?.lng();
-
-														setdragpinLatitude(
-															newLat !== null &&
-																newLat !==
-																undefined
-																? newLat
-																: latitude
-														);
-														setdragpinLongitude(
-															newLng !== null &&
-																newLng !==
-																undefined
-																? newLng
-																: longitude
-														);
-
-														console.log(
-															`Marker dropped at: Latitude ${dragpinlatitude}, Longitude ${dragpinlongitude}`
-														);
+												<GoogleMap
+													className="h-full w-full"
+													zoom={15}
+													center={center}
+													mapOptions={{
+														disableDefaultUI: true,
+														zoomControl: true,
+														mapId: "dde51c47799889c4"
 													}}
-												/>
-											</GoogleMap>
-										</GoogleMapApiLoader>
-									</div>
-								)}
+												>
+													{" "}
+													{/* draggable */}
+													<Marker
+														lat={latitude}
+														lng={longitude}
+														title={"Sighting Location"}
+														draggable
+														onDragEnd={(event) => {
+															const newPosition =
+																event.getPosition();
+															const newLat =
+																newPosition?.lat();
+															const newLng =
+																newPosition?.lng();
 
-							</div>
+															setdragpinLatitude(
+																newLat !== null &&
+																	newLat !==
+																	undefined
+																	? newLat
+																	: latitude
+															);
+															setdragpinLongitude(
+																newLng !== null &&
+																	newLng !==
+																	undefined
+																	? newLng
+																	: longitude
+															);
+
+															console.log(
+																`Marker dropped at: Latitude ${dragpinlatitude}, Longitude ${dragpinlongitude}`
+															);
+														}}
+													/>
+												</GoogleMap>
+											</GoogleMapApiLoader>
+										</div>
+									)}
+
+								</div>
 
 
-							{/* Submit button only enabled when all fields are filled */}
-							<div>
-								<button
-									className={`font-bold w-full px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content  ${!selectedCategory ||
+								{/* Submit button only enabled when all fields are filled */}
+								<div>
+									<button
+										className={`font-bold w-full px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content  ${!selectedCategory ||
 											!selectedGroup ||
 											!picture ||
 											!title ||
 											!caption
 											? " cursor-not-allowed"
 											: ""
-										}`}
-									onClick={handleAddPinClick}
-									disabled={
-										!selectedCategory ||
-										!selectedGroup ||
-										!picture ||
-										!title ||
-										!caption
-									}
-								>
-									Add Pin
-								</button>
-							</div>
-						</form>
+											}`}
+										onClick={handleAddPinClick}
+										disabled={
+											!selectedCategory ||
+											!selectedGroup ||
+											!picture ||
+											!title ||
+											!caption
+										}
+									>
+										Add Pin
+									</button>
+								</div>
+							</form>
 
+						</div>
 					</div>
-				</div>
-			)}
+				)}
 
-			{/* Success modal */}
-			{isSuccessModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50">
-					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
-						<h2 className="text-2xl font-bold mb-4 text-center">
-							Post Created Successfully!
-						</h2>
-						<button
-							className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
-							onClick={() => {
-								setIsSuccessModalOpen(false);
-
-							}}
-						>
-							Okay
-						</button>
-					</div>
-				</div>
-			)}
-
-
-			{/* PhotoOptions modal */}
-			{isPhotoOptionsModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
-					<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto relative">
-						<h2 className="text-2xl font-bold mb-4 text-center">
-							Photo
-						</h2>
-						<div className="flex justify-between mb-4">
+				{/* Success modal */}
+				{isSuccessModalOpen && (
+					<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50">
+						<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
+							<h2 className="text-2xl font-bold mb-4 text-center">
+								Post Created Successfully!
+							</h2>
 							<button
-								className="absolute top-4 right-4 px-2 py-1  focus:outline-none focus:ring-2 "
-								onClick={() =>
-									setIsPhotoOptionsModalOpen(false)
-								}
-							>
-								<FaTimes />
-							</button>
-							<button
-								className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
-								onClick={handleAddPhotoClick}
-							>
-								<FaFolder size={20} />
-								<span className="text-base">
-									Upload A Photo
-								</span>
-							</button>
+								className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
+								onClick={() => {
+									setIsSuccessModalOpen(false);
 
-							<button
-								className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
-								onClick={handleTakePhotoClick}
+								}}
 							>
-								<FaCamera size={20} />
-								<span className="text-base">Take A Photo</span>
+								Okay
 							</button>
 						</div>
 					</div>
-				</div>
-			)}
+				)}
 
-			{/* Camera modal */}
-			{isCameraModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
-					<div className="relative bg-bkg p-6 rounded-lg w-full max-w-sm mx-auto">
-						<button
-							className="absolute top-2 right-2 text-xl"
-							onClick={() => setIsCameraModalOpen(false)}
-						>
-							&times;
-						</button>
-						<h2 className="flex items-center justify-center text-2xl font-bold mb-4">
-							Take A Photo
-						</h2>
-						<CameraComponent
-							onCapture={(url) => {
-								// shortenURL(url);
 
-								// setPicture(url);
-								setPicture(url);
-								uploadBase64ImageToS3(url);
-								setIsCameraModalOpen(false);
-							}}
-						/>
-					</div>
-				</div>
-			)}
-
-			{/* Menu modal */}
-			{isMenuModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-nav bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
-					<div
-						className="relative bg-nav p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
-						style={{
-							width: "90%",
-							maxWidth: "500px",
-							maxHeight: "80vh",
-							overflowY: "auto",
-						}}
-					>
-						<button
-							className="absolute top-3 right-3 text-icon hover:text-navSelect transition-colors duration-200"
-							onClick={closeMenuModal}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-6 w-6"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								strokeWidth="2"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
-						</button>
-						<div className="mt-6 bg-nav">
-							<h2 className="text-xl font-bold text-content text-center">
-								Pins Displaying
+				{/* PhotoOptions modal */}
+				{isPhotoOptionsModalOpen && (
+					<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
+						<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto relative">
+							<h2 className="text-2xl font-bold mb-4 text-center">
+								Photo
 							</h2>
-							<div className="mt-4 space-y-3">
+							<div className="flex justify-between mb-4">
 								<button
-									className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === null
+									className="absolute top-4 right-4 px-2 py-1  focus:outline-none focus:ring-2 "
+									onClick={() =>
+										setIsPhotoOptionsModalOpen(false)
+									}
+								>
+									<FaTimes />
+								</button>
+								<button
+									className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
+									onClick={handleAddPhotoClick}
+								>
+									<FaFolder size={20} />
+									<span className="text-base">
+										Upload A Photo
+									</span>
+								</button>
+
+								<button
+									className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2"
+									onClick={handleTakePhotoClick}
+								>
+									<FaCamera size={20} />
+									<span className="text-base">Take A Photo</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Camera modal */}
+				{isCameraModalOpen && (
+					<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
+						<div className="relative bg-bkg p-6 rounded-lg w-full max-w-sm mx-auto">
+							<button
+								className="absolute top-2 right-2 text-xl"
+								onClick={() => setIsCameraModalOpen(false)}
+							>
+								&times;
+							</button>
+							<h2 className="flex items-center justify-center text-2xl font-bold mb-4">
+								Take A Photo
+							</h2>
+							<CameraComponent
+								onCapture={(url) => {
+									// shortenURL(url);
+
+									// setPicture(url);
+									setPicture(url);
+									uploadBase64ImageToS3(url);
+									setIsCameraModalOpen(false);
+								}}
+							/>
+						</div>
+					</div>
+				)}
+
+				{/* Menu modal */}
+				{isMenuModalOpen && (
+					<div className="fixed inset-0 flex items-center justify-center bg-nav bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
+						<div
+							className="relative bg-nav p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
+							style={{
+								width: "90%",
+								maxWidth: "500px",
+								maxHeight: "80vh",
+								overflowY: "auto",
+							}}
+						>
+							<button
+								className="absolute top-3 right-3 text-icon hover:text-navSelect transition-colors duration-200"
+								onClick={closeMenuModal}
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-6 w-6"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth="2"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M6 18L18 6M6 6l12 12"
+									/>
+								</svg>
+							</button>
+							<div className="mt-6 bg-nav">
+								<h2 className="text-xl font-bold text-content text-center">
+									Pins Displaying
+								</h2>
+								<div className="mt-4 space-y-3">
+									<button
+										className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === null
 											? "bg-navSelect border border-nav text-nav"
 											: "bg-bkg border border-bkg hover:bg-navSelect hover:text-bkg"
-										}`}
-									onClick={() => handleCategoryClick(null)}
-								>
-									All Pins
-								</button>
-								{categories.map((category) => (
-									<div key={category.id}>
-										<button
-											className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === category.id
+											}`}
+										onClick={() => handleCategoryClick(null)}
+									>
+										All Pins
+									</button>
+									{categories.map((category) => (
+										<div key={category.id}>
+											<button
+												className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === category.id
 													? "bg-navSelect border border-nav text-nav"
 													: "bg-bkg border border-bkg hover:bg-navSelect hover:text-bkg"
-												}`}
-											onClick={() => handleCategoryClick(category.id)}
-										>
-											{category.name}
-										</button>
-									</div>
-								))}
-							</div>
-							<div className="flex justify-center mt-6">
-								{/* <button
+													}`}
+												onClick={() => handleCategoryClick(category.id)}
+											>
+												{category.name}
+											</button>
+										</div>
+									))}
+								</div>
+								<div className="flex justify-center mt-6">
+									{/* <button
                   className="py-2 px-6 bg-green-600 text-white font-semibold rounded-full shadow-md hover:bg-green-700 transition-colors duration-300"
                   onClick={closeMenuModal}
                 >
                   Save
                 </button> */}
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			)}
-		</GoogleMapApiLoader>
+				)}
+			</GoogleMapApiLoader>
 		</Suspense>
 	);
 };

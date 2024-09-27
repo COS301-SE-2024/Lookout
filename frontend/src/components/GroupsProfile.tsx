@@ -22,12 +22,15 @@ const GroupsProfile = () => {
 		});
 	};
 
-	const handleCreateGroup = (newGroup: any) => {
-		console.log("New group created:", newGroup);
-		startTransition(() => {
-			setIsCreateGroupsOpen(false);
-		});
-	};
+	const [groupCount, setGroupCount] = useState(0); // State to track the number of created groups
+
+const handleCreateGroup = (newGroup: any) => {
+	console.log("New group created:", newGroup);
+	startTransition(() => {
+		setIsCreateGroupsOpen(false);
+		setGroupCount(prevCount => prevCount + 1); // Increment the count
+	});
+};
 
 	const handleCloseModal = () => {
 		setIsCreateGroupsOpen(false);
@@ -60,10 +63,10 @@ const GroupsProfile = () => {
 
 			{/* Display Groups */}
 			{selectedOption === "groups" ? (
-				<GroupsGridFix searchQuery={searchQuery} />
-			) : (
-				<CreatedGroupsGridFix searchQuery={searchQuery} />
-			)}
+	<GroupsGridFix searchQuery={searchQuery} />
+) : (
+	<CreatedGroupsGridFix key={groupCount} searchQuery={searchQuery} /> // Use groupCount as key
+)}
 
 			{/* Create Groups Modal */}
 			{isCreateGroupsOpen && (

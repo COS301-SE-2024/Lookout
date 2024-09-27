@@ -53,10 +53,10 @@ const getDayWithSuffix = (date: Date) => {
 		day % 10 === 1 && day !== 11
 			? "st"
 			: day % 10 === 2 && day !== 12
-			? "nd"
-			: day % 10 === 3 && day !== 13
-			? "rd"
-			: "th";
+				? "nd"
+				: day % 10 === 3 && day !== 13
+					? "rd"
+					: "th";
 	return `${day}${suffix}`;
 };
 
@@ -465,7 +465,8 @@ const CreatedGroupDetail: React.FC = () => {
 
 			<div className="container mx-auto p-4 mt-10">
 				<div className="flex flex-col md:flex-row md:items-center md:justify-center items-center">
-					{/* **Group Picture with Conditional Rendering for Owner** */}
+
+					{/* Group Picture with Conditional Rendering for Owner */}
 					{owner?.email === currentUserEmail ? (
 						<div
 							className="relative group w-56 h-56 mb-4 md:mb-0 md:mr-8 cursor-pointer"
@@ -502,18 +503,16 @@ const CreatedGroupDetail: React.FC = () => {
 								</div>
 							)}
 							{/* Overlay div */}
-							<>
-								<div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg z-10">
-									Change Group Picture
-								</div>
-								<input
-									type="file"
-									accept="image/*"
-									onChange={handleFileChange}
-									ref={fileInputRef}
-									style={{ display: "none" }}
-								/>
-							</>
+							<div className={`absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 text-white text-center ${isEditing ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300 rounded-lg z-10`}>
+								Change Group Picture
+							</div>
+							<input
+								type="file"
+								accept="image/*"
+								onChange={handleFileChange}
+								ref={fileInputRef}
+								style={{ display: "none" }}
+							/>
 						</div>
 					) : (
 						<div className="w-56 h-56 mb-4 md:mb-0 md:mr-8">
@@ -530,7 +529,7 @@ const CreatedGroupDetail: React.FC = () => {
 						{isEditing ? (
 							<input
 								type="text"
-								className="text-content text-2xl italic font-bold bg-transparent mb-2 border-b border-gray-300 focus:outline-none"
+								className="text-content text-2xl italic font-bold bg-transparent mb-2 focus:outline-none"
 								value={editableName}
 								onChange={(e) =>
 									setEditableName(
@@ -547,7 +546,7 @@ const CreatedGroupDetail: React.FC = () => {
 						{isEditing ? (
 							<input
 								type="text"
-								className="text-content md:text-xl text-md italic w-80 bg-transparent border-b border-gray-300 focus:outline-none mb-2"
+								className="text-content md:text-xl text-md italic w-80 bg-transparent focus:outline-none mb-2"
 								value={editableDescription}
 								onChange={(e) =>
 									setEditableDescription(
@@ -568,10 +567,10 @@ const CreatedGroupDetail: React.FC = () => {
 										(acc, curr, index) =>
 											(index + 1) % 10 === 0
 												? [
-														...acc,
-														curr,
-														<br key={index} />
-												  ]
+													...acc,
+													curr,
+													<br key={index} />
+												]
 												: [...acc, curr],
 										[]
 									)}
@@ -593,13 +592,13 @@ const CreatedGroupDetail: React.FC = () => {
 						<span className="text-content2 md:text-md text-base">
 							{group.createdAt
 								? `${getDayWithSuffix(
-										new Date(group.createdAt)
-								  )} ${new Date(
-										group.createdAt
-								  ).toLocaleDateString("en-GB", {
-										month: "long",
-										year: "numeric"
-								  })}`
+									new Date(group.createdAt)
+								)} ${new Date(
+									group.createdAt
+								).toLocaleDateString("en-GB", {
+									month: "long",
+									year: "numeric"
+								})}`
 								: "Unknown"}
 						</span>
 
@@ -635,11 +634,7 @@ const CreatedGroupDetail: React.FC = () => {
 					</div>
 					{posts.length === 0 ? (
 						<div className="text-center">
-							<img
-								src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
-								alt="No posts"
-								className="w-68 h-64 mx-auto mb-4"
-							/>
+							
 							<p className="text-content">
 								There are no posts in this group yet. Be the
 								first to post!
