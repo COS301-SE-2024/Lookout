@@ -76,7 +76,7 @@ interface User {
 	isAccountNonLocked: boolean;
 	isCredentialsNonExpired: boolean;
 	isAccountNonExpired: boolean;
-  }
+}
 
 const PinDetail: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -87,7 +87,6 @@ const PinDetail: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [isSaved, setIsSaved] = useState<boolean>(false);
 	const [saves, setSaves] = useState<number>(0);
-	const [userId] = useState<number>(2);
 	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
 	const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
@@ -135,7 +134,6 @@ const PinDetail: React.FC = () => {
 				const userResponse = await fetch(`/api/users/`);
 				const userData = await userResponse.json();
 				setUser(userData);
-		
 			} catch (error) {
 				console.error("Error fetching post or related posts:", error);
 				setLoading(false);
@@ -196,8 +194,9 @@ const PinDetail: React.FC = () => {
 							const savedPostData = JSON.parse(message.body);
 							console.log("Parsed message data:", savedPostData);
 
+							// Check the user email instead of userId
 							if (savedPostData.postId === post.id) {
-								if (savedPostData.userId !== userId) {
+								if (savedPostData.userEmail !== user?.email) {
 									setSaves(savedPostData.saves);
 								}
 							}
@@ -218,7 +217,7 @@ const PinDetail: React.FC = () => {
 			}
 			webSocketService.disconnect();
 		};
-	}, [post?.id, userId]);
+	}, [post?.id, user?.email]);
 
 	const handleSaveClick = async () => {
 		const requestBody = {
@@ -289,13 +288,14 @@ const PinDetail: React.FC = () => {
 
 	if (!post || !user) {
 		return <SkeletonPinDetail />;
-	  }
-	 
+	}
 
-	  return (
-		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg"> {/* Ensure the container fills the whole screen */}
-		  <style>
-			{`
+	return (
+		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg">
+			{" "}
+			{/* Ensure the container fills the whole screen */}
+			<style>
+				{`
 			  .scrollbar-hide::-webkit-scrollbar {
 				display: none;
 			  }
@@ -326,101 +326,121 @@ const PinDetail: React.FC = () => {
 				}
 			  }
 			`}
-		  </style>
-		  <button
-			onClick={() => navigate(-1)}
-			className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2 "
-			style={{ zIndex: 50 }}
-		  >
-			<svg
-			  xmlns="http://www.w3.org/2000/svg"
-			  className="h-8 w-8"
-			  fill="none"
-			  viewBox="0 0 24 24"
-			  stroke="currentColor"
+			</style>
+			<button
+				onClick={() => navigate(-1)}
+				className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2 "
+				style={{ zIndex: 50 }}
 			>
-			  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-			</svg>
-		  </button>
-	  
-		  <div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
-			<div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row h-full min-h-[550px]"> {/* Minimum height added */}
-			  <figure className="rounded-t-lg overflow-hidden md:w-1/2">
-				<img
-				  src={post.picture}
-				  alt={post.title}
-				  className="w-full h-full object-cover"
-				/>
-			  </figure>
-	  
-			  <div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow"> {/* flex-grow added */}
-				<div className="flex items-center justify-between mt-2 mb-4">
-				  <h1 className="text-2xl md:text-4xl font-bold">{post.title}</h1>
-				  <div className="flex items-center">
-					{isSaved ? (
-					  <FaBookmark
-						className="text-navBkg cursor-pointer"
-						onClick={handleSaveIconClick}
-						size={28} // Larger size
-					  />
-					) : (
-					  <FaRegBookmark
-						className="text-navBkg cursor-pointer"
-						onClick={handleSaveIconClick}
-						size={28} // Larger size
-					  />
-					)}
-					<span className="ml-2 md:text-xl text-base text-center">{saves} saves</span>
-				  </div>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					className="h-8 w-8"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="2"
+						d="M15 19l-7-7 7-7"
+					/>
+				</svg>
+			</button>
+			<div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
+				<div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row h-full min-h-[550px]">
+					{" "}
+					{/* Minimum height added */}
+					<figure className="rounded-t-lg overflow-hidden md:w-1/2">
+						<img
+							src={post.picture}
+							alt={post.title}
+							className="w-full h-full object-cover"
+						/>
+					</figure>
+					<div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow">
+						{" "}
+						{/* flex-grow added */}
+						<div className="flex items-center justify-between mt-2 mb-4">
+							<h1 className="text-2xl md:text-4xl font-bold">
+								{post.title}
+							</h1>
+							<div className="flex items-center">
+								{isSaved ? (
+									<FaBookmark
+										className="text-navBkg cursor-pointer"
+										onClick={handleSaveIconClick}
+										size={28} // Larger size
+									/>
+								) : (
+									<FaRegBookmark
+										className="text-navBkg cursor-pointer"
+										onClick={handleSaveIconClick}
+										size={28} // Larger size
+									/>
+								)}
+								<span className="ml-2 md:text-xl text-base text-center">
+									{saves} saves
+								</span>
+							</div>
+						</div>
+						<div className="flex items-center mb-4">
+							<img
+								src={user.profilePic}
+								alt={post.username}
+								className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4"
+							/>
+							<div>
+								<h2 className="text-content text-xl md:text-2xl font-bold">
+									{post.username}
+								</h2>
+								<p className="text-content md:text-xl text-md">
+									{post.caption}
+								</p>
+								<CategoryPill categoryId={post.categoryId} />
+							</div>
+						</div>
+						<div className="flex justify-start mt-4 space-x-4">
+							<button
+								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"
+								onClick={() =>
+									navigate(`/map`, {
+										state: { post, apicode }
+									})
+								}
+							>
+								View on Map
+							</button>
+							<button
+								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"
+								onClick={() =>
+									navigate(`/group/${post?.groupId}`, {
+										state: { group: post?.group }
+									})
+								}
+							>
+								View Group
+							</button>
+						</div>
+						<div className="mt-8">
+							<h1 className="text-lg font-semibold md:text-xl ">
+								See more posts like this:
+							</h1>
+
+							<HorizontalCarousel>
+								{relatedPosts.map((relatedPost) => (
+									<PinDetailPost
+										key={relatedPost.id}
+										post={relatedPost}
+									/>
+								))}
+							</HorizontalCarousel>
+						</div>
+					</div>
 				</div>
-	  
-				<div className="flex items-center mb-4">
-				  <img
-					src={user.profilePic}
-					alt={post.username}
-					className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4" 
-				  />
-				  <div>
-					<h2 className="text-content text-xl md:text-2xl font-bold">{post.username}</h2>
-					<p className="text-content md:text-xl text-md">{post.caption}</p>
-					<CategoryPill categoryId={post.categoryId} />
-				  </div>
-				</div>
-	  
-				<div className="flex justify-start mt-4 space-x-4">
-				<button
-className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"					
-onClick={() => navigate(`/map`, { state: { post, apicode } })}
-				  >
-					View on Map
-				  </button>
-				  <button
-className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"										
-onClick={() =>
-					  navigate(`/group/${post?.groupId}`, {
-						state: { group: post?.group },
-					  })
-					}
-				  >
-					View Group
-				  </button>
-				</div>
-	  
-				<div className="mt-8">
-				  <h1 className="text-lg font-semibold md:text-xl ">See more posts like this:</h1>
-	  
-				  <HorizontalCarousel>
-					{relatedPosts.map((relatedPost) => (
-					  <PinDetailPost key={relatedPost.id} post={relatedPost} />
-					))}
-				  </HorizontalCarousel>
-				</div>
-			  </div>
 			</div>
-		  </div>
 		</div>
-	  );
-	  
+	);
 };
 
 export default PinDetail;
