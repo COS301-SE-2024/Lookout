@@ -893,10 +893,10 @@ const HomeScreen: React.FC = () => {
 			<div className="fixed top-3 md:top-20 left-1/2 transform -translate-x-1/2 z-10 w-50%">
 				<input
 					type="text"
-					placeholder="Search..."
+					placeholder="Search for a pin..."
 					value={searchTerm}
 					onChange={handleSearchChange}
-					className="search-bar p-2 border border-nav rounded-full"
+					className="search-bar text-black p-2 border border-nav rounded-full"
 				/>
 			</div>
 
@@ -1188,7 +1188,7 @@ const HomeScreen: React.FC = () => {
 										<textarea
 											id="formTitle"
 											rows={2}
-											className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+											className="text-gray-500 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
 											placeholder="Enter title"
 											value={title}
 											onChange={(e) =>
@@ -1215,7 +1215,7 @@ const HomeScreen: React.FC = () => {
 									<textarea
 										id="formCaption"
 										rows={4}
-										className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
+										className="mt-1 text-gray-500 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm "
 										placeholder="Enter description"
 										value={caption}
 										onChange={(e) =>
@@ -1415,7 +1415,7 @@ const HomeScreen: React.FC = () => {
 
 			{/* Menu modal */}
 			{isMenuModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
+				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
 					<div
 						className="relative bg-white p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
 						style={{
@@ -1426,7 +1426,7 @@ const HomeScreen: React.FC = () => {
 						}}
 					>
 						<button
-							className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition-colors duration-200"
+							className="absolute top-3 right-3 text-content hover:text-icon transition-colors duration-200"
 							onClick={closeMenuModal}
 						>
 							<svg
@@ -1444,8 +1444,8 @@ const HomeScreen: React.FC = () => {
 								/>
 							</svg>
 						</button>
-						<div className="mt-6">
-							<h2 className="text-xl font-bold text-gray-800 text-center">
+						<div className="mt-6 bg-bkg">
+							<h2 className="text-xl font-bold text-content text-center">
 								Pins Displaying
 							</h2>
 							<div className="mt-4 space-y-3">
@@ -1508,13 +1508,13 @@ const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
 		caption: string;
 	}) {
 		return (
-			<div id="content">
-				<div className="bg-white rounded-lg shadow-md p-4 max-w-xs">
-					<h1 className="text-2xl font-semibold text-black">
+			<div id="content bg-nav">
+				<div className="bg-nav rounded-lg shadow-md p-2 max-w-xs">
+					<h1 className="text-2xl font-semibold text-content">
 						{category}
 					</h1>
 					<div id="bodyContent">
-						<p className="text-gray-700 mt-2 text-xl">{caption}</p>
+						<p className="text-content mt-2 text-xl">{caption}</p>
 						<div className="flex justify-center"></div>
 					</div>
 				</div>

@@ -40,7 +40,7 @@ const Navigationbar = () => {
 
 	// Define a helper function to get the color based on the current path
 	const getIconColor = (path: string) => {
-		return location.pathname === path ? 'text-navBkg2 bg-iconShadow ' : 'text-icon';
+		return location.pathname === path ? 'text-navBkg2 md:bg-iconShadow ' : 'text-icon';
 	};
 
 	return (

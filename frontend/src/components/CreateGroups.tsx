@@ -156,12 +156,12 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 	};
 
 	return (
-		<div className="relative p-4 rounded-lg w-full max-w-md">
+		<div className="relative p-4 rounded-lg w-full max-w-md bg-bkg">
 			{/* Close Button */}
-			<div className="flex justify-between items-center mb-4">
-				<h2 className="text-2xl font-bold">Create a New Group</h2>
+			<div className="flex justify-between bg-bkg items-center mb-4">
+				<h2 className="text-2xl text-content font-bold">Create a New Group</h2>
 				<button
-					className="text-gray-600 hover:text-navBkg"
+					className="text-navBkg hover:text-icon"
 					onClick={onClose}
 				>
 					<FaTimes className="text-xl" />
@@ -170,7 +170,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 
 			<div className="flex justify-center mb-3">
 				<button
-					className="flex items-center justify-center w-32 h-32 border border-gray-300 rounded-lg relative overflow-hidden hover:text-navBkg"
+					className="flex items-center justify-center w-32 h-32 rounded-lg relative overflow-hidden bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white"
 					onClick={handleAddPhotoClick}
 					data-testid="add-photo-button"
 				>
@@ -207,7 +207,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 								</div>
 							)}
 							<button
-								className="absolute top-2 right-2 bg-gray-800 text-white p-1 rounded-full"
+								className="absolute top-2 right-2 bg-gray-800 text-white p-1 rounded-full text-navBkg"
 								onClick={handleRemovePhoto}
 								data-testid="remove-photo-button"
 							>
@@ -220,7 +220,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 				</button>
 			</div>
 
-			<div className="text-center mb-3">
+			<div className="text-center mb-3 text-content">
 				<span className="text-lg">Add a photo</span>
 				<input
 					type="file"
@@ -236,14 +236,14 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 				<div className="mb-3">
 					<label
 						htmlFor="formTitle"
-						className="block text-sm font-medium text-gray-700"
+						className="block text-sm font-medium text-content"
 					>
 						Title:
 					</label>
 					<input
 						type="text"
 						id="formTitle"
-						className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="mt-1 block w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-grey-500"
 						placeholder="Enter title"
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
@@ -253,14 +253,14 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 				<div className="mb-3">
 					<label
 						htmlFor="formDescription"
-						className="block text-sm font-medium text-gray-700"
+						className="block text-sm font-medium text-content"
 					>
 						Description:
 					</label>
 					<textarea
 						id="formDescription"
 						rows={4}
-						className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="mt-1 block w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-grey-500"
 						placeholder="Enter description"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
@@ -270,7 +270,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 
 			<div>
 				<button
-					className="w-full px-4 py-2 bg-navBkg text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+					className="w-full px-4 py-2 bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
 					onClick={handleCreateClick}
 				>
 					Create

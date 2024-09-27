@@ -4,7 +4,7 @@ import ProfileSkeleton from "../components/ProfileSkeleton";
 import PostsProfile from "../components/PostsProfile";
 import GroupsProfile from "../components/GroupsProfile";
 import { useLocation } from "react-router-dom";
-import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
+import profilePhoto from "../assets/styles/images/user.png";
 
 const Profile = () => {
 	const [activeTab, setActiveTab] = useState(() => {

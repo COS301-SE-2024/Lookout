@@ -302,7 +302,7 @@ const GroupDetail: React.FC = () => {
 	}
 
 	return (
-		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg ">
+		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg relative">
 			<style>
 				{`
           .scrollbar-hide::-webkit-scrollbar {

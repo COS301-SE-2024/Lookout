@@ -339,7 +339,7 @@ const PinDetail: React.FC = () => {
         </>
       ) : (
         <FaEdit
-          className="absolute top-12 right-8 text-xl text-content cursor-pointer text-navBkg md:top-24 md:right-8 hover:text-icon"
+          className="absolute top-12 right-8 text-xl cursor-pointer text-navBkg md:top-24 md:right-8 hover:text-icon"
           onClick={handleEditClick}
           size={30}
         />

@@ -419,7 +419,7 @@ const CreatedGroupDetail: React.FC = () => {
 			{/* Back Button */}
 			<button
 				onClick={() => navigate(-1)}
-				className="absolute top-11 left-4 md:top-10 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
+				className="absolute top-11 left-4 md:top-10 md:left-8 text-navBkg hover:text-icon z-50 rounded-full p-2"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -456,7 +456,7 @@ const CreatedGroupDetail: React.FC = () => {
 			) : (
 				<>
 					<FaEdit
-						className="absolute top-14 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon md:top-10 md:right-8"
+						className="absolute top-14 right-8 text-xl text-navBkg cursor-pointer hover:text-icon md:top-10 md:right-8"
 						onClick={handleEditClick}
 						size={24}
 					/>
