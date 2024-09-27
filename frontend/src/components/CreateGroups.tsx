@@ -156,12 +156,12 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 	};
 
 	return (
-		<div className="relative p-4 rounded-lg w-full max-w-md bg-bkg">
+		<div className="relative p-4 rounded-lg w-full max-w-md bg-nav">
 			{/* Close Button */}
-			<div className="flex justify-between bg-bkg items-center mb-4">
+			<div className="flex justify-between bg-nav items-center mb-4">
 				<h2 className="text-2xl text-content font-bold">Create a New Group</h2>
 				<button
-					className="text-navBkg hover:text-icon"
+					className="text-navBkg2 hover:text-icon"
 					onClick={onClose}
 				>
 					<FaTimes className="text-xl" />
@@ -170,7 +170,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 
 			<div className="flex justify-center mb-3">
 				<button
-					className="flex items-center justify-center w-32 h-32 rounded-lg relative overflow-hidden bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white"
+					className="flex items-center text-gray-500 justify-center w-32 h-32 rounded-lg relative overflow-hidden bg-white border border-gray-500 hover:text-navBkg "
 					onClick={handleAddPhotoClick}
 					data-testid="add-photo-button"
 				>
@@ -207,7 +207,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 								</div>
 							)}
 							<button
-								className="absolute top-2 right-2 bg-gray-800 text-white p-1 rounded-full text-navBkg"
+								className="absolute top-2 right-2 bg-navBkg text-white p-1 rounded-full text-navBkg"
 								onClick={handleRemovePhoto}
 								data-testid="remove-photo-button"
 							>
@@ -270,7 +270,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 
 			<div>
 				<button
-					className="w-full px-4 py-2 bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+					className="w-full px-4 py-2  bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content "
 					onClick={handleCreateClick}
 				>
 					Create

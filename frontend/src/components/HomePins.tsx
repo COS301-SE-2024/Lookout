@@ -38,13 +38,13 @@ const HomePins = (props: { pin: myPin[]}) => {
 
   function Content({ id, category, image, caption }: { id: string; category: string; image: string; caption: string }) {
     return (
-      <div id='content bg-nav'>
+      <div id='content'  className="font-custom bg-nav">
       <div className="font-custom bg-nav rounded-lg p-2 max-w-xs">
         <h1 className="text-2xl text-center font-semibold text-content">{category}</h1>
             <img src={image} alt="poi" className="w-full h-32 object-cover mt-2 rounded-md"/>
-            <div id='bodyContent'>
+            <div id='bodyContent bg-nav'>
             <p className="text-content text-center mt-2 text-base">{caption}</p>
-            <div className="flex justify-center">
+            <div className="flex justify-center bg-nav">
        				<button id="view-details" className="mt-4 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content font-bold py-2 px-4 rounded"
               onClick={() => navigate(`/post/${id}`)}>
         				View Details

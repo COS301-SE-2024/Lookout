@@ -871,7 +871,7 @@ const HomeScreen: React.FC = () => {
 	return (
 		<Suspense fallback={<div>Loading map...</div>}>
 		<GoogleMapApiLoader apiKey={apicode || ""} suspense>
-			<div className="map-container h-screen">
+			<div className="map-container h-screen bg-nav">
 				<GoogleMap
 					className="h-full w-full"
 					zoom={zoom}
@@ -1415,9 +1415,9 @@ const HomeScreen: React.FC = () => {
 
 			{/* Menu modal */}
 			{isMenuModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
+				<div className="fixed inset-0 flex items-center justify-center bg-nav bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
 					<div
-						className="relative bg-white p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
+						className="relative bg-nav p-6 rounded-xl shadow-xl transform transition-transform duration-300 scale-100 hover:scale-105"
 						style={{
 							width: "90%",
 							maxWidth: "500px",
@@ -1426,7 +1426,7 @@ const HomeScreen: React.FC = () => {
 						}}
 					>
 						<button
-							className="absolute top-3 right-3 text-content hover:text-icon transition-colors duration-200"
+							className="absolute top-3 right-3 text-icon hover:text-navSelect transition-colors duration-200"
 							onClick={closeMenuModal}
 						>
 							<svg
@@ -1444,7 +1444,7 @@ const HomeScreen: React.FC = () => {
 								/>
 							</svg>
 						</button>
-						<div className="mt-6 bg-bkg">
+						<div className="mt-6 bg-nav">
 							<h2 className="text-xl font-bold text-content text-center">
 								Pins Displaying
 							</h2>
@@ -1452,7 +1452,7 @@ const HomeScreen: React.FC = () => {
 								<button
 									className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === null
 											? "bg-navSelect border border-nav text-nav"
-											: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
+											: "bg-bkg border border-bkg hover:bg-navSelect hover:text-bkg"
 										}`}
 									onClick={() => handleCategoryClick(null)}
 								>
@@ -1463,7 +1463,7 @@ const HomeScreen: React.FC = () => {
 										<button
 											className={`w-full text-left p-3 rounded-lg shadow-sm transition-colors duration-200 ${selectCategory === category.id
 													? "bg-navSelect border border-nav text-nav"
-													: "bg-nav border border-nav hover:bg-navSelect hover:text-nav"
+													: "bg-bkg border border-bkg hover:bg-navSelect hover:text-bkg"
 												}`}
 											onClick={() => handleCategoryClick(category.id)}
 										>

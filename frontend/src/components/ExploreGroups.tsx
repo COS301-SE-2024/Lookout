@@ -90,7 +90,7 @@ const ExploreGroups: React.FC = () => {
   // };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 min-h-screen bg-bkg">
       <div className="space-y-4">
         {groups.map(group => (
           <div

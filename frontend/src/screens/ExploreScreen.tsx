@@ -243,7 +243,7 @@ const ExploreScreen: React.FC = () => {
   );
 
   return (
-    <div className="p-4 scrollbar-hide min-h-screen">
+    <div className="p-4 scrollbar-hide min-h-screen bg-bkg">
       <style>
         {`
 

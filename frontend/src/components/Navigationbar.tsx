@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaMap, FaBinoculars, FaUser, FaGear, FaQuestion } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import HelpModal from "./HelpModal";
+import Tooltip from "./Tooltip";
 
 const Navigationbar = () => {
 	const [isAuthed, setIsAuthed] = useState(
@@ -101,31 +102,42 @@ const Navigationbar = () => {
 								{/* Right side icons */}
 								<ul className="flex ml-auto md:justify-end justify-center items-center space-x-2 md:mr-8 mt-2 md:mt-0">
 									<li>
-										<FaQuestion
-											size={42}
-											className="text-icon p-2 rounded-full cursor-pointer hover:bg-iconShadow hover:text-navBkg2"
-											onClick={handleHelpCentreClick}
+										<Tooltip text="Help Centre">
+											<FaQuestion
+												size={42}
+												className="text-icon p-2 rounded-full cursor-pointer hover:bg-iconShadow hover:text-navBkg2"
+												onClick={handleHelpCentreClick}
+											/>
+										</Tooltip>
 
-										/>
 									</li>
 									<li>
+
 										<Link to="/home" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/')}`}>
-											<FaMap size={26} />
+											<Tooltip text="Map">
+												<FaMap size={26} />
+											</Tooltip>
 										</Link>
 									</li>
 									<li>
 										<Link to="/explore" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/explore')}`}>
-											<FaBinoculars size={26} />
+											<Tooltip text="Explore">
+												<FaBinoculars size={26} />
+											</Tooltip>
 										</Link>
 									</li>
 									<li>
 										<Link to="/profile" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/profile')}`}>
-											<FaUser size={26} />
+											<Tooltip text="Profile">
+												<FaUser size={26} />
+											</Tooltip>
 										</Link>
 									</li>
 									<li>
 										<Link to="/settings" className={`flex items-center justify-center w-12 h-12 rounded-full hover:text-navBkg2 hover:bg-iconShadow transition-all duration-300 ${getIconColor('/settings')}`}>
-											<FaGear size={26} />
+											<Tooltip text="Settings">
+												<FaGear size={26} />
+											</Tooltip>
 										</Link>
 									</li>
 								</ul>
