@@ -258,6 +258,22 @@ const PinDetail: React.FC = () => {
     setIsEditing(false);
   };
 
+  const handleDeleteClick = async () => {
+    try {
+      const response = await fetch(`/api/posts/${post?.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete post");
+      }
+
+      navigate(-1); // Go back after deleting
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   if (loading) {
     return <SkeletonPinDetail />;
   }
@@ -428,6 +444,14 @@ const PinDetail: React.FC = () => {
               >
                 View Group
               </button>
+              {isEditing && (
+                <button
+                className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"
+                  onClick={handleDeleteClick}
+                >
+                  Delete Post
+                </button>
+              )}
             </div>
 
             <div className="mt-10">

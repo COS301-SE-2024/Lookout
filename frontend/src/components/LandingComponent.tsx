@@ -16,7 +16,7 @@ const LandingComponent = () => {
 							src={HeroLogo}
 							alt="HeroLogo"
 						/>
-						The modern way to get in touch with Nature.
+						Spot. Share. Connect. Explore with Lookout.
 						<Link to="/signup" className="linkToSignup">
 							<GetStartedButton onClick={() => {}} />
 						</Link>

@@ -257,7 +257,7 @@ const CreatedGroupDetail: React.FC = () => {
 				}
 
 				// Navigate to profile page after deletion
-				navigate("/profile");
+				navigate(-1); // Go back after deleting
 			} catch (error) {
 				console.error("Error deleting group:", error);
 			}
