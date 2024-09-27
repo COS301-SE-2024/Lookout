@@ -79,16 +79,12 @@ interface User {
 }
 
 const PinDetail: React.FC = () => {
-	//const userId = 1;
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [theme, setTheme] = useState("default");
 	const [post, setPost] = useState<Post | null>(null);
 	const [user, setUser] = useState<User | null>(null);
-	const [loadingPost, setLoadingPost] = useState(true);
-	const [loadingRelatedPost, setLoadingRelatedPost] = useState(true);
-	const [loadingSaved, setLoadingSaved] = useState(true);
-	const [loadingSaves, setLoadingSaves] = useState(true);
+	const [loading, setLoading] = useState(true);
 	const [isSaved, setIsSaved] = useState<boolean>(false);
 	const [saves, setSaves] = useState<number>(0);
 	const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
@@ -108,9 +104,12 @@ const PinDetail: React.FC = () => {
 				document.documentElement.setAttribute("data-theme", newTheme);
 			}
 		};
+
 		window.addEventListener("storage", handleStorageChange);
 
-		return () => window.removeEventListener("storage", handleStorageChange);
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+		};
 	}, []);
 
 	useEffect(() => {
@@ -123,27 +122,21 @@ const PinDetail: React.FC = () => {
 				const response = await fetch(`/api/posts/${id}`);
 				const data = await response.json();
 				setPost(data);
-				setLoadingPost(false);
+				setLoading(false);
 
-				console.log("Post data:", data);
-
+				// Fetch related posts once the main post is fetched
 				const relatedResponse = await fetch(
 					`/api/posts/group/${data.groupId}?page=0&size=10`
 				);
 				const relatedData = await relatedResponse.json();
 				setRelatedPosts(relatedData.content);
-				setLoadingRelatedPost(false);
 
-				console.log("Related posts data:", relatedData);
-
-				// Fetch user details using post.userId
 				const userResponse = await fetch(`/api/users/`);
 				const userData = await userResponse.json();
-				console.log("User data:", userData);
-				setUser(userData); // Store user data including profile picture
+				setUser(userData);
 			} catch (error) {
 				console.error("Error fetching post or related posts:", error);
-				setLoadingPost(false);
+				setLoading(false);
 			}
 		};
 
@@ -154,10 +147,8 @@ const PinDetail: React.FC = () => {
 				);
 				const data = await response.json();
 				setIsSaved(data);
-				setLoadingSaved(false);
 			} catch (error) {
 				console.error("Error checking saved status:", error);
-				setLoadingSaved(false);
 			}
 		};
 
@@ -168,10 +159,8 @@ const PinDetail: React.FC = () => {
 				);
 				const data = await response.json();
 				setSaves(data);
-				setLoadingSaves(false);
 			} catch (error) {
 				console.error("Error fetching saves count:", error);
-				setLoadingSaves(false);
 			}
 		};
 
@@ -180,59 +169,62 @@ const PinDetail: React.FC = () => {
 		getCountSaves();
 	}, [id]);
 
-	// useEffect(() => {
-	// 	if (!post?.id) {
-	// 		console.log("Post ID is not available yet.");
-	// 		return;
-	// 	}
+	useEffect(() => {
+		if (!post?.id) {
+			console.log("Post ID is not available yet.");
+			return;
+		}
 
-	// 	let subscription: any = null;
+		let subscription: any = null;
 
-	// 	webSocketService
-	// 		.connect(localStorage.getItem("authToken")!!)
-	// 		.then(() => {
-	// 			console.log("WebSocket connected");
+		webSocketService
+			.connect(localStorage.getItem("authToken")!!)
+			.then(() => {
+				console.log("WebSocket connected");
 
-	// 			subscription = webSocketService.subscribe(
-	// 				`/post/${post.id}`,
-	// 				(message: any) => {
-	// 					console.log(
-	// 						`Message received on /post/${post.id}:`,
-	// 						message
-	// 					);
+				subscription = webSocketService.subscribe(
+					`/post/${post.id}`,
+					(message: any) => {
+						console.log(
+							`Message received on /post/${post.id}:`,
+							message
+						);
 
-	// 					try {
-	// 						const savedPostData = JSON.parse(message.body);
-	// 						console.log("Parsed message data:", savedPostData);
+						try {
+							const savedPostData = JSON.parse(message.body);
+							console.log("Parsed message data:", savedPostData);
 
-	// 						if (savedPostData.postId === post.id) {
-	// 							//if (savedPostData.userId !== userId) {
-	// 								setSaves(savedPostData.saves);
-	// 							//}
-	// 						}
-	// 					} catch (error) {
-	// 						console.error("Error parsing message:", error);
-	// 					}
-	// 				}
-	// 			);
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error("WebSocket connection error:", error);
-	// 		});
+							// Check the user email instead of userId
+							if (savedPostData.postId === post.id) {
+								if (savedPostData.userEmail !== user?.email) {
+									setSaves(savedPostData.saves);
+								}
+							}
+						} catch (error) {
+							console.error("Error parsing message:", error);
+						}
+					}
+				);
+			})
+			.catch((error) => {
+				console.error("WebSocket connection error:", error);
+			});
 
-	// 	return () => {
-	// 		if (subscription) {
-	// 			console.log(`Unsubscribing from /post/${post.id}`);
-	// 			webSocketService.unsubscribe(subscription);
-	// 		}
-	// 		webSocketService.disconnect();
-	// 	};
-	// }, [post?.id, userId]);
+		return () => {
+			if (subscription) {
+				console.log(`Unsubscribing from /post/${post.id}`);
+				webSocketService.unsubscribe(subscription);
+			}
+			webSocketService.disconnect();
+		};
+	}, [post?.id, user?.email]);
 
 	const handleSaveClick = async () => {
 		const requestBody = {
 			postId: post?.id
 		};
+
+		console.log("Save request body:", requestBody);
 
 		try {
 			const response = await fetch("/api/savedPosts/SavePost", {
@@ -248,7 +240,7 @@ const PinDetail: React.FC = () => {
 			}
 
 			setIsSaved(true);
-			setSaves((prevSaves) => prevSaves + 1);
+			setSaves((prevSaves) => prevSaves + 1); // Increase saves count
 		} catch (error) {
 			console.error("Error saving post:", error);
 		}
@@ -258,6 +250,8 @@ const PinDetail: React.FC = () => {
 		const requestBody = {
 			postId: post?.id
 		};
+
+		console.log("Unsave request body:", requestBody);
 
 		try {
 			const response = await fetch("/api/savedPosts/UnsavePost", {
@@ -273,13 +267,14 @@ const PinDetail: React.FC = () => {
 			}
 
 			setIsSaved(false);
-			setSaves((prevSaves) => prevSaves - 1);
+			setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
 		} catch (error) {
 			console.error("Error unsaving post:", error);
 		}
 	};
 
 	const handleSaveIconClick = () => {
+		console.log("Save icon clicked");
 		if (isSaved) {
 			handleUnsaveClick();
 		} else {
@@ -287,15 +282,18 @@ const PinDetail: React.FC = () => {
 		}
 	};
 
-	const allDataLoaded =
-		!loadingPost && !loadingSaved && !loadingSaves && !loadingRelatedPost;
+	if (loading) {
+		return <SkeletonPinDetail />;
+	}
 
-	if (!allDataLoaded) {
+	if (!post || !user) {
 		return <SkeletonPinDetail />;
 	}
 
 	return (
-		<div className="p-4 scrollbar-hide flex flex-col md:h-screen min-h-screen bg-bkg">
+		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg">
+			{" "}
+			{/* Ensure the container fills the whole screen */}
 			<style>
 				{`
 			  .scrollbar-hide::-webkit-scrollbar {
@@ -331,7 +329,7 @@ const PinDetail: React.FC = () => {
 			</style>
 			<button
 				onClick={() => navigate(-1)}
-				className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2"
+				className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2 "
 				style={{ zIndex: 50 }}
 			>
 				<svg
@@ -349,36 +347,36 @@ const PinDetail: React.FC = () => {
 					/>
 				</svg>
 			</button>
-
 			<div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
-				<div className="card bg-base-100 shadow-xl shadow rounded-lg flex flex-col md:flex-row min-h-[550px]">
-					<figure className="rounded-t-lg overflow-hidden md:w-1/2 h-auto">
+				<div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row h-full min-h-[550px]">
+					{" "}
+					{/* Minimum height added */}
+					<figure className="rounded-t-lg overflow-hidden md:w-1/2">
 						<img
-							src={post?.picture}
-							alt={post?.title}
+							src={post.picture}
+							alt={post.title}
 							className="w-full h-full object-cover"
 						/>
 					</figure>
-
 					<div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow">
 						{" "}
 						{/* flex-grow added */}
 						<div className="flex items-center justify-between mt-2 mb-4">
 							<h1 className="text-2xl md:text-4xl font-bold">
-								{post?.title}
+								{post.title}
 							</h1>
 							<div className="flex items-center">
 								{isSaved ? (
 									<FaBookmark
 										className="text-navBkg cursor-pointer"
 										onClick={handleSaveIconClick}
-										size={24}
+										size={28} // Larger size
 									/>
 								) : (
 									<FaRegBookmark
 										className="text-navBkg cursor-pointer"
 										onClick={handleSaveIconClick}
-										size={24}
+										size={28} // Larger size
 									/>
 								)}
 								<span className="ml-2 md:text-xl text-base text-center">
@@ -388,18 +386,18 @@ const PinDetail: React.FC = () => {
 						</div>
 						<div className="flex items-center mb-4">
 							<img
-								src={user?.profilePic}
-								alt={post?.username}
+								src={user.profilePic}
+								alt={post.username}
 								className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4"
 							/>
 							<div>
 								<h2 className="text-content text-xl md:text-2xl font-bold">
-									{post?.username}
+									{post.username}
 								</h2>
 								<p className="text-content md:text-xl text-md">
-									{post?.caption}
+									{post.caption}
 								</p>
-								<CategoryPill categoryId={post?.categoryId} />
+								<CategoryPill categoryId={post.categoryId} />
 							</div>
 						</div>
 						<div className="flex justify-start mt-4 space-x-4">
@@ -425,7 +423,7 @@ const PinDetail: React.FC = () => {
 							</button>
 						</div>
 						<div className="mt-8">
-							<h1 className="text-lg md:text-xl font-semibold">
+							<h1 className="text-lg font-semibold md:text-xl ">
 								See more posts like this:
 							</h1>
 
