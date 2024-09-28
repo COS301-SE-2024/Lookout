@@ -49,7 +49,34 @@ const Settings = () => {
   }, []);
 
   const handleLogout = async () => {
-    // Logout logic
+    localStorage.setItem("authToken", "");
+    const email = getEmailFromLocalStorage();
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed!");
+      }
+
+      // Clear localStorage
+      localStorage.clear();
+
+      // Clear sessionStorage
+      sessionStorage.clear();
+
+      navigate("/login");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const renderContent = () => {
@@ -97,7 +124,7 @@ const Settings = () => {
                 }}
                 className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-hver" : "bg-bkg"} hover:bg-hver`}
               >
-                <span className={`flex-1 ${isMobileView ? 'text-lg' : 'text-base'}`}>
+                <span className={`flex-1 ${isMobileView ? 'text-xl' : 'text-base'}`}>
                   {item.name}
                 </span>
                 {item.icon && <span className="ml-2">{item.icon}</span>}
