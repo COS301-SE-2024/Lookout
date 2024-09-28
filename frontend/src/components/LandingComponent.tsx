@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const LandingComponent = () => {
 	return (
-		<div className="Container">
+		<div className="Container p-4">
 			<div className="Hero">
 				<div>
 					<h1 className="heroH1">
@@ -16,7 +16,7 @@ const LandingComponent = () => {
 							src={HeroLogo}
 							alt="HeroLogo"
 						/>
-						The modern way to get in touch with Nature.
+						Spot. Share. Connect. Explore with Lookout.
 						<Link to="/signup" className="linkToSignup">
 							<GetStartedButton onClick={() => {}} />
 						</Link>

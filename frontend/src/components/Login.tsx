@@ -64,7 +64,7 @@ function Login() {
 	};
 
 	return (
-		<div className="flex items-center justify-center min-h-screen">
+		<div className="flex items-center justify-center min-h-screen p-4">
 			<div className="w-full max-w-md p-8 space-y-8 rounded-lg border">
 				<div className="text-center mb-2">
 					<h1 className="text-2xl font-bold">Login</h1>
@@ -130,7 +130,7 @@ function Login() {
 				</div>
 
 				<div className="flex justify-center mb-2">
-					<button className="w-full py-2 text-content bg-white-500 rounded-md hover:bg-navBkg hover:border-navBkg focus:outline-none flex items-center justify-center border border-gray-300"
+					<button className="w-full py-2 text-content bg-white-500 rounded-md hover:bg-navBkg hover:border-navBkg hover:text-white focus:outline-none flex items-center justify-center border border-gray-300"
 						onClick={handleLogin}
 					>
 						<FcGoogle size={20} style={{ marginRight: 10 }} />

@@ -53,10 +53,10 @@ const getDayWithSuffix = (date: Date) => {
 		day % 10 === 1 && day !== 11
 			? "st"
 			: day % 10 === 2 && day !== 12
-			? "nd"
-			: day % 10 === 3 && day !== 13
-			? "rd"
-			: "th";
+				? "nd"
+				: day % 10 === 3 && day !== 13
+					? "rd"
+					: "th";
 	return `${day}${suffix}`;
 };
 
@@ -76,6 +76,8 @@ const CreatedGroupDetail: React.FC = () => {
 	// Modal State
 	const [showRemoveModal, setShowRemoveModal] = useState(false);
 	const [memberToRemove, setMemberToRemove] = useState<User | null>(null);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 
 	// **New State Variables for Image Uploading**
 	const [isUploadingPicture, setIsUploadingPicture] = useState(false);
@@ -242,11 +244,34 @@ const CreatedGroupDetail: React.FC = () => {
 		setIsEditing(false);
 	};
 
-	const handleDeleteClick = async () => {
-		const confirmed = window.confirm(
-			"Are you sure you want to delete this group?"
-		);
-		if (confirmed && group) {
+	// const handleDeleteClick = async () => {
+	// 	const confirmed = window.confirm(
+	// 		"Are you sure you want to delete this group?"
+	// 	);
+	// 	if (confirmed && group) {
+	// 		try {
+	// 			const response = await fetch(`/api/groups/${group.id}`, {
+	// 				method: "DELETE"
+	// 			});
+
+	// 			if (!response.ok) {
+	// 				throw new Error("Failed to delete group");
+	// 			}
+
+	// 			// Navigate to profile page after deletion
+	// 			navigate(-1); // Go back after deleting
+	// 		} catch (error) {
+	// 			console.error("Error deleting group:", error);
+	// 		}
+	// 	}
+	// };
+	const handleDeleteClick = () => {
+		setShowDeleteModal(true); // Open the modal
+	};
+
+	// Confirm the group deletion
+	const confirmDeleteGroup = async () => {
+		if (group) {
 			try {
 				const response = await fetch(`/api/groups/${group.id}`, {
 					method: "DELETE"
@@ -257,12 +282,49 @@ const CreatedGroupDetail: React.FC = () => {
 				}
 
 				// Navigate to profile page after deletion
-				navigate("/profile");
+				navigate(-1); // Go back after deleting
 			} catch (error) {
 				console.error("Error deleting group:", error);
+			} finally {
+				setShowDeleteModal(false); // Close the modal
 			}
 		}
 	};
+
+	// Cancel deletion and close the modal
+	const closeDeleteModal = () => {
+		setShowDeleteModal(false);
+	};
+
+	const DeleteGroupModal: React.FC<{
+		onConfirm: () => void;
+		onCancel: () => void;
+	  }> = ({ onConfirm, onCancel }) => (
+		<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+		  <div className="bg-bkg p-6 rounded-lg shadow-lg max-w-sm w-full text-content">
+			<h2 className="text-content text-xl font-bold mb-4">Delete Group</h2>
+			<p className="text-content">
+			  Are you sure you want to delete this group?
+			</p>
+			<div className="flex justify-center items-center mt-6">
+			  <button
+				onClick={onCancel}
+				className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+			  >
+				Cancel
+			  </button>
+			  <button
+				onClick={onConfirm}
+				className="bg-navBkg hover:bg-white hover:text-navBkg text-white border border-navBkg px-4 py-2 rounded"
+			  >
+				Delete
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  );
+	  
+		
 
 	// **Image Uploading Functions**
 
@@ -374,7 +436,7 @@ const CreatedGroupDetail: React.FC = () => {
 		onConfirm: () => void;
 		onCancel: () => void;
 	}> = ({ member, onConfirm, onCancel }) => (
-		<div className="fixed inset-0 flex items-center justify-center bg-navBkg bg-opacity-50 z-50">
+		<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
 			<div className="bg-bkg p-6 rounded-lg shadow-lg max-w-sm w-full text-white">
 				<h2 className="text-content text-xl font-bold mb-4">
 					Confirm Removal
@@ -387,7 +449,7 @@ const CreatedGroupDetail: React.FC = () => {
 				<div className="flex justify-center items-center mt-6">
 					<button
 						onClick={onCancel}
-						className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+						className="mr-3 bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg  px-4 py-2 rounded-lg"
 					>
 						Cancel
 					</button>
@@ -419,7 +481,7 @@ const CreatedGroupDetail: React.FC = () => {
 			{/* Back Button */}
 			<button
 				onClick={() => navigate(-1)}
-				className="absolute top-11 left-4 md:top-10 md:left-8 text-nav hover:text-icon z-50 rounded-full p-2"
+				className="absolute top-11 left-4 md:top-10 md:left-8 text-navBkg hover:text-icon z-50 rounded-full p-2"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -456,7 +518,7 @@ const CreatedGroupDetail: React.FC = () => {
 			) : (
 				<>
 					<FaEdit
-						className="absolute top-14 right-8 text-xl text-content cursor-pointer text-nav hover:text-icon md:top-10 md:right-8"
+						className="absolute top-14 right-8 text-xl text-navBkg cursor-pointer hover:text-icon md:top-10 md:right-8"
 						onClick={handleEditClick}
 						size={24}
 					/>
@@ -465,7 +527,8 @@ const CreatedGroupDetail: React.FC = () => {
 
 			<div className="container mx-auto p-4 mt-10">
 				<div className="flex flex-col md:flex-row md:items-center md:justify-center items-center">
-					{/* **Group Picture with Conditional Rendering for Owner** */}
+
+					{/* Group Picture with Conditional Rendering for Owner */}
 					{owner?.email === currentUserEmail ? (
 						<div
 							className="relative group w-56 h-56 mb-4 md:mb-0 md:mr-8 cursor-pointer"
@@ -502,18 +565,16 @@ const CreatedGroupDetail: React.FC = () => {
 								</div>
 							)}
 							{/* Overlay div */}
-							<>
-								<div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg z-10">
-									Change Group Picture
-								</div>
-								<input
-									type="file"
-									accept="image/*"
-									onChange={handleFileChange}
-									ref={fileInputRef}
-									style={{ display: "none" }}
-								/>
-							</>
+							<div className={`absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 text-white text-center ${isEditing ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300 rounded-lg z-10`}>
+								Change Group Picture
+							</div>
+							<input
+								type="file"
+								accept="image/*"
+								onChange={handleFileChange}
+								ref={fileInputRef}
+								style={{ display: "none" }}
+							/>
 						</div>
 					) : (
 						<div className="w-56 h-56 mb-4 md:mb-0 md:mr-8">
@@ -530,7 +591,7 @@ const CreatedGroupDetail: React.FC = () => {
 						{isEditing ? (
 							<input
 								type="text"
-								className="text-content text-2xl italic font-bold bg-transparent mb-2 border-b border-gray-300 focus:outline-none"
+								className="text-content text-2xl italic font-bold bg-transparent mb-2 focus:outline-none"
 								value={editableName}
 								onChange={(e) =>
 									setEditableName(
@@ -547,7 +608,7 @@ const CreatedGroupDetail: React.FC = () => {
 						{isEditing ? (
 							<input
 								type="text"
-								className="text-content md:text-xl text-md italic w-80 bg-transparent border-b border-gray-300 focus:outline-none mb-2"
+								className="text-content md:text-xl text-md italic w-80 bg-transparent focus:outline-none mb-2"
 								value={editableDescription}
 								onChange={(e) =>
 									setEditableDescription(
@@ -568,10 +629,10 @@ const CreatedGroupDetail: React.FC = () => {
 										(acc, curr, index) =>
 											(index + 1) % 10 === 0
 												? [
-														...acc,
-														curr,
-														<br key={index} />
-												  ]
+													...acc,
+													curr,
+													<br key={index} />
+												]
 												: [...acc, curr],
 										[]
 									)}
@@ -593,13 +654,13 @@ const CreatedGroupDetail: React.FC = () => {
 						<span className="text-content2 md:text-md text-base">
 							{group.createdAt
 								? `${getDayWithSuffix(
-										new Date(group.createdAt)
-								  )} ${new Date(
-										group.createdAt
-								  ).toLocaleDateString("en-GB", {
-										month: "long",
-										year: "numeric"
-								  })}`
+									new Date(group.createdAt)
+								)} ${new Date(
+									group.createdAt
+								).toLocaleDateString("en-GB", {
+									month: "long",
+									year: "numeric"
+								})}`
 								: "Unknown"}
 						</span>
 
@@ -616,6 +677,12 @@ const CreatedGroupDetail: React.FC = () => {
 							>
 								Delete group
 							</button>
+							{showDeleteModal && (
+							<DeleteGroupModal
+								onConfirm={confirmDeleteGroup}
+								onCancel={closeDeleteModal}
+							/>
+							)}
 						</div>
 					</div>
 				</div>
@@ -635,12 +702,8 @@ const CreatedGroupDetail: React.FC = () => {
 					</div>
 					{posts.length === 0 ? (
 						<div className="text-center">
-							<img
-								src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
-								alt="No posts"
-								className="w-68 h-64 mx-auto mb-4"
-							/>
-							<p className="text-content">
+							
+							<p className="text-content mt-10 mb-10">
 								There are no posts in this group yet. Be the
 								first to post!
 							</p>

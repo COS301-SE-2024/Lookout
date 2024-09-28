@@ -34,7 +34,6 @@
     --color-hver: 229 231 235;
     --color-shd: 60 91 111;
     --color-navHighlight: 25 100 52;
-    --font-family: 'CustomFont'; /* Add your default font family here */
   }
 
   @media (prefers-color-scheme: dark) {

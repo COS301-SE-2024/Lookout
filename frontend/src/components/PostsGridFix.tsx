@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import PostsGridSkeleton from './PostsGridSkeleton'; // Import the skeleton
+import { IoLocationOutline } from 'react-icons/io5'; // Import the location icon
+import CategoryPill from './CategoryPill'; // Import your CategoryPill component
 
 interface Post {
   id: number;
@@ -12,15 +14,28 @@ interface Post {
   longitude: number;
   caption: string;
   title: string;
+  createdAt: string;
 }
 
 interface PostsGridFixProps {
   searchQuery: string;
 }
 
+const getDayWithSuffix = (date: Date) => {
+	const day = date.getDate();
+	const suffix =
+		day % 10 === 1 && day !== 11
+			? "st"
+			: day % 10 === 2 && day !== 12
+			? "nd"
+			: day % 10 === 3 && day !== 13
+			? "rd"
+			: "th";
+	return `${day}${suffix}`;
+};
+
 const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
-  // ADD IN FROM LOGIN LATER
-  const userId = 1;
+  const userId = 1; // Example userId, update this later
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true); // Add loading state
@@ -47,6 +62,7 @@ const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
           longitude: item.longitude,
           caption: item.caption,
           title: item.title,
+          createdAt: item.createdAt,
         }));
         setPosts(postsData);
       } catch (error) {
@@ -56,12 +72,10 @@ const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
       }
     };
 
+
+
     fetchPosts();
   }, [userId]);
-
-  // const handlePostsClick = (post: Post) => {
-  //   navigate(`/user_post/${post.id}`, { state: { post } });
-  // };
 
   const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -69,27 +83,50 @@ const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
   );
 
   return (
-    <div className=" scrollbar-hide">
+    <div className="scrollbar-hide">
       {error && <div className="text-red-500">{error}</div>}
       {loading ? (
         <PostsGridSkeleton /> // Show skeleton while loading
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-          {filteredPosts.map(post => (
-            <div
-              key={post.id}
-              className="overflow-hidden rounded-md shadow-lg cursor-pointer"
-             // onClick={() => handlePostsClick(post)}
-            >
-              <Link to={`/user_post/${post.id}`}>
-                <img
-                  src={post.picture}
-                  alt={`Post ${post.id}`}
-                  className="w-full h-40 object-cover"
-                />
-              </Link>
+        <div>
+          {filteredPosts.length === 0 ? (
+            <div className="text-center text-gray-500">
+              You have not created any posts yet.
             </div>
-          ))}
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+              {filteredPosts.map(post => (
+                <div
+                  key={post.id}
+                  className="w-full overflow-hidden rounded-md shadow-lg cursor-pointer bg-nav"
+                >
+                  <Link to={`/user_post/${post.id}`}>
+                    <img
+                      src={post.picture}
+                      alt={post.caption}
+                      className="w-full h-40 object-cover"
+                    />
+                  </Link>
+                  <div className="p-4">
+                    <h2 className="text-lg font-bold">{post.title}</h2>
+                    <p className="text-content2">{post.caption}</p>
+                    <span className="text-content2 md:text-base text-sm">
+                    {post.createdAt
+                      ? `${getDayWithSuffix(
+                          new Date(post.createdAt)
+                        )} ${new Date(
+                          post.createdAt
+                        ).toLocaleDateString("en-GB", {
+                          month: "long",
+                          year: "numeric"
+                        })}`
+                      : "Unknown"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

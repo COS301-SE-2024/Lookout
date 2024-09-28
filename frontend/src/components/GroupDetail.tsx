@@ -302,7 +302,7 @@ const GroupDetail: React.FC = () => {
 	}
 
 	return (
-		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg ">
+		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg relative">
 			<style>
 				{`
           .scrollbar-hide::-webkit-scrollbar {
@@ -348,7 +348,7 @@ const GroupDetail: React.FC = () => {
 								alt={`${group?.name} logo`}
 								style={{ borderRadius: "8px" }}
 							/>
-							{isUploadingPicture && (
+						
 								<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg z-20">
 									<svg
 										className="animate-spin h-8 w-8 text-white"
@@ -371,20 +371,7 @@ const GroupDetail: React.FC = () => {
 										></path>
 									</svg>
 								</div>
-							)}
-							{/* Overlay div */}
-							<>
-								<div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg z-10">
-									Change Group Picture
-								</div>
-								<input
-									type="file"
-									accept="image/*"
-									onChange={handleFileChange}
-									ref={fileInputRef}
-									style={{ display: "none" }}
-								/>
-							</>
+						
 						</div>
 					) : (
 						<div className="w-56 h-56 mb-4 md:mb-0 md:mr-8">
@@ -401,14 +388,25 @@ const GroupDetail: React.FC = () => {
 						<h1 className="text-2xl md:text-4xl text-content font-bold mb-2">
 							{group?.name}
 						</h1>
-						<p className="text-content md:text-xl text-md mb-2">
-							{group?.description
-								?.split(" ")
-								.map((word, index) =>
-									(index + 1) % 10 === 0
-										? `${word} `
-										: `${word} `
-								)}
+						<p className="text-content md:text-xl text-base mb-2">
+								{group?.description
+									?.split(" ")
+									.map((word, index) =>
+										(index + 1) % 10 === 0
+											? `${word} `
+											: `${word} `
+									)
+									.reduce<React.ReactNode[]>(
+										(acc, curr, index) =>
+											(index + 1) % 10 === 0
+												? [
+													...acc,
+													curr,
+													<br key={index} />
+												]
+												: [...acc, curr],
+										[]
+									)}
 						</p>
 
 						<div className="flex flex-col md:flex-row items-center mb-2">
@@ -472,12 +470,8 @@ const GroupDetail: React.FC = () => {
 					</div>
 					{posts.length === 0 ? (
 						<div className="text-center">
-							<img
-								src="https://hub.securevideo.com/Resource/Permanent/Screencap/00/0000/000000/00000001/Screencap-173-020_42DE6C209630EC10647CDDB7D9F693FB77470D486D430F358FF1CB495B65BE55.png"
-								alt="No posts"
-								className="w-68 h-64 mx-auto mb-4"
-							/>
-							<p className="text-content">
+							
+							<p className="mt-10 mb-10 text-content">
 								There are no posts in this group yet. Be the
 								first to post!
 							</p>

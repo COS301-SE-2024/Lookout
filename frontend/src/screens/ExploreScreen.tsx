@@ -243,7 +243,7 @@ const ExploreScreen: React.FC = () => {
   );
 
   return (
-    <div className="p-4 scrollbar-hide">
+    <div className="p-4 scrollbar-hide min-h-screen bg-bkg">
       <style>
         {`
 
@@ -286,7 +286,7 @@ const ExploreScreen: React.FC = () => {
     value={searchQuery}
     onChange={handleSearchChange}
     placeholder="Search for Posts or Groups"
-    className="border p-2 rounded w-full max-w-[75vw] md:max-w-full search-bar bg-gray-200"
+    className="border p-2 text-gray-600 rounded w-full max-w-[75vw] md:max-w-full search-bar bg-gray-200"
   />
 </div>
 
