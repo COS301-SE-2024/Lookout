@@ -16,7 +16,11 @@ import signup from './Signup.png';
 import safari from './safari.jpeg';
 import gardener from './gardener.jpeg';
 import activist from './activist.jpeg';
-import editGroup from './edit_group.png'
+import editGroup from './edit_group.png';
+import filter from './filter.png'
+import updateProfile from './update_profile.png'
+import editTheme from './edit_theme.png'
+import views from './viewbuttons.png'
 
 const images = {
   createAPin,
@@ -37,7 +41,11 @@ const images = {
   safari,
   gardener,
   activist,
-  editGroup
+  editGroup,
+  filter,
+  updateProfile,
+  editTheme,
+  views
 };
 
 export default images;
