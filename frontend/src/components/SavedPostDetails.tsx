@@ -78,6 +78,19 @@ interface User {
 	isAccountNonExpired: boolean;
 }
 
+const getDayWithSuffix = (date: Date) => {
+	const day = date.getDate();
+	const suffix =
+		day % 10 === 1 && day !== 11
+			? "st"
+			: day % 10 === 2 && day !== 12
+				? "nd"
+				: day % 10 === 3 && day !== 13
+					? "rd"
+					: "th";
+	return `${day}${suffix}`;
+};
+
 const PinDetail: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
@@ -428,10 +441,25 @@ const PinDetail: React.FC = () => {
 								<p className="text-content md:text-xl text-md">
 									{post.caption}
 								</p>
+								<p className="text-content2 md:text-md text-base">
+								{post.createdAt
+									? `${getDayWithSuffix(new Date(post.createdAt))} ${new Date(post.createdAt).toLocaleDateString("en-GB", {
+										month: "long",
+										year: "numeric"
+									})} at ${new Date(post.createdAt).toLocaleTimeString("en-GB", {
+										hour: "2-digit",
+										minute: "2-digit"
+									})}`
+									: "Unknown"}
+								</p>
+
 								<CategoryPill categoryId={post.categoryId} />
+
+
+								
 							</div>
 						</div>
-						<div className="flex justify-start mt-4 space-x-4">
+						<div className="flex justify-center mt-4 space-x-4">
 							<button
 								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"
 								onClick={() =>
