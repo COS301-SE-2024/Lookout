@@ -481,7 +481,8 @@ const CreatedGroupDetail: React.FC = () => {
 			{/* Back Button */}
 			<button
 				onClick={() => navigate(-1)}
-				className="absolute top-11 left-4 md:top-10 md:left-8 text-navBkg hover:text-icon z-50 rounded-full p-2"
+				className="z-30 absolute top-11 left-4 md:top-10 md:left-8 text-navBkg hover:text-icon  rounded-full p-2"
+				style={{ zIndex: 30 }}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -503,14 +504,15 @@ const CreatedGroupDetail: React.FC = () => {
 			{isEditing ? (
 				<>
 					<button
-						className="absolute top-20 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
+						className="z-40 absolute top-10 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
 						onClick={handleDoneClick}
 					>
 						Done
 					</button>
 					<button
-						className="absolute top-20 left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
+						className="z-40 absolute top-10 left-4 md:left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
 						onClick={handleCancelClick}
+						style={{ zIndex: 40 }}
 					>
 						Cancel
 					</button>
@@ -591,7 +593,7 @@ const CreatedGroupDetail: React.FC = () => {
 						{isEditing ? (
 							<input
 								type="text"
-								className="text-content text-2xl italic font-bold bg-transparent mb-2 focus:outline-none"
+								className="text-center md:text-left items-center md:items-start text-content text-2xl italic font-bold bg-transparent mb-2 focus:outline-none"
 								value={editableName}
 								onChange={(e) =>
 									setEditableName(
@@ -600,7 +602,7 @@ const CreatedGroupDetail: React.FC = () => {
 								}
 							/>
 						) : (
-							<h1 className="text-2xl md:text-4xl text-content font-bold mb-2">
+							<h1 className="text-center md:text-left items-center md:items-start text-2xl md:text-4xl text-content font-bold mb-2">
 								{group.name}
 							</h1>
 						)}
@@ -608,7 +610,7 @@ const CreatedGroupDetail: React.FC = () => {
 						{isEditing ? (
 							<input
 								type="text"
-								className="text-content md:text-xl text-md italic w-80 bg-transparent focus:outline-none mb-2"
+								className="text-center md:text-left items-center md:items-start text-content md:text-xl text-md italic w-80 bg-transparent focus:outline-none mb-2"
 								value={editableDescription}
 								onChange={(e) =>
 									setEditableDescription(
@@ -617,25 +619,8 @@ const CreatedGroupDetail: React.FC = () => {
 								}
 							/>
 						) : (
-							<p className="text-content md:text-xl text-base mb-2">
-								{group.description
-									?.split(" ")
-									.map((word, index) =>
-										(index + 1) % 8 === 0
-											? `${word} `
-											: `${word} `
-									)
-									.reduce<React.ReactNode[]>(
-										(acc, curr, index) =>
-											(index + 1) % 8 === 0
-												? [
-													...acc,
-													curr,
-													<br key={index} />
-												]
-												: [...acc, curr],
-										[]
-									)}
+							<p className="text-content md:text-xl text-base mb-2 md:max-w-lg max-w-full leading-relaxed">
+							{group?.description}
 							</p>
 						)}
 
@@ -735,7 +720,7 @@ const CreatedGroupDetail: React.FC = () => {
 						<img
 							src={owner?.profilePic}
 							alt=""
-							className="w-20 h-20 rounded-full mr-6"
+							className="w-20 h-20  object-cover rounded-full mr-6"
 						/>
 						<div>
 							<h2 className="text-content text-lg font-bold">
