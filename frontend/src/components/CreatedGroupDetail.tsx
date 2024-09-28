@@ -76,6 +76,8 @@ const CreatedGroupDetail: React.FC = () => {
 	// Modal State
 	const [showRemoveModal, setShowRemoveModal] = useState(false);
 	const [memberToRemove, setMemberToRemove] = useState<User | null>(null);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 
 	// **New State Variables for Image Uploading**
 	const [isUploadingPicture, setIsUploadingPicture] = useState(false);
@@ -242,11 +244,34 @@ const CreatedGroupDetail: React.FC = () => {
 		setIsEditing(false);
 	};
 
-	const handleDeleteClick = async () => {
-		const confirmed = window.confirm(
-			"Are you sure you want to delete this group?"
-		);
-		if (confirmed && group) {
+	// const handleDeleteClick = async () => {
+	// 	const confirmed = window.confirm(
+	// 		"Are you sure you want to delete this group?"
+	// 	);
+	// 	if (confirmed && group) {
+	// 		try {
+	// 			const response = await fetch(`/api/groups/${group.id}`, {
+	// 				method: "DELETE"
+	// 			});
+
+	// 			if (!response.ok) {
+	// 				throw new Error("Failed to delete group");
+	// 			}
+
+	// 			// Navigate to profile page after deletion
+	// 			navigate(-1); // Go back after deleting
+	// 		} catch (error) {
+	// 			console.error("Error deleting group:", error);
+	// 		}
+	// 	}
+	// };
+	const handleDeleteClick = () => {
+		setShowDeleteModal(true); // Open the modal
+	};
+
+	// Confirm the group deletion
+	const confirmDeleteGroup = async () => {
+		if (group) {
 			try {
 				const response = await fetch(`/api/groups/${group.id}`, {
 					method: "DELETE"
@@ -260,9 +285,46 @@ const CreatedGroupDetail: React.FC = () => {
 				navigate(-1); // Go back after deleting
 			} catch (error) {
 				console.error("Error deleting group:", error);
+			} finally {
+				setShowDeleteModal(false); // Close the modal
 			}
 		}
 	};
+
+	// Cancel deletion and close the modal
+	const closeDeleteModal = () => {
+		setShowDeleteModal(false);
+	};
+
+	const DeleteGroupModal: React.FC<{
+		onConfirm: () => void;
+		onCancel: () => void;
+	  }> = ({ onConfirm, onCancel }) => (
+		<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+		  <div className="bg-bkg p-6 rounded-lg shadow-lg max-w-sm w-full text-content">
+			<h2 className="text-content text-xl font-bold mb-4">Delete Group</h2>
+			<p className="text-content">
+			  Are you sure you want to delete this group?
+			</p>
+			<div className="flex justify-center items-center mt-6">
+			  <button
+				onClick={onCancel}
+				className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+			  >
+				Cancel
+			  </button>
+			  <button
+				onClick={onConfirm}
+				className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg px-4 py-2 rounded"
+			  >
+				Delete
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  );
+	  
+		
 
 	// **Image Uploading Functions**
 
@@ -374,7 +436,7 @@ const CreatedGroupDetail: React.FC = () => {
 		onConfirm: () => void;
 		onCancel: () => void;
 	}> = ({ member, onConfirm, onCancel }) => (
-		<div className="fixed inset-0 flex items-center justify-center bg-navBkg bg-opacity-50 z-50">
+		<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
 			<div className="bg-bkg p-6 rounded-lg shadow-lg max-w-sm w-full text-white">
 				<h2 className="text-content text-xl font-bold mb-4">
 					Confirm Removal
@@ -387,7 +449,7 @@ const CreatedGroupDetail: React.FC = () => {
 				<div className="flex justify-center items-center mt-6">
 					<button
 						onClick={onCancel}
-						className="mr-3 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+						className="mr-3 bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg  px-4 py-2 rounded-lg"
 					>
 						Cancel
 					</button>
@@ -615,6 +677,12 @@ const CreatedGroupDetail: React.FC = () => {
 							>
 								Delete group
 							</button>
+							{showDeleteModal && (
+							<DeleteGroupModal
+								onConfirm={confirmDeleteGroup}
+								onCancel={closeDeleteModal}
+							/>
+							)}
 						</div>
 					</div>
 				</div>
@@ -635,7 +703,7 @@ const CreatedGroupDetail: React.FC = () => {
 					{posts.length === 0 ? (
 						<div className="text-center">
 							
-							<p className="text-content">
+							<p className="text-content mt-10 mb-10">
 								There are no posts in this group yet. Be the
 								first to post!
 							</p>
