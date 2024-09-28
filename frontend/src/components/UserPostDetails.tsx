@@ -402,11 +402,11 @@ const PinDetail: React.FC = () => {
             </div>
 
             <div className="flex items-center mb-6">
-              <img
-                src={user?.profilePic}
-                alt={post.username}
-                className="w-20 h-20 md:w-24 md:h-24  rounded-full mr-4"
-              />
+            <img
+              src={user?.profilePic}
+              alt={post.username}
+              className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4 object-cover"
+            />
               <div>
                 <h2 className="text-content text-xl md:text-2xl font-bold">{post.username}</h2>
 

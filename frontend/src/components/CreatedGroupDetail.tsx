@@ -621,13 +621,13 @@ const CreatedGroupDetail: React.FC = () => {
 								{group.description
 									?.split(" ")
 									.map((word, index) =>
-										(index + 1) % 10 === 0
+										(index + 1) % 8 === 0
 											? `${word} `
 											: `${word} `
 									)
 									.reduce<React.ReactNode[]>(
 										(acc, curr, index) =>
-											(index + 1) % 10 === 0
+											(index + 1) % 8 === 0
 												? [
 													...acc,
 													curr,
