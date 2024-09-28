@@ -73,7 +73,7 @@ const GroupsMap: React.FC = () => {
     <div className="h-screen w-screen relative">
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2"
+        className="absolute top-4 left-4 text-navBkg hover:text-icon z-50 mt-2"
         style={{ zIndex: 50 }}
       >
         <svg

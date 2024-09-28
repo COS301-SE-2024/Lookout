@@ -337,43 +337,6 @@ const GroupDetail: React.FC = () => {
 			<div className="container mx-auto p-4 mt-10">
 				<div className="flex flex-col md:flex-row md:items-center md:justify-center items-center">
 					{/* Group Picture */}
-					{owner?.email === currentUserEmail ? (
-						<div
-							className="relative group w-56 h-56 mb-4 md:mb-0 md:mr-8 cursor-pointer"
-							onClick={handleImageClick}
-						>
-							<img
-								className="w-full h-full object-cover"
-								src={group?.picture}
-								alt={`${group?.name} logo`}
-								style={{ borderRadius: "8px" }}
-							/>
-						
-								<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg z-20">
-									<svg
-										className="animate-spin h-8 w-8 text-white"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-									>
-										<circle
-											className="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											strokeWidth="4"
-										></circle>
-										<path
-											className="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8v8H4z"
-										></path>
-									</svg>
-								</div>
-						
-						</div>
-					) : (
 						<div className="w-56 h-56 mb-4 md:mb-0 md:mr-8">
 							<img
 								className="w-full h-full object-cover"
@@ -382,8 +345,6 @@ const GroupDetail: React.FC = () => {
 								style={{ borderRadius: "8px" }}
 							/>
 						</div>
-					)}
-
 					<div className="text-center md:text-left flex flex-col items-center md:items-start">
 						<h1 className="text-2xl md:text-4xl text-content font-bold mb-2">
 							{group?.name}
@@ -392,13 +353,13 @@ const GroupDetail: React.FC = () => {
 								{group?.description
 									?.split(" ")
 									.map((word, index) =>
-										(index + 1) % 10 === 0
+										(index + 1) % 8 === 0
 											? `${word} `
 											: `${word} `
 									)
 									.reduce<React.ReactNode[]>(
 										(acc, curr, index) =>
-											(index + 1) % 10 === 0
+											(index + 1) % 8 === 0
 												? [
 													...acc,
 													curr,
