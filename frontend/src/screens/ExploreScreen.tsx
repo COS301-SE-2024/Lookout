@@ -286,7 +286,7 @@ const ExploreScreen: React.FC = () => {
     value={searchQuery}
     onChange={handleSearchChange}
     placeholder="Search for Posts or Groups"
-    className="border p-2 text-gray-600 rounded md:max-w-[75vw] md:w-full w-full max-w-[75vw] search-bar bg-gray-200"
+    className="border p-2 text-gray-600 rounded md:w-full w-full max-w-[75vw] search-bar bg-gray-200"
   />
 </div>
 
