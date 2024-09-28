@@ -130,7 +130,7 @@ function Login() {
 				</div>
 
 				<div className="flex justify-center mb-2">
-					<button className="w-full py-2 text-content bg-white-500 rounded-md hover:bg-navBkg hover:border-navBkg focus:outline-none flex items-center justify-center border border-gray-300"
+					<button className="w-full py-2 text-content bg-white-500 rounded-md hover:bg-navBkg hover:border-navBkg hover:text-white focus:outline-none flex items-center justify-center border border-gray-300"
 						onClick={handleLogin}
 					>
 						<FcGoogle size={20} style={{ marginRight: 10 }} />

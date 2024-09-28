@@ -315,7 +315,7 @@ const CreatedGroupDetail: React.FC = () => {
 			  </button>
 			  <button
 				onClick={onConfirm}
-				className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg px-4 py-2 rounded"
+				className="bg-navBkg hover:bg-white hover:text-navBkg text-white border border-navBkg px-4 py-2 rounded"
 			  >
 				Delete
 			  </button>
