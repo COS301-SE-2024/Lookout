@@ -21,6 +21,7 @@ import filter from './filter.png'
 import updateProfile from './update_profile.png'
 import editTheme from './edit_theme.png'
 import views from './viewbuttons.png'
+import remove from './removeMember.png'
 
 const images = {
   createAPin,
@@ -45,7 +46,8 @@ const images = {
   filter,
   updateProfile,
   editTheme,
-  views
+  views,
+  remove
 };
 
 export default images;
