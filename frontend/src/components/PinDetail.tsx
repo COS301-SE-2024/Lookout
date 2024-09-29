@@ -78,6 +78,19 @@ interface User {
 	isAccountNonExpired: boolean;
 }
 
+const getDayWithSuffix = (date: Date) => {
+	const day = date.getDate();
+	const suffix =
+		day % 10 === 1 && day !== 11
+			? "st"
+			: day % 10 === 2 && day !== 12
+				? "nd"
+				: day % 10 === 3 && day !== 13
+					? "rd"
+					: "th";
+	return `${day}${suffix}`;
+};
+
 const PinDetail: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
@@ -120,6 +133,9 @@ const PinDetail: React.FC = () => {
 		const fetchPost = async () => {
 			try {
 				const response = await fetch(`/api/posts/${id}`);
+				if (!response.ok) {
+					throw new Error("Failed to fetch post");
+				}
 				const data = await response.json();
 				setPost(data);
 				setLoading(false);
@@ -128,10 +144,16 @@ const PinDetail: React.FC = () => {
 				const relatedResponse = await fetch(
 					`/api/posts/group/${data.groupId}?page=0&size=10`
 				);
+				if (!relatedResponse.ok) {
+					throw new Error("Failed to fetch related posts");
+				}
 				const relatedData = await relatedResponse.json();
 				setRelatedPosts(relatedData.content);
 
 				const userResponse = await fetch(`/api/users/`);
+				if (!userResponse.ok) {
+					throw new Error("Failed to fetch user data");
+				}
 				const userData = await userResponse.json();
 				setUser(userData);
 			} catch (error) {
@@ -145,6 +167,9 @@ const PinDetail: React.FC = () => {
 				const response = await fetch(
 					`/api/savedPosts/isPostSaved?postId=${id}`
 				);
+				if (!response.ok) {
+					throw new Error("Failed to check if post is saved");
+				}
 				const data = await response.json();
 				setIsSaved(data);
 			} catch (error) {
@@ -157,6 +182,9 @@ const PinDetail: React.FC = () => {
 				const response = await fetch(
 					`/api/savedPosts/countSaves?postId=${id}`
 				);
+				if (!response.ok) {
+					throw new Error("Failed to fetch saves count");
+				}
 				const data = await response.json();
 				setSaves(data);
 			} catch (error) {
@@ -220,8 +248,13 @@ const PinDetail: React.FC = () => {
 	}, [post?.id, user?.email]);
 
 	const handleSaveClick = async () => {
+		if (!post) return;
+
+		setIsSaved(true);
+		setSaves(saves + 1);
+
 		const requestBody = {
-			postId: post?.id
+			postId: post.id
 		};
 
 		console.log("Save request body:", requestBody);
@@ -239,16 +272,26 @@ const PinDetail: React.FC = () => {
 				throw new Error("Failed to save post");
 			}
 
-			setIsSaved(true);
-			setSaves((prevSaves) => prevSaves + 1); // Increase saves count
+			// Optionally, you can confirm the save was successful
 		} catch (error) {
 			console.error("Error saving post:", error);
+			// Revert the optimistic update
+			setIsSaved(false);
+			setSaves(saves - 1);
+			// Optionally, notify the user about the error
+			alert("Failed to save the post. Please try again.");
 		}
 	};
 
 	const handleUnsaveClick = async () => {
+		if (!post) return;
+
+		// Optimistically update the state
+		setIsSaved(false);
+		setSaves(saves - 1);
+
 		const requestBody = {
-			postId: post?.id
+			postId: post.id
 		};
 
 		console.log("Unsave request body:", requestBody);
@@ -266,10 +309,14 @@ const PinDetail: React.FC = () => {
 				throw new Error("Failed to unsave post");
 			}
 
-			setIsSaved(false);
-			setSaves((prevSaves) => prevSaves - 1); // Decrease saves count
+			// Optionally, you can confirm the unsave was successful
 		} catch (error) {
 			console.error("Error unsaving post:", error);
+			// Revert the optimistic update
+			setIsSaved(true);
+			setSaves(saves + 1);
+			// Optionally, notify the user about the error
+			alert("Failed to unsave the post. Please try again.");
 		}
 	};
 
@@ -292,40 +339,39 @@ const PinDetail: React.FC = () => {
 
 	return (
 		<div className="p-4 scrollbar-hide flex flex-col min-h-screen bg-bkg">
-			{" "}
 			{/* Ensure the container fills the whole screen */}
 			<style>
 				{`
-			  .scrollbar-hide::-webkit-scrollbar {
-				display: none;
-			  }
-			  .scrollbar-hide {
-				-ms-overflow-style: none;
-				scrollbar-width: none;
-			  }
-			  .search-results-container {
-				display: grid;
-				gap: 16px;
-				justify-items: start;
-			  }
-			  .search-results-container .search-result-card {
-				width: 100%;
-				margin: 0;
-			  }
-			  @media (min-width: 768px) {
-				.search-results-container {
-				  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-				}
-			  }
-			  @media (max-width: 767px) {
-				.search-results-container {
-				  grid-template-columns: 1fr;
-				}
-				.search-bar {
-				  width: 100%;
-				}
-			  }
-			`}
+              .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+              }
+              .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
+              .search-results-container {
+                display: grid;
+                gap: 16px;
+                justify-items: start;
+              }
+              .search-results-container .search-result-card {
+                width: 100%;
+                margin: 0;
+              }
+              @media (min-width: 768px) {
+                .search-results-container {
+                  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                }
+              }
+              @media (max-width: 767px) {
+                .search-results-container {
+                  grid-template-columns: 1fr;
+                }
+                .search-bar {
+                  width: 100%;
+                }
+              }
+            `}
 			</style>
 			<button
 				onClick={() => navigate(-1)}
@@ -349,7 +395,6 @@ const PinDetail: React.FC = () => {
 			</button>
 			<div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
 				<div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row h-full min-h-[550px]">
-					{" "}
 					{/* Minimum height added */}
 					<figure className="rounded-t-lg overflow-hidden md:w-1/2">
 						<img
@@ -359,7 +404,6 @@ const PinDetail: React.FC = () => {
 						/>
 					</figure>
 					<div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow">
-						{" "}
 						{/* flex-grow added */}
 						<div className="flex items-center justify-between mt-2 mb-4">
 							<h1 className="text-2xl md:text-4xl font-bold">
@@ -389,7 +433,7 @@ const PinDetail: React.FC = () => {
 								src={user.profilePic}
 								alt={post.username}
 								className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4 object-cover"
-								/>
+							/>
 							<div>
 								<h2 className="text-content text-xl md:text-2xl font-bold">
 									{post.username}
@@ -397,10 +441,21 @@ const PinDetail: React.FC = () => {
 								<p className="text-content md:text-xl text-md">
 									{post.caption}
 								</p>
+								<p className="text-content2 md:text-md text-base">
+								{post.createdAt
+									? `${getDayWithSuffix(new Date(post.createdAt))} ${new Date(post.createdAt).toLocaleDateString("en-GB", {
+										month: "long",
+										year: "numeric"
+									})} at ${new Date(post.createdAt).toLocaleTimeString("en-GB", {
+										hour: "2-digit",
+										minute: "2-digit"
+									})}`
+									: "Unknown"}
+								</p>
 								<CategoryPill categoryId={post.categoryId} />
 							</div>
 						</div>
-						<div className="flex justify-start mt-4 space-x-4">
+						<div className="flex justify-center mt-4 space-x-4">
 							<button
 								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg px-4 py-2 text-ml"
 								onClick={() =>

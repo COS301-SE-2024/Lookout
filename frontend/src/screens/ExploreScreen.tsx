@@ -7,50 +7,49 @@ import RecommendGroup from "../components/RecommendGroup";
 import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 //import ExploreArticles from "../components/ExploreArticles";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 interface User {
-	userName: string;
-	email: string;
-	passcode: string;
-	role: string;
-	isEnabled: boolean;
-	password: string;
-	username: string;
-	authorities: { authority: string }[];
-	isAccountNonLocked: boolean;
-	isCredentialsNonExpired: boolean;
-	isAccountNonExpired: boolean;
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
 }
 
 interface Group {
-	id: number;
-	name: string;
-	description: string;
-	isPrivate: boolean;
-	user: User | null;
-	picture: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  description: string;
+  isPrivate: boolean;
+  user: User | null;
+  picture: string;
+  createdAt: string;
 }
 
 interface Post {
-	id: number;
-	userId: number;
-	user: User;
-	group: Group;
-	description: String;
-	title: string;
-	category: { id: number; description: string };
-	picture: string;
-	latitude: number;
-	longitude: number;
-	caption: string;
-	createdAt: string;
-	categoryId: any;
+  id: number;
+  userId: number;
+  user: User;
+  group: Group;
+  description: String;
+  title: string;
+  category: { id: number; description: string };
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
+  createdAt: string;
+  categoryId: any;
 }
 
 const ExploreScreen: React.FC = () => {
-
   const [posts, setPosts] = useState<Post[]>([]);
   const [animalPosts, setAnimalPosts] = useState<Post[]>([]);
   const [campingPosts, setCampingPosts] = useState<Post[]>([]);
@@ -63,7 +62,6 @@ const ExploreScreen: React.FC = () => {
   const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
   const [recommendedGroups, setRecommendedGroups] = useState<Group[]>([]);
 
-  
   useEffect(() => {
     const fetchExploreData = async () => {
       try {
@@ -75,19 +73,31 @@ const ExploreScreen: React.FC = () => {
           const cachedPoiPosts = localStorage.getItem("poiPosts");
           const cachedSecurityPosts = localStorage.getItem("securityPosts");
           const cachedGroupPosts = localStorage.getItem("groupPosts");
-          const cachedRecommendedPosts = localStorage.getItem("recommendedPosts");
-          const cachedRecommendedGroups = localStorage.getItem("recommendedGroups");
+          const cachedRecommendedPosts =
+            localStorage.getItem("recommendedPosts");
+          const cachedRecommendedGroups =
+            localStorage.getItem("recommendedGroups");
           const cachedTimestamp = localStorage.getItem("postsTimestamp");
 
           return {
             posts: cachedPosts ? JSON.parse(cachedPosts) : null,
-            animalPosts: cachedAnimalPosts ? JSON.parse(cachedAnimalPosts) : null,
-            campingPosts: cachedCampingPosts ? JSON.parse(cachedCampingPosts) : null,
+            animalPosts: cachedAnimalPosts
+              ? JSON.parse(cachedAnimalPosts)
+              : null,
+            campingPosts: cachedCampingPosts
+              ? JSON.parse(cachedCampingPosts)
+              : null,
             poiPosts: cachedPoiPosts ? JSON.parse(cachedPoiPosts) : null,
-            securityPosts: cachedSecurityPosts ? JSON.parse(cachedSecurityPosts) : null,
+            securityPosts: cachedSecurityPosts
+              ? JSON.parse(cachedSecurityPosts)
+              : null,
             groupPosts: cachedGroupPosts ? JSON.parse(cachedGroupPosts) : null,
-            recommendedPosts: cachedRecommendedPosts ? JSON.parse(cachedRecommendedPosts) : null,
-            recommendedGroups: cachedRecommendedGroups ? JSON.parse(cachedRecommendedGroups) : null,
+            recommendedPosts: cachedRecommendedPosts
+              ? JSON.parse(cachedRecommendedPosts)
+              : null,
+            recommendedGroups: cachedRecommendedGroups
+              ? JSON.parse(cachedRecommendedGroups)
+              : null,
             cachedTimestamp: cachedTimestamp ? parseInt(cachedTimestamp) : null,
           };
         };
@@ -166,21 +176,26 @@ const ExploreScreen: React.FC = () => {
           ]);
 
           // Process recommended posts and groups
-          const postIds = recommendedPostData.map((post: { id: number }) => post.id);
-          const fullPostDetails: Post[] = [];
-          for (const postId of postIds) {
-            const postDetailResponse = await fetch(`/api/posts/${postId}`);
-            const postDetail = await postDetailResponse.json();
-            fullPostDetails.push(postDetail);
-          }
+          const postIds = recommendedPostData.map(
+            (post: { id: number }) => post.id
+          );
+          const fullPostDetails: Post[] = await Promise.all(
+            postIds.map(async (postId: any) => {
+              const postDetailResponse = await fetch(`/api/posts/${postId}`);
+              return await postDetailResponse.json();
+            })
+          );
 
-          const groupIds = recommendedGroupData.map((group: { id: number }) => group.id);
-          const fullGroupDetails: Group[] = [];
-          for (const groupId of groupIds) {
-            const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
-            const groupDetail = await groupDetailResponse.json();
-            fullGroupDetails.push(groupDetail);
-          }
+          const groupIds = recommendedGroupData.map(
+            (group: { id: number }) => group.id
+          );
+
+          const fullGroupDetails: Group[] = await Promise.all(
+            groupIds.map(async (groupId: any) => {
+              const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
+              return await groupDetailResponse.json();
+            })
+          );
 
           // Update state with new data
           setPosts(postData.content);
@@ -195,13 +210,28 @@ const ExploreScreen: React.FC = () => {
 
           // Cache new data
           localStorage.setItem("posts", JSON.stringify(postData.content));
-          localStorage.setItem("animalPosts", JSON.stringify(animalData.content));
-          localStorage.setItem("campingPosts", JSON.stringify(campData.content));
+          localStorage.setItem(
+            "animalPosts",
+            JSON.stringify(animalData.content)
+          );
+          localStorage.setItem(
+            "campingPosts",
+            JSON.stringify(campData.content)
+          );
           localStorage.setItem("poiPosts", JSON.stringify(poiData.content));
-          localStorage.setItem("securityPosts", JSON.stringify(securityData.content));
+          localStorage.setItem(
+            "securityPosts",
+            JSON.stringify(securityData.content)
+          );
           localStorage.setItem("groupPosts", JSON.stringify(groupData.content));
-          localStorage.setItem("recommendedPosts", JSON.stringify(fullPostDetails));
-          localStorage.setItem("recommendedGroups", JSON.stringify(fullGroupDetails));
+          localStorage.setItem(
+            "recommendedPosts",
+            JSON.stringify(fullPostDetails)
+          );
+          localStorage.setItem(
+            "recommendedGroups",
+            JSON.stringify(fullGroupDetails)
+          );
           localStorage.setItem("postsTimestamp", now.toString());
 
           setLoading(false);
@@ -214,7 +244,6 @@ const ExploreScreen: React.FC = () => {
 
     fetchExploreData();
   }, []);
-
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = DOMPurify.sanitize(event.target.value);
@@ -272,36 +301,33 @@ const ExploreScreen: React.FC = () => {
             .search-results-container {
               grid-template-columns: 1fr;
             }
-            .search-bar {
-              width: 100%;
-            }
           }
         `}
-
       </style>
 
       <div className="mb-4 w-full">
-  <input
-    type="text"
-    value={searchQuery}
-    onChange={handleSearchChange}
-    placeholder="Search for Posts or Groups"
-    className="border p-2 text-gray-600 rounded md:w-full w-full max-w-[75vw] search-bar bg-gray-200"
-  />
-</div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for Posts or Groups"
+          className="border p-2 text-gray-600 rounded w-3/4 md:w-full bg-gray-200"
+        />
+      </div>
 
       {loading && <ExploreSkeletonScreen />}
 
       {!loading && searchQuery === "" && (
         <>
-
-        <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-          <span>Posts we think you'll like</span>
-          <Link to="/recommend/posts" className="text-sm md:text-base text-black-500 underline">
-            View All
-          </Link>
-        </h1>
-
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+            <span>Posts we think you'll like</span>
+            <Link
+              to="/recommend/posts"
+              className="text-sm md:text-base text-black-500 underline"
+            >
+              View All
+            </Link>
+          </h1>
 
           <HorizontalCarousel>
             {recommendedPosts.map((post, index) => (
@@ -309,9 +335,12 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">            
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
             <span>Groups we think you'll like</span>
-            <Link to="/recommend/groups"className="text-sm md:text-base text-black-500 underline">
+            <Link
+              to="/recommend/groups"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -322,8 +351,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Animal Sightings</span>
-            <Link to="/category/1" className="text-sm md:text-base text-black-500 underline">
+            <span>Animal Sightings</span>
+            <Link
+              to="/category/1"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -334,8 +366,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Campsites</span>
-            <Link to="/category/2" className="text-sm md:text-base text-black-500 underline">
+            <span>Campsites</span>
+            <Link
+              to="/category/2"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -346,8 +381,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Hiking Trails</span>
-            <Link to="/category/3" className="text-sm md:text-base text-black-500 underline">
+            <span>Hiking Trails</span>
+            <Link
+              to="/category/3"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -358,8 +396,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Points of Interest</span>
-            <Link to="/category/4" className="text-sm md:text-base text-black-500 underline">
+            <span>Points of Interest</span>
+            <Link
+              to="/category/4"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -370,8 +411,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Security Concerns</span>
-            <Link to="/category/5" className="text-sm md:text-base text-black-500 underline">
+            <span>Security Concerns</span>
+            <Link
+              to="/category/5"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -382,8 +426,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Groups</span>
-            <Link to="/category/6" className="text-sm md:text-base text-black-500 underline">
+            <span>Groups</span>
+            <Link
+              to="/category/6"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>

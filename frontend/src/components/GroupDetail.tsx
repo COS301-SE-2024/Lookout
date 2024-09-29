@@ -349,27 +349,9 @@ const GroupDetail: React.FC = () => {
 						<h1 className="text-2xl md:text-4xl text-content font-bold mb-2">
 							{group?.name}
 						</h1>
-						<p className="text-content md:text-xl text-base mb-2">
-								{group?.description
-									?.split(" ")
-									.map((word, index) =>
-										(index + 1) % 8 === 0
-											? `${word} `
-											: `${word} `
-									)
-									.reduce<React.ReactNode[]>(
-										(acc, curr, index) =>
-											(index + 1) % 8 === 0
-												? [
-													...acc,
-													curr,
-													<br key={index} />
-												]
-												: [...acc, curr],
-										[]
-									)}
+						<p className="text-content md:text-xl text-base mb-2 md:max-w-lg max-w-full leading-relaxed">
+						{group?.description}
 						</p>
-
 						<div className="flex flex-col md:flex-row items-center mb-2">
 							<div className="flex flex-row items-center">
 								<span className="text-content md:text-xl text-md">
@@ -462,7 +444,7 @@ const GroupDetail: React.FC = () => {
 						<img
 							src={owner?.profilePic}
 							alt=""
-							className="w-20 h-20 rounded-full mr-6"
+							className="w-20 h-20 rounded-full  object-cover mr-6"
 						/>
 						<div>
 							<h2 className="text-lm font-bold">

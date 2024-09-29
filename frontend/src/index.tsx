@@ -41,15 +41,15 @@ function Main() {
 		if (currentTheme) {
 			document.documentElement.setAttribute("data-theme", currentTheme);
 		} else {
-			localStorage.setItem("data-theme", "default");
-			document.documentElement.setAttribute("data-theme", "default");
+			localStorage.setItem("data-theme", "light");
+			document.documentElement.setAttribute("data-theme", "light");
 		}
 	}, []);
 
 	const router = createBrowserRouter(
 		createRoutesFromElements(
 			<Route path="/" element={<App />}>
-				<Route	
+				<Route
 					path="/home"
 					element={<ProtectedRoute element={HomeScreen} />}
 				/>
@@ -84,9 +84,9 @@ function Main() {
 					path="/group/:id"
 					element={<ProtectedRoute element={GroupDetail} />}
 				/>
-				<Route 
-					path="/group/:id/posts" 
-					element={<ProtectedRoute element={GroupPosts} />} 
+				<Route
+					path="/group/:id/posts"
+					element={<ProtectedRoute element={GroupPosts} />}
 				/>
 				<Route
 					path="/post/:id"
@@ -104,42 +104,30 @@ function Main() {
 					path="/saved_post/:id"
 					element={<ProtectedRoute element={SavedPostDetails} />}
 				/>
-					<Route
-						path="/recommend/posts"
-						element={<ExploreRecommend />}
-					/>{" "}
-					<Route
-						path="/recommend/groups"
-						element={<ExploreRecommend />}
-					/>{" "}
-				
-
-					{/* <Route 
+				<Route path="/recommend/posts" element={<ExploreRecommend />} />{" "}
+				<Route
+					path="/recommend/groups"
+					element={<ExploreRecommend />}
+				/>{" "}
+				{/* <Route 
 						path="/" 
 						element={<ProtectedRoute element={ExploreScreen} />} /> */}
-					
 				<Route
-						path="/category/:categoryId"
-						element={<ProtectedRoute element={CategoryPostsPage} />}
-					/>
-
+					path="/category/:categoryId"
+					element={<ProtectedRoute element={CategoryPostsPage} />}
+				/>
 				<Route
 					path="/createdGroup/:id"
 					element={<ProtectedRoute element={CreatedGroupDetail} />}
 				/>
-
-				<Route 
-					path="/" 
-					element={<Landing />} 
-					index={true}/>
-
-				<Route 
-					path="/profileView/:id" 
-					element={<ProtectedRoute element={ProfileDetail} />} 
+				<Route path="/" element={<Landing />} index={true} />
+				<Route
+					path="/profileView/:id"
+					element={<ProtectedRoute element={ProfileDetail} />}
 				/>
-				<Route 
-					path="/map" 
-					element={<ProtectedRoute element={PinMap} />} 
+				<Route
+					path="/map"
+					element={<ProtectedRoute element={PinMap} />}
 				/>
 
 				<Route 

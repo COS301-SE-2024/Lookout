@@ -1,5 +1,11 @@
 const CACHE_NAME = "lookout-cache-v2";
-const OFFLINE_URLS = ["/", "/index.html", "/HomeScreen.tsx", "/Profile.tsx"];
+const OFFLINE_URLS = [
+	"/",
+	"/index.html",
+	"/HomeScreen.tsx",
+	"/Profile.tsx",
+	"/offline.html"
+];
 
 self.addEventListener("install", (event) => {
 	event.waitUntil(
@@ -22,26 +28,35 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-	if (event.request.url.includes("/createPost")) {
+	if (event.request.method !== "GET") {
 		return;
 	}
 
 	event.respondWith(
-		fetch(event.request)
-			.then((networkResponse) => {
-				return caches.open(CACHE_NAME).then((cache) => {
-					cache.put(event.request, networkResponse.clone());
+		caches.match(event.request).then((cachedResponse) => {
+			if (cachedResponse) {
+				return cachedResponse;
+			}
+			return fetch(event.request)
+				.then((networkResponse) => {
+					if (
+						!networkResponse ||
+						networkResponse.status !== 200 ||
+						networkResponse.type !== "basic"
+					) {
+						return networkResponse;
+					}
+					const responseToCache = networkResponse.clone();
+					caches.open(CACHE_NAME).then((cache) => {
+						cache.put(event.request, responseToCache);
+					});
 					return networkResponse;
-				});
-			})
-			.catch(() => {
-				return caches.match(event.request).then((cachedResponse) => {
-					if (cachedResponse) {
-						return cachedResponse;
-					} else {
+				})
+				.catch(() => {
+					if (event.request.mode === "navigate") {
 						return caches.match("/offline.html");
 					}
 				});
-			})
+		})
 	);
 });
