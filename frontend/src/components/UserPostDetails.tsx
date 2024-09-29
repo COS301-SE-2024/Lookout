@@ -8,6 +8,7 @@ import PinDetailPost from "./PinDetailPost";
 import DOMPurify from "dompurify";
 
 interface Post {
+	profilePic: string | undefined;
 	id: number;
 	username: string;
 	description: string;
@@ -429,7 +430,7 @@ const PinDetail: React.FC = () => {
 						</div>
 						<div className="flex items-center mb-6">
 							<img
-								src={user?.profilePic}
+								src={post.profilePic}
 								alt={post.username}
 								className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4 object-cover"
 							/>

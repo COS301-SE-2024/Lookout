@@ -103,11 +103,13 @@ const GroupDetail: React.FC = () => {
 				const groupData = await groupResponse.json();
 				setGroup(groupData);
 
-				const userResponse = await fetch(`/api/users/`, {
+				const userResponse = await fetch(`/api/groups/user/createdBy/${id}`, {
 					method: "GET",
 					headers: { Accept: "application/json" }
 				});
 				const userData = await userResponse.json();
+				console.log(id);
+				console.log(userData);
 				setOwner(userData);
 				setOwnerLoaded(true);
 

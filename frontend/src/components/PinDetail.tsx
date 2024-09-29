@@ -8,6 +8,7 @@ import PinDetailPost from "./PinDetailPost";
 import webSocketService from "../utils/webSocketService";
 
 interface Post {
+	profilePic: string | undefined;
 	id: number;
 	username: string;
 	description: string;
@@ -137,6 +138,7 @@ const PinDetail: React.FC = () => {
 					throw new Error("Failed to fetch post");
 				}
 				const data = await response.json();
+				console.log("Fetched post:", data);
 				setPost(data);
 				setLoading(false);
 
@@ -155,6 +157,7 @@ const PinDetail: React.FC = () => {
 					throw new Error("Failed to fetch user data");
 				}
 				const userData = await userResponse.json();
+				console.log("User data:", userData);
 				setUser(userData);
 			} catch (error) {
 				console.error("Error fetching post or related posts:", error);
@@ -430,7 +433,7 @@ const PinDetail: React.FC = () => {
 						</div>
 						<div className="flex items-center mb-4">
 							<img
-								src={user.profilePic}
+								src={post.profilePic}
 								alt={post.username}
 								className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4 object-cover"
 							/>

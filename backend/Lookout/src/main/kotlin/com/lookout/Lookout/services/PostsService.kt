@@ -4,10 +4,8 @@ import com.lookout.Lookout.entity.Categories
 import com.lookout.Lookout.entity.CreatePost
 import com.lookout.Lookout.entity.UpdatePost
 import com.lookout.Lookout.entity.Posts
-import com.lookout.Lookout.repository.CategoryRepository
-import com.lookout.Lookout.repository.GroupRepository
-import com.lookout.Lookout.repository.PostRepository
-import com.lookout.Lookout.repository.UserRepository
+import com.lookout.Lookout.repository.*
+import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -19,7 +17,8 @@ class PostsService(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
     private val groupRepository: GroupRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val savedPostsRepository: SavedPostRepository
 ) {
 
     fun createPost(createPost: CreatePost, userId: Long): Posts {
@@ -49,8 +48,21 @@ class PostsService(
         return postRepository.save(post)
     }
 
+    fun removeGroupIdFromPosts(groupId: Long) {
+        postRepository.setGroupIdToNullForPostsByGroupId(groupId)
+    }
+
     fun findById(id: Long): Posts? {
         return postRepository.findById(id).orElse(null)
+    }
+
+    @Transactional
+    fun deletePost(post: Posts) {
+        // First, delete all rows in the saved_posts table referencing this post
+        post.id?.let { savedPostsRepository.deleteByPostId(it) }
+
+        // Then, delete the post itself
+        postRepository.delete(post)
     }
 
     fun delete(post: Posts) {
@@ -80,6 +92,7 @@ class PostsService(
             val post = postOptional.get()
 
             updatePost.caption.let { post.caption = it }
+            updatePost.title.let { post.title = it }
 
             return postRepository.save(post)
         }

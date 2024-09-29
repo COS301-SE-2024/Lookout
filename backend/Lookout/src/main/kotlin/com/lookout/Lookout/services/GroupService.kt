@@ -16,7 +16,8 @@ import java.util.*
 class GroupService(
     private val groupRepository: GroupRepository,
     private val userService: UserService,
-    private val groupMembersRepository: GroupMembersRepository
+    private val groupMembersRepository: GroupMembersRepository,
+    private val postsService: PostsService
 ) {
 
     fun findAll(pageable: Pageable): Page<Groups> = groupRepository.findAll(pageable)
@@ -56,6 +57,7 @@ class GroupService(
     fun deleteById(groupId: Long) {
         // Remove all group members before deleting the group
         groupMembersRepository.deleteByGroupId(groupId)
+        postsService.removeGroupIdFromPosts(groupId)
         groupRepository.deleteById(groupId)
     }
 
@@ -117,6 +119,11 @@ class GroupService(
     fun findGroupsByOwnerId(ownerId: Long): List<Groups> {
         return groupRepository.findGroupsByOwnerId(ownerId)
     }
+
+    fun findGroupOwnerByGroupId(groupId: Long): Optional<User> {
+        return groupRepository.findOwnerByGroupId(groupId)
+    }
+
 
 
 }

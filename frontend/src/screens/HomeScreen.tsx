@@ -1082,7 +1082,7 @@ const HomeScreen: React.FC = () => {
 				{/* Add pin modal */}
 				{isModalOpen && (
 					<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 ">
-						<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto h-96 overflow-y-auto">
+						<div className="relative bg-nav p-6 rounded-lg w-full max-w-md mx-auto h-2/3 overflow-y-auto">
 							<button
 								className="text-icon hover:text-navSelect absolute top-2 right-2 text-3xl font-bold"
 								onClick={closeModal}

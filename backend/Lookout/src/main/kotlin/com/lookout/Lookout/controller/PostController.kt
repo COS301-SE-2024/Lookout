@@ -35,7 +35,8 @@ class PostController(
             caption = post.caption.toString(),
             createdAt = post.createdAt.toString(),
             userId = post.user?.id ?: 0,
-            username = post.user?.username.toString(),
+            username = post.user?.userName.toString(),
+            profilePic = post.user?.profilePic.toString(),
             groupId = post.group?.id ?: 0,
             groupName = post.group?.name.toString(),
             groupDescription = post.group?.description.toString(),
@@ -85,15 +86,16 @@ class PostController(
 
     // Delete a post
     @DeleteMapping("/{id}")
-    fun deletePost(@PathVariable id: Long): ResponseEntity<Posts> {
+    fun deletePost(@PathVariable id: Long): ResponseEntity<Void> {
         val post = postService.findById(id)
         return if (post != null) {
-            postService.delete(post)
+            postService.deletePost(post)
             ResponseEntity.noContent().build()
         } else {
             ResponseEntity.notFound().build()
         }
     }
+
 
     // Get all posts
     @GetMapping

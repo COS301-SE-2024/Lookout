@@ -180,6 +180,17 @@ class GroupController(
         return ResponseEntity.ok(groups)
     }
 
+    @GetMapping("/user/createdBy/{id}")
+    fun getGroupOwnerByGroupId(@PathVariable id: Long): ResponseEntity<User> {
+        val owner = groupService.findGroupOwnerByGroupId(id)
+        return if (owner.isPresent) {
+            ResponseEntity.ok(owner.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+
     @PostMapping("/AddMemberToGroup")
     fun addMemberToGroup(@RequestBody request: AddOrRemoveMemberFromGroup,
                          requestid: HttpServletRequest): ResponseEntity<String> {
@@ -257,6 +268,23 @@ class GroupController(
             }
             val groupId = request.groupId
 
+            if (groupId != null && userId != null) {
+                groupService.removeMember(groupId, userId)
+                ResponseEntity.noContent().build()
+            } else {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Group ID or User ID is null")
+            }
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
+        }
+    }
+
+    @PostMapping("/RemoveMemberFromMyGroup")
+    fun removeMemberFromMyGroup(@RequestBody request: AddOrRemoveMemberFromGroup): ResponseEntity<String> {
+        return try {
+
+            val groupId = request.groupId
+            val userId = request.userId
             if (groupId != null && userId != null) {
                 groupService.removeMember(groupId, userId)
                 ResponseEntity.noContent().build()

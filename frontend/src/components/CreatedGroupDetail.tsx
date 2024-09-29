@@ -165,7 +165,7 @@ const CreatedGroupDetail: React.FC = () => {
 		if (!group || !memberToRemove) return;
 
 		try {
-			const response = await fetch("/api/groups/RemoveMemberFromGroup", {
+			const response = await fetch("/api/groups/RemoveMemberFromMyGroup", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
