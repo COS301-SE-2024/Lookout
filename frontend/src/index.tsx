@@ -32,6 +32,7 @@ import Settings from "./screens/SettingsScreen";
 import Settings2 from "./screens/Settings";
 
 import EmailHandler from "./components/EmailHandler";
+import ResetPasswordScreen from "./screens/ResetPasswordScreen";
 
 
 function Main() {
@@ -139,6 +140,11 @@ function Main() {
 				<Route 
 					path="/map" 
 					element={<ProtectedRoute element={PinMap} />} 
+				/>
+
+				<Route 
+					path="/reset-password" 
+					element={<ProtectedRoute element={ResetPasswordScreen} />} 
 				/>
 
 			</Route>

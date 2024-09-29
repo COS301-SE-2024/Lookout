@@ -44,6 +44,8 @@ dependencies {
 	implementation ("org.apache.commons:commons-csv:1.10.0")
 	implementation ("org.springframework.boot:spring-boot-starter-web")
 	implementation ("org.springframework.boot:spring-boot-starter-logging")
+	implementation ("com.sendgrid:sendgrid-java:4.7.3")
+
 
 }
 
