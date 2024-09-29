@@ -7,8 +7,8 @@ import {
 	FaQuestion
 } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
-import GreenLookout from "../assets/icons/GreenNoLookoutText-Transparent.png";
-import BlueLookout from "../assets/icons/BlueNoLookoutText-Transparent.png";
+import GreenLookout from "../assets/icons/GreenNoLookoutTextTransparent.png";
+import BlueLookout from "../assets/icons/BlueNoLookoutTextTransparent.png";
 import HelpModal from "./HelpModal";
 import Tooltip from "./Tooltip";
 
@@ -86,6 +86,10 @@ const Navigationbar = () => {
 								to="/explore"
 								className="flex flex-col items-center justify-center"
 							>
+								<FaBinoculars
+									size={24}
+									className={getIconColor("/")}
+								/>
 								<span className="text-xs">Explore</span>
 							</Link>
 							<Link
@@ -132,16 +136,16 @@ const Navigationbar = () => {
 											{isLightMode ? (
 												<img
 													src={GreenLookout}
-													className="w-auto h-8 text-navBkg2 hover:text-navBkg-dark transition-colors duration-300"
+													className="w-auto h-10 text-navBkg2 hover:text-navBkg-dark transition-colors duration-300"
 												/>
 											) : (
 												<img
 													src={BlueLookout}
-													className="w-auto h-8 text-navBkg2 hover:text-navBkg-dark transition-colors duration-300"
+													className="w-auto h-10 text-navBkg2 hover:text-navBkg-dark transition-colors duration-300"
 												/>
 											)}
 
-											<h1 className="text-navBkg2 font-extrabold text-3xl hover:text-navBkg-dark transition-transform duration-300">
+											<h1 className="text-navBkg2 font-lookout text-3xl hover:text-navBkg-dark transition-transform duration-300">
 												LOOKOUT
 											</h1>
 										</Link>

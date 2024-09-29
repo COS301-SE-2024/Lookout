@@ -11,9 +11,18 @@
 		font-style: normal;
 	  }
 
-    /* body {
-      font-family: 'CustomFont', sans-serif;
-    } */
+    @font-face {
+      font-family: 'LookoutFont';
+      src: url('Fonts/Itim3.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @layer base {
+      body {
+        @apply font-custom; /* Applies CustomFont globally */
+      }
+    }
      
     @layer base {
       body {
