@@ -9,6 +9,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import GreenLookout from "../assets/icons/GreenNoLookoutTextTransparent.png";
 import BlueLookout from "../assets/icons/BlueNoLookoutTextTransparent.png";
+import CreamLookout from "../assets/icons/CreamFullNoLookoutText.png";
 import HelpModal from "./HelpModal";
 import Tooltip from "./Tooltip";
 
@@ -140,7 +141,7 @@ const Navigationbar = () => {
 												/>
 											) : (
 												<img
-													src={BlueLookout}
+													src={CreamLookout}
 													className="w-auto h-10 text-navBkg2 hover:text-navBkg-dark transition-colors duration-300"
 												/>
 											)}
