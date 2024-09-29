@@ -336,8 +336,8 @@ const PinDetail: React.FC = () => {
 			</style>
 			<button
 				onClick={() => navigate(-1)}
-				className="absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon z-50 mt-2 rounded-full p-2"
-				style={{ zIndex: 50 }}
+				className="z-30 absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon  mt-2 rounded-full p-2"
+				style={{ zIndex: 30 }}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -357,14 +357,15 @@ const PinDetail: React.FC = () => {
 			{isEditing ? (
 				<>
 					<button
-						className="absolute top-10 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
+						className="z-40 absolute top-12 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
 						onClick={handleDoneClick}
 					>
 						Done
 					</button>
 					<button
-						className="absolute top-10 left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
+						className="z-40 absolute top-12 left-4 md:left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
 						onClick={handleCancelClick}
+						style={{ zIndex: 40 }}
 					>
 						Cancel
 					</button>
@@ -437,239 +438,81 @@ const PinDetail: React.FC = () => {
 									{post.username}
 								</h2>
 
-								<button
-									onClick={() => navigate(-1)}
-									className="z-30 absolute top-8 left-4 md:top-20 md:left-8 text-navBkg hover:text-icon  mt-2 rounded-full p-2"
-									style={{ zIndex: 30 }}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										className="h-8 w-8"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											d="M15 19l-7-7 7-7"
-										/>
-									</svg>
-								</button>
-
 								{isEditing ? (
-									<>
-										<button
-											className="z-40 absolute top-12 right-6 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:right-28"
-											onClick={handleDoneClick}
-										>
-											Done
-										</button>
-										<button
-											className="z-40 absolute top-12 left-4 md:left-24 text-white bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg rounded-full px-4 py-2 cursor-pointer md:top-24 md:left-28"
-											onClick={handleCancelClick}
-											style={{ zIndex: 40 }}
-										>
-											Cancel
-										</button>
-									</>
-								) : (
-									<FaEdit
-										className="absolute top-12 right-8 text-xl cursor-pointer text-navBkg md:top-24 md:right-8 hover:text-icon"
-										onClick={handleEditClick}
-										size={30}
+									<input
+										type="text"
+										className="text-content md:text-xl text-md italic resize-none bg-bkg w-full"
+										value={editableCaption}
+										onChange={(e) =>
+											setEditableCaption(
+												DOMPurify.sanitize(
+													e.target.value
+												)
+											)
+										}
 									/>
+								) : (
+									<p className="text-content md:text-xl text-md">
+										{post.caption}
+									</p>
 								)}
 
-								<div className="container mx-auto p-4 mt-16 lg:w-full xl:w-full h-full flex-grow">
-									<div className="card bg-base-100 shadow-xl rounded-lg flex flex-col md:flex-row h-full min-h-[550px]">
-										{" "}
-										{/* Minimum height added */}
-										<figure className="rounded-t-lg overflow-hidden md:w-1/2">
-											<img
-												src={post.picture}
-												alt={post.title}
-												className="w-full h-full object-cover"
-											/>
-										</figure>
-										<div className="card-body p-4 md:w-1/2 flex flex-col justify-between flex-grow">
-											{" "}
-											{/* flex-grow added */}
-											<div className="flex items-center justify-between mt-2 mb-4">
-												{isEditing ? (
-													<input
-														type="text"
-														className="text-2xl md:text-4xl font-bold italic bg-bkg w-full"
-														value={editableTitle}
-														onChange={(e) =>
-															setEditableTitle(
-																DOMPurify.sanitize(
-																	e.target
-																		.value
-																)
-															)
-														}
-													/>
-												) : (
-													<h1 className="text-2xl md:text-4xl font-bold">
-														{post.title}
-													</h1>
-												)}
-												<div className="flex items-center">
-													{isSaved ? (
-														<FaBookmark
-															className="text-navBkg cursor-pointer"
-															onClick={
-																handleSaveIconClick
-															}
-															size={24}
-														/>
-													) : (
-														<FaRegBookmark
-															className="text-navBkg cursor-pointer"
-															onClick={
-																handleSaveIconClick
-															}
-															size={24}
-														/>
-													)}
-													<span className="ml-2 md:text-xl text-base text-center">
-														{saves} saves
-													</span>
-												</div>
-											</div>
-											<div className="flex items-center mb-6">
-												<img
-													src={user?.profilePic}
-													alt={post.username}
-													className="w-20 h-20 md:w-24 md:h-24 rounded-full mr-4 object-cover"
-												/>
-												<div>
-													<h2 className="text-content text-xl md:text-2xl font-bold">
-														{post.username}
-													</h2>
+								<p className="text-content2 md:text-md text-base">
+									{post.createdAt
+										? `${getDayWithSuffix(
+												new Date(post.createdAt)
+										  )} ${new Date(
+												post.createdAt
+										  ).toLocaleDateString("en-GB", {
+												month: "long",
+												year: "numeric"
+										  })} at ${new Date(
+												post.createdAt
+										  ).toLocaleTimeString("en-GB", {
+												hour: "2-digit",
+												minute: "2-digit"
+										  })}`
+										: "Unknown"}
+								</p>
 
-													{isEditing ? (
-														<input
-															type="text"
-															className="text-content md:text-xl text-md italic resize-none bg-bkg w-full"
-															value={
-																editableCaption
-															}
-															onChange={(e) =>
-																setEditableCaption(
-																	DOMPurify.sanitize(
-																		e.target
-																			.value
-																	)
-																)
-															}
-														/>
-													) : (
-														<p className="text-content md:text-xl text-md">
-															{post.caption}
-														</p>
-													)}
-
-													<p className="text-content2 md:text-md text-base">
-														{post.createdAt
-															? `${getDayWithSuffix(
-																	new Date(
-																		post.createdAt
-																	)
-															  )} ${new Date(
-																	post.createdAt
-															  ).toLocaleDateString(
-																	"en-GB",
-																	{
-																		month: "long",
-																		year: "numeric"
-																	}
-															  )} at ${new Date(
-																	post.createdAt
-															  ).toLocaleTimeString(
-																	"en-GB",
-																	{
-																		hour: "2-digit",
-																		minute: "2-digit"
-																	}
-															  )}`
-															: "Unknown"}
-													</p>
-
-													<CategoryPill
-														categoryId={
-															post.categoryId
-														}
-													/>
-												</div>
-											</div>
-											<div className="flex justify-center mt-6 space-x-2">
-												<button
-													className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-lg rounded-lg md:px-4 md:py-2 px-2 py-1 text-sm"
-													onClick={() =>
-														navigate(`/map`, {
-															state: {
-																post,
-																apicode
-															}
-														})
-													}
-												>
-													View on Map
-												</button>
-												<button
-													className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-lg rounded-lg md:px-4 md:py-2 px-2 py-1 text-sm"
-													onClick={() =>
-														navigate(
-															`/group/${post.groupId}`,
-															{
-																state: {
-																	group: post.group
-																}
-															}
-														)
-													}
-												>
-													View Group
-												</button>
-												{isEditing && (
-													<button
-														className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg md:px-4 md:py-2 px-2 py-1 text-sm"
-														onClick={
-															handleDeleteClick
-														}
-													>
-														Delete Post
-													</button>
-												)}
-											</div>
-											<div className="mt-10">
-												<h1 className="text-lg md:text-xl font-semibold">
-													See more posts like this:
-												</h1>
-
-												<HorizontalCarousel>
-													{relatedPosts.map(
-														(relatedPost) => (
-															<PinDetailPost
-																key={
-																	relatedPost.id
-																}
-																post={
-																	relatedPost
-																}
-															/>
-														)
-													)}
-												</HorizontalCarousel>
-											</div>
-										</div>
-									</div>
-								</div>
+								<CategoryPill categoryId={post.categoryId} />
 							</div>
-							);
+						</div>
+						<div className="flex justify-center mt-6 space-x-2">
+							<button
+								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-lg rounded-lg md:px-4 md:py-2 px-2 py-1 text-sm"
+								onClick={() =>
+									navigate(`/map`, {
+										state: { post, apicode }
+									})
+								}
+							>
+								View on Map
+							</button>
+							<button
+								className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-lg rounded-lg md:px-4 md:py-2 px-2 py-1 text-sm"
+								onClick={() =>
+									navigate(`/group/${post.groupId}`, {
+										state: { group: post.group }
+									})
+								}
+							>
+								View Group
+							</button>
+							{isEditing && (
+								<button
+									className="bg-navBkg hover:bg-white hover:text-navBkg border border-navBkg text-white md:text-xl rounded-lg md:px-4 md:py-2 px-2 py-1 text-sm"
+									onClick={handleDeleteClick}
+								>
+									Delete Post
+								</button>
+							)}
+						</div>
+						<div className="mt-10">
+							<h1 className="text-lg md:text-xl font-semibold">
+								See more posts like this:
+							</h1>
+
 							<HorizontalCarousel>
 								{relatedPosts.map((relatedPost) => (
 									<PinDetailPost
