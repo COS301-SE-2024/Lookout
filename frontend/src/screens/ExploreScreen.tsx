@@ -149,8 +149,8 @@ const ExploreScreen: React.FC = () => {
             fetch("/api/posts/category/5?page=0&size=10"),
             fetch("/api/groups"),
             fetch(`/api/groups/user`),
-            fetch("/recommend_posts?user_id=1&top_n=10"),
-            fetch("/recommend_groups?user_id=1&top_n=10"),
+            fetch("/api/posts/recommend_posts"),
+            fetch("/api/groups/recommend_groups"),
           ]);
 
           const [

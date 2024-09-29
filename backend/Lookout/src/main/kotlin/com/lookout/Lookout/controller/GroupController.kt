@@ -2,6 +2,7 @@ package com.lookout.Lookout.controller
 
 import com.lookout.Lookout.dto.CreateGroupDto
 import com.lookout.Lookout.dto.GroupDto
+import com.lookout.Lookout.dto.PostDto
 import com.lookout.Lookout.dto.UserDto
 import com.lookout.Lookout.entity.*
 import com.lookout.Lookout.service.GroupService
@@ -9,13 +10,12 @@ import com.lookout.Lookout.service.JwtService
 import com.lookout.Lookout.service.UserService
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.http.MediaType
+import org.springframework.http.*
+import org.springframework.web.client.RestTemplate
 
 @RestController
 @RequestMapping("/api/groups")
@@ -339,6 +339,44 @@ class GroupController(
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
         }
+    }
+
+    @GetMapping("/recommend_groups")
+    fun getRecommendedPosts(
+        request: HttpServletRequest,
+        restTemplate: RestTemplate
+    ): ResponseEntity<String> {
+
+        // Extract JWT from cookies
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        // Extract user email from JWT
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        // Find user by email
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+
+        // Prepare API call to your Python model
+        val pythonApiUrl = "https://lookoutcapstone.xyz/recommend_groups?user_id=$userId&top_n=10"
+
+        // Perform GET request to the Python model API
+        val headers = HttpHeaders()
+        val entity = HttpEntity<String>(headers)
+
+        val response: ResponseEntity<String> = restTemplate.exchange(
+            pythonApiUrl,
+            HttpMethod.GET,
+            entity,
+            String::class.java
+        )
+
+        // Return the response from the Python model API as is
+        return ResponseEntity.ok(response.body)
     }
 
     // Helper method to extract JWT from request cookies
