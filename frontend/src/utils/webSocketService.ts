@@ -7,26 +7,35 @@ class WebSocketService {
 
 	connect(token: string): Promise<void> {
 		return new Promise((resolve, reject) => {
+			const protocol =
+				window.location.protocol === "https:" ? "https://" : "http://";
+
+			const socketUrl = `${protocol}${window.location.host}/ws`;
+
 			this.client = new Client({
-				webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+				webSocketFactory: () => new SockJS(socketUrl),
 				connectHeaders: {
-					Authorization: `Bearer ${token}` // Pass the JWT token here
+					Authorization: `Bearer ${token}`
 				},
 				debug: (str) => {
+					console.log(str);
 				},
 				onConnect: (frame) => {
 					this.connected = true;
 					resolve();
 				},
 				onStompError: (frame) => {
+					console.error("STOMP Error: ", frame);
 					reject(frame);
 				},
 				onWebSocketError: (error) => {
+					console.error("WebSocket Error: ", error);
 				},
 				onWebSocketClose: (event) => {
 					this.connected = false;
+					console.warn("WebSocket Closed: ", event);
 				},
-				reconnectDelay: 5000 // Reconnect after 5 seconds if the connection is lost
+				reconnectDelay: 5000
 			});
 
 			this.client.activate();
