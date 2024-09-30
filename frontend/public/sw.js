@@ -1,9 +1,9 @@
-const CACHE_NAME = "lookout-cache-v2";
+const CACHE_NAME = "lookout-cache-v3";
 const OFFLINE_URLS = [
 	"/",
 	"/index.html",
-	"/HomeScreen.tsx",
-	"/Profile.tsx",
+	"/HomeScreen.js",
+	"/Profile.js",
 	"/offline.html"
 ];
 
@@ -11,6 +11,7 @@ self.addEventListener("install", (event) => {
 	event.waitUntil(
 		caches.open(CACHE_NAME).then((cache) => cache.addAll(OFFLINE_URLS))
 	);
+	self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -25,6 +26,7 @@ self.addEventListener("activate", (event) => {
 				)
 			)
 	);
+	self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -36,8 +38,9 @@ self.addEventListener("fetch", (event) => {
 			.then((networkResponse) => {
 				if (
 					!networkResponse ||
-					networkResponse.status !== 200 ||
-					networkResponse.type !== "basic"
+					(networkResponse.status !== 200 &&
+						networkResponse.status !== 201 &&
+						networkResponse.status !== 304)
 				) {
 					return networkResponse;
 				}

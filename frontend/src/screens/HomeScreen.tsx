@@ -603,7 +603,10 @@ const HomeScreen: React.FC = () => {
 		setSelectCategory(categoryId);
 	};
 
-	const handleAddPinClick = async () => {
+	const handleAddPinClick = async (
+		event: React.MouseEvent<HTMLButtonElement>
+	) => {
+		event.preventDefault();
 		if (selectedGroup === null) {
 			alert("Please select a group.");
 			return;
@@ -659,21 +662,11 @@ const HomeScreen: React.FC = () => {
 				await fetchPins();
 
 				setCenter({
-					lat:
-						dragpinlatitude !== null &&
-						dragpinlatitude !== undefined &&
-						dragpinlatitude !== 0
-							? dragpinlatitude
-							: latitude,
-					lng:
-						dragpinlongitude !== null &&
-						dragpinlongitude !== undefined &&
-						dragpinlongitude !== 0
-							? dragpinlongitude
-							: longitude
+					lat: dragpinlatitude || latitude,
+					lng: dragpinlongitude || longitude
 				});
 
-				setZoom(15);
+				setZoom(18);
 			} catch (error) {
 				console.error("Error creating post:", error);
 			}
@@ -1432,7 +1425,6 @@ const HomeScreen: React.FC = () => {
 					</div>
 				)}
 
-				{/* Success modal */}
 				{isSuccessModalOpen && (
 					<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
 						<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
