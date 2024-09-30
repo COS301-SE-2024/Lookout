@@ -14,32 +14,36 @@ const Settings = () => {
   const menuItems = [
     { id: 1, name: "Profile" },
     { id: 2, name: "Appearance" },
-    // { id: 3, name: "Help Centre" },
     { id: 4, name: "Tutorials" },
     { id: 5, name: "FAQS" },
-    // { id: 6, name: "Terms of Service" },
-    // { id: 7, name: "Privacy Policy" },
     { id: 8, name: "About Us" },
     { id: 9, name: "Logout", icon: <LuLogOut size={20} /> },
   ];
 
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = useState<number | null>(menuItems[0].id);
-  const [isDarkTheme, ] = useState(
-    localStorage.getItem("data-theme") === "dark"
-  );
+  const [isDarkTheme] = useState(localStorage.getItem("data-theme") === "dark");
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
 
+  // Set activeMenu to null by default on mobile and Profile by default on desktop
+  const [activeMenu, setActiveMenu] = useState<number | null>(
+    window.innerWidth < 768 ? null : menuItems[0].id
+  );
+
   useEffect(() => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      isDarkTheme ? "dark" : "light"
-    );
+    document.documentElement.setAttribute("data-theme", isDarkTheme ? "dark" : "light");
     localStorage.setItem("data-theme", isDarkTheme ? "dark" : "light");
   }, [isDarkTheme]);
 
   useEffect(() => {
-    const handleResize = () => setIsMobileView(window.innerWidth < 768);
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+      // Set the active menu to null on mobile if resizing from desktop
+      if (window.innerWidth < 768) {
+        setActiveMenu(null);
+      } else {
+        setActiveMenu(menuItems[0].id); // Default to Profile on desktop
+      }
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -75,86 +79,38 @@ const Settings = () => {
     }
   };
 
-  // const handleToggle = (isToggled: boolean) => {
-  //   document.documentElement.setAttribute(
-  //     "data-theme",
-  //     isToggled ? "dark" : "light"
-  //   );
-  //   localStorage.setItem("data-theme", isToggled ? "dark" : "light");
-  // };
-
-  //const [, setShowHelpCentre] = useState(false);
-
-  // const handleHelpCentreClick = () => {
-  //   setShowHelpCentre(true);
-  // };
-
-  // const handleCloseHelpCentre = () => {
-  //   setShowHelpCentre(false);
-  // };
-
-  // const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
-  //   undefined
-  // );
-
-  // const jsx = useMemo(() => {
-  //   if (selectedIndex === undefined) {
-  //     return undefined;
-  //   }
-  //   if (selectedIndex === 0) {
-  //     return (
-  //       <div>
-  //         <div
-  //           className="cursor-pointer"
-  //           onClick={() => setSelectedIndex(undefined)}
-  //         >
-  //           <FaChevronLeft size={24} />
-  //         </div>
-  //         <EditProfile />
-  //       </div>
-  //     );
-  //   }
-  // }, [selectedIndex]);
-
   const renderContent = () => {
     switch (activeMenu) {
       case 1:
         return <EditProfile />;
       case 2:
         return <ThemeSwitcher />;
-      // case 3:
-      //   return <HelpCentre />;
       case 4:
         return <Tutorials />;
       case 5:
         return <FAQ />;
-      // case 6:
-      //   return <div>Terms of Service</div>;
-      // case 7:
-      //   return <div>Privacy Policy</div>;
       case 8:
         return <AboutUs />;
       case 9:
-        return null; // Logout does not have content
+        return null; // Logout case
+      default:
+        return null;
     }
   };
 
   return (
-    <div className="md:h-screen min-h-screen bg-bkg ml-6 mt-4 md:mt-0">
+    <div className="min-h-screen bg-bkg ml-6 mt-4 md:mt-0">
       {/* Heading */}
-      <div className={`p-4 ${isMobileView && (activeMenu === 1 || activeMenu === 2 || activeMenu === 4 || activeMenu === 5
-        || activeMenu === 8) ? 'hidden' : ''}`}>
+      <div className={`p-4 ${isMobileView && activeMenu ? 'hidden' : ''}`}>
         <h2 className="text-2xl font-bold">Settings</h2>
-        <p className="text-sm text-content2 text-content2">Manage your account settings, get help or find additional information.</p>
+        <p className="text-sm text-content2">Manage your account settings, get help or find additional information.</p>
         <hr className="mr-6" />
       </div>
 
       {/* Main Content */}
       <div className="flex flex-1">
         {/* Left-hand Menu */}
-        <div
-          className={`w-full md:w-1/5 p-2 ${isMobileView && activeMenu !== null ? 'hidden' : 'block'}`}
-        >
+        <div className={`w-full md:w-1/5 p-2 ${isMobileView && activeMenu ? 'hidden' : 'block'}`}>
           <ul>
             {menuItems.map((item) => (
               <li
@@ -166,24 +122,20 @@ const Settings = () => {
                     setActiveMenu(item.id);
                   }
                 }}
-                className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-hver" : "bg-bkg"
-                  } hover:bg-hver`}
+                className={`p-2 cursor-pointer rounded flex items-center ${activeMenu === item.id ? "bg-hver" : "bg-bkg"} hover:bg-hver`}
               >
-                <span className={`flex-1 ${isMobileView ? 'text-lg' : 'text-base'}`}>
+                <span className={`flex-1 ${isMobileView ? 'text-xl' : 'text-base'}`}>
                   {item.name}
                 </span>
                 {item.icon && <span className="ml-2">{item.icon}</span>}
               </li>
             ))}
           </ul>
-
         </div>
 
         {/* Content Panel */}
-        <div
-          className={`w-full md:w-4/5 ml-4 ${isMobileView ? 'block' : 'hidden md:block'}`}
-        >
-          {isMobileView && activeMenu !== null && (
+        <div className={`w-full md:w-4/5 ml-4 ${isMobileView ? 'block' : 'hidden md:block'}`}>
+          {isMobileView && activeMenu && (
             <button
               className="text-content2 hover:text-gray-700 mb-2 flex items-center mt-6 mb-4"
               onClick={() => setActiveMenu(null)}

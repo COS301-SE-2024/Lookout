@@ -139,7 +139,7 @@ const RecommendScreen: React.FC = () => {
   });
 
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-screen bg-bkg">
       <div className="flex items-center justify-between mb-4">
         {/* Back arrow and title */}
         <div className="flex items-center space-x-4">

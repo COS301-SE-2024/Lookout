@@ -186,7 +186,7 @@ const CategoryPostsPage: React.FC = () => {
   const categoryName = categoryMap[Number(categoryId)] || "Unknown Category";
 
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-screen bg-bkg">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <button onClick={() => navigate('/explore')} className="text-navBkg hover:text-icon">

@@ -4,7 +4,8 @@ import ProfileSkeleton from "../components/ProfileSkeleton";
 import PostsProfile from "../components/PostsProfile";
 import GroupsProfile from "../components/GroupsProfile";
 import { useLocation } from "react-router-dom";
-import profilePhoto from "../assets/styles/images/mockprofilephoto.png";
+import profilePhoto from "../assets/styles/images/user.png";
+import { FaEdit } from 'react-icons/fa';
 
 const Profile = () => {
 	const [activeTab, setActiveTab] = useState(() => {
@@ -48,13 +49,13 @@ const Profile = () => {
 				const groupsCountData = await groupsCountResponse.json();
 
 				setUsername(userData.userName || "Unknown User");
-				
+
 				setPostsCount(postsCountData);
 				setGroupsCount(groupsCountData);
 
 				if (userData.profilePic !== null) {
 					localStorage.setItem("previewUrl", userData.profilePic);
-					
+
 					setProfilePic(userData.profilePic);
 				}
 
@@ -190,18 +191,14 @@ const Profile = () => {
 	return (
 		<div className="relative flex flex-col items-center w-full min-h-screen p-4 sm:p-8">
 			{/* Profile Picture */}
-			<div
-				className="cursor-pointer relative"
-				style={{ width: "128px", height: "128px" }}
-			>
+			<div className="cursor-pointer relative group w-24 h-24 sm:w-32 sm:h-32 mb-4">
 				<img
-					className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-300 mb-4 cursor-pointer object-cover"
+					className="w-full h-full rounded-full bg-gray-300 object-cover"
 					src={profilePic || profilePhoto}
 					alt="Profile"
-					onClick={handleImageClick}
 				/>
 				{isUploadingPicture && (
-					<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+					<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full z-20">
 						<svg
 							className="animate-spin h-8 w-8 text-white"
 							xmlns="http://www.w3.org/2000/svg"
@@ -224,6 +221,10 @@ const Profile = () => {
 						</svg>
 					</div>
 				)}
+				{/* Overlay div */}
+				<div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full z-10">
+					Change Profile Picture
+				</div>
 				<input
 					type="file"
 					accept="image/*"
@@ -231,6 +232,20 @@ const Profile = () => {
 					ref={fileInputRef}
 					style={{ display: "none" }}
 				/>
+
+				{/* Edit Icon */}
+
+				<div
+					className="absolute bottom-0 right-0 mb-1 mr-1 cursor-pointer"
+					onClick={handleImageClick} // Trigger file input when clicking the icon
+				>
+					<FaEdit
+						className="bg-gray-200 text-navBkg p-1 rounded-full"
+						size={30}
+					/>
+				</div>
+
+
 			</div>
 
 			{/* Username */}
@@ -248,21 +263,19 @@ const Profile = () => {
 			{/* Mini Navbar */}
 			<div className="flex mt-4 space-x-8 sm:space-x-12">
 				<button
-					className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${
-						activeTab === "posts"
+					className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${activeTab === "posts"
 							? "border-b-4 border-navBkg font-bold"
 							: "text-gray-500"
-					}`}
+						}`}
 					onClick={() => setActiveTab("posts")}
 				>
 					Posts
 				</button>
 				<button
-					className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${
-						activeTab === "groups"
+					className={`px-4 sm:px-6 py-2 sm:py-3 focus:outline-none ${activeTab === "groups"
 							? "border-b-4 border-navBkg font-bold"
 							: "text-gray-500"
-					}`}
+						}`}
 					onClick={() => setActiveTab("groups")}
 				>
 					Groups

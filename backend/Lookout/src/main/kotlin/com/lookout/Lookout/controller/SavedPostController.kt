@@ -59,81 +59,80 @@ class SavedPostController(
 
     @PostMapping("/SavePost")
     fun savePost(@RequestBody reqPost: SavePostRequest, request: HttpServletRequest): ResponseEntity<String> {
-        return try {
-
-            var userId: Long = 0
+        try {
             val jwt = extractJwtFromCookies(request.cookies)
-
             val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
 
             val user = userEmail?.let { userService.loadUserByUsername(it) }
 
             if (user is User) {
-                println("User ID: ${user.id}")
-                userId = user.id
-            }
+                println("User Email: ${user.email}")
 
-            val savedPost = savedPostsService.savePost(userId, reqPost.postId)
-
-
-            val saveCount = savedPostsService.countSavesByPostId(reqPost.postId)
-
-            val messagePayload = mapOf(
-                "postId" to reqPost.postId,
-                "saves" to saveCount,
-                "isSaved" to true,
-                "userId" to userId
-            )
-
-
-            println("Sending WebSocket message to /post/${reqPost.postId} with payload: $messagePayload")
-
-
-            messagingTemplate.convertAndSend("/post/${reqPost.postId}", messagePayload)
-
-
-            ResponseEntity.status(HttpStatus.CREATED).body("Successfully saved post")
-        } catch (e: IllegalArgumentException) {
-
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString())
-        }
-    }
-
-    @DeleteMapping("/UnsavePost")
-    fun unsavePost(@RequestBody reqPost: SavePostRequest, request: HttpServletRequest): ResponseEntity<String> {
-        return try {
-            var userId: Long = 0
-            val jwt = extractJwtFromCookies(request.cookies)
-
-            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
-
-            val user = userEmail?.let { userService.loadUserByUsername(it) }
-
-            if (user is User) {
-                println("User ID: ${user.id}")
-                userId = user.id
-            }
-            val result = savedPostsService.unsavePost(userId, reqPost.postId)
-            if (result) {
-
+                val savedPost = savedPostsService.savePost(user.id, reqPost.postId)
                 val saveCount = savedPostsService.countSavesByPostId(reqPost.postId)
+
                 val messagePayload = mapOf(
                     "postId" to reqPost.postId,
                     "saves" to saveCount,
-                    "isSaved" to false,
-                    "userId" to userId
+                    "isSaved" to true,
+                    "userEmail" to user.email
                 )
+
                 println("Sending WebSocket message to /post/${reqPost.postId} with payload: $messagePayload")
                 messagingTemplate.convertAndSend("/post/${reqPost.postId}", messagePayload)
 
-                ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully unsaved post")
+                return ResponseEntity.status(HttpStatus.CREATED).body("Successfully saved post")
             } else {
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post is not saved by user")
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found or invalid")
             }
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString())
         }
     }
+
+
+    @DeleteMapping("/UnsavePost")
+    fun unsavePost(@RequestBody reqPost: SavePostRequest, request: HttpServletRequest): ResponseEntity<String> {
+         try {
+            val jwt = extractJwtFromCookies(request.cookies)
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            // Safely load the user
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            // Ensure the user object is properly cast to the User class
+            if (user is User) {
+                println("User Email: ${user.email}")
+
+                // Proceed to unsave the post with the user's ID
+                val result = savedPostsService.unsavePost(user.id, reqPost.postId)
+                if (result) {
+                    val saveCount = savedPostsService.countSavesByPostId(reqPost.postId)
+                    val messagePayload = mapOf(
+                        "postId" to reqPost.postId,
+                        "saves" to saveCount,
+                        "isSaved" to false,
+                        "userEmail" to user.email // Send email instead of userId
+                    )
+
+                    println("Sending WebSocket message to /post/${reqPost.postId} with payload: $messagePayload")
+                    messagingTemplate.convertAndSend("/post/${reqPost.postId}", messagePayload)
+
+                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully unsaved post")
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post is not saved by user")
+                }
+            } else {
+                // Handle case when user is not found or invalid
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found or invalid")
+            }
+        } catch (e: IllegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString())
+        }
+    }
+
+
 
 //    @GetMapping("/user/{userId}")
 //    fun getSavedPostsByUser(@PathVariable userId: Long): ResponseEntity<List<SavedPosts>> {

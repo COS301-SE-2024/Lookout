@@ -199,7 +199,7 @@ def predict():
 
     # Determine predicted class
     predicted_class_index = np.argmax(yhat)
-    predicted_class_name = class_names[predicted_class_index]
+    predicted_class_name = class_names[predicted_class_index].capitalize() + " Sighting"
     predicted_probability = yhat[0][predicted_class_index]
 
     # Return the prediction
