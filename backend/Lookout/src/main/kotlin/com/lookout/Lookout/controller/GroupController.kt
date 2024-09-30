@@ -280,6 +280,15 @@ class GroupController(
         }
     }
 
+    @GetMapping("/topJoinedGroups")
+    fun getTopJoinedGroups(): ResponseEntity<List<GroupDto>> {
+        val groups = groupService.getTopJoinedGroups().map { group -> convertToDto(group) }
+        if (groups.isEmpty()) {
+            return ResponseEntity.noContent().build()
+        }
+        return ResponseEntity.ok(groups)
+    }
+
     // Helper method to extract JWT from request cookies
     private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
         return cookies?.firstOrNull { it.name == "jwt" }?.value

@@ -116,5 +116,9 @@ class GroupService(
         return groupRepository.findGroupsByOwnerId(ownerId)
     }
 
+    fun getTopJoinedGroups(): List<Groups> {
+        return groupRepository.getTopJoinedGroups()
+    }
+
 
 }

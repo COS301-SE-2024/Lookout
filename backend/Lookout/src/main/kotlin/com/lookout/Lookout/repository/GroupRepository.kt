@@ -38,5 +38,15 @@ interface GroupRepository : JpaRepository<Groups, Long> {
     @Query("SELECT g FROM Groups g WHERE g.user.id = :ownerId")
     fun findGroupsByOwnerId(@Param("ownerId") ownerId: Long): List<Groups>
 
+    @Query("""
+        SELECT g 
+        FROM Groups g 
+        JOIN GroupMembers gm ON g.id = gm.group.id 
+        GROUP BY g.id 
+        ORDER BY COUNT(gm.user.id) DESC
+        LIMIT 10
+    """)
+    fun getTopJoinedGroups(): List<Groups>
+
 
 }
