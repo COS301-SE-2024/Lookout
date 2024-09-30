@@ -139,7 +139,6 @@ const Profile = () => {
 			const imageUrl = uploadURL.split("?")[0];
 			setIsUploadingPicture(false);
 
-			console.log("Image uploaded successfully.", imageUrl);
 
 			// Update the user's profile picture in the backend
 			await updateUserPicture(imageUrl);

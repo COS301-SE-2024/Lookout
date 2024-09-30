@@ -108,8 +108,8 @@ const GroupDetail: React.FC = () => {
 					headers: { Accept: "application/json" }
 				});
 				const userData = await userResponse.json();
-				console.log(id);
-				console.log(userData);
+				
+				
 				setOwner(userData);
 				setOwnerLoaded(true);
 
@@ -242,7 +242,6 @@ const GroupDetail: React.FC = () => {
 			const imageUrl = uploadURL.split("?")[0];
 			setIsUploadingPicture(false);
 
-			console.log("Image uploaded successfully.", imageUrl);
 
 			// Update the group's picture in the backend
 			await updateGroupPicture(imageUrl);

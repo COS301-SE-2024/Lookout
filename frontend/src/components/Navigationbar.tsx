@@ -24,7 +24,6 @@ const Navigationbar = () => {
 		localStorage.getItem("data-theme") === "light" ? true : false;
 
 	useEffect(() => {
-		//console.log("isAuthed", isAuthed);
 	}, [isAuthed]);
 
 	useEffect(() => {

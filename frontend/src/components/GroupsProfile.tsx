@@ -25,7 +25,6 @@ const GroupsProfile = () => {
 	const [groupCount, setGroupCount] = useState(0); // State to track the number of created groups
 
 const handleCreateGroup = (newGroup: any) => {
-	console.log("New group created:", newGroup);
 	startTransition(() => {
 		setIsCreateGroupsOpen(false);
 		setGroupCount(prevCount => prevCount + 1); // Increment the count

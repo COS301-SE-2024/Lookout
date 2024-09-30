@@ -39,7 +39,6 @@ const ExploreGroups: React.FC = () => {
     fetch(`/api/groups`)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched groups:', data.content);
         setGroups(data.content); // Set all groups retrieved from the server
         // setHasMore(false); // No more data to fetch, since we're fetching all at once
       })
@@ -62,7 +61,6 @@ const ExploreGroups: React.FC = () => {
       .then(response => response.json())
       .then(data => {
         const joinedGroupIds = data.map((group: Group) => group.id);
-        console.log('Fetched user\'s groups:', data);
         setJoinedGroups(joinedGroupIds);
       })
       .catch(error => console.error('Error fetching user\'s groups:', error));

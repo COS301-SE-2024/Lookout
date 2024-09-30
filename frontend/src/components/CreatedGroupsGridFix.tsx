@@ -41,7 +41,7 @@ const CreatedGroupsGridFix: React.FC<CreatedGroupsGridFixProps> = ({ searchQuery
         }
         const data = await response.json();
 
-        // console.log(data);
+       
 
         // const filteredGroups = data.content.filter((group: Group) => group.userId === userId);
         // const uniqueGroups = filteredGroups.reduce((acc: Group[], current: Group) => {

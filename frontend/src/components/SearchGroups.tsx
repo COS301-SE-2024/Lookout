@@ -61,7 +61,6 @@ const SearchGroups: React.FC = () => {
         fetch('/api/groups')
             .then(response => response.json())
             .then((data: GroupResponse) => {
-                // console.log("Fetched all groups:", data); // Debug log
                 setGroups(data.content);
                 setFilteredGroups(data.content);
             })
@@ -69,11 +68,9 @@ const SearchGroups: React.FC = () => {
 
         fetch('/api/groups/user/2') // Assuming userId is 2 for this example
             .then(response => {
-                // console.log("Fetch joined groups response status:", response.status); // Debug log
                 return response.json();
             })
             .then((data: Group[]) => {
-                // console.log("Fetched joined groups:", data); // Debug log
                 const joinedGroupIds = data.map(group => group.id);
                 setJoinedGroups(joinedGroupIds);
             })

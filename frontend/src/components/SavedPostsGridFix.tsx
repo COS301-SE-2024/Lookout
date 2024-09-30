@@ -142,8 +142,6 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
     savedPost.post?.caption.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log("Saved posts data:", savedPosts);
-  console.log("Filtered saved posts data:", filteredSavedPosts);
 
   return (
     <div className="p-4 scrollbar-hide">
