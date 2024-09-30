@@ -29,20 +29,25 @@ const mockGroups = [
 ];
 
 beforeEach(() => {
-  global.fetch = jest.fn((url) => {
-    if (typeof url === 'string' && url.includes('/user/1')) {
-      return Promise.resolve(
-        new Response(JSON.stringify(mockGroups.filter(group => group.userId === 1)), {
-          headers: { 'Content-Type': 'application/json' },
-        })
-      );
-    }
-    return Promise.resolve(
-      new Response(JSON.stringify({ content: mockGroups }), {
-        headers: { 'Content-Type': 'application/json' },
-      })
-    );
-  });
+  global.fetch = jest.fn((url) =>
+    Promise.resolve({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: new Headers(),
+      redirected: false,
+      type: 'basic',
+      url: url.toString(),
+      clone: jest.fn(),
+      body: null,
+      bodyUsed: false,
+      arrayBuffer: jest.fn(),
+      blob: jest.fn(),
+      formData: jest.fn(),
+      text: jest.fn(),
+      json: () => Promise.resolve(mockGroups),
+    } as Response)
+  );
 });
 
 afterEach(() => {
@@ -50,7 +55,7 @@ afterEach(() => {
 });
 
 describe('GroupsGridFix', () => {
-  const renderWithRouter = (ui: string | number | boolean | JSX.Element | Iterable<React.ReactNode> | null | undefined, { route = '/' } = {}) => {
+  const renderWithRouter = (ui: string | number | boolean | Iterable<React.ReactNode> | JSX.Element | null | undefined, { route = '/' } = {}) => {
     const history = createMemoryHistory({ initialEntries: [route] });
     return {
       ...render(<Router location={history.location} navigator={history}>{ui}</Router>),
@@ -63,7 +68,8 @@ describe('GroupsGridFix', () => {
 
     await waitFor(() => {
       mockGroups.forEach(group => {
-        screen.getAllByAltText(`${group.name} logo`);
+        expect(screen.getByText(group.name)).toBeInTheDocument();
+        expect(screen.getByAltText(`${group.name} logo`)).toBeInTheDocument();
       });
     });
   });
@@ -72,10 +78,8 @@ describe('GroupsGridFix', () => {
     renderWithRouter(<GroupsGridFix searchQuery="One" />);
   
     await waitFor(() => {
-      const groupOneImages = screen.getAllByAltText('Group One logo');
-      expect(groupOneImages.length).toBeGreaterThan(0); 
-  
-      expect(screen.queryByAltText('Group Two logo')).toBeNull();
+      expect(screen.getByText('Group One')).toBeInTheDocument();
+      expect(screen.queryByText('Group Two')).not.toBeInTheDocument();
     });
   });
 
@@ -83,13 +87,11 @@ describe('GroupsGridFix', () => {
     const { history } = renderWithRouter(<GroupsGridFix searchQuery="" />);
   
     await waitFor(() => {
-      const groupOneImages = screen.getAllByAltText('Group One logo');
-      expect(groupOneImages.length).toBeGreaterThan(0); 
-  
-      fireEvent.click(groupOneImages[0]);
-      
-      expect(history.location.pathname).toBe('/group/1');
+      expect(screen.getByText('Group One')).toBeInTheDocument();
     });
+
+    fireEvent.click(screen.getByText('Group One'));
+    
+    expect(history.location.pathname).toBe('/group/1');
   });
-  
 });
