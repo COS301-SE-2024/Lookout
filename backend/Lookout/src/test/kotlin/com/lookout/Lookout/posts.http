@@ -67,5 +67,10 @@ Content-Type: application/json
 }
 ###
 
+### Get top saved posts
+GET http://localhost:8080/api/posts/topSavedPosts
+Accept: application/json
+###
+
 
 

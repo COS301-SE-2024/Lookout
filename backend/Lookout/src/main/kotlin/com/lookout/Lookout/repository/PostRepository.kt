@@ -20,4 +20,14 @@ interface PostRepository : JpaRepository<Posts, Long>{
     @Query("UPDATE Posts p SET p.group.id = null WHERE p.group.id = :groupId")
     fun setGroupIdToNullForPostsByGroupId(@Param("groupId") groupId: Long)
 
+    @Query("""
+        SELECT p 
+        FROM Posts p 
+        JOIN SavedPosts sp ON p.id = sp.post.id 
+        GROUP BY p.id 
+        ORDER BY COUNT(sp.user.id) DESC
+        LIMIT 10
+    """)
+    fun getTopSavedPosts(): List<Posts>
+
 }

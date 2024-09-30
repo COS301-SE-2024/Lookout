@@ -98,4 +98,8 @@ class PostsService(
         }
         return null
     }
+
+    fun getTopSavedPosts(): List<Posts> {
+        return postRepository.getTopSavedPosts()
+    }
 }

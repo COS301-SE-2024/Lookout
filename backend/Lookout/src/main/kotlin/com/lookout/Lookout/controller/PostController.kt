@@ -233,5 +233,14 @@ class PostController(
         return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
 
+    @GetMapping("/topSavedPosts")
+    fun getTopSavedPosts(): ResponseEntity<List<PostDto>> {
+        val posts = postService.getTopSavedPosts().map { post -> convertToDto(post)}
+        if (posts.isEmpty()) {
+            return ResponseEntity.noContent().build()
+        }
+        return ResponseEntity.ok(posts)
+    }
+
 
 }
