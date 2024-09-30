@@ -251,6 +251,8 @@ const HomeScreen: React.FC = () => {
 	const [longitude, setLongitude] = useState(0);
 	const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
 	const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+	const [offlineSuccess, setOfflineSuccess] = useState(false);
+	const [isOfflinePosted, setIsOfflinePosted] = useState(false);
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [caption, setCaption] = useState("");
 	const [picture, setPicture] = useState("");
@@ -325,7 +327,6 @@ const HomeScreen: React.FC = () => {
 				(position) => {
 					setLatitude(position.coords.latitude);
 					setLongitude(position.coords.longitude);
-					
 				},
 				(error) => {
 					console.error("Error fetching location:", error);
@@ -338,21 +339,44 @@ const HomeScreen: React.FC = () => {
 
 	const [uploadImg, setUploadImg] = useState("");
 
+	const uploadImageFileToS3Offline = async (file: File): Promise<string> => {
+		if (!file) {
+			throw new Error("No file provided for upload.");
+		}
+
+		try {
+			const uploadURL = await generateUploadURL();
+
+			const uploadResponse = await fetch(uploadURL, {
+				method: "PUT",
+				headers: {
+					"Content-Type": file.type
+				},
+				body: file
+			});
+
+			if (!uploadResponse.ok) {
+				throw new Error("Failed to upload image to S3.");
+			}
+
+			return uploadURL;
+		} catch (error) {
+			console.error("Error uploading file:", error);
+			throw error;
+		}
+	};
+
 	const uploadBase64ImageToS3Offline = async (
 		base64Image: string
 	): Promise<string> => {
-		// Changed return type to Promise<string>
-
 		if (!base64Image) {
 			throw new Error("No image data provided for upload.");
 		}
 
 		try {
-			// Extract base64 data
 			const base64Data = base64Image.split(",")[1];
 			if (!base64Data) throw new Error("Invalid base64 image data.");
 
-			// Convert base64 to binary data
 			const binaryData = base64ToBuffer(base64Data);
 
 			// Generate a random image name
@@ -374,50 +398,20 @@ const HomeScreen: React.FC = () => {
 				throw new Error("Failed to upload image to S3.");
 			}
 
-			// Extract the S3 URL without query parameters
 			const imageUrl = uploadURL.split("?")[0];
 
-			// Optionally, set the picture in state or elsewhere
-			// await setPicture(imageUrl); // Uncomment if needed
-
-			// If you have logic for recommended titles
-			if (showRecommendedTitle) {
-				const myHeaders = new Headers();
-				myHeaders.append("Content-Type", "application/json");
-
-				const raw = JSON.stringify({
-					image_url: imageUrl
-				});
-
-				const requestOptions = {
-					method: "POST",
-					headers: myHeaders,
-					body: raw
-				};
-
-				try {
-					const response = await fetch("/predict", requestOptions);
-					if (!response.ok) {
-						throw new Error("Prediction request failed.");
-					}
-					const result = await response.json();
-					setPredictResult(result.predicted_class);
-					setTitle(result.predicted_class);
-					
-				} catch (error) {
-					console.error("Prediction error:", error);
-				}
-			}
-
-			return imageUrl; // Return the S3 URL
+			return imageUrl;
 		} catch (error) {
 			console.error("Error uploading image:", error);
 			throw error; // Re-throw the error to be handled by the caller
 		}
 	};
 
-	const postOfflinePin = async (params: string, key: string) => {
+	const isBase64Image = (str: string): boolean => {
+		return /^data:image\/[a-zA-Z]+;base64,/.test(str);
+	};
 
+	const postOfflinePin = async (params: string, key: string) => {
 		if (navigator.onLine) {
 			const myHeaders = new Headers();
 			myHeaders.append("Content-Type", "application/json");
@@ -437,16 +431,18 @@ const HomeScreen: React.FC = () => {
 					longitude
 				} = jsonObj;
 
-				const dragpinlatitude = jsonObj.dragpinlatitude; // Adjust if located elsewhere
-				const dragpinlongitude = jsonObj.dragpinlongitude; // Adjust if located elsewhere
+				const dragpinlatitude = jsonObj.dragpinlatitude;
+				const dragpinlongitude = jsonObj.dragpinlongitude;
 
-				let uploadedPictureUrl = picture; // Initialize with existing picture data
+				let uploadedPictureUrl = picture;
 
-				// If there's a picture in the object, upload it and get the S3 URL
 				if (picture) {
-					uploadedPictureUrl = await uploadBase64ImageToS3Offline(
-						picture
-					);
+					if (isBase64Image(picture)) {
+						// Handle base64 image
+						uploadedPictureUrl = await uploadBase64ImageToS3Offline(
+							picture
+						);
+					}
 				}
 
 				// Construct newObj with the desired structure
@@ -470,11 +466,8 @@ const HomeScreen: React.FC = () => {
 							: longitude
 				};
 
-
-				// Stringify the new object for the request body
 				const requestBody = JSON.stringify(newObj);
 
-				// Make the POST request to create the post
 				const response = await fetch("/api/posts/CreatePost", {
 					method: "POST",
 					headers: myHeaders,
@@ -482,8 +475,7 @@ const HomeScreen: React.FC = () => {
 				});
 
 				if (response.ok) {
-					alert("Post created successfully!");
-
+					setIsOfflinePosted(true);
 					localStorage.removeItem(key);
 					setCurrentNumberPins(currentNumberPins + 1);
 					await fetchPins();
@@ -522,7 +514,7 @@ const HomeScreen: React.FC = () => {
 		};
 
 		processOfflinePins();
-	});
+	}, []);
 
 	const [pins, setPins] = useState<myPin[]>([]);
 	const fetchPins = async () => {
@@ -611,22 +603,6 @@ const HomeScreen: React.FC = () => {
 		setSelectCategory(categoryId);
 	};
 
-	// Function to convert blob URL to base64
-	// async function blobToBase64(blobUrl: string) {
-	//  const response = await fetch(blobUrl);
-	//  const blob = await response.blob();
-	//  return new Promise((resolve, reject) => {
-	//      const reader = new FileReader();
-	//      reader.onloadend = () => {
-	//          if (typeof reader.result === "string") {
-	//              resolve(reader.result.split(",")[1]); // Get the base64 string
-	//          }
-	//      };
-	//      reader.onerror = reject;
-	//      reader.readAsDataURL(blob);
-	//  });
-	// }
-
 	const handleAddPinClick = async () => {
 		if (selectedGroup === null) {
 			alert("Please select a group.");
@@ -640,28 +616,12 @@ const HomeScreen: React.FC = () => {
 		const myHeaders = new Headers();
 		myHeaders.append("Content-Type", "application/json");
 
-		// let Image;
-
-		// if (picture.startsWith("blob:")) {
-		//  Image = await blobToBase64(picture);
-		// } else {
-		//  Image = picture.split(",")[1];
-		// }
-
 		const raw = JSON.stringify({
-			// caption: caption,
-			// title: title,
-			// categoryId: selectedCategory,
-			// userId: 112,
-			// groupId: selectedGroup,
-			// image: "https://h5p.org/sites/default/files/h5p/content/1209180/images/file-6113d5f8845dc.jpeg",
-			// latitude: latitude,
-			// longitude: longitude
 			caption: caption,
 			title: title,
 			categoryid: selectedCategory,
 			groupid: selectedGroup,
-			picture: picture,
+			picture: picture, // Can be S3 URL or base64 string
 			latitude:
 				dragpinlatitude !== null &&
 				dragpinlatitude !== undefined &&
@@ -676,21 +636,13 @@ const HomeScreen: React.FC = () => {
 					: longitude
 		});
 
-		const requestOptions = {
-			method: "POST",
-			headers: myHeaders,
-			body: raw
-		};
-
 		if (navigator.onLine) {
 			try {
-				//old way
-				// const response = await fetch("/api/image/create", requestOptions);
-
-				const response = await fetch(
-					"/api/posts/CreatePost",
-					requestOptions
-				);
+				const response = await fetch("/api/posts/CreatePost", {
+					method: "POST",
+					headers: myHeaders,
+					body: raw
+				});
 
 				if (!response.ok) {
 					throw new Error("Error");
@@ -702,7 +654,7 @@ const HomeScreen: React.FC = () => {
 				setSelectedCategory(null);
 				closeModal();
 
-				setIsSuccessModalOpen(true); // Open success modal
+				setIsSuccessModalOpen(true);
 				setNewNumberPins(newNumberPins + 1);
 				await fetchPins();
 
@@ -722,8 +674,6 @@ const HomeScreen: React.FC = () => {
 				});
 
 				setZoom(15);
-				// setIsModalOpen(false); // Close modal after successful pin addition
-				// setIsSuccessModalOpen(true); // Open success modal
 			} catch (error) {
 				console.error("Error creating post:", error);
 			}
@@ -741,6 +691,7 @@ const HomeScreen: React.FC = () => {
 				":" +
 				String(now.getMinutes()).padStart(2, "0");
 
+			// Store the raw data including base64 image
 			localStorage.setItem("pin-offline-" + formattedDateTime, raw);
 
 			setCaption("");
@@ -750,8 +701,20 @@ const HomeScreen: React.FC = () => {
 			setSelectedCategory(null);
 			closeModal();
 
-			setIsSuccessModalOpen(true);
+			setOfflineSuccess(true);
 		}
+	};
+
+	const fileToBase64 = (file: File): Promise<string> => {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => {
+				if (typeof reader.result === "string") resolve(reader.result);
+				else reject("Failed to convert file to base64");
+			};
+			reader.onerror = (error) => reject(error);
+		});
 	};
 
 	const handleAddPhotoClick = () => {
@@ -849,7 +812,6 @@ const HomeScreen: React.FC = () => {
 					console.error("Error during prediction:", error);
 				}
 			}
-			
 		} catch (error) {
 			console.error("Error uploading file:", error);
 		}
@@ -879,7 +841,6 @@ const HomeScreen: React.FC = () => {
 	const uploadBase64ImageToS3 = async (
 		base64Image: string
 	): Promise<void> => {
-
 		if (!base64Image) {
 			throw new Error("No image data provided for upload.");
 		}
@@ -929,10 +890,21 @@ const HomeScreen: React.FC = () => {
 
 	//#######################################################
 
-	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleFileChange = async (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
 		const file = event.target.files?.[0];
 		if (file) {
-			uploadImageFileToS3(file);
+			if (navigator.onLine) {
+				await uploadImageFileToS3(file);
+			} else {
+				try {
+					const base64Image = await fileToBase64(file);
+					setPicture(base64Image);
+				} catch (error) {
+					console.error("Error converting file to base64:", error);
+				}
+			}
 		}
 	};
 
@@ -1252,8 +1224,6 @@ const HomeScreen: React.FC = () => {
 																	setTitle(
 																		result.predicted_class
 																	);
-
-																	
 																} catch (error) {
 																	console.error(
 																		"Error during prediction:",
@@ -1425,8 +1395,6 @@ const HomeScreen: React.FC = () => {
 																	? newLng
 																	: longitude
 															);
-
-												
 														}}
 													/>
 												</GoogleMap>
@@ -1475,6 +1443,42 @@ const HomeScreen: React.FC = () => {
 								className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
 								onClick={() => {
 									setIsSuccessModalOpen(false);
+								}}
+							>
+								Okay
+							</button>
+						</div>
+					</div>
+				)}
+
+				{offlineSuccess && (
+					<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
+						<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
+							<h2 className="text-2xl font-bold mb-4 text-center">
+								Offline Pin Saved, Will Post When Online.
+							</h2>
+							<button
+								className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
+								onClick={() => {
+									setOfflineSuccess(false);
+								}}
+							>
+								Okay
+							</button>
+						</div>
+					</div>
+				)}
+
+				{isOfflinePosted && (
+					<div className="fixed inset-0 flex items-center justify-center bg-bkg bg-opacity-50 z-30">
+						<div className="bg-bkg p-6 rounded-lg w-full max-w-md mx-auto">
+							<h2 className="text-2xl font-bold mb-4 text-center">
+								Offline Pin Posted!
+							</h2>
+							<button
+								className="block mx-auto px-4 py-2 bg-navBkg2 text-nav rounded-md hover:bg-nav hover:text-content hover:border hover:border-content"
+								onClick={() => {
+									setIsOfflinePosted(false);
 								}}
 							>
 								Okay
