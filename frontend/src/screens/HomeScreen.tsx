@@ -662,21 +662,11 @@ const HomeScreen: React.FC = () => {
 				await fetchPins();
 
 				setCenter({
-					lat:
-						dragpinlatitude !== null &&
-						dragpinlatitude !== undefined &&
-						dragpinlatitude !== 0
-							? dragpinlatitude
-							: latitude,
-					lng:
-						dragpinlongitude !== null &&
-						dragpinlongitude !== undefined &&
-						dragpinlongitude !== 0
-							? dragpinlongitude
-							: longitude
+					lat: dragpinlatitude || latitude,
+					lng: dragpinlongitude || longitude
 				});
 
-				setZoom(15);
+				setZoom(18);
 			} catch (error) {
 				console.error("Error creating post:", error);
 			}
