@@ -125,5 +125,9 @@ class GroupService(
     }
 
 
+    fun getTopJoinedGroups(): List<Groups> {
+        return groupRepository.getTopJoinedGroups()
+    }
+
 
 }
