@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {useLocation } from 'react-router-dom';
 import {
 	GoogleMap, 
@@ -89,6 +89,7 @@ const GroupsMap: React.FC = () => {
           />
         </svg>
       </button>
+      <Suspense fallback={<div>Loading map...</div>}>
       <GoogleMapApiLoader
         apiKey={apicode || ""}
         suspense
@@ -109,6 +110,7 @@ const GroupsMap: React.FC = () => {
 				</GoogleMap>
 			</div>
       </GoogleMapApiLoader>
+      </Suspense>
     </div>
   );
 };

@@ -122,6 +122,7 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 			setPicture("");
 			setIsToggled(false);
 			onClose(); // Close the modal after creating the group
+			window.location.reload();
 		} catch (error) {
 			console.error("Error creating group:", error);
 		}

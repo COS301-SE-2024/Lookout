@@ -199,21 +199,23 @@ const CreatedGroupDetail: React.FC = () => {
 		if (group) {
 			setEditableName(group.name);
 			setEditableDescription(group.description);
+			
 		}
 		setIsEditing(true);
 	};
 
 	const handleDoneClick = async () => {
+		
 		if (group) {
-			const updatedGroup: Group = {
-				id: group.id,
+			
+			
+			const updatedGroup = {
 				name: editableName || group.name,
 				description: editableDescription || group.description,
 				isPrivate: group.isPrivate,
-				user: group.user,
 				picture: group.picture,
-				createdAt: group.createdAt
 			};
+
 
 			try {
 				const response = await fetch(`/api/groups/${group.id}`, {
@@ -227,8 +229,9 @@ const CreatedGroupDetail: React.FC = () => {
 				if (!response.ok) {
 					throw new Error("Failed to update group");
 				}
-
-				setGroup(updatedGroup);
+				
+				const result = await response.json();
+				setGroup(result);
 				setIsEditing(false);
 			} catch (error) {
 				console.error("Error updating group:", error);

@@ -118,18 +118,31 @@ class GroupController(
         }
     }
 
+    data class UpdateGroupDto(
+        val name: String?,
+        val description: String?,
+        val isPrivate: Boolean?,
+        val picture: String?
+    )
 
     @PutMapping("/{id}")
-    fun updateGroup(@PathVariable id: Long, @RequestBody group: Groups): ResponseEntity<GroupDto> {
-        val updatedGroup = groupService.findById(id)?.let {
-            groupService.save(group.copy(id = it.id))
-        }
-        return if (updatedGroup != null) {
+    fun updateGroup(@PathVariable id: Long, @RequestBody updateGroupDto: UpdateGroupDto): ResponseEntity<GroupDto> {
+        val existingGroup = groupService.findById(id)
+        return if (existingGroup != null) {
+            // Update only the provided fields
+            val updatedGroup = existingGroup.copy(
+                name = updateGroupDto.name ?: existingGroup.name,
+                description = updateGroupDto.description ?: existingGroup.description,
+                isPrivate = updateGroupDto.isPrivate ?: existingGroup.isPrivate,
+                picture = updateGroupDto.picture ?: existingGroup.picture
+            )
+            groupService.save(updatedGroup)
             ResponseEntity.ok(convertToDto(updatedGroup))
         } else {
             ResponseEntity.notFound().build()
         }
     }
+
 
     @DeleteMapping("/{id}")
     fun deleteGroup(@PathVariable id: Long): ResponseEntity<Void> {

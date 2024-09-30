@@ -101,6 +101,7 @@ const GroupDetail: React.FC = () => {
 					headers: { Accept: "application/json" }
 				});
 				const groupData = await groupResponse.json();
+				
 				setGroup(groupData);
 
 				const userResponse = await fetch(`/api/groups/user/createdBy/${id}`, {
@@ -121,6 +122,7 @@ const GroupDetail: React.FC = () => {
 					}
 				);
 				const postsData = await postsResponse.json();
+				
 				setPosts(postsData.content);
 				setPostsLoaded(true);
 
@@ -129,6 +131,7 @@ const GroupDetail: React.FC = () => {
 					headers: { Accept: "application/json" }
 				});
 				const userGroupsData = await userGroupsResponse.json();
+				
 				const isUserInGroup = userGroupsData.some(
 					(userGroup: { id: number }) => userGroup.id === Number(id)
 				);
@@ -145,6 +148,7 @@ const GroupDetail: React.FC = () => {
 					method: "GET",
 					headers: { Accept: "application/json" }
 				});
+				
 				const memberData = await memberResponse.json();
 				const members = memberData.filter(
 					(m: User) => m.id !== groupData.userId
