@@ -73,40 +73,27 @@ const ExploreScreen: React.FC = () => {
           const cachedPoiPosts = localStorage.getItem("poiPosts");
           const cachedSecurityPosts = localStorage.getItem("securityPosts");
           const cachedGroupPosts = localStorage.getItem("groupPosts");
-          const cachedRecommendedPosts =
-            localStorage.getItem("recommendedPosts");
-          const cachedRecommendedGroups =
-            localStorage.getItem("recommendedGroups");
+          const cachedRecommendedPosts = localStorage.getItem("recommendedPosts");
+          const cachedRecommendedGroups = localStorage.getItem("recommendedGroups");
           const cachedTimestamp = localStorage.getItem("postsTimestamp");
-
+  
           return {
             posts: cachedPosts ? JSON.parse(cachedPosts) : null,
-            animalPosts: cachedAnimalPosts
-              ? JSON.parse(cachedAnimalPosts)
-              : null,
-            campingPosts: cachedCampingPosts
-              ? JSON.parse(cachedCampingPosts)
-              : null,
+            animalPosts: cachedAnimalPosts ? JSON.parse(cachedAnimalPosts) : null,
+            campingPosts: cachedCampingPosts ? JSON.parse(cachedCampingPosts) : null,
             poiPosts: cachedPoiPosts ? JSON.parse(cachedPoiPosts) : null,
-            securityPosts: cachedSecurityPosts
-              ? JSON.parse(cachedSecurityPosts)
-              : null,
+            securityPosts: cachedSecurityPosts ? JSON.parse(cachedSecurityPosts) : null,
             groupPosts: cachedGroupPosts ? JSON.parse(cachedGroupPosts) : null,
-            recommendedPosts: cachedRecommendedPosts
-              ? JSON.parse(cachedRecommendedPosts)
-              : null,
-            recommendedGroups: cachedRecommendedGroups
-              ? JSON.parse(cachedRecommendedGroups)
-              : null,
+            recommendedPosts: cachedRecommendedPosts ? JSON.parse(cachedRecommendedPosts) : null,
+            recommendedGroups: cachedRecommendedGroups ? JSON.parse(cachedRecommendedGroups) : null,
             cachedTimestamp: cachedTimestamp ? parseInt(cachedTimestamp) : null,
           };
         };
-
+  
         const cacheData = fetchFromCache();
         const now = Date.now();
         const expirationTime = 60 * 1000; // 1 minute cache expiration
-
-        // Check if cached data is valid and recent
+  
         if (
           cacheData.posts &&
           cacheData.animalPosts &&
@@ -130,7 +117,7 @@ const ExploreScreen: React.FC = () => {
           setRecommendedGroups(cacheData.recommendedGroups);
           setLoading(false);
         } else {
-          // Fetch data if cache is expired or empty
+          // Fetch main data
           const [
             postResponse,
             animalResponse,
@@ -139,8 +126,6 @@ const ExploreScreen: React.FC = () => {
             securityResponse,
             groupResponse,
             userGroupResponse,
-            recommendedPostResponse,
-            recommendedGroupResponse,
           ] = await Promise.all([
             fetch("/api/posts/category/3?page=0&size=12"),
             fetch("/api/posts/category/1?page=0&size=10"),
@@ -149,10 +134,8 @@ const ExploreScreen: React.FC = () => {
             fetch("/api/posts/category/5?page=0&size=10"),
             fetch("/api/groups"),
             fetch(`/api/groups/user`),
-            fetch("/api/posts/recommend_posts"),
-            fetch("/api/groups/recommend_groups"),
           ]);
-
+  
           const [
             postData,
             animalData,
@@ -161,8 +144,6 @@ const ExploreScreen: React.FC = () => {
             securityData,
             groupData,
             userGroupData,
-            recommendedPostData,
-            recommendedGroupData,
           ] = await Promise.all([
             postResponse.json(),
             animalResponse.json(),
@@ -171,32 +152,44 @@ const ExploreScreen: React.FC = () => {
             securityResponse.json(),
             groupResponse.json(),
             userGroupResponse.json(),
-            recommendedPostResponse.json(),
-            recommendedGroupResponse.json(),
           ]);
-
-          // Process recommended posts and groups
-          const postIds = recommendedPostData.map(
-            (post: { id: number }) => post.id
-          );
-          const fullPostDetails: Post[] = await Promise.all(
-            postIds.map(async (postId: any) => {
-              const postDetailResponse = await fetch(`/api/posts/${postId}`);
-              return await postDetailResponse.json();
-            })
-          );
-
-          const groupIds = recommendedGroupData.map(
-            (group: { id: number }) => group.id
-          );
-
-          const fullGroupDetails: Group[] = await Promise.all(
-            groupIds.map(async (groupId: any) => {
-              const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
-              return await groupDetailResponse.json();
-            })
-          );
-
+  
+          // Fetch recommended posts and groups
+          let fullPostDetails: Post[] = [];
+          let fullGroupDetails: Group[] = [];
+  
+          try {
+            const recommendedPostResponse = await fetch("/api/posts/recommend_posts");
+            const recommendedPostData = await recommendedPostResponse.json();
+            const postIds = recommendedPostData.map((post: { id: number }) => post.id);
+            fullPostDetails = await Promise.all(
+              postIds.map(async (postId: any) => {
+                const postDetailResponse = await fetch(`/api/posts/${postId}`);
+                return await postDetailResponse.json();
+              })
+            );
+          } catch (error) {
+            console.error("Error fetching recommended posts, falling back:", error);
+            const fallbackPostResponse = await fetch("/api/posts/topSavedPosts");
+            fullPostDetails = await fallbackPostResponse.json();
+          }
+  
+          try {
+            const recommendedGroupResponse = await fetch("/api/groups/recommend_groups");
+            const recommendedGroupData = await recommendedGroupResponse.json();
+            const groupIds = recommendedGroupData.map((group: { id: number }) => group.id);
+            fullGroupDetails = await Promise.all(
+              groupIds.map(async (groupId: any) => {
+                const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
+                return await groupDetailResponse.json();
+              })
+            );
+          } catch (error) {
+            console.error("Error fetching recommended groups, falling back:", error);
+            const fallbackGroupResponse = await fetch("/api/groups/topJoinedGroups");
+            fullGroupDetails = await fallbackGroupResponse.json();
+          }
+  
           // Update state with new data
           setPosts(postData.content);
           setAnimalPosts(animalData.content);
@@ -207,33 +200,18 @@ const ExploreScreen: React.FC = () => {
           setUserGroups(userGroupData);
           setRecommendedPosts(fullPostDetails);
           setRecommendedGroups(fullGroupDetails);
-
+  
           // Cache new data
           localStorage.setItem("posts", JSON.stringify(postData.content));
-          localStorage.setItem(
-            "animalPosts",
-            JSON.stringify(animalData.content)
-          );
-          localStorage.setItem(
-            "campingPosts",
-            JSON.stringify(campData.content)
-          );
+          localStorage.setItem("animalPosts", JSON.stringify(animalData.content));
+          localStorage.setItem("campingPosts", JSON.stringify(campData.content));
           localStorage.setItem("poiPosts", JSON.stringify(poiData.content));
-          localStorage.setItem(
-            "securityPosts",
-            JSON.stringify(securityData.content)
-          );
+          localStorage.setItem("securityPosts", JSON.stringify(securityData.content));
           localStorage.setItem("groupPosts", JSON.stringify(groupData.content));
-          localStorage.setItem(
-            "recommendedPosts",
-            JSON.stringify(fullPostDetails)
-          );
-          localStorage.setItem(
-            "recommendedGroups",
-            JSON.stringify(fullGroupDetails)
-          );
+          localStorage.setItem("recommendedPosts", JSON.stringify(fullPostDetails));
+          localStorage.setItem("recommendedGroups", JSON.stringify(fullGroupDetails));
           localStorage.setItem("postsTimestamp", now.toString());
-
+  
           setLoading(false);
         }
       } catch (error) {
@@ -241,9 +219,10 @@ const ExploreScreen: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchExploreData();
   }, []);
+  
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = DOMPurify.sanitize(event.target.value);
@@ -486,3 +465,188 @@ const ExploreScreen: React.FC = () => {
 };
 
 export default ExploreScreen;
+
+
+// old method to get data 
+// useEffect(() => {
+//   const fetchExploreData = async () => {
+//     try {
+//       // Fetch from cache
+//       const fetchFromCache = () => {
+//         const cachedPosts = localStorage.getItem("posts");
+//         const cachedAnimalPosts = localStorage.getItem("animalPosts");
+//         const cachedCampingPosts = localStorage.getItem("campingPosts");
+//         const cachedPoiPosts = localStorage.getItem("poiPosts");
+//         const cachedSecurityPosts = localStorage.getItem("securityPosts");
+//         const cachedGroupPosts = localStorage.getItem("groupPosts");
+//         const cachedRecommendedPosts =
+//           localStorage.getItem("recommendedPosts");
+//         const cachedRecommendedGroups =
+//           localStorage.getItem("recommendedGroups");
+//         const cachedTimestamp = localStorage.getItem("postsTimestamp");
+
+//         return {
+//           posts: cachedPosts ? JSON.parse(cachedPosts) : null,
+//           animalPosts: cachedAnimalPosts
+//             ? JSON.parse(cachedAnimalPosts)
+//             : null,
+//           campingPosts: cachedCampingPosts
+//             ? JSON.parse(cachedCampingPosts)
+//             : null,
+//           poiPosts: cachedPoiPosts ? JSON.parse(cachedPoiPosts) : null,
+//           securityPosts: cachedSecurityPosts
+//             ? JSON.parse(cachedSecurityPosts)
+//             : null,
+//           groupPosts: cachedGroupPosts ? JSON.parse(cachedGroupPosts) : null,
+//           recommendedPosts: cachedRecommendedPosts
+//             ? JSON.parse(cachedRecommendedPosts)
+//             : null,
+//           recommendedGroups: cachedRecommendedGroups
+//             ? JSON.parse(cachedRecommendedGroups)
+//             : null,
+//           cachedTimestamp: cachedTimestamp ? parseInt(cachedTimestamp) : null,
+//         };
+//       };
+
+//       const cacheData = fetchFromCache();
+//       const now = Date.now();
+//       const expirationTime = 60 * 1000; // 1 minute cache expiration
+
+//       // Check if cached data is valid and recent
+//       if (
+//         cacheData.posts &&
+//         cacheData.animalPosts &&
+//         cacheData.campingPosts &&
+//         cacheData.poiPosts &&
+//         cacheData.securityPosts &&
+//         cacheData.groupPosts &&
+//         cacheData.recommendedPosts &&
+//         cacheData.recommendedGroups &&
+//         cacheData.cachedTimestamp &&
+//         now - cacheData.cachedTimestamp < expirationTime
+//       ) {
+//         // Use cached data
+//         setPosts(cacheData.posts);
+//         setAnimalPosts(cacheData.animalPosts);
+//         setCampingPosts(cacheData.campingPosts);
+//         setPoiPosts(cacheData.poiPosts);
+//         setSecurityPosts(cacheData.securityPosts);
+//         setGroupPosts(cacheData.groupPosts);
+//         setRecommendedPosts(cacheData.recommendedPosts);
+//         setRecommendedGroups(cacheData.recommendedGroups);
+//         setLoading(false);
+//       } else {
+//         // Fetch data if cache is expired or empty
+//         const [
+//           postResponse,
+//           animalResponse,
+//           campResponse,
+//           poiResponse,
+//           securityResponse,
+//           groupResponse,
+//           userGroupResponse,
+//           recommendedPostResponse,
+//           recommendedGroupResponse,
+//         ] = await Promise.all([
+//           fetch("/api/posts/category/3?page=0&size=12"),
+//           fetch("/api/posts/category/1?page=0&size=10"),
+//           fetch("/api/posts/category/2?page=0&size=10"),
+//           fetch("/api/posts/category/4?page=0&size=10"),
+//           fetch("/api/posts/category/5?page=0&size=10"),
+//           fetch("/api/groups"),
+//           fetch(`/api/groups/user`),
+//           fetch("/api/posts/recommend_posts"),
+//           fetch("/api/groups/recommend_groups"),
+//         ]);
+
+//         const [
+//           postData,
+//           animalData,
+//           campData,
+//           poiData,
+//           securityData,
+//           groupData,
+//           userGroupData,
+//           recommendedPostData,
+//           recommendedGroupData,
+//         ] = await Promise.all([
+//           postResponse.json(),
+//           animalResponse.json(),
+//           campResponse.json(),
+//           poiResponse.json(),
+//           securityResponse.json(),
+//           groupResponse.json(),
+//           userGroupResponse.json(),
+//           recommendedPostResponse.json(),
+//           recommendedGroupResponse.json(),
+//         ]);
+
+//         // Process recommended posts and groups
+//         const postIds = recommendedPostData.map(
+//           (post: { id: number }) => post.id
+//         );
+//         const fullPostDetails: Post[] = await Promise.all(
+//           postIds.map(async (postId: any) => {
+//             const postDetailResponse = await fetch(`/api/posts/${postId}`);
+//             return await postDetailResponse.json();
+//           })
+//         );
+
+//         const groupIds = recommendedGroupData.map(
+//           (group: { id: number }) => group.id
+//         );
+
+//         const fullGroupDetails: Group[] = await Promise.all(
+//           groupIds.map(async (groupId: any) => {
+//             const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
+//             return await groupDetailResponse.json();
+//           })
+//         );
+
+//         // Update state with new data
+//         setPosts(postData.content);
+//         setAnimalPosts(animalData.content);
+//         setCampingPosts(campData.content);
+//         setPoiPosts(poiData.content);
+//         setSecurityPosts(securityData.content);
+//         setGroupPosts(groupData.content);
+//         setUserGroups(userGroupData);
+//         setRecommendedPosts(fullPostDetails);
+//         setRecommendedGroups(fullGroupDetails);
+
+//         // Cache new data
+//         localStorage.setItem("posts", JSON.stringify(postData.content));
+//         localStorage.setItem(
+//           "animalPosts",
+//           JSON.stringify(animalData.content)
+//         );
+//         localStorage.setItem(
+//           "campingPosts",
+//           JSON.stringify(campData.content)
+//         );
+//         localStorage.setItem("poiPosts", JSON.stringify(poiData.content));
+//         localStorage.setItem(
+//           "securityPosts",
+//           JSON.stringify(securityData.content)
+//         );
+//         localStorage.setItem("groupPosts", JSON.stringify(groupData.content));
+//         localStorage.setItem(
+//           "recommendedPosts",
+//           JSON.stringify(fullPostDetails)
+//         );
+//         localStorage.setItem(
+//           "recommendedGroups",
+//           JSON.stringify(fullGroupDetails)
+//         );
+//         localStorage.setItem("postsTimestamp", now.toString());
+
+//         setLoading(false);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//       setLoading(false);
+//     }
+//   };
+
+//   fetchExploreData();
+// }, []);
