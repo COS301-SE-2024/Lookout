@@ -7,7 +7,6 @@ const PinMap: React.FC = () => {
   const location = useLocation();
   const { post, apicode } = location.state as { post: any, apicode: string };
 
-  // console.log("Google Maps API Key:", apicode); // Log API key
   return (
     <div className="h-screen w-screen relative">
       <button

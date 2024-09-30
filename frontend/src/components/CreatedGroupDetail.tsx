@@ -369,7 +369,6 @@ const CreatedGroupDetail: React.FC = () => {
 			const imageUrl = uploadURL.split("?")[0];
 			setIsUploadingPicture(false);
 
-			console.log("Image uploaded successfully.", imageUrl);
 
 			// Update the group's picture in the backend
 			await updateGroupPicture(imageUrl);

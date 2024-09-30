@@ -325,14 +325,7 @@ const HomeScreen: React.FC = () => {
 				(position) => {
 					setLatitude(position.coords.latitude);
 					setLongitude(position.coords.longitude);
-					console.log(
-						"fetching location long:",
-						position.coords.longitude
-					);
-					console.log(
-						"fetching location lat:",
-						position.coords.latitude
-					);
+					
 				},
 				(error) => {
 					console.error("Error fetching location:", error);
@@ -349,7 +342,6 @@ const HomeScreen: React.FC = () => {
 		base64Image: string
 	): Promise<string> => {
 		// Changed return type to Promise<string>
-		console.log("base64Image", base64Image);
 
 		if (!base64Image) {
 			throw new Error("No image data provided for upload.");
@@ -411,16 +403,11 @@ const HomeScreen: React.FC = () => {
 					const result = await response.json();
 					setPredictResult(result.predicted_class);
 					setTitle(result.predicted_class);
-					console.log(result);
+					
 				} catch (error) {
 					console.error("Prediction error:", error);
 				}
 			}
-
-			console.log(imageUrl);
-			console.log(
-				"Image uploaded and profile picture updated successfully."
-			);
 
 			return imageUrl; // Return the S3 URL
 		} catch (error) {
@@ -430,7 +417,6 @@ const HomeScreen: React.FC = () => {
 	};
 
 	const postOfflinePin = async (params: string, key: string) => {
-		console.log("postOfflinePin called with params:", params, "key:", key);
 
 		if (navigator.onLine) {
 			const myHeaders = new Headers();
@@ -440,7 +426,6 @@ const HomeScreen: React.FC = () => {
 			try {
 				// Parse the JSON string into an object
 				const jsonObj = JSON.parse(params);
-				console.log("Parsed jsonObj:", jsonObj);
 
 				const {
 					caption,
@@ -459,13 +444,9 @@ const HomeScreen: React.FC = () => {
 
 				// If there's a picture in the object, upload it and get the S3 URL
 				if (picture) {
-					console.log("Uploading picture...");
 					uploadedPictureUrl = await uploadBase64ImageToS3Offline(
 						picture
 					);
-					console.log("Uploaded picture URL:", uploadedPictureUrl);
-				} else {
-					console.log("No picture to upload.");
 				}
 
 				// Construct newObj with the desired structure
@@ -489,11 +470,9 @@ const HomeScreen: React.FC = () => {
 							: longitude
 				};
 
-				console.log("Constructed newObj:", newObj);
 
 				// Stringify the new object for the request body
 				const requestBody = JSON.stringify(newObj);
-				console.log("Request body:", requestBody);
 
 				// Make the POST request to create the post
 				const response = await fetch("/api/posts/CreatePost", {
@@ -707,7 +686,6 @@ const HomeScreen: React.FC = () => {
 			try {
 				//old way
 				// const response = await fetch("/api/image/create", requestOptions);
-				console.log("requestOptions", requestOptions);
 
 				const response = await fetch(
 					"/api/posts/CreatePost",
@@ -867,15 +845,11 @@ const HomeScreen: React.FC = () => {
 
 					setPredictResult(result.predicted_class);
 					setTitle(result.predicted_class);
-					console.log(result);
 				} catch (error) {
 					console.error("Error during prediction:", error);
 				}
 			}
-			console.log(
-				"Image uploaded and profile picture updated successfully.",
-				uploadURL.split("?")[0]
-			);
+			
 		} catch (error) {
 			console.error("Error uploading file:", error);
 		}
@@ -905,7 +879,6 @@ const HomeScreen: React.FC = () => {
 	const uploadBase64ImageToS3 = async (
 		base64Image: string
 	): Promise<void> => {
-		console.log("base64Image", base64Image);
 
 		if (!base64Image) {
 			throw new Error("No image data provided for upload.");
@@ -945,16 +918,10 @@ const HomeScreen: React.FC = () => {
 					const result = await response.json();
 					setPredictResult(result.predicted_class);
 					setTitle(result.predicted_class);
-					console.log(result);
 				} catch (error) {
 					console.error(error);
 				}
 			}
-			console.log(uploadURL.split("?")[0]);
-			console.log(picture);
-			console.log(
-				"Image uploaded and profile picture updated successfully."
-			);
 		} catch (error) {
 			console.error("Error uploading image:", error);
 		}
@@ -996,7 +963,6 @@ const HomeScreen: React.FC = () => {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				// console.log(data); // Log the data to check the response format
 				setGroups(data);
 			})
 			.catch((error) => console.error("Error fetching groups:", error));
@@ -1287,9 +1253,7 @@ const HomeScreen: React.FC = () => {
 																		result.predicted_class
 																	);
 
-																	console.log(
-																		result
-																	);
+																	
 																} catch (error) {
 																	console.error(
 																		"Error during prediction:",
@@ -1336,9 +1300,6 @@ const HomeScreen: React.FC = () => {
 																	);
 																	setTitle(
 																		result.predicted_class
-																	);
-																	console.log(
-																		result
 																	);
 																} catch (error) {
 																	console.error(
@@ -1465,9 +1426,7 @@ const HomeScreen: React.FC = () => {
 																	: longitude
 															);
 
-															console.log(
-																`Marker dropped at: Latitude ${dragpinlatitude}, Longitude ${dragpinlongitude}`
-															);
+												
 														}}
 													/>
 												</GoogleMap>

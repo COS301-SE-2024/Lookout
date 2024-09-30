@@ -49,7 +49,6 @@ export const EditProfile = () => {
       }
 
       const updatedUser = await response.json();
-      console.log("User updated successfully:", updatedUser);
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -77,7 +76,6 @@ export const EditProfile = () => {
       }
 
       const updatedUser = await response.json();
-      console.log("User email updated successfully:", updatedUser);
     } catch (error) {
       console.error("Error updating email:", error);
     }

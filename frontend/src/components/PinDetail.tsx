@@ -138,7 +138,6 @@ const PinDetail: React.FC = () => {
 					throw new Error("Failed to fetch post");
 				}
 				const data = await response.json();
-				console.log("Fetched post:", data);
 				setPost(data);
 				setLoading(false);
 
@@ -157,7 +156,6 @@ const PinDetail: React.FC = () => {
 					throw new Error("Failed to fetch user data");
 				}
 				const userData = await userResponse.json();
-				console.log("User data:", userData);
 				setUser(userData);
 			} catch (error) {
 				console.error("Error fetching post or related posts:", error);
@@ -202,7 +200,6 @@ const PinDetail: React.FC = () => {
 
 	useEffect(() => {
 		if (!post?.id) {
-			console.log("Post ID is not available yet.");
 			return;
 		}
 
@@ -211,19 +208,14 @@ const PinDetail: React.FC = () => {
 		webSocketService
 			.connect(localStorage.getItem("authToken")!!)
 			.then(() => {
-				console.log("WebSocket connected");
 
 				subscription = webSocketService.subscribe(
 					`/post/${post.id}`,
 					(message: any) => {
-						console.log(
-							`Message received on /post/${post.id}:`,
-							message
-						);
+						
 
 						try {
 							const savedPostData = JSON.parse(message.body);
-							console.log("Parsed message data:", savedPostData);
 
 							// Check the user email instead of userId
 							if (savedPostData.postId === post.id) {
@@ -243,7 +235,6 @@ const PinDetail: React.FC = () => {
 
 		return () => {
 			if (subscription) {
-				console.log(`Unsubscribing from /post/${post.id}`);
 				webSocketService.unsubscribe(subscription);
 			}
 			webSocketService.disconnect();
@@ -260,7 +251,6 @@ const PinDetail: React.FC = () => {
 			postId: post.id
 		};
 
-		console.log("Save request body:", requestBody);
 
 		try {
 			const response = await fetch("/api/savedPosts/SavePost", {
@@ -297,7 +287,6 @@ const PinDetail: React.FC = () => {
 			postId: post.id
 		};
 
-		console.log("Unsave request body:", requestBody);
 
 		try {
 			const response = await fetch("/api/savedPosts/UnsavePost", {
@@ -324,7 +313,6 @@ const PinDetail: React.FC = () => {
 	};
 
 	const handleSaveIconClick = () => {
-		console.log("Save icon clicked");
 		if (isSaved) {
 			handleUnsaveClick();
 		} else {

@@ -84,7 +84,6 @@ const CreateGroups: React.FC<CreateGroupsProps> = ({
 
 			const imageUrl = uploadURL.split("?")[0];
 
-			console.log("Image uploaded successfully.", imageUrl);
 
 			return imageUrl;
 		} catch (error) {

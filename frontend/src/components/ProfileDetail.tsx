@@ -27,14 +27,14 @@ const ProfileDetail: React.FC = () => {
   const [postsCount, setPostsCount] = useState(0);
   const [groupsCount, setGroupsCount] = useState(0);
   const [activeTab, setActiveTab] = useState<'posts' | 'groups'>('posts');
-console.log(id)
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userResponse = await fetch(`/api/users/`, {
           headers: { Accept: "application/json" },
         });
-        console.log(userResponse)
+        
         const userData = await userResponse.json();
         setUser(userData);
 

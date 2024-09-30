@@ -58,7 +58,6 @@ const GroupsMap: React.FC = () => {
         }));
         setPins(formattedPins);
       
-        console.log("Fetched Pins:", formattedPins); // Log fetched pins data
       } catch (error) {
         console.error("Error fetching pins:", error);
       }
@@ -67,7 +66,6 @@ const GroupsMap: React.FC = () => {
     fetchPins();
   }, [group?.id]);
 
-  // console.log("Pins State:", pins); // Log pins state
 
   return (
     <div className="h-screen w-screen relative">
