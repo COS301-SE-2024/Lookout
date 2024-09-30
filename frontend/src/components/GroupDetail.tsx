@@ -65,6 +65,7 @@ const GroupDetail: React.FC = () => {
 	const [owner, setOwner] = useState<User | null>(null);
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [groupMembers, setMembers] = useState<User[]>([]);
+	const [memberCount, setMemberCount] = useState(0);
 	const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
 	const [groupLoaded, setGroupLoaded] = useState(false);
 	const [ownerLoaded, setOwnerLoaded] = useState(false);
@@ -154,6 +155,7 @@ const GroupDetail: React.FC = () => {
 					(m: User) => m.id !== groupData.userId
 				);
 				setMembers(members);
+				setMemberCount(members.length);
 			} catch (error) {
 				console.error("Error fetching group details:", error);
 				setGroupLoaded(true);
@@ -167,9 +169,11 @@ const GroupDetail: React.FC = () => {
 	}, [id]);
 
 	const handleJoinClick = (groupId: number) => {
-		const apiUrl = joinedGroups.includes(groupId)
-			? "/api/groups/RemoveMemberFromGroup"
-			: "/api/groups/AddMemberToGroup";
+		const isMember = joinedGroups.includes(groupId); // Check if user is a member
+
+    	const apiUrl = isMember
+        	? "/api/groups/RemoveMemberFromGroup"
+        	: "/api/groups/AddMemberToGroup";
 
 		const requestBody = {
 			groupId
@@ -187,6 +191,11 @@ const GroupDetail: React.FC = () => {
 							? prevGroups.filter((id) => id !== groupId)
 							: [...prevGroups, groupId]
 					);
+
+					setMemberCount((prevCount) =>
+						isMember ? prevCount - 1 : prevCount + 1
+					);
+
 				} else if (response.status === 400) {
 					response
 						.text()
@@ -364,7 +373,7 @@ const GroupDetail: React.FC = () => {
 								</span>
 								<div className="w-px h-6 bg-gray-300 mx-2"></div>
 								<span className="text-content md:text-xl text-md">
-									{groupMembers.length} Members
+									{memberCount} Members
 								</span>
 							</div>
 						</div>
