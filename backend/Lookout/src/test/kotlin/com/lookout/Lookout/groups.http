@@ -77,3 +77,8 @@ Content-Type: application/json
 
 }
 ###
+
+### Get top 10 jouned groups
+GET http://localhost:8080/api/groups/topJoinedGroups
+Accept: application/json
+###

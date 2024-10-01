@@ -184,11 +184,46 @@ print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
 # ###################################################### RECOMMEND THE POSTS ##################################################
 
 def recommend_groups(user_id, top_n=10):
-    # Get the internal user ID
-    internal_user_id = user_encoder.transform([user_id])[0]
+    # Check if the user ID exists in the DataFrame
+    if user_id not in users_df['id'].values:
+        print("User ID not found. Returning top 10 most joined groups.")
+        # Get the top 10 most joined groups
+        most_joined_groups = joined_groups_df['groupid'].value_counts().head(top_n).index
+        recommended_groups = groups_df[groups_df['id'].isin(most_joined_groups)]
+        print("\nTop 10 most joined groups:")
+        print(recommended_groups[['name', 'description']])
+        return recommended_groups
     
-    # Get the groups that the user has already joined
+    try:
+        # Get the internal user ID
+        internal_user_id = user_encoder.transform([user_id])[0]
+        print("Internal User ID:", internal_user_id)
+
+    except Exception as e:
+        print(f"Error retrieving internal user ID: {e}. Returning top 10 most joined groups.")
+        # Get the top 10 most joined groups
+        most_joined_groups = joined_groups_df['groupid'].value_counts().head(top_n).index
+        recommended_groups = groups_df[groups_df['id'].isin(most_joined_groups)]
+        print("\nTop 10 most joined groups:")
+        print(recommended_groups[['name', 'description']])
+        return recommended_groups
+    
+     # Get the groups that the user has already joined
     joined_group_ids = joined_groups_df[joined_groups_df['userid'] == user_id]['groupid'].values
+    
+    # Get the groups that the user has created
+    user_created_group_ids = groups_df[groups_df['userId'] == user_id]['id'].values
+    
+    # Check if the user has no joined or created groups
+    if len(joined_group_ids) == 0 and len(user_created_group_ids) == 0:
+        # Get the top 10 most joined groups
+        most_joined_groups = joined_groups_df['groupid'].value_counts().head(top_n).index
+        recommended_groups = groups_df[groups_df['id'].isin(most_joined_groups)]
+        
+        print("\nTop 10 most joined groups:")
+        print(recommended_groups[['name', 'description']])
+        
+        return recommended_groups
     
     # Get the internal group IDs for the joined groups
     joined_internal_group_ids = group_encoder.transform(joined_group_ids)
@@ -247,7 +282,7 @@ def recommend_groups(user_id, top_n=10):
     return recommended_groups
 
 # Example: Recommend groups for user with ID 1
-recommended_groups = recommend_groups(user_id=1, top_n=10)
+recommended_groups = recommend_groups(user_id=352, top_n=10)
 
 
 # Save the model

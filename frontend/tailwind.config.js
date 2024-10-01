@@ -17,7 +17,8 @@ module.exports = {
 		  navSelect: "rgb(var(--color-navHighlight) / <alpha-value>)",
 		},
 		fontFamily: {
-		  custom: ['CustomFont']  // Add your custom font family here
+		  custom: ['CustomFont'],  
+		  lookout: ['LookoutFont']
 		},
 		clipPath: {
 		  'custom-arch': 'ellipse(75% 40% at 50% 0%)',

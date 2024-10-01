@@ -27,19 +27,19 @@ const ProfileDetail: React.FC = () => {
   const [postsCount, setPostsCount] = useState(0);
   const [groupsCount, setGroupsCount] = useState(0);
   const [activeTab, setActiveTab] = useState<'posts' | 'groups'>('posts');
-console.log(id)
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await fetch(`/api/users/${id}`, {
+        const userResponse = await fetch(`/api/users/`, {
           headers: { Accept: "application/json" },
         });
-        console.log(userResponse)
+        
         const userData = await userResponse.json();
         setUser(userData);
 
         // Fetch posts count
-        const postsCountResponse = await fetch(`/api/users/postsCount/${id}`, {
+        const postsCountResponse = await fetch(`/api/users/postsCount`, {
           headers: {
             Accept: "application/json"
           }
@@ -48,7 +48,7 @@ console.log(id)
         setPostsCount(postsCountData);
 
         // Fetch groups count
-        const groupsCountResponse = await fetch(`/api/users/groupsCount/${id}`, {
+        const groupsCountResponse = await fetch(`/api/users/groupsCount`, {
           headers: {
             Accept: "application/json"
           }
@@ -64,7 +64,7 @@ console.log(id)
     };
 
     fetchUserData();
-  }, [id]);
+  }, []);
 
   if (!dataLoaded) {
     return <ProfileSkeleton />;

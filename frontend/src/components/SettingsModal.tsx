@@ -51,9 +51,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 				throw new Error("Logout failed!");
 			}
 
-			localStorage.setItem("authToken", "");
-			localStorage.removeItem("userEmail");
-			localStorage.removeItem("authToken");
+			// Clear localStorage
+			localStorage.clear();
+
+			// Clear sessionStorage
+			sessionStorage.clear();
 			navigate("/login");
 			window.location.reload();
 		} catch (error) {

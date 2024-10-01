@@ -6,6 +6,7 @@ data class PostDto (
     val createdAt: String,
     val userId: Long,
     val username: String,
+    val profilePic: String,
     val groupId: Long,
     val groupName: String,
     val groupDescription: String,

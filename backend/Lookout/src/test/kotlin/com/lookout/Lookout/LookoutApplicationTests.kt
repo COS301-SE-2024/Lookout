@@ -612,6 +612,22 @@ class LookoutApplicationTests {
             .andExpect(status().isBadRequest)
     }
 
+//////////////////////////////////////Get the top 10 joined groups///////////////////////////////////
+
+    @Test
+    fun `get the top 10 joined groups`() {
+        mockMvc.perform(get("/api/groups/topJoinedGroups"))
+            .andExpect(status().isOk)
+    }
+
+//////////////////////////////////////Get the top 10 saved posts///////////////////////////////////
+
+    @Test
+    fun `get the top 10 saved posts`() {
+        mockMvc.perform(get("/api/posts/topSavedPosts"))
+            .andExpect(status().isOk)
+    }
+
 
 
 

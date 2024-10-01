@@ -1,6 +1,7 @@
 package com.lookout.Lookout.service
 
 import com.lookout.Lookout.constants.ResponseConstant
+import com.lookout.Lookout.controller.AuthenticationController
 import com.lookout.Lookout.dto.AuthenticationResponse
 import com.lookout.Lookout.entity.User
 import com.lookout.Lookout.enums.UserRoles
@@ -32,7 +33,7 @@ class AuthenticationService(
         }
 
         val user = User(
-            userName = request.username,
+            userName = request.userName,
             email = request.email,
             passcode = passwordEncoder.encode(request.passcode),
             role = request.role
@@ -141,5 +142,27 @@ class AuthenticationService(
             Map::class.java
         )
         return response.body as? Map<String, Any> ?: emptyMap()
+    }
+
+
+
+    fun changepass(changePasswordRequest: AuthenticationController.ChangePasswordRequest, email: String): Boolean {
+        // Find the user by email
+        val userOptional = userRepository.findByEmail(email)
+
+        if (userOptional.isPresent) {
+            val user = userOptional.get()
+
+            // Encode the new password
+            val newEncodedPassword = passwordEncoder.encode(changePasswordRequest.passcode)
+
+            // Update the user's password
+            user.passcode = newEncodedPassword
+            userRepository.save(user)
+
+            return true // Password change was successful
+        }
+
+        return false // User not found
     }
 }

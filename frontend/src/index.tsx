@@ -18,7 +18,7 @@ import GroupPosts from "./components/GroupPosts";
 import Profile from "./screens/Profile";
 import ProfileDetail from "./components/ProfileDetail";
 import GroupsMap from "./components/GroupsMap";
-// import ExploreScreen from "./screens/ExploreScreen";
+import ExploreScreen from "./screens/ExploreScreen";
 import UserPostDetails from "./components/UserPostDetails";
 import SavedPostDetails from "./components/SavedPostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -32,6 +32,7 @@ import Settings from "./screens/SettingsScreen";
 import Settings2 from "./screens/Settings";
 
 import EmailHandler from "./components/EmailHandler";
+import ResetPasswordScreen from "./screens/ResetPasswordScreen";
 
 
 function Main() {
@@ -40,8 +41,8 @@ function Main() {
 		if (currentTheme) {
 			document.documentElement.setAttribute("data-theme", currentTheme);
 		} else {
-			localStorage.setItem("data-theme", "default");
-			document.documentElement.setAttribute("data-theme", "default");
+			localStorage.setItem("data-theme", "light");
+			document.documentElement.setAttribute("data-theme", "light");
 		}
 	}, []);
 
@@ -49,13 +50,12 @@ function Main() {
 		createRoutesFromElements(
 			<Route path="/" element={<App />}>
 				<Route
-					index={true}
-					path="/"
+					path="/home"
 					element={<ProtectedRoute element={HomeScreen} />}
 				/>
 				<Route
 					path="/explore"
-					// element={<ProtectedRoute element={ExploreScreen} />}
+					element={<ProtectedRoute element={ExploreScreen} />}
 				/>
 				<Route
 					path="/groups"
@@ -70,7 +70,7 @@ function Main() {
 					element={<ProtectedRoute element={Settings2} />}
 				/>
 				<Route
-					path="/groupMap"
+					path="/groupMap/:id"
 					element={<ProtectedRoute element={GroupsMap} />}
 				/>
 				<Route
@@ -84,9 +84,9 @@ function Main() {
 					path="/group/:id"
 					element={<ProtectedRoute element={GroupDetail} />}
 				/>
-				<Route 
-					path="/group/:id/posts" 
-					element={<ProtectedRoute element={GroupPosts} />} 
+				<Route
+					path="/group/:id/posts"
+					element={<ProtectedRoute element={GroupPosts} />}
 				/>
 				<Route
 					path="/post/:id"
@@ -104,39 +104,35 @@ function Main() {
 					path="/saved_post/:id"
 					element={<ProtectedRoute element={SavedPostDetails} />}
 				/>
-					<Route
-						path="/recommend/posts"
-						element={<ExploreRecommend />}
-					/>{" "}
-					<Route
-						path="/recommend/groups"
-						element={<ExploreRecommend />}
-					/>{" "}
-				
-
-					{/* <Route 
+				<Route path="/recommend/posts" element={<ExploreRecommend />} />{" "}
+				<Route
+					path="/recommend/groups"
+					element={<ExploreRecommend />}
+				/>{" "}
+				{/* <Route 
 						path="/" 
 						element={<ProtectedRoute element={ExploreScreen} />} /> */}
-					
 				<Route
-						path="/category/:categoryId"
-						element={<ProtectedRoute element={CategoryPostsPage} />}
-					/>
-
+					path="/category/:categoryId"
+					element={<ProtectedRoute element={CategoryPostsPage} />}
+				/>
 				<Route
 					path="/createdGroup/:id"
 					element={<ProtectedRoute element={CreatedGroupDetail} />}
 				/>
-
-				<Route path="/Landing" element={<Landing />} />
-
-				<Route 
-					path="/profileView/:id" 
-					element={<ProtectedRoute element={ProfileDetail} />} 
+				<Route path="/" element={<Landing />} index={true} />
+				<Route
+					path="/profileView/:id"
+					element={<ProtectedRoute element={ProfileDetail} />}
 				/>
+				<Route
+					path="/map"
+					element={<ProtectedRoute element={PinMap} />}
+				/>
+
 				<Route 
-					path="/map" 
-					element={<ProtectedRoute element={PinMap} />} 
+					path="/reset-password" 
+					element={<ProtectedRoute element={ResetPasswordScreen} />} 
 				/>
 
 			</Route>
@@ -154,10 +150,7 @@ if ("serviceWorker" in navigator) {
 	navigator.serviceWorker
 		.register("/sw.js")
 		.then((registration) => {
-			console.log(
-				"Service Worker registered with scope:",
-				registration.scope
-			);
+			
 		})
 		.catch((error) => {
 			console.log("Service Worker registration failed:", error);

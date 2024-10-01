@@ -56,10 +56,17 @@ afterEach(() => {
 });
 
 describe('PostsGridFix', () => {
-  const renderWithRouter = (ui: string | number | boolean | Iterable<React.ReactNode> | JSX.Element | null | undefined, { route = '/' } = {}) => {
+  const renderWithRouter = (
+    ui: JSX.Element,
+    { route = '/' } = {}
+  ) => {
     const history = createMemoryHistory({ initialEntries: [route] });
     return {
-      ...render(<Router location={history.location} navigator={history}>{ui}</Router>),
+      ...render(
+        <Router location={history.location} navigator={history}>
+          {ui}
+        </Router>
+      ),
       history,
     };
   };
@@ -68,8 +75,8 @@ describe('PostsGridFix', () => {
     renderWithRouter(<PostsGridFix searchQuery="" />);
 
     await waitFor(() => {
-      mockPosts.forEach(post => {
-        expect(screen.getByAltText(`Post ${post.id}`)).toBeInTheDocument();
+      mockPosts.forEach((post) => {
+        expect(screen.getByAltText(post.caption)).toBeInTheDocument();
       });
     });
   });
@@ -78,9 +85,9 @@ describe('PostsGridFix', () => {
     renderWithRouter(<PostsGridFix searchQuery="Title for post 1" />);
 
     await waitFor(() => {
-      expect(screen.getByAltText('Post 1')).toBeInTheDocument();
-      expect(screen.queryByAltText('Post 2')).not.toBeInTheDocument();
-      expect(screen.queryByAltText('Post 3')).not.toBeInTheDocument();
+      expect(screen.getByAltText('Caption for post 1')).toBeInTheDocument();
+      expect(screen.queryByAltText('Caption for post 2')).not.toBeInTheDocument();
+      expect(screen.queryByAltText('Caption for post 3')).not.toBeInTheDocument();
     });
   });
 
@@ -90,12 +97,12 @@ describe('PostsGridFix', () => {
     expect(mockPosts.length).toBeGreaterThan(0);
 
     await waitFor(() => {
-      const firstPostImg = screen.getByAltText('Post 1');
+      const firstPostImg = screen.getByAltText('Caption for post 1');
       const firstPostDiv = firstPostImg.closest('div');
       expect(firstPostDiv).toHaveClass('overflow-hidden rounded-md shadow-lg cursor-pointer');
     });
 
-    const firstPostLink = screen.getByAltText('Post 1').closest('a') as HTMLAnchorElement;
+    const firstPostLink = screen.getByAltText('Caption for post 1').closest('a') as HTMLAnchorElement;
     fireEvent.click(firstPostLink);
     expect(history.location.pathname).toBe(`/user_post/1`);
   });

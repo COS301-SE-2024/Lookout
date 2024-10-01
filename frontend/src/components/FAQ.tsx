@@ -4,15 +4,15 @@ import React, { useState } from "react";
 const FAQScreen: React.FC = () => {
 	const screenStyles = {
 		container:
-			"flex flex-col items-center justify-center min-h-screen",
+			"flex flex-col justify-start min-h-screen",
 		header:
 			"flex items-center justify-between w-full max-w-4xl bg-white shadow-md rounded-lg p-4 mb-4",
 		closeButton: "cursor-pointer",
 		closeIcon: "text-gray-500 hover:text-gray-700",
 		helpTitle: "text-2xl font-semibold text-black",
-		searchBar: "w-full py-2 px-4 bg-gray-200 rounded-lg mt-2 ml-4 text-black mr-4",
+		searchBar:  "w-full py-2 px-4 bg-gray-200 border rounded-lg mt-4 text-black mb-6",
 		faqList: "w-full  overflow-hidden",
-		faqItem: "py-4 border-t border-b mr-4",
+		faqItem: "py-4 border-t border-b mr-4 ",
 		faqQuestion: "font-bold text-content2 mr-4",
 		faqAnswer: "text-sm text-content mt-2 mr-4"
 	};

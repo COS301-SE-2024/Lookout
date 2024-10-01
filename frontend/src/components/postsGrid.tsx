@@ -26,7 +26,6 @@ const PostsGrid: React.FC = () => {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data.content); // Log the data to check the response format
       setPosts(data.content);
     })
     .catch((error) => console.error('Error fetching posts:', error));

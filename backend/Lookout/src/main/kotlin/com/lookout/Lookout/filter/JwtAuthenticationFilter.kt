@@ -62,24 +62,12 @@ class JwtAuthenticationFilter(
             } else {
                 logger.warn("Username is null or authentication is already set")
             }
-        } else {
-            logger.warn("No JWT Token found in cookies")
         }
         filterChain.doFilter(request, response)
     }
 
     private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
         return cookies?.firstOrNull { it.name == "jwt" }?.value
-    }
-
-    private fun redirectToLogin(response: HttpServletResponse) {
-        // Check if the request is for an actual page rather than a resource
-        val requestUri = response.encodeRedirectURL(response.toString())
-        if (!requestUri.endsWith(".js") && !requestUri.endsWith(".css") && !requestUri.endsWith(".json")) {
-            response.sendRedirect("/login")
-        } else {
-            response.status = HttpServletResponse.SC_UNAUTHORIZED
-        }
     }
 
 }

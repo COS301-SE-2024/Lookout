@@ -24,26 +24,33 @@ Lookout is a user-friendly, modern Progressive Web Application that revolutionis
 #### Presentation 
 [Presentation Slides](https://www.canva.com/design/DAGKABGFk48/fqltoTp0-f2x2oLVuJNkGw/edit?utm_content=DAGKABGFk48&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
+### Demo 4 
+#### Video
+[Click here to watch the video](https://drive.google.com/file/d/1imog2sCaU_8kTFgSTunNY057wpSzF3A4/view?usp=sharing)
+#### Presentation 
+[Presentation Slides](https://www.canva.com/design/DAGRgUpwQcU/zpDwK9eEK6Kiqn3t98wGIw/edit?utm_content=DAGRgUpwQcU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## Documentation
 ### System Requirements Specification
-[Document](https://docs.google.com/document/d/1_fY0ZIJH4fyiEZH92tuL26lbZJCdjEEKhrOeetx47c0/edit?usp=sharing)
+[Document](https://docs.google.com/document/d/1fQ-vNQ2SPZ5Qa_jABewoiMkmi4BHK7zS/edit?usp=sharing&ouid=112060156405486994315&rtpof=true&sd=true)
 
 ### Architecture Document
-[Document](https://docs.google.com/document/d/1lWSyo0mNqGhUJvDp9K3GR_DmCtyTpAWnLGQM6hBv0bY/edit?usp=sharing)
+[Document](https://docs.google.com/document/d/12DbDYYUAB6NPip0OlJ4zx2xKZEihYrd6/edit?usp=sharing&ouid=112060156405486994315&rtpof=true&sd=true)
 
 ### User Manual
-[Document](https://docs.google.com/document/d/19Gy6rUngb_DtQf2YUFjwjYXZlS27fbjOn0Ljd8PHz0Y/edit?usp=sharing)
+[Document](https://docs.google.com/document/d/1bnfxvgLbxHMLADLVO8VTjNzJzuQNx0bP/edit?usp=sharing&ouid=112060156405486994315&rtpof=true&sd=true)
 
 ### Coding Standards
-[Document](https://docs.google.com/document/d/1Dq_zRgPXU9BxkLAElzB0lVJvCIJh_kCLPlwUhq1HIF8/edit?usp=sharing)
+[Document](https://docs.google.com/document/d/1Cr9yjupsMzxev1iyAssjvFjCZXozvt0T/edit?usp=sharing&ouid=112060156405486994315&rtpof=true&sd=true)
 
 ### Technical Installation Manual
-[Document](https://docs.google.com/document/d/1pQ2qiCJgsYD61-4rsCc7ccX1SNeKmhotQYyfC5RGQFQ/edit?usp=sharing)
+[Document](https://docs.google.com/document/d/1QoT5w6ekWIWx3Wx0TvOSNgoRU1kQzVjO/edit?usp=sharing&ouid=112060156405486994315&rtpof=true&sd=true)
 
+### Testing Policy
+[Document](https://docs.google.com/document/d/1L_gLYPBdg9I-esf0Gn6KptYWK6aGj4vs/edit?usp=sharing&ouid=112060156405486994315&rtpof=true&sd=true)
 
-### Documentation Contribution
-[Document](https://docs.google.com/document/d/1aNRua-Z6E8w3vUGZtEfJA1FFi6eFoNq2-4vHyORFSZc/edit?usp=sharing)
-
+### Deployment Diagram
+[Diagram](https://drive.google.com/file/d/1jJvJgYkzL4ifzVRnK3gTvlxH-9dGmLrv/view?usp=sharing)
 
 ## Project Board
 [Click here to go to the project board](https://github.com/orgs/COS301-SE-2024/projects/81)

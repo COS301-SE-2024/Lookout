@@ -11,7 +11,7 @@ const GetStartedButton: React.FC<GetStartedButtonProps> = ({
 	className = ""
 }) => {
 	return (
-		<button onClick={onClick} className="GetStartedButton">
+		<button onClick={onClick} className="GetStartedButton rounded-md bg-navBkg2 text-nav hover:bg-nav hover:text-content hover:border hover:border-content">
 			Get Started
 		</button>
 	);

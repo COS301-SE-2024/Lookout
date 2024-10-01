@@ -1,8 +1,7 @@
 import DOMPurify from "dompurify";
 import React, { useState } from "react";
-export const EditProfile = () => {
-  //const [, setPicture] = useState("");
 
+export const EditProfile = () => {
   const modalStyles = {
     modalContainer:
       "fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-start md:justify-center items-center",
@@ -16,20 +15,21 @@ export const EditProfile = () => {
     buttonContainer: "flex space-x-4 mt-4",
   };
 
-  // const [temp, setTemp] = useState<Response>();
-  // useEffect(() => {
-  // 	if (temp === undefined || null) return;
-  // 	console.log("temp", temp);
-  // }, [temp]);
+  const [inputUsernameValue, setInputUsernameValue] = useState("");
+  const [inputEmailValue, setInputEmailValue] = useState("");
+  const [status, setStatus] = useState("");
 
-  const alertUnimplemented = async () => {
-    alert("Reset Password unimplemented until auth is fixed");
+  const handleInputUsernameChange = (event: any) => {
+    setInputUsernameValue(DOMPurify.sanitize(event.target.value));
+  };
+
+  const handleInputEmailChange = (event: any) => {
+    setInputEmailValue(DOMPurify.sanitize(event.target.value));
   };
 
   const patchNewUsername = async () => {
     const newUsername = inputUsernameValue;
-
-    const url = `api/users/1/update-username`;
+    const url = `api/users/update-username`;
 
     const requestBody = {
       newUsername: newUsername,
@@ -44,23 +44,19 @@ export const EditProfile = () => {
         body: JSON.stringify(requestBody),
       });
 
-      // setTemp(response);
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const updatedUser = await response.json();
-      console.log("User updated successfully:", updatedUser);
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
 
   const patchNewEmail = async () => {
-    const newEmail = inputEmailValue; // Assuming inputEmailValue is defined and holds the new email value
-
-    const url = `/api/users/1/update-username`;
+    const newEmail = inputEmailValue;
+    const url = `/api/users/update-email`;
 
     const requestBody = {
       newEmail: newEmail,
@@ -79,21 +75,30 @@ export const EditProfile = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Parse the JSON response
       const updatedUser = await response.json();
-      console.log("User email updated successfully:", updatedUser);
     } catch (error) {
-      // Log detailed error information
+      console.error("Error updating email:", error);
     }
   };
 
-  const [inputUsernameValue, setInputUsernameValue] = useState("");
-  const handleInputUsernameChange = (event: any) => {
-    setInputUsernameValue(DOMPurify.sanitize(event.target.value));
-  };
-  const [inputEmailValue, setInputEmailValue] = useState("");
-  const handleInputEmailChange = (event: any) => {
-    setInputEmailValue(DOMPurify.sanitize(event.target.value));
+  const handlePasswordReset = async () => {
+
+    try {
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+
+      if (response.ok) {
+        setStatus("Password reset link sent to your email.");
+      } else {
+        setStatus("Error sending reset link.");
+      }
+    } catch (error) {
+      setStatus("Error sending reset link.");
+    }
   };
 
   const saveAndExit = async () => {
@@ -109,79 +114,81 @@ export const EditProfile = () => {
       inputUsernameValue !== null
     )
       patchNewUsername();
-    alert("WHEN AUTH FIXED, UPDATE TO DYNAMIC ID's");
+    
   };
 
   return (
     <>
-    <div className="flex flex-col h-screen bg-bkg">
-      <h2 className="text-xl font-bold">Profile</h2>
-      <p className="text-sm text-content2 text-content2">
-        This is how others will see you on the site.
-      </p>
-      <hr className="mr-8"></hr>
-      <div className="flex flex-col items-center mr-4">
-        <ul className="w-full">
-          <li className="flex flex-col py-2 mr-4">
-            <label htmlFor="username" className=" text-content font-bold mb-2">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Change your username"
-              value={inputUsernameValue}
-              onChange={handleInputUsernameChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 ease-in-out text-gray-700 placeholder-gray-400"
-            />
-          </li>
-          <p className="text-sm mb-4 mr-4 text-content2">
-            This is your public display name that other users will identify you
-            with.
-          </p>
+      <div className="flex flex-col h-screen bg-bkg">
+        <h2 className="text-xl font-bold">Profile</h2>
+        <p className="text-sm text-content2">
+          This is how others will see you on the site.
+        </p>
+        <hr className="mr-8"></hr>
+        <div className="flex flex-col items-center mr-4">
+          <ul className="w-full">
+            <li className="flex flex-col py-2 mr-4">
+              <label htmlFor="username" className="text-content font-bold mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Change your username"
+                value={inputUsernameValue}
+                onChange={handleInputUsernameChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 ease-in-out text-gray-700 placeholder-gray-400"
+              />
+            </li>
+            <p className="text-sm mb-4 text-content2">
+              This is your public display name that other users will identify
+              you with.
+            </p>
 
-          <li className="flex flex-col py-2 mr-4">
+            <li className="flex flex-col py-2 mr-4">
             <label
               htmlFor="email"
               className="block text-content font-bold mb-2"
             >
-              Change Email
-            </label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              placeholder="Change your email"
-              value={inputEmailValue}
-              onChange={handleInputEmailChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 ease-in-out text-gray-700 placeholder-gray-400"
-            />
-          </li>
-          <p className="text-sm mb-4 text-content2">
-            This is your email address you use to log in.
-          </p>
+                Change Email
+              </label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Change your email"
+                value={inputEmailValue}
+                onChange={handleInputEmailChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 ease-in-out text-gray-700 placeholder-gray-400"
+              />
+            </li>
+            <p className="text-sm mb-4 text-content2">
+              This is your email address you use to log in.
+            </p>
 
-          <li className="flex flex-col py-2 mr-4">
-            <div className={modalStyles.buttonContainer}>
-              <button
-                className="bg-navBkg hover:bg-gray-400 text-txtBtn font-bold py-2 px-4 rounded transition ease-in-out"
-                onClick={saveAndExit}
-              >
-                Update Profile
-              </button>
-              <button
-                className="bg-navBkg hover:bg-gray-400 text-txtBtn font-bold py-2 px-4 rounded transition ease-in-out"
-                onClick={alertUnimplemented}
-              >
-                Reset Your Password
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
+            <li className="flex flex-col py-2 mr-4">
+              <div className={modalStyles.buttonContainer}>
+                <button
+                  className="bg-navBkg hover:bg-gray-400 text-txtBtn font-bold py-2 px-4 rounded transition ease-in-out"
+                  onClick={saveAndExit}
+                >
+                  Update Profile
+                </button>
+                <button
+                  className="bg-navBkg hover:bg-gray-400 text-txtBtn font-bold py-2 px-4 rounded transition ease-in-out"
+                  onClick={handlePasswordReset}
+                >
+                  Reset Your Password
+                </button>
+              </div>
+              {status && <p className="text-sm text-red-500">{status}</p>}
+            </li>
+          </ul>
+        </div>
       </div>
     </>
   );
 };
+
 export default EditProfile;

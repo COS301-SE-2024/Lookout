@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
+import React, { Suspense, useEffect, useState } from "react";
 import {useLocation } from 'react-router-dom';
 import {
 	GoogleMap, 
@@ -23,9 +23,9 @@ type myPin = {
 const GroupsMap: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  //const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const [pins, setPins] = useState<myPin[]>([]);
-  const { group } = location.state as { group: any };
+  const { group } = location.state || {};
 
 
   const apicode = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -34,7 +34,7 @@ const GroupsMap: React.FC = () => {
   useEffect(() => {
     const fetchPins = async () => {
       try {
-        const response = await fetch(`/api/posts/group/${group.id}?page=0&size=10`, {
+        const response = await fetch(`/api/posts/group/${id}?page=0&size=10`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json"
@@ -58,22 +58,20 @@ const GroupsMap: React.FC = () => {
         }));
         setPins(formattedPins);
       
-        console.log("Fetched Pins:", formattedPins); // Log fetched pins data
       } catch (error) {
         console.error("Error fetching pins:", error);
       }
     };
 
     fetchPins();
-  }, [group.id]);
+  }, [group?.id]);
 
-  // console.log("Pins State:", pins); // Log pins state
 
   return (
     <div className="h-screen w-screen relative">
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 text-green-700 hover:text-green-500 z-50 mt-2"
+        className="absolute top-4 left-4 text-navBkg hover:text-icon z-50 mt-2"
         style={{ zIndex: 50 }}
       >
         <svg
@@ -91,6 +89,7 @@ const GroupsMap: React.FC = () => {
           />
         </svg>
       </button>
+      <Suspense fallback={<div>Loading map...</div>}>
       <GoogleMapApiLoader
         apiKey={apicode || ""}
         suspense
@@ -111,6 +110,7 @@ const GroupsMap: React.FC = () => {
 				</GoogleMap>
 			</div>
       </GoogleMapApiLoader>
+      </Suspense>
     </div>
   );
 };
