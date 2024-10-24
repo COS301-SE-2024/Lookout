@@ -1,11 +1,11 @@
 package com.lookout.Lookout.service
 
 import com.lookout.Lookout.dto.CreateGroupDto
-import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.repository.GroupRepository
 import com.lookout.Lookout.entity.UpdateGroup
 import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.repository.GroupMembersRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -13,7 +13,12 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-class GroupService(private val groupRepository: GroupRepository, private val userService: UserService) {
+class GroupService(
+    private val groupRepository: GroupRepository,
+    private val userService: UserService,
+    private val groupMembersRepository: GroupMembersRepository,
+    private val postsService: PostsService
+) {
 
     fun findAll(pageable: Pageable): Page<Groups> = groupRepository.findAll(pageable)
 
@@ -31,9 +36,11 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         return groupRepository.save(group)
     }
 
-    fun savedto(createGroupDto: CreateGroupDto): Groups {
-        val user = userService.findById(createGroupDto.userId).orElseThrow {
-            IllegalArgumentException("User not found with id: ${createGroupDto.userId}")
+
+
+    fun savedto(createGroupDto: CreateGroupDto, userId: Long): Groups {
+        val user = userService.findById(userId).orElseThrow {
+            IllegalArgumentException("User not found with id: ${userId}")
         }
 
         val group = Groups(
@@ -46,8 +53,13 @@ class GroupService(private val groupRepository: GroupRepository, private val use
         return groupRepository.save(group)
     }
 
-
-    fun deleteById(groupId: Long) = groupRepository.deleteById(groupId)
+    @Transactional
+    fun deleteById(groupId: Long) {
+        // Remove all group members before deleting the group
+        groupMembersRepository.deleteByGroupId(groupId)
+        postsService.removeGroupIdFromPosts(groupId)
+        groupRepository.deleteById(groupId)
+    }
 
     fun findGroupsByUserId(userid: Long): List<Groups> = groupRepository.findGroupsByUserId(userid)
 
@@ -106,6 +118,15 @@ class GroupService(private val groupRepository: GroupRepository, private val use
 
     fun findGroupsByOwnerId(ownerId: Long): List<Groups> {
         return groupRepository.findGroupsByOwnerId(ownerId)
+    }
+
+    fun findGroupOwnerByGroupId(groupId: Long): Optional<User> {
+        return groupRepository.findOwnerByGroupId(groupId)
+    }
+
+
+    fun getTopJoinedGroups(): List<Groups> {
+        return groupRepository.getTopJoinedGroups()
     }
 
 

@@ -21,6 +21,8 @@
     "bootstrap": "^5.3.3",
     "dompurify": "^3.1.6",
     "history": "^5.3.0",
+    "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.3.1",
@@ -38,7 +40,7 @@
   "scripts": {
     "lint": "eslint .",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -65,7 +67,9 @@
     "@testing-library/react": "^15.0.7",
     "@types/dompurify": "^3.0.5",
     "@types/jest": "^29.5.12",
+    "@types/js-cookie": "^3.0.6",
     "@types/testing-library__react": "^10.2.0",
+    "cross-env": "^7.0.3",
     "jest": "^27.5.1",
     "tailwindcss": "^3.4.7"
   }

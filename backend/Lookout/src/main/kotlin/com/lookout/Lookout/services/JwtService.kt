@@ -78,5 +78,7 @@ class JwtService {
     fun getAuthentication(token: String, userDetails: UserDetails): Authentication {
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
+
+
 }
 

@@ -13,7 +13,7 @@ const EmailHandler = () => {
       // Store email in local storage
       localStorage.setItem('userEmail', email);
       // Redirect to the home page
-      navigate('/', { replace: true });
+      navigate('/home', { replace: true });
     } else {
       // If no email is found, redirect to login
       navigate('/login');

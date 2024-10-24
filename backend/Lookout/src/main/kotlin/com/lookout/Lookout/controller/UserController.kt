@@ -1,13 +1,13 @@
 package com.lookout.Lookout.controller
 
-import com.lookout.Lookout.dto.GroupDto
 import com.lookout.Lookout.dto.UpdateEmailRequest
 import com.lookout.Lookout.dto.UpdateUsernameRequest
 import com.lookout.Lookout.dto.UserDto
-import com.lookout.Lookout.entity.Groups
 import com.lookout.Lookout.entity.User
+import com.lookout.Lookout.service.JwtService
 import com.lookout.Lookout.service.UserService
-import org.springframework.http.HttpStatus
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-import java.io.PrintWriter
-
-
-
 
 @RestController
 @RequestMapping("/api/users")
-class UserController (private val userService: UserService){
+class UserController(
+    private val userService: UserService,
+    private val jwtService: JwtService
+){
 
     fun convertToDto(user: User): UserDto {
         return UserDto(
@@ -65,55 +64,157 @@ class UserController (private val userService: UserService){
     }
 
     @PutMapping("/update-profile-pic")
-    fun updateProfilePic(@RequestBody updateProfilePicRequest: UpdateProfilePicRequest): ResponseEntity<User> {
-        val updatedUser = userService.updateProfilePic(updateProfilePicRequest.userId, updateProfilePicRequest.newProfilePicUrl)
+    fun updateProfilePic(@RequestBody updateProfilePicRequest: UpdateProfilePicRequest, request: HttpServletRequest): ResponseEntity<User> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val updatedUser = userService.updateProfilePic(userId, updateProfilePicRequest.newProfilePicUrl)
         return ResponseEntity.ok(updatedUser)
     }
 
-    @PutMapping("/{id}/update-username")
-    fun updateUsername(@PathVariable id: Long, @RequestBody updateRequest: UpdateUsernameRequest): ResponseEntity<User> {
-        val updatedUser = userService.updateUsername(id, updateRequest.newUsername)
+    @PutMapping("/update-username")
+    fun updateUsername(@RequestBody updateRequest: UpdateUsernameRequest, request: HttpServletRequest): ResponseEntity<User> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val updatedUser = userService.updateUsername(userId, updateRequest.newUsername)
         return ResponseEntity.ok(updatedUser)
     }
 
-    @PutMapping("/{id}/update-email")
-    fun updateEmail(@PathVariable id: Long, @RequestBody updateRequest: UpdateEmailRequest): ResponseEntity<User> {
-        val updatedUser = userService.updateEmail(id, updateRequest.newEmail)
+    @PutMapping("/update-email")
+    fun updateEmail(@RequestBody updateRequest: UpdateEmailRequest, request: HttpServletRequest): ResponseEntity<User> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val updatedUser = userService.updateEmail(userId, updateRequest.newEmail)
         return ResponseEntity.ok(updatedUser)
+    }
+
+    @GetMapping("/")
+    fun getUserByCookie(request: HttpServletRequest): ResponseEntity<UserDto> {
+        val jwt = extractJwtFromCookies(request.cookies)
+
+        val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+        val user = userEmail?.let { userService.loadUserByUsername(it) }
+        var userId: Long = 0
+        if (user is User) {
+            println("User ID: ${user.id}")
+            userId = user.id
+        }
+        val userresult = userService.findById(userId)
+        return if (userresult.isPresent) {
+            ResponseEntity.ok(convertToDto(userresult.get()))
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 
     @GetMapping("/{id}")
     fun getUserByID(@PathVariable id: Long): ResponseEntity<UserDto> {
-        val user = userService.findById(id)
-        return if (user.isPresent) {
-            ResponseEntity.ok(convertToDto(user.get()))
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            ResponseEntity.ok(convertToDto(userresult.get()))
         } else {
             ResponseEntity.notFound().build()
         }
     }
 
     @GetMapping("/postsCount/{id}")
-    fun getUserPostsCount(@PathVariable id: Long): ResponseEntity<Int> {
+    fun getUserPostsCountByID(@PathVariable id: Long): ResponseEntity<Int> {
+
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            val postsCount = userService.getUserPostsCount(id)
+            ResponseEntity.ok(postsCount)
+        }else {
+            return ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping("/groupsCount/{id}")
+    fun getUserGroupsCountById(@PathVariable id: Long): ResponseEntity<Int> {
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            val groupsCount = userService.getUserGroupsCount(id)
+            return ResponseEntity.ok(groupsCount)
+        }else {
+            return ResponseEntity.notFound().build()
+        }
+
+    }
+
+
+    @GetMapping("/postsCount")
+    fun getUserPostsCount(request: HttpServletRequest): ResponseEntity<Int> {
+        var userId: Long = 0
         try {
-            userService.findById(id)
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+            userService.findById(userId)
         } catch (e: NoSuchElementException) {
             return ResponseEntity.notFound().build()
         }
-        val postsCount = userService.getUserPostsCount(id)
+        val postsCount = userService.getUserPostsCount(userId)
         return ResponseEntity.ok(postsCount)
     }
 
 
 
-    @GetMapping("/groupsCount/{id}")
-    fun getUserGroupsCount(@PathVariable id: Long): ResponseEntity<Int> {
+    @GetMapping("/groupsCount")
+    fun getUserGroupsCount(request: HttpServletRequest): ResponseEntity<Int> {
+        var userId: Long = 0
         try {
-            userService.findById(id)
+            val jwt = extractJwtFromCookies(request.cookies)
+
+            val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
+
+            val user = userEmail?.let { userService.loadUserByUsername(it) }
+
+            if (user is User) {
+                println("User ID: ${user.id}")
+                userId = user.id
+            }
+            userService.findById(userId)
         } catch (e: NoSuchElementException) {
             return ResponseEntity.notFound().build()
         }
-        val groupsCount = userService.getUserGroupsCount(id)
+        val groupsCount = userService.getUserGroupsCount(userId)
         return ResponseEntity.ok(groupsCount)
+    }
+
+    // Helper method to extract JWT from request cookies
+    private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
+        return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
 }
 

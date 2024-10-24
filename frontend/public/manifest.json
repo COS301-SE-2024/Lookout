@@ -1,6 +1,7 @@
 {
 	"short_name": "Lookout",
 	"name": "Lookout by SEGFAULT",
+
 	"icons": [
 		{
 			"src": "windows11/SmallTile.scale-100.png",

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.lookout"
-version = "0.0.1-SNAPSHOT"
+version = "1.6.0"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
@@ -43,6 +43,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-configuration-processor")
 	implementation ("org.apache.commons:commons-csv:1.10.0")
 	implementation ("org.springframework.boot:spring-boot-starter-web")
+	implementation ("org.springframework.boot:spring-boot-starter-logging")
+	implementation ("com.sendgrid:sendgrid-java:4.7.3")
 
 
 }

@@ -7,50 +7,49 @@ import RecommendGroup from "../components/RecommendGroup";
 import ExploreSkeletonScreen from "../components/ExploreSkeletonScreen";
 import HorizontalCarousel from "../components/HorizontalCarousel";
 //import ExploreArticles from "../components/ExploreArticles";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 interface User {
-	userName: string;
-	email: string;
-	passcode: string;
-	role: string;
-	isEnabled: boolean;
-	password: string;
-	username: string;
-	authorities: { authority: string }[];
-	isAccountNonLocked: boolean;
-	isCredentialsNonExpired: boolean;
-	isAccountNonExpired: boolean;
+  userName: string;
+  email: string;
+  passcode: string;
+  role: string;
+  isEnabled: boolean;
+  password: string;
+  username: string;
+  authorities: { authority: string }[];
+  isAccountNonLocked: boolean;
+  isCredentialsNonExpired: boolean;
+  isAccountNonExpired: boolean;
 }
 
 interface Group {
-	id: number;
-	name: string;
-	description: string;
-	isPrivate: boolean;
-	user: User | null;
-	picture: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  description: string;
+  isPrivate: boolean;
+  user: User | null;
+  picture: string;
+  createdAt: string;
 }
 
 interface Post {
-	id: number;
-	userId: number;
-	user: User;
-	group: Group;
-	description: String;
-	title: string;
-	category: { id: number; description: string };
-	picture: string;
-	latitude: number;
-	longitude: number;
-	caption: string;
-	createdAt: string;
-	categoryId: any;
+  id: number;
+  userId: number;
+  user: User;
+  group: Group;
+  description: String;
+  title: string;
+  category: { id: number; description: string };
+  picture: string;
+  latitude: number;
+  longitude: number;
+  caption: string;
+  createdAt: string;
+  categoryId: any;
 }
 
 const ExploreScreen: React.FC = () => {
-
   const [posts, setPosts] = useState<Post[]>([]);
   const [animalPosts, setAnimalPosts] = useState<Post[]>([]);
   const [campingPosts, setCampingPosts] = useState<Post[]>([]);
@@ -63,7 +62,6 @@ const ExploreScreen: React.FC = () => {
   const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
   const [recommendedGroups, setRecommendedGroups] = useState<Group[]>([]);
 
-  
   useEffect(() => {
     const fetchExploreData = async () => {
       try {
@@ -78,7 +76,7 @@ const ExploreScreen: React.FC = () => {
           const cachedRecommendedPosts = localStorage.getItem("recommendedPosts");
           const cachedRecommendedGroups = localStorage.getItem("recommendedGroups");
           const cachedTimestamp = localStorage.getItem("postsTimestamp");
-
+  
           return {
             posts: cachedPosts ? JSON.parse(cachedPosts) : null,
             animalPosts: cachedAnimalPosts ? JSON.parse(cachedAnimalPosts) : null,
@@ -91,12 +89,11 @@ const ExploreScreen: React.FC = () => {
             cachedTimestamp: cachedTimestamp ? parseInt(cachedTimestamp) : null,
           };
         };
-
+  
         const cacheData = fetchFromCache();
         const now = Date.now();
         const expirationTime = 60 * 1000; // 1 minute cache expiration
-
-        // Check if cached data is valid and recent
+  
         if (
           cacheData.posts &&
           cacheData.animalPosts &&
@@ -120,7 +117,7 @@ const ExploreScreen: React.FC = () => {
           setRecommendedGroups(cacheData.recommendedGroups);
           setLoading(false);
         } else {
-          // Fetch data if cache is expired or empty
+          // Fetch main data
           const [
             postResponse,
             animalResponse,
@@ -129,8 +126,6 @@ const ExploreScreen: React.FC = () => {
             securityResponse,
             groupResponse,
             userGroupResponse,
-            recommendedPostResponse,
-            recommendedGroupResponse,
           ] = await Promise.all([
             fetch("/api/posts/category/3?page=0&size=12"),
             fetch("/api/posts/category/1?page=0&size=10"),
@@ -138,11 +133,16 @@ const ExploreScreen: React.FC = () => {
             fetch("/api/posts/category/4?page=0&size=10"),
             fetch("/api/posts/category/5?page=0&size=10"),
             fetch("/api/groups"),
-            fetch(`/api/groups/user/2`),
-            fetch("http://127.0.0.1:5000/recommend_posts?user_id=1&top_n=10"),
-            fetch("http://127.0.0.1:5000/recommend_groups?user_id=1&top_n=10"),
+            fetch(`/api/groups/user`),
           ]);
 
+          if (postResponse.status === 403 || animalResponse.status === 403 || campResponse.status === 403 || poiResponse.status === 403 || securityResponse.status === 403 || groupResponse.status === 403 || userGroupResponse.status === 403) {
+            // Handle 403 Forbidden error
+            console.error("Access denied: You do not have permission to access this resource.");
+            // Redirect to login or show a specific message
+            window.location.href = "/login?cleardata=true";
+          }
+  
           const [
             postData,
             animalData,
@@ -151,8 +151,6 @@ const ExploreScreen: React.FC = () => {
             securityData,
             groupData,
             userGroupData,
-            recommendedPostData,
-            recommendedGroupData,
           ] = await Promise.all([
             postResponse.json(),
             animalResponse.json(),
@@ -161,27 +159,44 @@ const ExploreScreen: React.FC = () => {
             securityResponse.json(),
             groupResponse.json(),
             userGroupResponse.json(),
-            recommendedPostResponse.json(),
-            recommendedGroupResponse.json(),
           ]);
-
-          // Process recommended posts and groups
-          const postIds = recommendedPostData.map((post: { id: number }) => post.id);
-          const fullPostDetails: Post[] = [];
-          for (const postId of postIds) {
-            const postDetailResponse = await fetch(`/api/posts/${postId}`);
-            const postDetail = await postDetailResponse.json();
-            fullPostDetails.push(postDetail);
+  
+          // Fetch recommended posts and groups
+          let fullPostDetails: Post[] = [];
+          let fullGroupDetails: Group[] = [];
+  
+          try {
+            const recommendedPostResponse = await fetch("/api/posts/recommend_posts");
+            const recommendedPostData = await recommendedPostResponse.json();
+            const postIds = recommendedPostData.map((post: { id: number }) => post.id);
+            fullPostDetails = await Promise.all(
+              postIds.map(async (postId: any) => {
+                const postDetailResponse = await fetch(`/api/posts/${postId}`);
+                return await postDetailResponse.json();
+              })
+            );
+          } catch (error) {
+            console.error("Error fetching recommended posts, falling back:", error);
+            const fallbackPostResponse = await fetch("/api/posts/topSavedPosts");
+            fullPostDetails = await fallbackPostResponse.json();
           }
-
-          const groupIds = recommendedGroupData.map((group: { id: number }) => group.id);
-          const fullGroupDetails: Group[] = [];
-          for (const groupId of groupIds) {
-            const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
-            const groupDetail = await groupDetailResponse.json();
-            fullGroupDetails.push(groupDetail);
+  
+          try {
+            const recommendedGroupResponse = await fetch("/api/groups/recommend_groups");
+            const recommendedGroupData = await recommendedGroupResponse.json();
+            const groupIds = recommendedGroupData.map((group: { id: number }) => group.id);
+            fullGroupDetails = await Promise.all(
+              groupIds.map(async (groupId: any) => {
+                const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
+                return await groupDetailResponse.json();
+              })
+            );
+          } catch (error) {
+            console.error("Error fetching recommended groups, falling back:", error);
+            const fallbackGroupResponse = await fetch("/api/groups/topJoinedGroups");
+            fullGroupDetails = await fallbackGroupResponse.json();
           }
-
+  
           // Update state with new data
           setPosts(postData.content);
           setAnimalPosts(animalData.content);
@@ -192,7 +207,7 @@ const ExploreScreen: React.FC = () => {
           setUserGroups(userGroupData);
           setRecommendedPosts(fullPostDetails);
           setRecommendedGroups(fullGroupDetails);
-
+  
           // Cache new data
           localStorage.setItem("posts", JSON.stringify(postData.content));
           localStorage.setItem("animalPosts", JSON.stringify(animalData.content));
@@ -203,7 +218,7 @@ const ExploreScreen: React.FC = () => {
           localStorage.setItem("recommendedPosts", JSON.stringify(fullPostDetails));
           localStorage.setItem("recommendedGroups", JSON.stringify(fullGroupDetails));
           localStorage.setItem("postsTimestamp", now.toString());
-
+  
           setLoading(false);
         }
       } catch (error) {
@@ -211,10 +226,10 @@ const ExploreScreen: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchExploreData();
   }, []);
-
+  
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = DOMPurify.sanitize(event.target.value);
@@ -243,7 +258,7 @@ const ExploreScreen: React.FC = () => {
   );
 
   return (
-    <div className="p-4 scrollbar-hide">
+    <div className="p-4 scrollbar-hide min-h-screen bg-bkg">
       <style>
         {`
 
@@ -272,36 +287,33 @@ const ExploreScreen: React.FC = () => {
             .search-results-container {
               grid-template-columns: 1fr;
             }
-            .search-bar {
-              width: 100%;
-            }
           }
         `}
-
       </style>
 
       <div className="mb-4 w-full">
-  <input
-    type="text"
-    value={searchQuery}
-    onChange={handleSearchChange}
-    placeholder="Search for Posts or Groups"
-    className="border p-2 rounded w-full max-w-[75vw] md:max-w-full search-bar bg-gray-200"
-  />
-</div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for Posts or Groups"
+          className="border p-2 text-gray-600 rounded w-3/4 md:w-full bg-gray-200"
+        />
+      </div>
 
       {loading && <ExploreSkeletonScreen />}
 
       {!loading && searchQuery === "" && (
         <>
-
-        <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-          <span>Posts we think you'll like</span>
-          <Link to="/recommend/posts" className="text-sm md:text-base text-black-500 underline">
-            View All
-          </Link>
-        </h1>
-
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
+            <span>Posts we think you'll like</span>
+            <Link
+              to="/recommend/posts"
+              className="text-sm md:text-base text-black-500 underline"
+            >
+              View All
+            </Link>
+          </h1>
 
           <HorizontalCarousel>
             {recommendedPosts.map((post, index) => (
@@ -309,9 +321,12 @@ const ExploreScreen: React.FC = () => {
             ))}
           </HorizontalCarousel>
 
-          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">            
+          <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
             <span>Groups we think you'll like</span>
-            <Link to="/recommend/groups"className="text-sm md:text-base text-black-500 underline">
+            <Link
+              to="/recommend/groups"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -322,8 +337,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Animal Sightings</span>
-            <Link to="/category/1" className="text-sm md:text-base text-black-500 underline">
+            <span>Animal Sightings</span>
+            <Link
+              to="/category/1"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -334,8 +352,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Campsites</span>
-            <Link to="/category/2" className="text-sm md:text-base text-black-500 underline">
+            <span>Campsites</span>
+            <Link
+              to="/category/2"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -346,8 +367,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Hiking Trails</span>
-            <Link to="/category/3" className="text-sm md:text-base text-black-500 underline">
+            <span>Hiking Trails</span>
+            <Link
+              to="/category/3"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -358,8 +382,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Points of Interest</span>
-            <Link to="/category/4" className="text-sm md:text-base text-black-500 underline">
+            <span>Points of Interest</span>
+            <Link
+              to="/category/4"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -370,8 +397,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Security Concerns</span>
-            <Link to="/category/5" className="text-sm md:text-base text-black-500 underline">
+            <span>Security Concerns</span>
+            <Link
+              to="/category/5"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -382,8 +412,11 @@ const ExploreScreen: React.FC = () => {
           </HorizontalCarousel>
 
           <h1 className="text-lg md:text-2xl font-bold mb-4 flex justify-between items-center">
-                        <span>Groups</span>
-            <Link to="/category/6" className="text-sm md:text-base text-black-500 underline">
+            <span>Groups</span>
+            <Link
+              to="/category/6"
+              className="text-sm md:text-base text-black-500 underline"
+            >
               View All
             </Link>
           </h1>
@@ -439,3 +472,188 @@ const ExploreScreen: React.FC = () => {
 };
 
 export default ExploreScreen;
+
+
+// old method to get data 
+// useEffect(() => {
+//   const fetchExploreData = async () => {
+//     try {
+//       // Fetch from cache
+//       const fetchFromCache = () => {
+//         const cachedPosts = localStorage.getItem("posts");
+//         const cachedAnimalPosts = localStorage.getItem("animalPosts");
+//         const cachedCampingPosts = localStorage.getItem("campingPosts");
+//         const cachedPoiPosts = localStorage.getItem("poiPosts");
+//         const cachedSecurityPosts = localStorage.getItem("securityPosts");
+//         const cachedGroupPosts = localStorage.getItem("groupPosts");
+//         const cachedRecommendedPosts =
+//           localStorage.getItem("recommendedPosts");
+//         const cachedRecommendedGroups =
+//           localStorage.getItem("recommendedGroups");
+//         const cachedTimestamp = localStorage.getItem("postsTimestamp");
+
+//         return {
+//           posts: cachedPosts ? JSON.parse(cachedPosts) : null,
+//           animalPosts: cachedAnimalPosts
+//             ? JSON.parse(cachedAnimalPosts)
+//             : null,
+//           campingPosts: cachedCampingPosts
+//             ? JSON.parse(cachedCampingPosts)
+//             : null,
+//           poiPosts: cachedPoiPosts ? JSON.parse(cachedPoiPosts) : null,
+//           securityPosts: cachedSecurityPosts
+//             ? JSON.parse(cachedSecurityPosts)
+//             : null,
+//           groupPosts: cachedGroupPosts ? JSON.parse(cachedGroupPosts) : null,
+//           recommendedPosts: cachedRecommendedPosts
+//             ? JSON.parse(cachedRecommendedPosts)
+//             : null,
+//           recommendedGroups: cachedRecommendedGroups
+//             ? JSON.parse(cachedRecommendedGroups)
+//             : null,
+//           cachedTimestamp: cachedTimestamp ? parseInt(cachedTimestamp) : null,
+//         };
+//       };
+
+//       const cacheData = fetchFromCache();
+//       const now = Date.now();
+//       const expirationTime = 60 * 1000; // 1 minute cache expiration
+
+//       // Check if cached data is valid and recent
+//       if (
+//         cacheData.posts &&
+//         cacheData.animalPosts &&
+//         cacheData.campingPosts &&
+//         cacheData.poiPosts &&
+//         cacheData.securityPosts &&
+//         cacheData.groupPosts &&
+//         cacheData.recommendedPosts &&
+//         cacheData.recommendedGroups &&
+//         cacheData.cachedTimestamp &&
+//         now - cacheData.cachedTimestamp < expirationTime
+//       ) {
+//         // Use cached data
+//         setPosts(cacheData.posts);
+//         setAnimalPosts(cacheData.animalPosts);
+//         setCampingPosts(cacheData.campingPosts);
+//         setPoiPosts(cacheData.poiPosts);
+//         setSecurityPosts(cacheData.securityPosts);
+//         setGroupPosts(cacheData.groupPosts);
+//         setRecommendedPosts(cacheData.recommendedPosts);
+//         setRecommendedGroups(cacheData.recommendedGroups);
+//         setLoading(false);
+//       } else {
+//         // Fetch data if cache is expired or empty
+//         const [
+//           postResponse,
+//           animalResponse,
+//           campResponse,
+//           poiResponse,
+//           securityResponse,
+//           groupResponse,
+//           userGroupResponse,
+//           recommendedPostResponse,
+//           recommendedGroupResponse,
+//         ] = await Promise.all([
+//           fetch("/api/posts/category/3?page=0&size=12"),
+//           fetch("/api/posts/category/1?page=0&size=10"),
+//           fetch("/api/posts/category/2?page=0&size=10"),
+//           fetch("/api/posts/category/4?page=0&size=10"),
+//           fetch("/api/posts/category/5?page=0&size=10"),
+//           fetch("/api/groups"),
+//           fetch(`/api/groups/user`),
+//           fetch("/api/posts/recommend_posts"),
+//           fetch("/api/groups/recommend_groups"),
+//         ]);
+
+//         const [
+//           postData,
+//           animalData,
+//           campData,
+//           poiData,
+//           securityData,
+//           groupData,
+//           userGroupData,
+//           recommendedPostData,
+//           recommendedGroupData,
+//         ] = await Promise.all([
+//           postResponse.json(),
+//           animalResponse.json(),
+//           campResponse.json(),
+//           poiResponse.json(),
+//           securityResponse.json(),
+//           groupResponse.json(),
+//           userGroupResponse.json(),
+//           recommendedPostResponse.json(),
+//           recommendedGroupResponse.json(),
+//         ]);
+
+//         // Process recommended posts and groups
+//         const postIds = recommendedPostData.map(
+//           (post: { id: number }) => post.id
+//         );
+//         const fullPostDetails: Post[] = await Promise.all(
+//           postIds.map(async (postId: any) => {
+//             const postDetailResponse = await fetch(`/api/posts/${postId}`);
+//             return await postDetailResponse.json();
+//           })
+//         );
+
+//         const groupIds = recommendedGroupData.map(
+//           (group: { id: number }) => group.id
+//         );
+
+//         const fullGroupDetails: Group[] = await Promise.all(
+//           groupIds.map(async (groupId: any) => {
+//             const groupDetailResponse = await fetch(`/api/groups/${groupId}`);
+//             return await groupDetailResponse.json();
+//           })
+//         );
+
+//         // Update state with new data
+//         setPosts(postData.content);
+//         setAnimalPosts(animalData.content);
+//         setCampingPosts(campData.content);
+//         setPoiPosts(poiData.content);
+//         setSecurityPosts(securityData.content);
+//         setGroupPosts(groupData.content);
+//         setUserGroups(userGroupData);
+//         setRecommendedPosts(fullPostDetails);
+//         setRecommendedGroups(fullGroupDetails);
+
+//         // Cache new data
+//         localStorage.setItem("posts", JSON.stringify(postData.content));
+//         localStorage.setItem(
+//           "animalPosts",
+//           JSON.stringify(animalData.content)
+//         );
+//         localStorage.setItem(
+//           "campingPosts",
+//           JSON.stringify(campData.content)
+//         );
+//         localStorage.setItem("poiPosts", JSON.stringify(poiData.content));
+//         localStorage.setItem(
+//           "securityPosts",
+//           JSON.stringify(securityData.content)
+//         );
+//         localStorage.setItem("groupPosts", JSON.stringify(groupData.content));
+//         localStorage.setItem(
+//           "recommendedPosts",
+//           JSON.stringify(fullPostDetails)
+//         );
+//         localStorage.setItem(
+//           "recommendedGroups",
+//           JSON.stringify(fullGroupDetails)
+//         );
+//         localStorage.setItem("postsTimestamp", now.toString());
+
+//         setLoading(false);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//       setLoading(false);
+//     }
+//   };
+
+//   fetchExploreData();
+// }, []);

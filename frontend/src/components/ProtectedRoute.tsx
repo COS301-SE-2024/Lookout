@@ -12,7 +12,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 	...rest
 }) => {
 	const email = getEmailFromLocalStorage();
-	console.log("Checking email in ProtectedRoute:", email);
 
 	const isAuthenticated = Boolean(email);
 	const location = useLocation();

@@ -27,14 +27,21 @@ const ProfileDetail: React.FC = () => {
   const [postsCount, setPostsCount] = useState(0);
   const [groupsCount, setGroupsCount] = useState(0);
   const [activeTab, setActiveTab] = useState<'posts' | 'groups'>('posts');
-console.log(id)
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userResponse = await fetch(`/api/users/${id}`, {
           headers: { Accept: "application/json" },
         });
-        console.log(userResponse)
+
+        if (userResponse.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
+        
         const userData = await userResponse.json();
         setUser(userData);
 
@@ -44,6 +51,13 @@ console.log(id)
             Accept: "application/json"
           }
         });
+
+        if (postsCountResponse.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
         const postsCountData = await postsCountResponse.json();
         setPostsCount(postsCountData);
 
@@ -53,6 +67,13 @@ console.log(id)
             Accept: "application/json"
           }
         });
+
+        if (groupsCountResponse.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
         const groupsCountData = await groupsCountResponse.json();
         setGroupsCount(groupsCountData);
 
@@ -120,9 +141,9 @@ console.log(id)
             {/* Tab Content */}
             <div className="mt-4">
               {activeTab === 'posts' ? (
-                <PostsGridFix searchQuery="" /> // Adjust searchQuery as needed
+                <PostsGridFix searchQuery="" userId={id}  /> // Adjust searchQuery as needed
               ) : (
-                <GroupsGridFix searchQuery="" /> // Adjust searchQuery as needed
+                <GroupsGridFix searchQuery="" userId={id}/> // Adjust searchQuery as needed
               )}
             </div>
           </div>

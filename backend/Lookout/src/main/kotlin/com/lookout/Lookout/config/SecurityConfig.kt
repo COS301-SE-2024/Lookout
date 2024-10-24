@@ -2,6 +2,7 @@ package com.lookout.Lookout.config
 
 import com.lookout.Lookout.filter.JwtAuthenticationFilter
 import com.lookout.Lookout.service.UserService
+import jakarta.servlet.http.Cookie
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
@@ -24,10 +24,8 @@ class SecurityConfig {
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
-
     @Autowired
     lateinit var userService: UserService
-
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -40,26 +38,19 @@ class SecurityConfig {
                         "/sw.js", "/static/**", "/resources/**",
                         "/webjars/**", "/css/**", "/js/**", "/images/**",
                         "/index.html", "/", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js",
-                        "/logo.png", "/manifest.json", "/logo512.png", "/ios/*.png", "/ios/144.png").permitAll() // Permit specific paths
-                    .anyRequest().authenticated() // All other paths require authentication
+                        "/logo.png", "/manifest.json", "/logo512.png", "/ios/*.png", "/ios/144.png", "/manifest.json"
+                    ).permitAll()
+                    .anyRequest().authenticated()
             }
             .exceptionHandling { exceptions ->
-                // Handle 401 Unauthorized errors
-                exceptions.authenticationEntryPoint { request, response, authException ->
-                    response.sendRedirect("/login")
-                }
-                // Handle 403 Forbidden errors
+                // Custom handling for 403 Forbidden and 404 Not Found
                 exceptions.accessDeniedHandler { request, response, accessDeniedException ->
-                    if (request.requestURI != "/login") {
-                        response.sendRedirect("/login")
-                    } else {
-                        response.status = HttpStatus.FORBIDDEN.value()
-                    }
+                    response.status = HttpStatus.FORBIDDEN.value()
+
                 }
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-
 
         return http.build()
     }
@@ -75,4 +66,3 @@ class SecurityConfig {
         return configuration.authenticationManager
     }
 }
-
