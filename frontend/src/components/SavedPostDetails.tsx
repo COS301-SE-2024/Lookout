@@ -137,6 +137,12 @@ const PinDetail: React.FC = () => {
 				if (!response.ok) {
 					throw new Error("Failed to fetch post");
 				}
+				if (response.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				  }
 				const data = await response.json();
 				setPost(data);
 				setLoading(false);
@@ -145,6 +151,12 @@ const PinDetail: React.FC = () => {
 				const relatedResponse = await fetch(
 					`/api/posts/group/${data.groupId}?page=0&size=10`
 				);
+				if (relatedResponse.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				  }
 				if (!relatedResponse.ok) {
 					throw new Error("Failed to fetch related posts");
 				}
@@ -155,6 +167,12 @@ const PinDetail: React.FC = () => {
 				if (!userResponse.ok) {
 					throw new Error("Failed to fetch user data");
 				}
+				if (userResponse.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				  }
 				const userData = await userResponse.json();
 				setUser(userData);
 			} catch (error) {

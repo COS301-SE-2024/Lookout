@@ -527,6 +527,13 @@ const HomeScreen: React.FC = () => {
 				}
 			});
 
+			if (response.status === 403) {
+				// Handle 403 Forbidden error
+				console.error("Access denied: You do not have permission to access this resource.");
+				// Redirect to login or show a specific message
+				window.location.href = "/login?cleardata=true";
+			  }
+
 			if (!response.ok) {
 				throw new Error("Failed to fetch pins");
 			}
@@ -796,7 +803,7 @@ const HomeScreen: React.FC = () => {
 				};
 
 				try {
-					const response = await fetch("/predict", requestOptions);
+					const response = await fetch("https://on-terribly-chamois.ngrok-free.app/predict", requestOptions);
 					const result = await response.json();
 
 					setPredictResult(result.predicted_class);
@@ -868,7 +875,7 @@ const HomeScreen: React.FC = () => {
 				};
 
 				try {
-					const response = await fetch("/predict", requestOptions);
+					const response = await fetch("https://on-terribly-chamois.ngrok-free.app/predict", requestOptions);
 					const result = await response.json();
 					setPredictResult(result.predicted_class);
 					setTitle(result.predicted_class);
@@ -1204,7 +1211,7 @@ const HomeScreen: React.FC = () => {
 																try {
 																	const response =
 																		await fetch(
-																			"/predict",
+																			"https://on-terribly-chamois.ngrok-free.app/predict",
 																			requestOptions
 																		);
 																	const result =
@@ -1253,7 +1260,7 @@ const HomeScreen: React.FC = () => {
 																try {
 																	const response =
 																		await fetch(
-																			"/predict",
+																			"https://on-terribly-chamois.ngrok-free.app/predict",
 																			requestOptions
 																		);
 																	const result =

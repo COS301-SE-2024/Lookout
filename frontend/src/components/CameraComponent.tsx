@@ -15,7 +15,7 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ onCapture }) => {
     setIsCameraOpen(true);
     setPhoto(null); // Clear previous photo when starting camera
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }

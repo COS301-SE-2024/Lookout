@@ -74,6 +74,12 @@ const SavedPostsGridFix: React.FC<SavedPostsGridFixProps> = ({ searchQuery }) =>
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
+        if (response.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				  }
         const data = await response.json();
 
         // Transform the data into the expected structure

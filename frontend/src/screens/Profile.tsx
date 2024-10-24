@@ -44,6 +44,13 @@ const Profile = () => {
 						})
 					]);
 
+					if (userResponse.status === 403 || postsCountResponse.status === 403 || groupsCountResponse.status === 403) {
+						// Handle 403 Forbidden error
+						console.error("Access denied: You do not have permission to access this resource.");
+						// Redirect to login or show a specific message
+						window.location.href = "/login?cleardata=true";
+					  }
+
 				const userData = await userResponse.json();
 				const postsCountData = await postsCountResponse.json();
 				const groupsCountData = await groupsCountResponse.json();

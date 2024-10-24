@@ -16,9 +16,10 @@ interface Group {
 
 interface GroupsGridFixProps {
   searchQuery: string;
+  userId?: string;
 }
 
-const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
+const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery, userId }) => {
   
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
@@ -29,41 +30,78 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
     const fetchGroups = async () => {
       setLoading(true);
       try {
-        const joinedGroupsResponse = await fetch(`/api/groups/user`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
-        });
-        if (!joinedGroupsResponse.ok) {
-          throw new Error('Failed to fetch joined groups');
-        }
-        const joinedGroups = await joinedGroupsResponse.json();
+        // If userId is present, fetch only joined groups
+        if (userId) {
+          const joinedGroupsResponse = await fetch(`/api/groups/user/${userId}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+          });
 
-        const createdGroupsResponse = await fetch('/api/groups/user/createdBy', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
-        });
-        
-        if (!createdGroupsResponse.ok) {
-          throw new Error('Failed to fetch all groups');
-        }
-        const allGroups = await createdGroupsResponse.json();
-        
-        const createdGroups = allGroups;
-
-        const combinedGroups = [...joinedGroups, ...createdGroups];
-        const uniqueGroups = combinedGroups.reduce((acc: Group[], current: Group) => {
-          const x = acc.find(group => group.id === current.id);
-          if (!x) {
-            acc.push(current);
+          if (joinedGroupsResponse.status === 403) {
+            console.error("Access denied: You do not have permission to access this resource.");
+            window.location.href = "/login?cleardata=true";
+            return;
           }
-          return acc;
-        }, []);
 
-        setGroups(uniqueGroups);
+          if (!joinedGroupsResponse.ok) {
+            throw new Error('Failed to fetch joined groups');
+          }
+
+          const joinedGroups = await joinedGroupsResponse.json();
+          setGroups(joinedGroups); // Set only joined groups
+        } else {
+          // Fetch both joined groups and created groups
+          const joinedGroupsResponse = await fetch(`/api/groups/user`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+          });
+
+          if (joinedGroupsResponse.status === 403) {
+            console.error("Access denied: You do not have permission to access this resource.");
+            window.location.href = "/login?cleardata=true";
+            return;
+          }
+
+          if (!joinedGroupsResponse.ok) {
+            throw new Error('Failed to fetch joined groups');
+          }
+
+          const joinedGroups = await joinedGroupsResponse.json();
+
+          const createdGroupsResponse = await fetch('/api/groups/user/createdBy', {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+          });
+
+          if (createdGroupsResponse.status === 403) {
+            console.error("Access denied: You do not have permission to access this resource.");
+            window.location.href = "/login?cleardata=true";
+            return;
+          }
+
+          if (!createdGroupsResponse.ok) {
+            throw new Error('Failed to fetch created groups');
+          }
+
+          const createdGroups = await createdGroupsResponse.json();
+
+          const combinedGroups = [...joinedGroups, ...createdGroups];
+          const uniqueGroups = combinedGroups.reduce((acc: Group[], current: Group) => {
+            const x = acc.find(group => group.id === current.id);
+            if (!x) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+
+          setGroups(uniqueGroups); // Set combined unique groups
+        }
       } catch (error) {
         if (error instanceof Error) {
           setError('Error fetching groups: ' + error.message);
@@ -81,7 +119,7 @@ const GroupsGridFix: React.FC<GroupsGridFixProps> = ({ searchQuery }) => {
     return () => {
       setGroups([]);
     };
-  }, []);
+  }, [userId]);
 
   const handleGroupClick = (group: Group) => {
     navigate(`/group/${group.id}`, { state: { group } });

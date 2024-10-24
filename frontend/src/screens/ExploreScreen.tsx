@@ -135,6 +135,13 @@ const ExploreScreen: React.FC = () => {
             fetch("/api/groups"),
             fetch(`/api/groups/user`),
           ]);
+
+          if (postResponse.status === 403 || animalResponse.status === 403 || campResponse.status === 403 || poiResponse.status === 403 || securityResponse.status === 403 || groupResponse.status === 403 || userGroupResponse.status === 403) {
+            // Handle 403 Forbidden error
+            console.error("Access denied: You do not have permission to access this resource.");
+            // Redirect to login or show a specific message
+            window.location.href = "/login?cleardata=true";
+          }
   
           const [
             postData,

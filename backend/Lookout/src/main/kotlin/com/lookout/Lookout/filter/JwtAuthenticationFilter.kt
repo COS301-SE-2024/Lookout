@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component
 import jakarta.servlet.http.Cookie
 import org.springframework.web.filter.OncePerRequestFilter
-
 import org.slf4j.LoggerFactory
 
 @Component
@@ -27,12 +26,14 @@ class JwtAuthenticationFilter(
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
 
-        if (request.requestURI == "/login") {
+        if (request.requestURI == "/login" || request.requestURI == "/") {
             filterChain.doFilter(request, response)
             return
         }
 
         val jwt = extractJwtFromCookies(request.cookies)
+        var jwtExpiredOrInvalid = false
+
         if (jwt != null) {
             logger.info("JWT Token found in cookie: $jwt")
             val username = jwtService.extractUserEmail(jwt)
@@ -43,6 +44,13 @@ class JwtAuthenticationFilter(
                     userDetails = userService.loadUserByUsername(username)
                 } catch (e: UsernameNotFoundException) {
                     logger.error("User not found: $username", e)
+                    val cookie = Cookie("jwt", null)
+                    cookie.path = "/"
+                    cookie.isHttpOnly = true
+                    cookie.maxAge = 0 // Immediate expiration
+                    response.addCookie(cookie)
+
+                    response.sendRedirect("/login?cleardata=true")
                     filterChain.doFilter(request, response)
                     return
                 }
@@ -55,23 +63,30 @@ class JwtAuthenticationFilter(
                     }
                     SecurityContextHolder.getContext().authentication = newAuthToken
                 } else {
-                    logger.warn("Invalid JWT Token for user: $username")
-//                    redirectToLogin(response)
-//                    return
+                    logger.warn("Invalid or expired JWT Token for user: $username")
+                    jwtExpiredOrInvalid = true
                 }
             } else {
                 logger.warn("Username is null or authentication is already set")
             }
         }
+
+        if (jwtExpiredOrInvalid) {
+            // Explicitly set a custom header or attribute to indicate the JWT issue
+            val cookie = Cookie("jwt", null)
+            cookie.path = "/"
+            cookie.isHttpOnly = true
+            cookie.maxAge = 0 // Immediate expiration
+            response.addCookie(cookie)
+
+            response.sendRedirect("/login?cleardata=true")
+            return
+        }
+
         filterChain.doFilter(request, response)
     }
 
     private fun extractJwtFromCookies(cookies: Array<Cookie>?): String? {
         return cookies?.firstOrNull { it.name == "jwt" }?.value
     }
-
 }
-
-
-
-

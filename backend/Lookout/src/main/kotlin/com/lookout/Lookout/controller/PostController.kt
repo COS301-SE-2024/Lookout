@@ -131,7 +131,7 @@ class PostController(
 
     // Get posts by User ID
     @GetMapping("/user")
-    fun getPostsByUserId(
+    fun getPostsByUserCookie(
         request: HttpServletRequest,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
@@ -151,6 +151,25 @@ class PostController(
         val pageable: Pageable = PageRequest.of(page, size)
         val posts = userId?.let { postService.findByUserId(it, pageable).map { post -> convertToDto(post)} }
         return ResponseEntity.ok(posts)
+    }
+
+    // Get posts by User ID
+    @GetMapping("/user/{id}")
+    fun getPostsByUserId(
+        @PathVariable id: Long,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<PostDto>> {
+
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            val pageable: Pageable = PageRequest.of(page, size)
+            val posts = id?.let { postService.findByUserId(it, pageable).map { post -> convertToDto(post)} }
+            return ResponseEntity.ok(posts)
+        }else {
+            return ResponseEntity.notFound().build()
+        }
+
     }
 
     // Get posts by Group ID
@@ -210,7 +229,7 @@ class PostController(
         }
 
         // Prepare API call to your Python model
-        val pythonApiUrl = "https://lookoutcapstone.xyz/recommend_posts?user_id=$userId&top_n=10"
+        val pythonApiUrl = "https://on-terribly-chamois.ngrok-free.app/recommend_posts?user_id=$userId&top_n=10"
 
         // Perform GET request to the Python model API
         val headers = HttpHeaders()

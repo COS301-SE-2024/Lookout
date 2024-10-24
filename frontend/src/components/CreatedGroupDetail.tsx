@@ -108,6 +108,13 @@ const CreatedGroupDetail: React.FC = () => {
 					method: "GET",
 					headers: { Accept: "application/json" }
 				});
+				if (groupResponse.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				}
+
 				const groupData = await groupResponse.json();
 				setGroup(groupData);
 
@@ -116,6 +123,13 @@ const CreatedGroupDetail: React.FC = () => {
 					method: "GET",
 					headers: { Accept: "application/json" }
 				});
+
+				if (userResponse.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				}
 				const userData = await userResponse.json();
 				setOwner(userData);
 				setGroupLoaded(true);
@@ -127,6 +141,13 @@ const CreatedGroupDetail: React.FC = () => {
 						headers: { Accept: "application/json" }
 					}
 				);
+
+				if (postsResponse.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				}
 				const postsData = await postsResponse.json();
 				setPosts(postsData.content);
 				setPostsLoaded(true);
@@ -135,11 +156,22 @@ const CreatedGroupDetail: React.FC = () => {
 					method: "GET",
 					headers: { Accept: "application/json" }
 				});
+
+				if (memberResponse.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
+				}
+
+
 				const memberData = await memberResponse.json();
 				const members = memberData.filter(
 					(m: User) => m.id !== groupData.userId
 				);
 				setMembers(members);
+
+				
 			} catch (error) {
 				console.error("Error fetching group details:", error);
 				setGroupLoaded(true);
@@ -175,6 +207,13 @@ const CreatedGroupDetail: React.FC = () => {
 					userId: memberToRemove.id
 				})
 			});
+
+			if (response.status === 403) {
+				// Handle 403 Forbidden error
+				console.error("Access denied: You do not have permission to access this resource.");
+				// Redirect to login or show a specific message
+				window.location.href = "/login?cleardata=true";
+			}
 
 			if (!response.ok) {
 				throw new Error("Failed to remove member");
@@ -228,6 +267,13 @@ const CreatedGroupDetail: React.FC = () => {
 
 				if (!response.ok) {
 					throw new Error("Failed to update group");
+				}
+
+				if (response.status === 403) {
+					// Handle 403 Forbidden error
+					console.error("Access denied: You do not have permission to access this resource.");
+					// Redirect to login or show a specific message
+					window.location.href = "/login?cleardata=true";
 				}
 				
 				const result = await response.json();

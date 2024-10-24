@@ -19,6 +19,7 @@ interface Post {
 
 interface PostsGridFixProps {
   searchQuery: string;
+  userId?: string;
 }
 
 const getDayWithSuffix = (date: Date) => {
@@ -34,20 +35,27 @@ const getDayWithSuffix = (date: Date) => {
 	return `${day}${suffix}`;
 };
 
-const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery }) => {
-  const userId = 1; // Example userId, update this later
+const PostsGridFix: React.FC<PostsGridFixProps> = ({ searchQuery, userId }) => {
+ 
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchPosts = async () => {
+      const url = userId ? `/api/posts/user/${userId}` : `/api/posts/user`;
       try {
-        const response = await fetch(`/api/posts/user`, {
+        const response = await fetch(url, {
           headers: {
             'Accept': 'application/json',
           },
         });
+        if (response.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

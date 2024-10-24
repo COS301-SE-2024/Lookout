@@ -155,7 +155,7 @@ class GroupController(
     }
 
     @GetMapping("/user")
-    fun getGroupsByUserId(request: HttpServletRequest): ResponseEntity<List<GroupDto>> {
+    fun getGroupsByUserCookie(request: HttpServletRequest): ResponseEntity<List<GroupDto>> {
         var userId: Long = 0
         val jwt = extractJwtFromCookies(request.cookies)
 
@@ -173,6 +173,22 @@ class GroupController(
         val groupDtos = groups.map { group -> convertToDto(group) }
 
         return ResponseEntity.ok(groupDtos.ifEmpty { listOf() })
+    }
+
+    @GetMapping("/user/{id}")
+    fun getGroupsByUserId(@PathVariable id: Long,): ResponseEntity<List<GroupDto>> {
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            // Ensure an empty list is returned if no groups are found
+            val groups = groupService.findGroupsByUserId(id)
+            val groupDtos = groups.map { group -> convertToDto(group) }
+
+            return ResponseEntity.ok(groupDtos.ifEmpty { listOf() })
+        }else {
+            return ResponseEntity.notFound().build()
+        }
+
+
     }
 
 
@@ -375,7 +391,7 @@ class GroupController(
         }
 
         // Prepare API call to your Python model
-        val pythonApiUrl = "https://lookoutcapstone.xyz/recommend_groups?user_id=$userId&top_n=10"
+        val pythonApiUrl = "https://on-terribly-chamois.ngrok-free.app/recommend_groups?user_id=$userId&top_n=10"
 
         // Perform GET request to the Python model API
         val headers = HttpHeaders()

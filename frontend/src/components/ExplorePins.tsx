@@ -49,6 +49,12 @@ const ExplorePins: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch('/api/posts?page=0&size=10');
+        if (response.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
         const data = await response.json();
       
         setPosts(data.content); 

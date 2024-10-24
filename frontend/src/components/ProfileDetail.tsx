@@ -31,28 +31,49 @@ const ProfileDetail: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await fetch(`/api/users/`, {
+        const userResponse = await fetch(`/api/users/${id}`, {
           headers: { Accept: "application/json" },
         });
+
+        if (userResponse.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
         
         const userData = await userResponse.json();
         setUser(userData);
 
         // Fetch posts count
-        const postsCountResponse = await fetch(`/api/users/postsCount`, {
+        const postsCountResponse = await fetch(`/api/users/postsCount/${id}`, {
           headers: {
             Accept: "application/json"
           }
         });
+
+        if (postsCountResponse.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
         const postsCountData = await postsCountResponse.json();
         setPostsCount(postsCountData);
 
         // Fetch groups count
-        const groupsCountResponse = await fetch(`/api/users/groupsCount`, {
+        const groupsCountResponse = await fetch(`/api/users/groupsCount/${id}`, {
           headers: {
             Accept: "application/json"
           }
         });
+
+        if (groupsCountResponse.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
         const groupsCountData = await groupsCountResponse.json();
         setGroupsCount(groupsCountData);
 
@@ -64,7 +85,7 @@ const ProfileDetail: React.FC = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [id]);
 
   if (!dataLoaded) {
     return <ProfileSkeleton />;
@@ -120,9 +141,9 @@ const ProfileDetail: React.FC = () => {
             {/* Tab Content */}
             <div className="mt-4">
               {activeTab === 'posts' ? (
-                <PostsGridFix searchQuery="" /> // Adjust searchQuery as needed
+                <PostsGridFix searchQuery="" userId={id}  /> // Adjust searchQuery as needed
               ) : (
-                <GroupsGridFix searchQuery="" /> // Adjust searchQuery as needed
+                <GroupsGridFix searchQuery="" userId={id}/> // Adjust searchQuery as needed
               )}
             </div>
           </div>

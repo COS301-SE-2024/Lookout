@@ -24,10 +24,8 @@ class SecurityConfig {
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
-
     @Autowired
     lateinit var userService: UserService
-
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -40,36 +38,19 @@ class SecurityConfig {
                         "/sw.js", "/static/**", "/resources/**",
                         "/webjars/**", "/css/**", "/js/**", "/images/**",
                         "/index.html", "/", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js",
-                        "/logo.png", "/manifest.json", "/logo512.png", "/ios/*.png", "/ios/144.png").permitAll() // Permit specific paths
-                    .anyRequest().authenticated() // All other paths require authentication
+                        "/logo.png", "/manifest.json", "/logo512.png", "/ios/*.png", "/ios/144.png", "/manifest.json"
+                    ).permitAll()
+                    .anyRequest().authenticated()
             }
             .exceptionHandling { exceptions ->
-                // Handle 401 Unauthorized errors
-                exceptions.authenticationEntryPoint { request, response, authException ->
-                    val cookie = Cookie("jwt", null) // Null value to remove it
-                    cookie.setPath("/")
-                    cookie.setHttpOnly(true) // Match your original cookie settings
-                    cookie.setMaxAge(0) // Immediate expiration
-                    response.addCookie(cookie)
-                    response.sendRedirect("/login?cleardata=true")
-                }
-                // Handle 403 Forbidden errors
+                // Custom handling for 403 Forbidden and 404 Not Found
                 exceptions.accessDeniedHandler { request, response, accessDeniedException ->
-                    if (request.requestURI != "/login") {
-                        val cookie = Cookie("jwt", null) // Null value to remove it
-                        cookie.path = "/"
-                        cookie.isHttpOnly = true // Match your original cookie settings
-                        cookie.maxAge = 0 // Immediate expiration
-                        response.addCookie(cookie)
-                        response.sendRedirect("/login?cleardata=true")
-                    } else {
-                        response.status = HttpStatus.FORBIDDEN.value()
-                    }
+                    response.status = HttpStatus.FORBIDDEN.value()
+
                 }
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-
 
         return http.build()
     }
@@ -85,4 +66,3 @@ class SecurityConfig {
         return configuration.authenticationManager
     }
 }
-

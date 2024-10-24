@@ -37,10 +37,16 @@ const ExploreGroups: React.FC = () => {
 
   const fetchGroups = useCallback(() => {
     fetch(`/api/groups`)
-      .then(response => response.json())
-      .then(data => {
-        setGroups(data.content); // Set all groups retrieved from the server
-        // setHasMore(false); // No more data to fetch, since we're fetching all at once
+      .then(response => {
+        if (response.status === 403) {
+          // Handle 403 Forbidden error
+          console.error("Access denied: You do not have permission to access this resource.");
+          // Redirect to login or show a specific message
+          window.location.href = "/login?cleardata=true";
+        }
+        response.json().then(data => {
+          setGroups(data.content);
+        });
       })
       .catch(error => console.error('Error fetching groups:', error));
   }, []);

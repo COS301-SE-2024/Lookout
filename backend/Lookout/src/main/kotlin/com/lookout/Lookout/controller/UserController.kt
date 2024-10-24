@@ -112,7 +112,7 @@ class UserController(
     }
 
     @GetMapping("/")
-    fun getUserByID(request: HttpServletRequest): ResponseEntity<UserDto> {
+    fun getUserByCookie(request: HttpServletRequest): ResponseEntity<UserDto> {
         val jwt = extractJwtFromCookies(request.cookies)
 
         val userEmail = jwt?.let { jwtService.extractUserEmail(it) }
@@ -130,6 +130,41 @@ class UserController(
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("/{id}")
+    fun getUserByID(@PathVariable id: Long): ResponseEntity<UserDto> {
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            ResponseEntity.ok(convertToDto(userresult.get()))
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping("/postsCount/{id}")
+    fun getUserPostsCountByID(@PathVariable id: Long): ResponseEntity<Int> {
+
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            val postsCount = userService.getUserPostsCount(id)
+            ResponseEntity.ok(postsCount)
+        }else {
+            return ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping("/groupsCount/{id}")
+    fun getUserGroupsCountById(@PathVariable id: Long): ResponseEntity<Int> {
+        val userresult = userService.findById(id)
+        return if (userresult.isPresent) {
+            val groupsCount = userService.getUserGroupsCount(id)
+            return ResponseEntity.ok(groupsCount)
+        }else {
+            return ResponseEntity.notFound().build()
+        }
+
+    }
+
 
     @GetMapping("/postsCount")
     fun getUserPostsCount(request: HttpServletRequest): ResponseEntity<Int> {
