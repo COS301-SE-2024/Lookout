@@ -65,7 +65,7 @@ Lookout is a user-friendly, modern Progressive Web Application that revolutionis
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Aliyah Limbada</b></h2>
-      <b style="font-size: 16px;">Project Manager, Frontend Designer and Developer</b><br>
+      <b style="font-size: 16px;">Co-Project Manager, Frontend Designer and Developer</b><br>
       Aliyah is a Computer science student with a passion for UI/UX design as well as integration and data management. Aliyah is always seeking new challenges from the ever-evolving technology landscape to master her skills and obtain new knowledge. 
       <br><br>
       <a href="https://github.com/aliyahlimbada" style="text-decoration: none; margin-right: 10px; display: inline-block; vertical-align: middle;">
@@ -82,7 +82,7 @@ Lookout is a user-friendly, modern Progressive Web Application that revolutionis
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Mihir Arjun</b></h2> 
-      <b style="font-size: 16px;">Data Engineer and Backend Engineer</b><br>
+      <b style="font-size: 16px;">Co-Project Manager, Data Engineer, Backend Engineer, Frontend Developer and Testing Engineer</b><br>
       Mihir is a computer science student with a focus on data science. His experience in event co-ordination and community service has honed his leadership and teamwork skills, making him effective in both independent and group work settings. He excels in data science, database design, design patterns, integration and has recently refined his front-end skills. 
       <br><br>
       <a href="https://github.com/Mihir-Arjun" style="text-decoration: none; margin-right: 10px; display: inline-block; vertical-align: middle;">
@@ -134,7 +134,7 @@ Lookout is a user-friendly, modern Progressive Web Application that revolutionis
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Luke Nobrega</b></h2>
-      <b style="font-size: 16px;">Tester, Backend Engineer and Architect</b><br>
+      <b style="font-size: 16px;">Testing Engineer, Backend Engineer and Architect</b><br>
      Luke is a BSc Computer Science student skilled in Java, C++, Python, JavaScript, React, .NET Framework, Angular and Ionic and has an interest in AI and security. With strong problem-solving skills and a passion for new technology, Luke loves to push beyond his comfort zone seeking new knowledge and skills. Beyond his academic pursuits, Luke enjoys being social and staying active.
       <br><br>
       <a href="https://github.com/lukecn03" style="text-decoration: none; margin-right: 10px; display: inline-block; vertical-align: middle;">
